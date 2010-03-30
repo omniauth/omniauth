@@ -4,14 +4,15 @@ require 'rake'
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
-    gem.name = "rack-oauthable"
-    gem.summary = %Q{TODO: one-line summary of your gem}
-    gem.description = %Q{TODO: longer description of your gem}
+    gem.name = "omni_auth"
+    gem.summary = %Q{Auth from anywhere.}
+    gem.description = %Q{Auth from anywhere.}
     gem.email = "michael@intridea.com"
-    gem.homepage = "http://github.com/mbleigh/rack-oauthable"
+    gem.homepage = "http://github.com/intridea/omni_auth"
     gem.authors = ["Michael Bleigh"]
     gem.add_dependency 'rack'
     gem.add_dependency 'rest-client'
+    gem.add_dependency 'oauth'
     gem.add_development_dependency "rspec", ">= 1.2.9"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
