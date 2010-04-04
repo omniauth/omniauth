@@ -67,6 +67,6 @@ describe 'OmniAuth::Strategies::Twitter' do
   end
   
   it 'should initialize with just consumer key and secret' do
-    OmniAuth::Strategies::Twitter.new({},'abc','def')
+    lambda{OmniAuth::Strategies::Twitter.new({},'abc','def')}.should_not raise_error
   end
 end

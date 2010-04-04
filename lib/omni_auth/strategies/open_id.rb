@@ -43,10 +43,10 @@ module OmniAuth
       end
       
       def auth_hash(response)
-        {
+        OmniAuth::Utils.deep_merge(super(), {
           'uid' => response.display_identifier,
           'user_info' => user_info(response.display_identifier, ::OpenID::SReg::Response.from_success_response(response))
-        }
+        })
       end
       
       def user_info(identifier, sreg)

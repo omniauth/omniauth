@@ -56,7 +56,7 @@ module OmniAuth
     
     def camelize(lower_case_and_underscored_word, first_letter_in_uppercase = true)
       return "OAuth" if lower_case_and_underscored_word.to_s == 'oauth'
-      return "OpenID" if lower_case_and_underscored_word.to_s == 'open_id'
+      return "OpenID" if ['open_id', 'openid'].include? lower_case_and_underscored_word.to_s
       
       if first_letter_in_uppercase
         lower_case_and_underscored_word.to_s.gsub(/\/(.?)/) { "::" + $1.upcase }.gsub(/(^|_)(.)/) { $2.upcase }
@@ -68,7 +68,7 @@ module OmniAuth
 end
 
 require 'omni_auth/strategy'
-%w(oauth http_basic linked_in gowalla twitter open_id).each do |s|
+%w(oauth http_basic linked_in gowalla twitter open_id password).each do |s|
   require "omni_auth/strategies/#{s}"
 end
 require 'omni_auth/builder'

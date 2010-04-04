@@ -16,7 +16,7 @@ module OmniAuth
       def request_phase
         @response = RestClient.get(endpoint, request_headers)
         request.POST['auth'] = auth_hash
-        @env['HTTP_METHOD'] = 'GET'
+        @env['REQUEST_METHOD'] = 'GET'
         @env['PATH_INFO'] = "#{OmniAuth.config.path_prefix}/#{name}/callback"
         
         @app.call(@env)
