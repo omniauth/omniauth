@@ -14,13 +14,18 @@ module OmniAuth
       attr_reader :endpoint, :request_headers
       
       def request_phase
-        resp = RestClient.get(endpoint, request_headers)
+        @response = RestClient.get(endpoint, request_headers)
+        request.POST['auth'] = auth_hash
+        @env['HTTP_METHOD'] = 'GET'
+        @env['PATH_INFO'] = "#{OmniAuth.config.path_prefix}/#{name}/callback"
+        
+        @app.call(@env)
       rescue RestClient::Request::Unauthorized
         fail!(:invalid_credentials)
       end
       
       def callback_phase
-        
+        [401, {}, 'Unauthorized']
       end
     end
   end

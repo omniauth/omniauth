@@ -15,21 +15,30 @@ module OmniAuth
                 :site => 'https://api.twitter.com')
       end
       
-      def user_hash
-        @user_hash ||= JSON.parse(@access_token.get('/1/account/verify_credentials.json'), :symbolize_keys => true)
-      end
-      
-      def unique_id
-        @access_token.params[:user_id]
+      def auth_hash
+        OmniAuth::Utils.deep_merge(super, {
+          'uid' => @access_token.params[:user_id],
+          'user_info' => user_info,
+          'extra' => {'user_hash' => user_hash}
+        })
       end
       
       def user_info
+        user_hash = self.user_hash
+        
         {
-          :name => user_hash[:name],
-          :image => user_hash[:profile_image_url],
-          :screen_name => user_hash[:screen_name],
-          :description => user_hash[:description]
+          'nickname' => user_hash['screen_name'],
+          'name' => user_hash['name'],
+          'location' => user_hash['location'],
+          'image' => user_hash['profile_image_url'],
+          'screen_name' => user_hash['screen_name'],
+          'description' => user_hash['description'],
+          'urls' => {'Website' => user_hash['url']}
         }
+      end
+      
+      def user_hash
+        @user_hash ||= JSON.parse(@access_token.get('/1/account/verify_credentials.json').body)
       end
     end
   end

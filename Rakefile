@@ -13,6 +13,8 @@ begin
     gem.add_dependency 'rack'
     gem.add_dependency 'rest-client'
     gem.add_dependency 'oauth'
+    gem.add_dependency 'nokogiri'
+    gem.add_dependency 'json'
     gem.add_development_dependency "rspec", ">= 1.2.9"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end

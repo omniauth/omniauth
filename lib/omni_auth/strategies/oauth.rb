@@ -22,30 +22,26 @@ module OmniAuth
         request_token = ::OAuth::RequestToken.new(consumer, session[:oauth][name.to_sym].delete(:request_token), session[:oauth][name.to_sym].delete(:request_secret))
         @access_token = request_token.get_access_token(:oauth_verifier => request.params['oauth_verifier'])
         
-        request[:auth] = {
-          :provider => name.to_sym, 
-          :uid => unique_id, 
-          :credentials => {
-            :token => @access_token.token, 
-            :secret => @access_token.secret
-          }, :extra => {
-            :access_token => @access_token
-          }
-        }
+        request['auth'] = self.auth_hash
         
         @app.call(self.env)
       rescue ::OAuth::Unauthorized
         fail!(:invalid_credentials)
       end
       
+      def auth_hash
+        OmniAuth::Utils.deep_merge(super, {
+          'credentials' => {
+            'token' => @access_token.token, 
+            'secret' => @access_token.secret
+          }, 'extra' => {
+            'access_token' => @access_token
+          }
+        })
+      end
+      
       def unique_id
         nil
-      end
-    
-      def full_host
-        uri = URI.parse(request.url)
-        uri.path = ''
-        uri.to_s
       end
     end
   end

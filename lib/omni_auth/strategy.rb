@@ -34,6 +34,19 @@ module OmniAuth
       raise NotImplementedError
     end
     
+    def auth_hash
+      {
+        'provider' => name.to_s,
+        'uid' => nil
+      }
+    end
+    
+    def full_host
+      uri = URI.parse(request.url)
+      uri.path = ''
+      uri.to_s
+    end
+    
     def session
       @env['rack.session']
     end
