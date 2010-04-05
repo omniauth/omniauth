@@ -1,0 +1,5 @@
+require 'oauth'
+require 'omniauth/core'
+require 'omniauth/strategies/oauth'
+require 'omniauth/strategies/twitter'
+require 'omniauth/strategies/linked_in'

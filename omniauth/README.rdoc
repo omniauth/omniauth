@@ -1,4 +1,4 @@
-= rack-oauthable
+= OmniAuth
 
 Description goes here.
 

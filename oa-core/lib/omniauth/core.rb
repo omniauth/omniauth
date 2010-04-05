@@ -24,10 +24,6 @@ module OmniAuth
     attr_accessor :path_prefix
   end
   
-  def self.build(stack, &block)
-    OmniAuth::Builder.new(stack, &block)
-  end
-  
   def self.config
     Configuration.instance
   end
@@ -67,8 +63,5 @@ module OmniAuth
   end
 end
 
-require 'omni_auth/strategy'
-%w(oauth http_basic linked_in gowalla twitter open_id password).each do |s|
-  require "omni_auth/strategies/#{s}"
-end
-require 'omni_auth/builder'
+require 'omniauth/builder'
+require 'omniauth/strategy'

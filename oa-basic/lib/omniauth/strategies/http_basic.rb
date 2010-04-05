@@ -25,7 +25,7 @@ module OmniAuth
       end
       
       def callback_phase
-        [401, {}, 'Unauthorized']
+        @app.call(env)
       end
     end
   end

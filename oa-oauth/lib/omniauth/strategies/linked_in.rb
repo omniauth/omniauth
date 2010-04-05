@@ -1,3 +1,5 @@
+require 'omniauth/core'
+require 'omniauth/strategies/oauth'
 require 'nokogiri'
 
 module OmniAuth
