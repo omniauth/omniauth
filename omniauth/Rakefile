@@ -1,0 +1,5 @@
+require 'rubygems'
+require 'rake'
+
+require 'mg'
+MG.new('omniauth.gemspec')

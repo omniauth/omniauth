@@ -1,6 +1,9 @@
 require 'rubygems'
 require 'rake'
 
+require 'mg'
+MG.new('oa-basic.gemspec')
+
 require 'spec/rake/spectask'
 Spec::Rake::SpecTask.new(:spec) do |spec|
   spec.libs << '../oa-core/lib' << 'lib' << 'spec'
