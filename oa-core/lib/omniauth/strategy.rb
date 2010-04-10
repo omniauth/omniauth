@@ -12,17 +12,21 @@ module OmniAuth
     end
     
     def call(env)
-      dup._call(env)
+      dup.call!(env)
     end
 
-    def _call(env)
+    def call!(env)
       @env = env
       if request.path == "#{OmniAuth.config.path_prefix}/#{name}"
         request_phase
       elsif request.path == "#{OmniAuth.config.path_prefix}/#{name}/callback"
         callback_phase
       else
-        @app.call(env)
+        if respond_to?(:other_phase)
+          other_phase
+        else
+          @app.call(env)
+        end
       end
     end
     
@@ -31,7 +35,8 @@ module OmniAuth
     end
     
     def callback_phase
-      raise NotImplementedError
+      request['auth'] = auth_hash
+      @app.call(env)
     end
     
     def auth_hash

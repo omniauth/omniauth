@@ -6,7 +6,7 @@ Gem::Specification.new do |gem|
   gem.summary = %Q{Rack middleware for standardized multi-provider authentication.}
   gem.description = %Q{OmniAuth is an authentication framework that that separates the concept of authentiation from the concept of identity, providing simple hooks for any application to have one or multiple authentication providers for a user.}
   gem.email = "michael@intridea.com"
-  gem.homepage = "http://github.com/intridea/omni_auth"
+  gem.homepage = "http://github.com/intridea/omniauth"
   gem.authors = ["Michael Bleigh"]
   
   gem.files = Dir.glob("{lib}/**/*") + %w(README.rdoc LICENSE.rdoc CHANGELOG.rdoc)
