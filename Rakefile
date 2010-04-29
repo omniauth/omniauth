@@ -4,7 +4,7 @@ require 'term/ansicolor'
 
 include Term::ANSIColor
 
-OMNIAUTH_GEMS = %w(oa-core oa-basic oa-oauth oa-openid oa-facebook)
+OMNIAUTH_GEMS = %w(oa-core oa-basic oa-oauth oa-openid)
 
 desc 'Run specs for all of the gems.'
 task :spec do

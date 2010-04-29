@@ -4,12 +4,13 @@ require 'json'
 
 module OmniAuth
   module Strategies
-    # A convenience wrapper on AuthElsewhere::OAuth to allow you
-    # to declare Twitter more simply.
+    # 
+    # Authenticate to Twitter via OAuth and retrieve basic
+    # user information.
     #
     # Usage:
     #
-    #     use AuthElsewhere::Twitter, 'consumerkey', 'consumersecret'
+    #    use OmniAuth::Strategies::Twitter, 'consumerkey', 'consumersecret'
     #
     class Twitter < OmniAuth::Strategies::OAuth
       def initialize(app, consumer_key, consumer_secret)

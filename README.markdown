@@ -26,8 +26,7 @@ In practical terms, OmniAuth is a collection of Rack middleware, each of which r
 * OAuth
   * Twitter
   * LinkedIn
-* OpenID
-* Facebook
+  * Facebook (OAuth 2.0)
 
 These middleware all follow a consistent pattern in that they initiate the **request phase** when the browser is directed (with additional information in some cases) to `/auth/provider_name`. They then all end their authentication process by calling the main Rack application at the endpoint `/auth/provider_name/callback` with request parameters pre-populated with an `auth` hash containing:
 

@@ -13,6 +13,7 @@ Gem::Specification.new do |gem|
   
   gem.add_dependency 'oa-core', "~> #{version.gsub(/\d$/,'0')}"
   gem.add_dependency 'oauth'
+  gem.add_dependency 'oauth2'
   gem.add_dependency 'nokogiri'
   gem.add_dependency 'json'
   

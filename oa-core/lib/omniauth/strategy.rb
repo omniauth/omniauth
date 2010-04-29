@@ -49,7 +49,12 @@ module OmniAuth
     def full_host
       uri = URI.parse(request.url)
       uri.path = ''
+      uri.query = nil
       uri.to_s
+    end
+    
+    def callback_url
+      full_host + "#{OmniAuth.config.path_prefix}/#{name}/callback"
     end
     
     def session
@@ -58,6 +63,12 @@ module OmniAuth
 
     def request
       @request ||= Rack::Request.new(@env)
+    end
+    
+    def redirect(uri)
+      r = Rack::Response.new("Redirecting to #{uri}...")
+      r.redirect(uri)
+      r.finish
     end
     
     def user_info; {} end

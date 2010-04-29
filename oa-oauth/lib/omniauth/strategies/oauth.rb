@@ -11,7 +11,7 @@ module OmniAuth
       attr_reader :name, :consumer
     
       def request_phase
-        request_token = consumer.get_request_token(:oauth_callback => full_host + "#{OmniAuth.config.path_prefix}/#{name}/callback")
+        request_token = consumer.get_request_token(:oauth_callback => callback_url)
         (session[:oauth]||={})[name.to_sym] = {:callback_confirmed => request_token.callback_confirmed?, :request_token => request_token.token, :request_secret => request_token.secret}
         r = Rack::Response.new
         r.redirect request_token.authorize_url

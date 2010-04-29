@@ -50,14 +50,21 @@ module OmniAuth
       target
     end
     
-    def camelize(lower_case_and_underscored_word, first_letter_in_uppercase = true)
-      return "OAuth" if lower_case_and_underscored_word.to_s == 'oauth'
-      return "OpenID" if ['open_id', 'openid'].include? lower_case_and_underscored_word.to_s
+    CAMELIZE_SPECIAL = {
+      'oauth' => 'OAuth',
+      'oauth2' => 'OAuth2',
+      'openid' => 'OpenID',
+      'open_id' => 'OpenID',
+      'github' => 'GitHub'
+    }
+    
+    def camelize(word, first_letter_in_uppercase = true)
+      return CAMELIZE_SPECIAL[word.to_s] if CAMELIZE_SPECIAL[word.to_s]
       
       if first_letter_in_uppercase
-        lower_case_and_underscored_word.to_s.gsub(/\/(.?)/) { "::" + $1.upcase }.gsub(/(^|_)(.)/) { $2.upcase }
+        word.to_s.gsub(/\/(.?)/) { "::" + $1.upcase }.gsub(/(^|_)(.)/) { $2.upcase }
       else
-        lower_case_and_underscored_word.first + camelize(lower_case_and_underscored_word)[1..-1]
+        word.first + camelize(word)[1..-1]
       end
     end
   end

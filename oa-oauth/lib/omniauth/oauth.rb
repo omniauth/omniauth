@@ -1,5 +1,10 @@
 require 'oauth'
+require 'oauth2'
+
 require 'omniauth/core'
 require 'omniauth/strategies/oauth'
 require 'omniauth/strategies/twitter'
 require 'omniauth/strategies/linked_in'
+require 'omniauth/strategies/oauth2'
+require 'omniauth/strategies/facebook'
+require 'omniauth/strategies/github'
