@@ -1,4 +1,4 @@
-version = File.open(File.dirname(__FILE__) + '/VERSION', 'r').read.strip
+version = File.open(File.dirname(__FILE__) + '/../VERSION', 'r').read.strip
 
 Gem::Specification.new do |gem|
   gem.name = "omniauth"
@@ -11,10 +11,9 @@ Gem::Specification.new do |gem|
   
   gem.files = Dir.glob("{lib}/**/*") + %w(README.rdoc LICENSE.rdoc CHANGELOG.rdoc)
   
-  gem.add_dependency 'oa-core', "~> #{version.gsub(/\d$/,'0')}"
-  gem.add_dependency 'oa-oauth', "~> #{version.gsub(/\d$/,'0')}"
-  gem.add_dependency 'oa-basic', "~> #{version.gsub(/\d$/,'0')}"
-  gem.add_dependency 'oa-openid', "~> #{version.gsub(/\d$/,'0')}"
+  %w(oa-core oa-oauth oa-basic oa-openid).each do |subgem|
+    gem.add_dependency subgem, version
+  end
   
   gem.add_development_dependency "rspec", ">= 1.2.9"
   gem.add_development_dependency "webmock"

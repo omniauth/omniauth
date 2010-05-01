@@ -1,6 +1,8 @@
+version = File.open(File.dirname(__FILE__) + '/../VERSION', 'r').read.strip
+
 Gem::Specification.new do |gem|
   gem.name = "oa-core"
-  gem.version = File.open(File.dirname(__FILE__) + '/VERSION', 'r').read.strip
+  gem.version = version
   gem.summary = %Q{HTTP Basic strategies for OmniAuth.}
   gem.description = %Q{HTTP Basic strategies for OmniAuth.}
   gem.email = "michael@intridea.com"
