@@ -45,7 +45,10 @@ module OmniAuth
       end
       
       def request_phase
-        return fail!(:missing_information) unless identifier
+        identifier ? start : get_identifier
+      end
+      
+      def start
         openid = Rack::OpenID.new(dummy_app, @store)
         response = openid.call(env)
         case env['rack.openid.response']
@@ -56,11 +59,23 @@ module OmniAuth
         end
       end
       
+      def get_identifier
+        response = app.call(env)
+        if response[0] < 400
+          response
+        else
+          OmniAuth::Form.build('OpenID Authentication') do
+            text_field('OpenID Identifier', 'identifier')
+          end.to_response
+        end
+      end
+      
       def callback_phase
+        env['REQUEST_METHOD'] = 'GET'
+        
         openid = Rack::OpenID.new(lambda{|env| [200,{},[]]}, @store)
         openid.call(env)
         resp = env.delete('rack.openid.response')
-        
         case resp.status
         when :failure
           fail!(:invalid_credentials)

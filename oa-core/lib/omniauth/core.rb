@@ -1,16 +1,27 @@
 require 'rack'
 require 'singleton'
 
+require 'omniauth/form'
+
 module OmniAuth
   class Configuration
     include Singleton
     
-    def initialize
-      @path_prefix = '/auth'
-      @on_failure = Proc.new do |env, message_key|
+    @@defaults = {
+      :path_prefix => '/auth',
+      :on_failure => Proc.new do |env, message_key|
         new_path = "#{OmniAuth.config.path_prefix}/failure?message=#{message_key}"
         [302, {'Location' => "#{new_path}"}, []]
-      end
+      end,
+      :form_css => Form::DEFAULT_CSS
+    }
+    
+    def self.defaults
+      @@defaults
+    end
+    
+    def initialize
+      @@defaults.each_pair{|k,v| self.send("#{k}=",v)}
     end
     
     def on_failure(&block)
@@ -21,7 +32,8 @@ module OmniAuth
       end
     end
     
-    attr_accessor :path_prefix
+    attr_writer :on_failure
+    attr_accessor :path_prefix, :form_css
   end
   
   def self.config
@@ -33,7 +45,19 @@ module OmniAuth
   end
   
   module Utils
-    extend self
+    CAMELIZE_SPECIAL = {
+      'oauth' => 'OAuth',
+      'oauth2' => 'OAuth2',
+      'openid' => 'OpenID',
+      'open_id' => 'OpenID',
+      'github' => 'GitHub'
+    }
+    
+    module_function
+    
+    def form_css
+      "<style type='text/css'>#{OmniAuth.config.form_css}</style>"
+    end
     
     def deep_merge(hash, other_hash)
       target = hash.dup
@@ -49,14 +73,6 @@ module OmniAuth
     
       target
     end
-    
-    CAMELIZE_SPECIAL = {
-      'oauth' => 'OAuth',
-      'oauth2' => 'OAuth2',
-      'openid' => 'OpenID',
-      'open_id' => 'OpenID',
-      'github' => 'GitHub'
-    }
     
     def camelize(word, first_letter_in_uppercase = true)
       return CAMELIZE_SPECIAL[word.to_s] if CAMELIZE_SPECIAL[word.to_s]

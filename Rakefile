@@ -4,7 +4,7 @@ require 'term/ansicolor'
 
 include Term::ANSIColor
 
-OMNIAUTH_GEMS = %w(oa-core oa-basic oa-oauth oa-openid)
+OMNIAUTH_GEMS = %w(omniauth oa-core oa-oauth oa-openid)
 
 desc 'Run specs for all of the gems.'
 task :spec do
@@ -14,6 +14,13 @@ task :spec do
       system('rake spec')
     end
   end
+end
+
+desc 'Push all gems to Gemcutter'
+task :gemcutter do
+  OMNIAUTH_GEMS.each_with_index do |dir, i|
+    Dir.chdir(dir) { system('rake gemcutter') }
+  end  
 end
 
 task :default => :spec
