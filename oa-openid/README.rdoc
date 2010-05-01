@@ -1,0 +1,39 @@
+= OmniAuth::OpenID
+
+OpenID strategies for the OmniAuth gem.
+
+== Installation
+
+To get just OpenID functionality:
+
+    gem install oa-openid
+    
+For the full auth suite:
+
+    gem install omniauth
+    
+== Stand-Alone Example
+
+Use the strategy as a middleware in your application:
+
+    require 'omniauth/openid'
+    require 'openid/store/filesystem'
+    
+    use OmniAuth::Strategies::OpenID, OpenID::Store::Filesystem.new('/tmp')
+    
+Then simply direct users to '/auth/open_id' to prompt them for their OpenID identifier. You may also pre-set the identifier by passing an <tt>identifier</tt> parameter to the URL (Example: <tt>/auth/open_id?identifier=google.com</tt>).
+
+== OmniAuth Builder
+
+If OpenID is one of several authentication strategies, use the OmniAuth Builder:
+
+    require 'omniauth-openid'
+    require 'omniauth-basic'
+    require 'openid/store/filesystem'
+    
+    use OmniAuth::Builder do
+      provider :open_id, OpenID::Store::Filesystem.new('/tmp')
+      provider :campfire
+    end
+    
+
