@@ -2,7 +2,7 @@ version = File.open(File.dirname(__FILE__) + '/../VERSION', 'r').read.strip
 
 Gem::Specification.new do |gem|
   gem.name = "oa-openid"
-  gem.version = File.open(File.dirname(__FILE__) + '/VERSION', 'r').read.strip
+  gem.version = version
   gem.summary = %Q{OpenID strategies for OmniAuth.}
   gem.description = %Q{OpenID strategies for OmniAuth.}
   gem.email = "michael@intridea.com"

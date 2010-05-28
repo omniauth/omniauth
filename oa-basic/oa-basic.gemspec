@@ -12,7 +12,7 @@ Gem::Specification.new do |gem|
   gem.files = Dir.glob("{lib}/**/*") + %w(README.rdoc LICENSE.rdoc CHANGELOG.rdoc)
   
   gem.add_dependency 'oa-core', version
-  gem.add_dependency 'restclient'
+  gem.add_dependency 'rest-client'
   
   gem.add_development_dependency "rspec", ">= 1.2.9"
   gem.add_development_dependency "webmock"
