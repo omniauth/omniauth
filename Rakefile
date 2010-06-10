@@ -4,7 +4,7 @@ require 'term/ansicolor'
 
 include Term::ANSIColor
 
-OMNIAUTH_GEMS = %w(oa-core oa-oauth oa-openid omniauth)
+OMNIAUTH_GEMS = %w(oa-basic oa-core oa-oauth oa-openid omniauth)
 
 def each_gem(action, &block)
   OMNIAUTH_GEMS.each_with_index do |dir, i|
