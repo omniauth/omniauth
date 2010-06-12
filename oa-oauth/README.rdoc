@@ -4,7 +4,7 @@ OAuth 1.0 and 2.0 strategies for the OmniAuth gem.
 
 == Installation
 
-To get just OpenID functionality:
+To get just OAuth functionality:
 
     gem install oa-oauth
     
