@@ -10,10 +10,10 @@ describe OmniAuth::Builder do
     end
     
     it 'should also just accept a class' do
-      class ExampleClass; end
+      class ::ExampleClass; end
       
       lambda{ OmniAuth::Builder.new(nil) do
-        provider ExampleClass
+        provider ::ExampleClass
       end }.should_not raise_error
     end
   end
