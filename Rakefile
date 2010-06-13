@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'bundler'
-Bundler.setup
+Bundler.setup(:development)
 require 'rake'
 require 'term/ansicolor'
 

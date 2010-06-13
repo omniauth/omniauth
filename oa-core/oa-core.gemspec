@@ -11,10 +11,5 @@ Gem::Specification.new do |gem|
   
   gem.files = Dir.glob("{lib}/**/*") + %w(LICENSE.rdoc CHANGELOG.rdoc)
   
-  gem.add_dependency 'rack'
-  
-  gem.add_development_dependency "rspec", ">= 1.2.9"
-  gem.add_development_dependency "webmock"
-  gem.add_development_dependency "rack-test"
-  gem.add_development_dependency "mg"
+  gem.add_bundler_dependencies(:default, :oa_core, :development)
 end

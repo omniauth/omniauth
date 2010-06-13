@@ -20,16 +20,11 @@ group :oa_openid do
   gem 'rack-openid',      '~> 1.0.3', :require => 'rack/openid'
 end
 
-group :development, :test do
-  gem 'rake'
-end
-
 group :development do
+  gem 'rake'
   gem 'mg',             '~> 0.0.8'
   gem 'term-ansicolor',             :require => 'term/ansicolor'
-end
-
-group :test do
   gem 'rspec',          '~> 1.3.0', :require => 'spec'
   gem 'webmock',        '~> 1.2.2'
+  gem 'rack-test',      '~> 0.5.4', :require => 'rack/test'
 end
