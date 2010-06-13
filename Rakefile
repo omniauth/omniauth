@@ -6,7 +6,7 @@ require 'term/ansicolor'
 
 include Term::ANSIColor
 
-OMNIAUTH_GEMS = %w(oa-core oa-oauth oa-openid omniauth)
+OMNIAUTH_GEMS = %w(oa-basic oa-core oa-oauth oa-openid omniauth)
 
 def each_gem(action, &block)
   OMNIAUTH_GEMS.each_with_index do |dir, i|
@@ -62,10 +62,33 @@ end
 
 desc 'Build all gems'
 task :build do
-  each_gem('is releasing to Gemcutter...') do
-    system('rake gemcutter')
+  each_gem('is building gems') do
+    system('rake gem')
   end  
 end
+
+desc 'Install all gems'
+task :install do
+  each_gem('is installing gems') do
+    system('rake gem:install')
+  end
+end
+
+desc "Clean pkg and other stuff"
+task :clean do
+  OMNIAUTH_GEMS.each do |dir|
+    Dir.chdir(dir) do
+      %w(tmp pkg coverage dist).each { |dir| FileUtils.rm_rf dir }
+    end
+  end
+  Dir["**/*.gem"].each { |gem| FileUtils.rm_rf gem }
+end
+
+desc "Uninstall gems"
+task :uninstall do
+  sh "sudo gem uninstall #{OMNIAUTH_GEMS.join(" ")} -a"
+end
+
 
 desc 'Display the current version.'
 task :version do
