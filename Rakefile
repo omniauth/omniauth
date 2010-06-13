@@ -62,14 +62,14 @@ end
 
 desc 'Build all gems'
 task :build do
-  each_gem('is building gems') do
+  each_gem('is building gems...') do
     system('rake gem')
   end  
 end
 
 desc 'Install all gems'
 task :install do
-  each_gem('is installing gems') do
+  each_gem('is installing gems...') do
     system('rake gem:install')
   end
 end
