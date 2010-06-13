@@ -1,4 +1,6 @@
 require 'rubygems'
+require 'bundler'
+Bundler.setup
 require 'rake'
 require 'term/ansicolor'
 

@@ -8,10 +8,10 @@ describe OmniAuth::Builder do
         provider :my_strategy
       end
     end
-    
+
     it 'should also just accept a class' do
       class ::ExampleClass; end
-      
+
       lambda{ OmniAuth::Builder.new(nil) do
         provider ::ExampleClass
       end }.should_not raise_error
