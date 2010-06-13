@@ -51,6 +51,15 @@ task :spec do
   end
 end
 
+namespace :dependencies do
+  desc 'Install all dependencies via Bundler'
+  task :install do
+    each_gem('is installing dependencies...') do
+      system('bundle install')
+    end
+  end
+end
+
 namespace :gems do
 
   desc 'Build all gems'
