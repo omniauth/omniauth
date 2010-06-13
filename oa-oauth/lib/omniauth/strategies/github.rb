@@ -1,5 +1,5 @@
-require 'json'
 require 'omniauth/oauth'
+require 'multi_json'
 
 module OmniAuth
   module Strategies
@@ -12,7 +12,7 @@ module OmniAuth
       end
       
       def user_data
-        @data ||= JSON.parse(@access_token.get('/api/v2/json/user/show'))['user']
+        @data ||= MultiJson.decode(@access_token.get('/api/v2/json/user/show'))['user']
       end
       
       def user_info

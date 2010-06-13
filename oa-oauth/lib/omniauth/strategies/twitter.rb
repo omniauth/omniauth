@@ -1,5 +1,5 @@
-require 'json'
 require 'omniauth/oauth'
+require 'multi_json'
 
 module OmniAuth
   module Strategies
@@ -40,7 +40,7 @@ module OmniAuth
       end
       
       def user_hash
-        @user_hash ||= JSON.parse(@access_token.get('/1/account/verify_credentials.json').body)
+        @user_hash ||= MultiJson.decode(@access_token.get('/1/account/verify_credentials.json').body)
       end
     end
   end

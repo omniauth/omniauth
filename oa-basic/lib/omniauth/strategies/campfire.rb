@@ -1,10 +1,10 @@
 require 'omniauth/basic'
+require 'multi_json'
 
 module OmniAuth
   module Strategies
     class Campfire < HttpBasic
       def initialize(app)
-        require 'json'
         super(app, :campfire, nil)
       end
       
@@ -17,7 +17,7 @@ module OmniAuth
       end
       
       def auth_hash
-        user_hash = JSON.parse(@response.body)['user']
+        user_hash = MultiJson.decode(@response.body)['user']
         OmniAuth::Utils.deep_merge(super, {
           'uid' => user_hash['id'],
           'user_info' => user_info(user_hash),
