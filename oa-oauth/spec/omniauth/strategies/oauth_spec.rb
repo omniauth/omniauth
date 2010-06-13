@@ -15,7 +15,7 @@ def app
       provider :oauth, :twitter, 'abc', 'def', :site => 'https://api.twitter.com'
       provider :oauth, :linked_in, 'abc', 'def', :site => 'https://api.linkedin.com'
     end
-    run lambda { |env| [200, {'Content-Type' => 'text/plain'}, Rack::Request.new(env).params.key?('auth').to_s] }
+    run lambda { |env| [200, {'Content-Type' => 'text/plain'}, [Rack::Request.new(env).params.key?('auth').to_s]] }
   }.to_app
 end
 
