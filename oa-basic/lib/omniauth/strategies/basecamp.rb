@@ -1,10 +1,10 @@
 require 'omniauth/basic'
+require 'nokogiri'
 
 module OmniAuth
   module Strategies
     class Basecamp < HttpBasic
       def initialize(app)
-        require 'json'
         super(app, :basecamp, nil)
       end
       
