@@ -87,7 +87,7 @@ desc "Clean pkg and other stuff"
 task :clean do
   OMNIAUTH_GEMS.each do |dir|
     Dir.chdir(dir) do
-      %w(tmp pkg coverage dist).each { |dir| FileUtils.rm_rf dir }
+      %w(tmp pkg coverage dist).each { |d| FileUtils.rm_rf d }
     end
   end
   Dir["**/*.gem"].each { |gem| FileUtils.rm_rf gem }
