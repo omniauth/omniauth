@@ -1,9 +1,16 @@
 require 'rack'
 require 'singleton'
-
 require 'omniauth/form'
 
 module OmniAuth
+  
+  autoload :Builder,  'omniauth/builder'
+  autoload :Strategy, 'omniauth/strategy'
+  
+  module Strategies
+    autoload :Password, 'omniauth/strategies/password'
+  end
+  
   class Configuration
     include Singleton
     
@@ -85,6 +92,3 @@ module OmniAuth
     end
   end
 end
-
-require 'omniauth/builder'
-require 'omniauth/strategy'

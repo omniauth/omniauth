@@ -2,6 +2,8 @@
 # so this won't actually work at all it
 # turns out.
 
+# require 'omniauth/basic'
+# 
 # module OmniAuth
 #   module Strategies
 #     class Gowalla < OmniAuth::Strategies::HttpBasic #:nodoc:

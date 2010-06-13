@@ -1,2 +1,8 @@
 require 'omniauth/core'
-require 'omniauth/strategies/open_id'
+
+module OmniAuth
+  module Strategies
+    autoload :OpenID, 'omniauth/strategies/open_id'
+    autoload :Google, 'omniauth/strategies/google'
+  end
+end

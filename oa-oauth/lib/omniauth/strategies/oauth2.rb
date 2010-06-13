@@ -1,5 +1,7 @@
 require 'cgi'
 require 'uri'
+require 'oauth2'
+require 'omniauth/oauth'
 
 module OmniAuth
   module Strategies

@@ -1,5 +1,10 @@
 require 'omniauth/core'
-require 'omniauth/strategies/http_basic'
 
-require 'omniauth/strategies/campfire'
-require 'omniauth/strategies/basecamp'
+module OmniAuth
+  module Strategies
+    autoload :HttpBasic,  'omniauth/strategies/http_basic'
+    autoload :Basecamp,   'omniauth/strategies/basecamp'
+    autoload :Campfire,   'omniauth/strategies/campfire'
+    # autoload :Gowalla,    'omniauth/strategies/gowalla'
+  end
+end

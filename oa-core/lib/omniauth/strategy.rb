@@ -1,5 +1,9 @@
+require 'omniauth/core'
+
 module OmniAuth
+  
   module Strategy
+    
     def self.included(base)
       base.class_eval do
         attr_reader :app, :name, :env

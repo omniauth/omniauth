@@ -1,5 +1,7 @@
 require 'omniauth/core'
 
-%w(password oauth basic openid).each do |s|
-  require "omniauth/#{s}"
+module OmniAuth
+  autoload :OAuth,    'omniauth/oauth'
+  autoload :Basic,    'omniauth/basic'
+  autoload :OpenID,   'omniauth/openid'
 end

@@ -1,3 +1,5 @@
+require 'omniauth/basic'
+
 module OmniAuth
   module Strategies
     class Campfire < HttpBasic

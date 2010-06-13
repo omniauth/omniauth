@@ -1,3 +1,5 @@
+require 'omniauth/core'
+
 module OmniAuth
   class Builder < Rack::Builder
     def initialize(app, &block)

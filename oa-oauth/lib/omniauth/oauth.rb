@@ -1,10 +1,13 @@
-require 'oauth'
-require 'oauth2'
-
 require 'omniauth/core'
-require 'omniauth/strategies/oauth'
-require 'omniauth/strategies/twitter'
-require 'omniauth/strategies/linked_in'
-require 'omniauth/strategies/oauth2'
-require 'omniauth/strategies/facebook'
-require 'omniauth/strategies/github'
+
+module OmniAuth
+  module Strategies
+    autoload :OAuth,    'omniauth/strategies/oauth'
+    autoload :OAuth2,   'omniauth/strategies/oauth2'
+    
+    autoload :Twitter,  'omniauth/strategies/twitter'
+    autoload :LinkedIn, 'omniauth/strategies/linked_in'
+    autoload :Facebook, 'omniauth/strategies/facebook'
+    autoload :GitHub,   'omniauth/strategies/github'
+  end
+end

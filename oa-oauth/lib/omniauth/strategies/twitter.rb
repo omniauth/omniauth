@@ -1,6 +1,5 @@
-require 'omniauth/core'
-require 'omniauth/strategies/oauth'
 require 'json'
+require 'omniauth/oauth'
 
 module OmniAuth
   module Strategies

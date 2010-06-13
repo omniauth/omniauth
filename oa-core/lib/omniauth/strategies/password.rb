@@ -1,4 +1,6 @@
 require 'digest/sha1'
+require 'omniauth/core'
+
 module OmniAuth
   module Strategies
     class Password

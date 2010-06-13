@@ -1,10 +1,12 @@
+require 'oauth'
+require 'omniauth/oauth'
+
 module OmniAuth
   module Strategies
     class OAuth
       include OmniAuth::Strategy
       
       def initialize(app, name, consumer_key, consumer_secret, options = {})
-        require 'oauth'
         super
         @consumer = ::OAuth::Consumer.new(consumer_key, consumer_secret, options)
       end

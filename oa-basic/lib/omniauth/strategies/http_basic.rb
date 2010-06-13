@@ -1,4 +1,5 @@
 require 'restclient'
+require 'omniauth/basic'
 
 module OmniAuth
   module Strategies
@@ -53,4 +54,3 @@ module OmniAuth
     end
   end
 end
-    
