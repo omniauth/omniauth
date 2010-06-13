@@ -1,6 +1,4 @@
 require 'rubygems'
-require 'bundler'
-Bundler.setup(:development)
 require 'rake'
 require 'term/ansicolor'
 
@@ -59,14 +57,14 @@ namespace :gems do
   task :build do
     each_gem('is building gems...') do
       system('rake gem')
-    end  
+    end
   end
   
   desc 'Push all gems to Gemcutter'
   task :release do
     each_gem('is releasing to Gemcutter...') do
       system('rake gemcutter')
-    end  
+    end
   end
 
   desc 'Install all gems'

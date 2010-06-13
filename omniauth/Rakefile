@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'bundler'
-Bundler.setup(:default, :development, :test)
+Bundler.setup
 require 'rake'
 
 require 'mg'

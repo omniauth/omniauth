@@ -14,6 +14,6 @@ Gem::Specification.new do |gem|
   %w(oa-core oa-oauth oa-basic oa-openid).each do |subgem|
     gem.add_dependency subgem, version
   end
-  
-  gem.add_bundler_dependencies(:development)
+
+    eval File.read(File.join(File.dirname(__FILE__), '../development_dependencies.rb'))
 end

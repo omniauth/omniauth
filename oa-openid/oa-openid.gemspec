@@ -11,6 +11,8 @@ Gem::Specification.new do |gem|
   
   gem.files = Dir.glob("{lib}/**/*") + %w(README.rdoc LICENSE.rdoc CHANGELOG.rdoc)
   
-  gem.add_dependency 'oa-core', version
-  gem.add_bundler_dependencies(:default, :oa_openid, :development)
+  gem.add_dependency 'oa-core',     version
+  gem.add_dependency 'rack-openid', '~> 1.0.3'
+  
+  eval File.read(File.join(File.dirname(__FILE__), '../development_dependencies.rb'))
 end
