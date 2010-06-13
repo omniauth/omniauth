@@ -32,9 +32,9 @@ module OmniAuth
           'location' => person.xpath('location/name').text,
           'image' => person.xpath('picture-url').text,
           'description' => person.xpath('headline').text,
-          'urls' => person.css('member-url-resources member-url').inject({}) do |hash,element|
-            hash[element.xpath('name').text] = element.xpath('url').text
-            hash
+          'urls' => person.css('member-url-resources member-url').inject({}) do |h,element|
+            h[element.xpath('name').text] = element.xpath('url').text
+            h
           end
         }
         
