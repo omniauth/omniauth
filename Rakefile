@@ -53,25 +53,34 @@ task :spec do
   end
 end
 
-desc 'Push all gems to Gemcutter'
-task :gemcutter do
-  each_gem('is releasing to Gemcutter...') do
-    system('rake gemcutter')
-  end  
-end
+namespace :gems do
 
-desc 'Build all gems'
-task :build do
-  each_gem('is building gems...') do
-    system('rake gem')
-  end  
-end
-
-desc 'Install all gems'
-task :install do
-  each_gem('is installing gems...') do
-    system('rake gem:install')
+  desc 'Build all gems'
+  task :build do
+    each_gem('is building gems...') do
+      system('rake gem')
+    end  
   end
+  
+  desc 'Push all gems to Gemcutter'
+  task :release do
+    each_gem('is releasing to Gemcutter...') do
+      system('rake gemcutter')
+    end  
+  end
+
+  desc 'Install all gems'
+  task :install do
+    each_gem('is installing gems...') do
+      system('rake gem:install')
+    end
+  end
+  
+  desc "Uninstall gems"
+  task :uninstall do
+    sh "sudo gem uninstall #{OMNIAUTH_GEMS.join(" ")} -a"
+  end
+  
 end
 
 desc "Clean pkg and other stuff"
@@ -83,12 +92,6 @@ task :clean do
   end
   Dir["**/*.gem"].each { |gem| FileUtils.rm_rf gem }
 end
-
-desc "Uninstall gems"
-task :uninstall do
-  sh "sudo gem uninstall #{OMNIAUTH_GEMS.join(" ")} -a"
-end
-
 
 desc 'Display the current version.'
 task :version do
