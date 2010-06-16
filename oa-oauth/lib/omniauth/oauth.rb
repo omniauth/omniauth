@@ -9,5 +9,7 @@ module OmniAuth
     autoload :LinkedIn, 'omniauth/strategies/linked_in'
     autoload :Facebook, 'omniauth/strategies/facebook'
     autoload :GitHub,   'omniauth/strategies/github'
+    autoload :Basecamp, 'omniauth/strategies/basecamp'
+    autoload :Campfire, 'omniauth/strategies/campfire'
   end
 end
