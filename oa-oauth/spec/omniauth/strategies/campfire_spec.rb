@@ -37,7 +37,7 @@ describe OmniAuth::Strategies::Campfire do
       # the middleware doesn't actually care that it's a POST,
       # but it makes the "redirect_to" calculation down below easier
       # since the params are passed in the body rather than the URL.
-      post '/auth/campfire', {OmniAuth::Strategies::Campfire::CAMPFIRE_SUBDOMAIN_PARAMETER => 'flugle'}
+      post '/auth/campfire', {OmniAuth::Strategies::ThirtySevenSignals::SUBDOMAIN_PARAMETER => 'flugle'}
     end
     
     it 'should redirect to the proper authorize_url' do
