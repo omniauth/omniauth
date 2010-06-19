@@ -8,7 +8,6 @@ module OmniAuth
       
       def initialize(app, secret = 'changethisappsecret', options = {})
         @options = options
-        @options[:identifier_key] ||= 'nickname'
         @secret = secret
         super(app, :password)
       end
@@ -18,7 +17,6 @@ module OmniAuth
       def request_phase
         return fail!(:missing_information) unless request[:identifier] && request[:password]
         return fail!(:password_mismatch) if request[:password_confirmation] && request[:password_confirmation] != '' && request[:password] != request[:password_confirmation]
-        
         env['REQUEST_METHOD'] = 'GET'
         env['PATH_INFO'] = request.path + '/callback'
         request['auth'] = auth_hash(encrypt(request[:identifier], request[:password]))
