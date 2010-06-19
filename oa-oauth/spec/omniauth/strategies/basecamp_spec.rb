@@ -2,16 +2,10 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe OmniAuth::Strategies::Basecamp, :type => :strategy do
   
-  def app
-    Rack::Builder.new {
-      use OmniAuth::Test::PhonySession
-      use OmniAuth::Strategies::Basecamp, 'abc', 'def'
-      run lambda { |env| [200, {'Content-Type' => 'text/plain'}, [Rack::Request.new(env).params.key?('auth').to_s]] }
-    }.to_app
-  end
-
-  def session
-    last_request.env['rack.session']
+  include OmniAuth::Test::StrategyTestCase
+  
+  def strategy
+    [OmniAuth::Strategies::Basecamp, 'abc', 'def']
   end
   
   describe '/auth/basecamp without a subdomain' do

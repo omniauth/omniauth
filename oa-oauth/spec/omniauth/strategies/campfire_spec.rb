@@ -1,17 +1,11 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe OmniAuth::Strategies::Campfire, :type => :strategy do
-  
-  def app
-    Rack::Builder.new {
-      use OmniAuth::Test::PhonySession
-      use OmniAuth::Strategies::Campfire, 'abc', 'def'
-      run lambda { |env| [200, {'Content-Type' => 'text/plain'}, [Rack::Request.new(env).params.key?('auth').to_s]] }
-    }.to_app
-  end
 
-  def session
-    last_request.env['rack.session']
+  include OmniAuth::Test::StrategyTestCase
+  
+  def strategy
+    [OmniAuth::Strategies::Campfire, 'abc', 'def']
   end
   
   describe '/auth/campfire without a subdomain' do
