@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
-describe OmniAuth::Strategies::Basecamp do
+describe OmniAuth::Strategies::Basecamp, :type => :strategy do
   
   def app
     Rack::Builder.new {
@@ -60,14 +60,10 @@ describe OmniAuth::Strategies::Basecamp do
          to_return(:body => File.read(File.join(File.dirname(__FILE__), '..', '..', 'fixtures', 'basecamp_200.xml')))
       get '/auth/basecamp/callback?code=plums', {}, {'rack.session' => {:oauth => {:basecamp => {:subdomain => 'flugle'}}}}
     end
-  
-    it 'should set the provider to "basecamp"' do
-      last_request['auth']['provider'].should == 'basecamp'
-    end
-  
-    it 'should set the UID to "1827370"' do
-      last_request['auth']['uid'].should == '1827370'
-    end
+    
+    sets_an_auth_hash
+    sets_provider_to 'basecamp'
+    sets_uid_to '1827370'
   
     it 'should exchange the request token for an access token' do
       token = last_request['auth']['extra']['access_token']

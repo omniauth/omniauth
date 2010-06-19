@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
-describe OmniAuth::Strategies::Campfire do
+describe OmniAuth::Strategies::Campfire, :type => :strategy do
   
   def app
     Rack::Builder.new {
@@ -60,14 +60,10 @@ describe OmniAuth::Strategies::Campfire do
          to_return(:body => File.read(File.join(File.dirname(__FILE__), '..', '..', 'fixtures', 'campfire_200.json')))
       get '/auth/campfire/callback?code=plums', {}, {'rack.session' => {:oauth => {:campfire => {:subdomain => 'flugle'}}}}
     end
-  
-    it 'should set the provider to "campfire"' do
-      last_request['auth']['provider'].should == 'campfire'
-    end
-  
-    it 'should set the UID to "92718"' do
-      last_request['auth']['uid'].should == '92718'
-    end
+    
+    sets_an_auth_hash
+    sets_provider_to 'campfire'
+    sets_uid_to '92718'
   
     it 'should exchange the request token for an access token' do
       token = last_request['auth']['extra']['access_token']
