@@ -14,15 +14,17 @@ module OmniAuth
         @client = ::OAuth2::Client.new(client_id, client_secret, options)
       end
       
-      attr_accessor :client_id, :client_secret, :options
+      protected
+      
+      attr_accessor :client
       
       def request_phase(options = {})
-        redirect @client.web_server.authorize_url({:redirect_uri => callback_url}.merge(options))
+        redirect client.web_server.authorize_url({:redirect_uri => callback_url}.merge(options))
       end
       
       def callback_phase
         verifier = request.params['code']
-        @access_token = @client.web_server.get_access_token(verifier, :redirect_uri => callback_url)
+        @access_token = client.web_server.get_access_token(verifier, :redirect_uri => callback_url)
         super
       rescue ::OAuth2::HTTPError => e
         fail!(:invalid_credentials)
