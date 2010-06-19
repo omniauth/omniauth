@@ -68,7 +68,7 @@ module OmniAuth
           },
           'extra' => {
             'access_token' => @access_token
-          },
+          }
         })
       end
       

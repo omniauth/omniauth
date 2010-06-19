@@ -20,12 +20,28 @@ module OmniAuth
       
       protected
       
+      def client
+        ::OAuth2::Client.new(@client.id, @client.secret, :site => campfire_url)
+      end
+      
       def request_phase
-        if env['REQUEST_METHOD'] == 'GET'
-          ask_for_campfire_subdomain
+        if subdomain
+          super
         else
-          super(options.merge(:site => campfire_url))
+          ask_for_campfire_subdomain
         end
+      end
+      
+      def callback_phase
+        if subdomain
+          super
+        else
+          ask_for_campfire_subdomain
+        end
+      end
+      
+      def subdomain
+        ((request.session[:oauth] ||= {})[:campfire] ||= {})[:subdomain] ||= request.params[CAMPFIRE_SUBDOMAIN_PARAMETER]
       end
       
       def user_data
@@ -33,23 +49,25 @@ module OmniAuth
       end
       
       def ask_for_campfire_subdomain
-        OmniAuth::Form.build(title) do
-          text_field 'Campfire Subdomain', CAMPFIRE_SUBDOMAIN_PARAMETER
+        OmniAuth::Form.build('Campfire Subdomain Required') do
+          text_field 'Campfire Subdomain', ::OmniAuth::Strategies::Campfire::CAMPFIRE_SUBDOMAIN_PARAMETER
         end.to_response
       end
       
       def campfire_url
-        subdomain = request.params[CAMPFIRE_SUBDOMAIN_PARAMETER]
-        'http://#{subdomain}.campfirenow.com'
+        "https://#{subdomain}.campfirenow.com"
       end
       
       def auth_hash
-        user_hash = MultiJson.decode(@response.body)['user']
+        data = self.user_data
         OmniAuth::Utils.deep_merge(super, {
-          'uid' => user_hash['id'],
-          'user_info' => user_info(user_hash),
+          'uid' => data['user']['id'].to_s,
+          'user_info' => user_info(data),
           'credentials' => {
-            'token' => user_hash['api_auth_token']
+            'token' => data['api_auth_token']
+          },
+          'extra' => {
+            'access_token' => @access_token
           }
         })
       end
