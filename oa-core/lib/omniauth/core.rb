@@ -6,6 +6,7 @@ module OmniAuth
   
   autoload :Builder,  'omniauth/builder'
   autoload :Strategy, 'omniauth/strategy'
+  autoload :Test,     'omniauth/test'
   
   module Strategies
     autoload :Password, 'omniauth/strategies/password'
