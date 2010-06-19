@@ -6,6 +6,7 @@ require 'spec/autorun'
 require 'webmock/rspec'
 require 'rack/test'
 require 'omniauth/core'
+require 'omniauth/test'
 require 'omniauth/oauth'
 
 Spec::Runner.configure do |config|
