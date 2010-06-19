@@ -8,6 +8,18 @@ describe OmniAuth do
       end
     end
     
+    before do
+      @old_path_prefix = OmniAuth.config.path_prefix
+      @old_on_failure  = OmniAuth.config.on_failure
+    end
+    
+    after do
+      OmniAuth.configure do |config|
+        config.path_prefix = @old_path_prefix
+        config.on_failure  = @old_on_failure
+      end
+    end
+    
     it 'should be able to set the path' do
       OmniAuth.configure do |config|
         config.path_prefix = '/awesome'
