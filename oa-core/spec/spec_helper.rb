@@ -1,10 +1,13 @@
 require 'rubygems'
+require 'bundler'
+Bundler.setup
 require 'spec'
 require 'spec/autorun'
 require 'rack/test'
-require 'webmock/rspec'
-
-include Rack::Test::Methods
-include WebMock
-
 require 'omniauth/core'
+require 'omniauth/test'
+
+Spec::Runner.configure do |config|
+  config.include Rack::Test::Methods
+  config.extend  OmniAuth::Test::StrategyMacros, :type => :strategy
+end
