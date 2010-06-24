@@ -10,7 +10,5 @@ module OmniAuth
     autoload :Facebook,           'omniauth/strategies/facebook'
     autoload :GitHub,             'omniauth/strategies/github'
     autoload :ThirtySevenSignals, 'omniauth/strategies/thirty_seven_signals'
-    autoload :Basecamp,           'omniauth/strategies/basecamp'
-    autoload :Campfire,           'omniauth/strategies/campfire'
   end
 end
