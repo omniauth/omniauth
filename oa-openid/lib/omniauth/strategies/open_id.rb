@@ -66,7 +66,8 @@ module OmniAuth
           response
         else
           OmniAuth::Form.build('OpenID Authentication') do
-            text_field('OpenID Identifier', 'identifier')
+            label_field('OpenID Identifier', 'identifier')
+            input_field('url', 'identifier')
           end.to_response
         end
       end
