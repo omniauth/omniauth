@@ -1,9 +1,10 @@
 source "http://rubygems.org"
 
-gem 'oa-core',    :path => File.expand_path('../../oa-core/', __FILE__)
-gem 'oa-basic',   :path => File.expand_path('../../oa-basic/', __FILE__)
-gem 'oa-oauth',   :path => File.expand_path('../../oa-oauth/', __FILE__)
-gem 'oa-openid',  :path => File.expand_path('../../oa-openid/', __FILE__)
+gem 'oa-core',      :path => File.expand_path('../../oa-core/', __FILE__)
+gem 'oa-basic',     :path => File.expand_path('../../oa-basic/', __FILE__)
+gem 'oa-corporate', :path => File.expand_path('../../oa-openid/', __FILE__)
+gem 'oa-oauth',     :path => File.expand_path('../../oa-oauth/', __FILE__)
+gem 'oa-openid',    :path => File.expand_path('../../oa-openid/', __FILE__)
 
 # Will automatically pull in this gem and all its
 # dependencies specified in the gemspec
