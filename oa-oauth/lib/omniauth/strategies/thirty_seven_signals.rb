@@ -1,56 +1,38 @@
 require 'omniauth/oauth'
+require 'multi_json'
 
 module OmniAuth
   module Strategies
-    
-    # Abstract Strategy for 37Signals OAuth2 providers.
     class ThirtySevenSignals < OAuth2
-      
-      SUBDOMAIN_PARAMETER = 'subdomain'
-      
-      def initialize(app, name, client_id, client_secret, options = {})
-        super(app, name, client_id, client_secret, options)
+      def initialize(app, app_id, app_secret, options = {})
+        options[:site] = 'https://launchpad.37signals.com/'
+        options[:authorize_path] = '/authorization/new'
+        options[:access_token_path] = '/authorization/token'
+        super(app, :thirty_seven_signals, app_id, app_secret, options)
       end
       
-      protected
-      
-      def client
-        ::OAuth2::Client.new(@client.id, @client.secret, :site => site_url)
+      def user_data
+        @data ||= MultiJson.decode(@access_token.get('/authorization.json'))
       end
       
-      def request_phase
-        if subdomain
-          super
-        else
-          ask_for_subdomain
-        end
+      def user_info
+        {
+          'email' => user_data['identity']['email_address'],
+          'first_name' => user_data['identity']['first_name'],
+          'last_name' => user_data['identity']['last_name'],
+          'name' => [user_data['identity']['first_name'], user_data['identity']['last_name']].join(' ').strip
+        }
       end
       
-      def callback_phase
-        if subdomain
-          super
-        else
-          ask_for_subdomain
-        end
+      def auth_hash
+        OmniAuth::Utils.deep_merge(super, {
+          'uid' => user_data['identity']['id'],
+          'user_info' => user_info,
+          'extra' => {
+            'accounts' => user_data['accounts']
+          }
+        })
       end
-      
-      def ask_for_subdomain
-        n = self.name.to_s.capitalize
-        OmniAuth::Form.build("#{n} Subdomain Required") do
-          text_field "#{n} Subdomain", ::OmniAuth::Strategies::ThirtySevenSignals::SUBDOMAIN_PARAMETER
-        end.to_response
-      end
-      
-      def subdomain
-        ((request.session[:oauth] ||= {})[name.to_sym] ||= {})[:subdomain] ||= request.params[SUBDOMAIN_PARAMETER]
-      end
-      
-      def site_url
-        raise NotImplementedError.new("Subclasses must define #{site_url}")
-      end
-      
     end
-    
   end
-  
 end
