@@ -1,7 +1,7 @@
 source "http://rubygems.org"
 
 gem 'oa-core',  :path => File.expand_path('../../oa-core/', __FILE__)
-
+gem 'ruby-openid-apps-discovery'
 # Will automatically pull in this gem and all its
 # dependencies specified in the gemspec
 gem 'oa-openid', :path => File.expand_path("..", __FILE__)

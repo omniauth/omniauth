@@ -1,4 +1,5 @@
 require 'rack/openid'
+require 'gapps_openid'
 require 'omniauth/openid'
 
 module OmniAuth
