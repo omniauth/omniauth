@@ -7,6 +7,10 @@ module OmniAuth
     class OpenID
       include OmniAuth::Strategy
       
+      # Should be 'openid_url'
+      # @see http://github.com/intridea/omniauth/issues/issue/13
+      IDENTIFIER_URL_PARAMETER = 'identifier'
+      
       AX = {
         :email => 'http://axschema.org/contact/email',
         :name => 'http://axschema.org/namePerson',
@@ -43,7 +47,7 @@ module OmniAuth
       end
       
       def identifier
-        request[:identifier]
+        request[IDENTIFIER_URL_PARAMETER]
       end
       
       def request_phase
@@ -55,21 +59,17 @@ module OmniAuth
         response = openid.call(env)
         case env['rack.openid.response']
         when Rack::OpenID::MissingResponse, Rack::OpenID::TimeoutResponse
-          fail :connection_failed
+          fail!(:connection_failed)
         else
           response
         end
       end
       
       def get_identifier
-        response = app.call(env)
-        if response[0] < 400
-          response
-        else
-          OmniAuth::Form.build('OpenID Authentication') do
-            text_field('OpenID Identifier', 'identifier')
-          end.to_response
-        end
+        OmniAuth::Form.build('OpenID Authentication') do
+          label_field('OpenID Identifier', IDENTIFIER_URL_PARAMETER)
+          input_field('url', IDENTIFIER_URL_PARAMETER)
+        end.to_response
       end
       
       def callback_phase
@@ -78,12 +78,11 @@ module OmniAuth
         openid = Rack::OpenID.new(lambda{|env| [200,{},[]]}, @store)
         openid.call(env)
         resp = env.delete('rack.openid.response')
-        case resp.status
-        when :failure
-          fail!(:invalid_credentials)
-        when :success
+        if resp && resp.status == :success
           request['auth'] = auth_hash(resp)
           @app.call(env)
+        else
+          fail!(:invalid_credentials)
         end
       end
       

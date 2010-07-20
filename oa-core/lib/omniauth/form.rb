@@ -60,6 +60,12 @@ module OmniAuth
       width: 280px;
     }
     
+    input#identifier, input#openid_url {
+      background: url(http://openid.net/login-bg.gif) no-repeat;
+      background-position: 0 50%;
+      padding-left: 18px;
+    }
+    
     button {
       font-size: 22px;
       padding: 4px 8px;
