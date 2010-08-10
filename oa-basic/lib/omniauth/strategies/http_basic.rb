@@ -1,4 +1,4 @@
-require 'restclient'
+require 'rest-client'
 require 'omniauth/basic'
 
 module OmniAuth
