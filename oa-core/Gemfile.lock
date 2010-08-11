@@ -1,0 +1,34 @@
+PATH
+  remote: .
+  specs:
+    oa-core (0.0.3)
+      rack (~> 1.1)
+
+GEM
+  remote: http://rubygems.org/
+  specs:
+    addressable (2.2.0)
+    crack (0.1.8)
+    json (1.4.3)
+    mg (0.0.8)
+      rake
+    rack (1.2.1)
+    rack-test (0.5.4)
+      rack (>= 1.0)
+    rake (0.8.7)
+    rspec (1.3.0)
+    webmock (1.3.3)
+      addressable (>= 2.1.1)
+      crack (>= 0.1.7)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  json (~> 1.4.3)
+  mg (~> 0.0.8)
+  oa-core!
+  rack-test (~> 0.5.4)
+  rake
+  rspec (~> 1.3.0)
+  webmock (~> 1.3.3)

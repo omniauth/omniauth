@@ -1,4 +1,4 @@
-require 'omniauth/corporate'
+require 'omniauth/enterprise'
 
 module OmniAuth
   module Strategies

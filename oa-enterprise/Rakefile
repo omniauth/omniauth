@@ -4,7 +4,7 @@ Bundler.setup
 require 'rake'
 
 require 'mg'
-MG.new('oa-corporate.gemspec')
+MG.new('oa-enterprise.gemspec')
 
 require 'spec/rake/spectask'
 Spec::Rake::SpecTask.new(:spec) do |spec|

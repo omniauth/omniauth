@@ -7,7 +7,7 @@ require 'webmock/rspec'
 require 'rack/test'
 require 'omniauth/core'
 require 'omniauth/test'
-require 'omniauth/corporate'
+require 'omniauth/enterprise'
 
 Spec::Runner.configure do |config|
   config.include WebMock

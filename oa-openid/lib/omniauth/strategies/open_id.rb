@@ -7,6 +7,8 @@ module OmniAuth
     class OpenID
       include OmniAuth::Strategy
       
+      attr_accessor :options
+      
       # Should be 'openid_url'
       # @see http://github.com/intridea/omniauth/issues/issue/13
       IDENTIFIER_URL_PARAMETER = 'identifier'
@@ -26,8 +28,8 @@ module OmniAuth
       def initialize(app, store = nil, options = {})
         super(app, options[:name] || :open_id)
         @options = options
-        @options[:required] ||= [AX[:email], AX[:name], 'email', 'fullname']
-        @options[:optional] ||= [AX[:first_name], AX[:last_name], AX[:nickname], AX[:city], AX[:state], AX[:website], AX[:image], 'postcode', 'nickname']
+        @options[:required] ||= [AX[:email], AX[:first_name], AZ[:last_name], 'email', 'fullname']
+        @options[:optional] ||= [AX[:nickname], AX[:city], AX[:state], AX[:website], AX[:image], 'postcode', 'nickname']
         @store = store
       end
       

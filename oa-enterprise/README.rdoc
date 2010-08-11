@@ -1,12 +1,12 @@
-= OmniAuth::Corporate
+= OmniAuth::Enterprise
 
 OmniAuth strategies for use in your intranet.
 
 == Installation
 
-To get just corporate functionality:
+To get just enterprise functionality:
 
-    gem install oa-corporate
+    gem install oa-enterprise
     
 For the full auth suite:
 
@@ -16,7 +16,7 @@ For the full auth suite:
 
 Use the strategy as a middleware in your application:
 
-    require 'omniauth/corporate'
+    require 'omniauth/enterprise'
     
     use OmniAuth::Strategies::CAS, :server => 'http://cas.mycompany.com/cas'
     
@@ -28,7 +28,7 @@ See OmniAuth::Strategies::CAS::Configuration for more configuration options.
 
 If CAS is one of several authentication strategies, use the OmniAuth Builder:
 
-    require 'omniauth/corporate'
+    require 'omniauth/enterprise'
     require 'omniauth/oauth'  # for Campfire
     require 'openid/store/filesystem'
     

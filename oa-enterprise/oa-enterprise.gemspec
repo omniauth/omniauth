@@ -3,10 +3,10 @@ require 'rubygems'
 version = File.open(File.dirname(__FILE__) + '/../VERSION', 'r').read.strip
 
 Gem::Specification.new do |gem|
-  gem.name = "oa-corporate"
+  gem.name = "oa-enterprise"
   gem.version = version
-  gem.summary = %Q{Corporate strategies for OmniAuth.}
-  gem.description = %Q{Corporate strategies for OmniAuth.}
+  gem.summary = %Q{Enterprise strategies for OmniAuth.}
+  gem.description = %Q{Enterprise strategies for OmniAuth.}
   gem.email = "james.a.rosen@gmail.com"
   gem.homepage = "http://github.com/intridea/omniauth"
   gem.authors = ["James A. Rosen"]
