@@ -8,3 +8,5 @@ include Rack::Test::Methods
 include WebMock
 
 require 'omniauth/basic'
+
+WebMock.disable_net_connect!
