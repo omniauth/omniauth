@@ -34,7 +34,7 @@ describe OmniAuth::Strategies::CAS, :type => :strategy do
   
   describe 'GET /auth/cas/callback with an invalid ticket' do
     before do
-      stub_request(:get, /^https:\/\/cas.example.org(:443)?\/serviceValidate\?ticket=9391d/).
+      stub_request(:get, /^https:\/\/cas.example.org(:443)?\/serviceValidate\?([^&]+&)?ticket=9391d/).
          to_return(:body => File.read(File.join(File.dirname(__FILE__), '..', '..', 'fixtures', 'cas_failure.xml')))
       get '/auth/cas/callback?ticket=9391d'
     end
@@ -46,7 +46,7 @@ describe OmniAuth::Strategies::CAS, :type => :strategy do
   
   describe 'GET /auth/cas/callback with a valid ticket' do
     before do
-      stub_request(:get, /^https:\/\/cas.example.org(:443)?\/serviceValidate\?ticket=593af/).
+      stub_request(:get, /^https:\/\/cas.example.org(:443)?\/serviceValidate\?([^&]+&)?ticket=593af/).
          to_return(:body => File.read(File.join(File.dirname(__FILE__), '..', '..', 'fixtures', 'cas_success.xml')))
       get '/auth/cas/callback?ticket=593af'
     end
