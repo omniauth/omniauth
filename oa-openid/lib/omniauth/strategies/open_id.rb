@@ -28,7 +28,7 @@ module OmniAuth
       def initialize(app, store = nil, options = {})
         super(app, options[:name] || :open_id)
         @options = options
-        @options[:required] ||= [AX[:email], AX[:first_name], AZ[:last_name], 'email', 'fullname']
+        @options[:required] ||= [AX[:email], AX[:first_name], AX[:last_name], 'email', 'fullname']
         @options[:optional] ||= [AX[:nickname], AX[:city], AX[:state], AX[:website], AX[:image], 'postcode', 'nickname']
         @store = store
       end
