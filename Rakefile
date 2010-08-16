@@ -72,7 +72,7 @@ namespace :gems do
   desc 'Push all gems to Gemcutter'
   task :release do
     each_gem('is releasing to Gemcutter...') do
-      system('rake gemcutter')
+      system('rake gem:publish')
     end
   end
 
