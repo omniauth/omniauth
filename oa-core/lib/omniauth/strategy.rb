@@ -39,6 +39,7 @@ module OmniAuth
     end
     
     def callback_phase
+      env['rack.auth'] = auth_hash
       request['auth'] = auth_hash
       @app.call(env)
     end
