@@ -11,5 +11,6 @@ module OmniAuth
     autoload :GitHub,             'omniauth/strategies/github'
     autoload :ThirtySevenSignals, 'omniauth/strategies/thirty_seven_signals'
     autoload :Yahoo,              'omniauth/strategies/yahoo'
+    autoload :Google,             'omniauth/strategies/google'
   end
 end
