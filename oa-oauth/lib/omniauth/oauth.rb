@@ -12,5 +12,6 @@ module OmniAuth
     autoload :ThirtySevenSignals, 'omniauth/strategies/thirty_seven_signals'
     autoload :Yahoo,              'omniauth/strategies/yahoo'
     autoload :Google,             'omniauth/strategies/google'
+    autoload :TypePad,            'omniauth/strategies/type_pad'
   end
 end
