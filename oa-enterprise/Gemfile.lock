@@ -1,15 +1,15 @@
 PATH
   remote: /Users/mbleigh/gems/omniauth/oa-core
   specs:
-    oa-core (0.0.5)
+    oa-core (0.1.0)
       rack (~> 1.1)
 
 PATH
   remote: .
   specs:
-    oa-enterprise (0.0.5)
+    oa-enterprise (0.1.0)
       nokogiri (~> 1.4.2)
-      oa-core (= 0.0.5)
+      oa-core (= 0.1.0)
 
 GEM
   remote: http://rubygems.org/
