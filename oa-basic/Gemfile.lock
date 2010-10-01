@@ -1,16 +1,16 @@
 PATH
   remote: .
   specs:
-    oa-basic (0.0.4)
+    oa-basic (0.0.5)
       multi_json (~> 0.0.2)
       nokogiri (~> 1.4.2)
-      oa-core (= 0.0.4)
+      oa-core (= 0.0.5)
       rest-client (~> 1.6.0)
 
 PATH
   remote: /Users/mbleigh/gems/omniauth/oa-core
   specs:
-    oa-core (0.0.4)
+    oa-core (0.0.5)
       rack (~> 1.1)
 
 GEM

@@ -9,9 +9,7 @@ module OmniAuth
       
       attr_accessor :options
       
-      # Should be 'openid_url'
-      # @see http://github.com/intridea/omniauth/issues/issue/13
-      IDENTIFIER_URL_PARAMETER = 'identifier'
+      IDENTIFIER_URL_PARAMETER = 'openid_url'
       
       AX = {
         :email => 'http://axschema.org/contact/email',
