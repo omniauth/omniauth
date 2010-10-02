@@ -9,12 +9,14 @@ Gem::Specification.new do |gem|
   gem.description = %Q{Enterprise strategies for OmniAuth.}
   gem.email = "james.a.rosen@gmail.com"
   gem.homepage = "http://github.com/intridea/omniauth"
-  gem.authors = ["James A. Rosen"]
+  gem.authors = ["James A. Rosen", "Ping Yu"]
   
   gem.files = Dir.glob("{lib}/**/*") + %w(README.rdoc LICENSE.rdoc CHANGELOG.rdoc)
   
   gem.add_dependency  'oa-core',    version
   gem.add_dependency  'nokogiri',   '~> 1.4.2'
+  gem.add_dependency  'net-ldap',   '~> 0.1.1'
+  gem.add_dependency  'rubyntlm',   '~> 0.1.1'
   
   eval File.read(File.join(File.dirname(__FILE__), '../development_dependencies.rb'))
 end

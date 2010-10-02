@@ -23,7 +23,8 @@ coverage
 rdoc
 pkg
 tmp
-
+oa-live
 ## PROJECT::SPECIFIC
 *.gem
 .bundle
+.project
