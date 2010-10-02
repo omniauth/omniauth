@@ -14,6 +14,7 @@ For the full auth suite:
     
 == Stand-Alone Example
 
+CAS strategy
 Use the strategy as a middleware in your application:
 
     require 'omniauth/enterprise'
@@ -22,7 +23,9 @@ Use the strategy as a middleware in your application:
     
 Then simply direct users to '/auth/cas' to have them sign in via your company's CAS server.
 See OmniAuth::Strategies::CAS::Configuration for more configuration options.
-
+    
+Then simply direct users to '/auth/cas' to have them sign in via your company's CAS server.
+See OmniAuth::Strategies::CAS::Configuration for more configuration options.
 
 == OmniAuth Builder
 
@@ -36,3 +39,17 @@ If CAS is one of several authentication strategies, use the OmniAuth Builder:
       provider :cas, :server => 'http://cas.mycompany.com/cas'
       provider :campfire
     end
+
+LDAP strategy
+
+    use OmniAuth::Strategies::LDAP, :host => '10.101.10.1', :port => 389, :method => :plain, :try_sasl => true, :sasl_mechanisms => "GSS-SPNEGO"
+		or
+    use OmniAuth::Builder do
+      provider :LDAP, :host => '10.101.10.1', :port => 389, :method => :plain, :try_sasl => true, :sasl_mechanisms => "GSS-SPNEGO"
+    end
+		    
+    LDAP server's :host and :port are required, :method is also a required field, and allowed values are :plain, :ssl, and :tls.
+    :try_sasl and :sasl_mechanisms are optional, use it to initial SASL connection to server. mechanism supported are DIGEST-MD5 and GSS-SPNEGO.
+
+Then simply direct users to '/auth/ldap' to have them authenticated via your company's LDAP server.
+    
