@@ -33,14 +33,17 @@ module OmniAuth
       def perform
       	begin
       		@adaptor.bind(:bind_dn => request.POST['username'], :password => request.POST['password'])
-      	rescue
+      		@user_info = @adaptor.search(:filter => Net::LDAP::Filter.eq(@adaptor.uid, request.POST['username']),:limit => 1)
+      		puts @user_info
+	        request.POST['auth'] = auth_hash
+	        @env['REQUEST_METHOD'] = 'GET'
+	        @env['PATH_INFO'] = "#{OmniAuth.config.path_prefix}/#{name}/callback"
+	
+	        @app.call(@env)
+      	rescue Exception => e
+      		puts e.message
       		fail!(:invalid_credentials)
       	end
-        request.POST['auth'] = auth_hash
-        @env['REQUEST_METHOD'] = 'GET'
-        @env['PATH_INFO'] = "#{OmniAuth.config.path_prefix}/#{name}/callback"
-
-        @app.call(@env)
       end      
 
       def callback_phase
@@ -49,7 +52,8 @@ module OmniAuth
       
       def auth_hash
         OmniAuth::Utils.deep_merge(super, {
-          'uid' => request.POST['username']
+          'uid' => @user_info["dn"],
+          'user_info' => @user_info
         })
       end
       

@@ -1,3 +1,4 @@
+#this code boughts pieces from activeldap and net-ldap
 require 'rack'
 require 'net/ldap'
 require 'net/ntlm'
@@ -11,15 +12,15 @@ module OmniAuth
 				class AuthenticationError < StandardError; end
 				class ConnectionError < StandardError; end
 	      VALID_ADAPTER_CONFIGURATION_KEYS = [:host, :port, :method, :bind_dn, :password,
-	                                          :try_sasl, :sasl_mechanisms, :sasl_quiet]
-	      MUST_HAVE_KEYS = [:host, :port, :method]
+	                                          :try_sasl, :sasl_mechanisms, :uid, :base]
+	      MUST_HAVE_KEYS = [:host, :port, :method, :uid, :base]
 	      METHOD = {
 	        :ssl => :simple_tls,
 	        :tls => :start_tls,
 	        :plain => nil
 	      }     
-	      attr_reader :bind_dn                                     
-	
+	      attr_accessor :bind_dn, :password                                     
+				attr_reader :connection, :uid, :base
 	      def initialize(configuration={})
 	        @connection = nil
 	        @disconnected = false
@@ -75,7 +76,6 @@ module OmniAuth
 		        # Rough bind loop:
 		        # Attempt 1: SASL if available
 		        # Attempt 2: SIMPLE with credentials if password block
-		        # Attempt 3: SIMPLE ANONYMOUS if 1 and 2 fail (or pwblock returns '')
 		        if try_sasl and sasl_bind(bind_dn, options)
 		        	puts "bind with sasl"
 		        elsif simple_bind(bind_dn, options)
@@ -110,8 +110,27 @@ module OmniAuth
 	      def bound?
 	        connecting? and @bound
 	      end
+				
+				def search(options={}, &block)
+	        base = options[:base]
+	        filter = options[:filter]
+	        limit = options[:limit]
 	
-	
+	        args = {
+	        	:base => @base,
+	          :filter => filter,
+	          :size => limit
+	        }
+					puts args.inspect
+          attributes = {}
+          execute(:search, args) do |entry|
+            puts entry.inspect
+            entry.attribute_names.each do |name|
+              attributes[name] = entry[name]
+            end
+        	end
+        	attributes
+      end
 	      private
 	      def execute(method, *args, &block)
 	        result = @connection.send(method, *args, &block)
@@ -137,11 +156,6 @@ module OmniAuth
 	      def prepare_connection(options)
 	      end
 	
-	
-	      def need_credential_sasl_mechanism?(mechanism)
-	        not %(GSSAPI EXTERNAL ANONYMOUS).include?(mechanism)
-	      end
-	
 	      def ensure_method(method)
 	        method ||= "plain"
 	        normalized_method = method.to_s.downcase.to_sym
@@ -153,36 +167,30 @@ module OmniAuth
 	      end
 	      
 	      def sasl_bind(bind_dn, options={})
-	        if options.has_key?(:sasl_quiet)
-	          sasl_quiet = options[:sasl_quiet]
-	        else
-	          sasl_quiet = @sasl_quiet
-	        end
-	
 	        sasl_mechanisms = options[:sasl_mechanisms] || @sasl_mechanisms
-          begin
 	          sasl_mechanisms.each do |mechanism|
-		          normalized_mechanism = mechanism.downcase.gsub(/-/, '_')
-		          sasl_bind_setup = "sasl_bind_setup_#{normalized_mechanism}"
-		          next unless respond_to?(sasl_bind_setup, true)
-		          initial_credential, challenge_response =
-		            send(sasl_bind_setup, bind_dn, options)
-		          args = {
-		            :method => :sasl,
-		            :initial_credential => initial_credential,
-		            :mechanism => mechanism,
-		            :challenge_response => challenge_response,
-		          }
-		          info = {
-		            :name => "bind: SASL", :dn => bind_dn, :mechanism => mechanism,
-		          }
-		          puts info.inspect
-		          return true if execute(:bind, args)
+		          begin
+			          normalized_mechanism = mechanism.downcase.gsub(/-/, '_')
+			          sasl_bind_setup = "sasl_bind_setup_#{normalized_mechanism}"
+			          next unless respond_to?(sasl_bind_setup, true)
+			          initial_credential, challenge_response =
+			            send(sasl_bind_setup, bind_dn, options)
+			          args = {
+			            :method => :sasl,
+			            :initial_credential => initial_credential,
+			            :mechanism => mechanism,
+			            :challenge_response => challenge_response,
+			          }
+			          info = {
+			            :name => "bind: SASL", :dn => bind_dn, :mechanism => mechanism,
+			          }
+			          puts info.inspect
+			          execute(:bind, args)
+			          return true
+			        rescue Exception => e
+			        	puts e.message
+			        end
 	          end
-	        rescue Exception => e
-	        	puts e.message
-	          false
-	        end
 	        false
 			  end
 
@@ -228,7 +236,7 @@ module OmniAuth
             :maxbuf => "65536",
             "digest-uri" => uri.inspect,
           }
-          a1 = "#{bind_dn}:#{realm}:#{@password}"
+          a1 = "#{bind_dn}:#{realm}:#{options[:password]||@password}"
           a1 = "#{Digest::MD5.digest(a1)}:#{nonce}:#{cnonce}"
           ha1 = Digest::MD5.hexdigest(a1)
           a2 = "AUTHENTICATE:#{uri}"
@@ -244,7 +252,7 @@ module OmniAuth
       end
       def sasl_bind_setup_gss_spnego(bind_dn, options)
         puts options.inspect
-        user,psw = [bind_dn, @password]
+        user,psw = [bind_dn, options[:password]||@password]
         raise LdapError.new( "invalid binding information" ) unless (user && psw)
 
         nego = proc {|challenge|
@@ -261,7 +269,7 @@ module OmniAuth
 	          args = {
 	            :method => :simple,
 	            :username => bind_dn,
-	            :password => @password,
+	            :password => options[:password]||@password,
 	          }
 	          execute(:bind, args)
 	          true
