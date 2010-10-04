@@ -34,7 +34,6 @@ module OmniAuth
       	begin
       		@adaptor.bind(:bind_dn => request.POST['username'], :password => request.POST['password'])
       		@user_info = @adaptor.search(:filter => Net::LDAP::Filter.eq(@adaptor.uid, request.POST['username']),:limit => 1)
-      		puts @user_info
 	        request.POST['auth'] = auth_hash
 	        @env['REQUEST_METHOD'] = 'GET'
 	        @env['PATH_INFO'] = "#{OmniAuth.config.path_prefix}/#{name}/callback"

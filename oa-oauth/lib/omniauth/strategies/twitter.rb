@@ -33,7 +33,6 @@ module OmniAuth
           'name' => user_hash['name'],
           'location' => user_hash['location'],
           'image' => user_hash['profile_image_url'],
-          'screen_name' => user_hash['screen_name'],
           'description' => user_hash['description'],
           'urls' => {'Website' => user_hash['url']}
         }
