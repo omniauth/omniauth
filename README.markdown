@@ -24,6 +24,8 @@ OmniAuth currently supports the following external providers:
   * GitHub
 * OpenID
 * Google Apps (via OpenID)
+* CAS (Central Authentication Service)
+* LDAP
 
 ## Usage
 

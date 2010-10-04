@@ -7,7 +7,6 @@ module OmniAuth
       include OmniAuth::Strategy
       
       autoload :Adaptor, 'omniauth/strategies/ldap/adaptor'
-      puts Dir.entries(".")
       @@config   =  {'first_name' => 'givenName', 'last_name' => 'sn', 'email' => ['mail', "email", 'userPrincipalName'],
 										'phone' => ['telephoneNumber', 'homePhone', 'facsimileTelephoneNumber'],
 										'mobile_number' => ['mobile', 'mobileTelephoneNumber'],
@@ -45,7 +44,6 @@ module OmniAuth
       		@adaptor.bind(:bind_dn => request.POST['username'], :password => request.POST['password'])
       		@ldap_user_info = @adaptor.search(:filter => Net::LDAP::Filter.eq(@adaptor.uid, request.POST['username']),:limit => 1)
       		@user_info = self.class.map_user(@@config, @ldap_user_info)
-      		puts @user_info
 	        request.POST['auth'] = auth_hash
 	        @env['REQUEST_METHOD'] = 'GET'
 	        @env['PATH_INFO'] = "#{OmniAuth.config.path_prefix}/#{name}/callback"
@@ -82,8 +80,7 @@ module OmniAuth
 			        	pattern = key1.dup
 			        	value1.each_with_index do |v,i|
 			          	part = '';
-			          	v.each {|v1| puts v1.inspect; (part = object[v1.downcase.to_sym].to_s; break;) if object[v1.downcase.to_sym]}
-			          	puts part
+			          	v.each {|v1| (part = object[v1.downcase.to_sym].to_s; break;) if object[v1.downcase.to_sym]}
 			        		pattern.gsub!("%#{i}",part||'') 
 			        	end	
 			        	user[key] = pattern

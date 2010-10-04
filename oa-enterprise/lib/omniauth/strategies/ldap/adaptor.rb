@@ -124,7 +124,6 @@ module OmniAuth
 					puts args.inspect
           attributes = {}
           execute(:search, args) do |entry|
-            puts entry.inspect
             entry.attribute_names.each do |name|
               attributes[name] = entry[name]
             end
