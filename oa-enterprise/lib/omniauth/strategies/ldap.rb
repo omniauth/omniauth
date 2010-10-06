@@ -7,7 +7,7 @@ module OmniAuth
       include OmniAuth::Strategy
       
       autoload :Adaptor, 'omniauth/strategies/ldap/adaptor'
-      @@config   =  {'first_name' => 'givenName', 'last_name' => 'sn', 'email' => ['mail', "email", 'userPrincipalName'],
+      @@config   =  {'name' => 'cn', 'first_name' => 'givenName', 'last_name' => 'sn', 'email' => ['mail', "email", 'userPrincipalName'],
 										'phone' => ['telephoneNumber', 'homePhone', 'facsimileTelephoneNumber'],
 										'mobile_number' => ['mobile', 'mobileTelephoneNumber'],
 										'nickname' => ['uid', 'userid', 'sAMAccountName'],
