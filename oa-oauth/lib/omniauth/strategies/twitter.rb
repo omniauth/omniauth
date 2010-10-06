@@ -41,6 +41,19 @@ module OmniAuth
       def user_hash
         @user_hash ||= MultiJson.decode(@access_token.get('/1/account/verify_credentials.json').body)
       end
+
+      def request_phase
+        request_token = consumer.get_request_token(:oauth_callback => callback_url)
+        (session[:oauth]||={})[name.to_sym] = {:callback_confirmed => request_token.callback_confirmed?, :request_token => request_token.token, :request_secret => request_token.secret}
+        r = Rack::Response.new
+
+        # For "Sign in with Twitter" request tokens should be sent
+        # to oauth/autenticate instead of oauth/authorize.
+        # See http://dev.twitter.com/pages/sign_in_with_twitter
+        r.redirect request_token.authorize_url.gsub('authorize', 'authenticate')
+        r.finish
+      end
+
     end
   end
 end
