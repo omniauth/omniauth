@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    oa-core (0.1.1)
+    oa-core (0.1.2)
       rack (~> 1.1)
 
 GEM

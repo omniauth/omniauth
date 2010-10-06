@@ -1,54 +1,54 @@
 PATH
   remote: /Users/mbleigh/gems/omniauth/oa-basic
   specs:
-    oa-basic (0.1.1)
+    oa-basic (0.1.2)
       multi_json (~> 0.0.2)
       nokogiri (~> 1.4.2)
-      oa-core (= 0.1.1)
+      oa-core (= 0.1.2)
       rest-client (~> 1.6.0)
 
 PATH
   remote: /Users/mbleigh/gems/omniauth/oa-core
   specs:
-    oa-core (0.1.1)
+    oa-core (0.1.2)
       rack (~> 1.1)
 
 PATH
   remote: /Users/mbleigh/gems/omniauth/oa-enterprise
   specs:
-    oa-enterprise (0.1.1)
+    oa-enterprise (0.1.2)
       net-ldap (~> 0.1.1)
       nokogiri (~> 1.4.2)
-      oa-core (= 0.1.1)
+      oa-core (= 0.1.2)
       rubyntlm (~> 0.1.1)
 
 PATH
   remote: /Users/mbleigh/gems/omniauth/oa-oauth
   specs:
-    oa-oauth (0.1.1)
+    oa-oauth (0.1.2)
       multi_json (~> 0.0.2)
       nokogiri (~> 1.4.2)
-      oa-core (= 0.1.1)
+      oa-core (= 0.1.2)
       oauth (~> 0.4.0)
       oauth2 (~> 0.0.10)
 
 PATH
   remote: /Users/mbleigh/gems/omniauth/oa-openid
   specs:
-    oa-openid (0.1.1)
-      oa-core (= 0.1.1)
+    oa-openid (0.1.2)
+      oa-core (= 0.1.2)
       rack-openid (~> 1.1.1)
       ruby-openid-apps-discovery
 
 PATH
   remote: .
   specs:
-    omniauth (0.1.1)
-      oa-basic (= 0.1.1)
-      oa-core (= 0.1.1)
-      oa-enterprise (= 0.1.1)
-      oa-oauth (= 0.1.1)
-      oa-openid (= 0.1.1)
+    omniauth (0.1.2)
+      oa-basic (= 0.1.2)
+      oa-core (= 0.1.2)
+      oa-enterprise (= 0.1.2)
+      oa-oauth (= 0.1.2)
+      oa-openid (= 0.1.2)
 
 GEM
   remote: http://rubygems.org/
