@@ -79,8 +79,7 @@ module OmniAuth
         openid.call(env)
         resp = env.delete('rack.openid.response')
         if resp && resp.status == :success
-          request['auth'] = auth_hash(resp)
-          @app.call(env)
+          super
         else
           fail!(:invalid_credentials)
         end

@@ -8,7 +8,7 @@ describe "OmniAuth::Strategies::OAuth" do
       use OmniAuth::Builder do
         provider :oauth, 'example.org', 'abc', 'def', :site => 'https://api.example.org'
       end
-      run lambda { |env| [200, {'Content-Type' => 'text/plain'}, [Rack::Request.new(env).params.key?('auth').to_s]] }
+      run lambda { |env| [200, {'Content-Type' => 'text/plain'}, [env.key?('rack.auth').to_s]] }
     }.to_app
   end
 
@@ -43,8 +43,8 @@ describe "OmniAuth::Strategies::OAuth" do
     end
     
     it 'should exchange the request token for an access token' do
-      last_request['auth']['provider'].should == 'example.org'
-      last_request['auth']['extra']['access_token'].should be_kind_of(OAuth::AccessToken)
+      last_request.env['rack.auth']['provider'].should == 'example.org'
+      last_request.env['rack.auth']['extra']['access_token'].should be_kind_of(OAuth::AccessToken)
     end
     
     it 'should call through to the master app' do

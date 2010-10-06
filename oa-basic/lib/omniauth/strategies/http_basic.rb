@@ -35,7 +35,7 @@ module OmniAuth
       
       def perform
         @response = perform_authentication(endpoint)
-        request.POST['auth'] = auth_hash
+        @env['rack.auth'] = auth_hash
         @env['REQUEST_METHOD'] = 'GET'
         @env['PATH_INFO'] = "#{OmniAuth.config.path_prefix}/#{name}/callback"
 

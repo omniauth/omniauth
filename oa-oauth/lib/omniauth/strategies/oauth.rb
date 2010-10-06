@@ -23,10 +23,7 @@ module OmniAuth
       def callback_phase
         request_token = ::OAuth::RequestToken.new(consumer, session[:oauth][name.to_sym].delete(:request_token), session[:oauth][name.to_sym].delete(:request_secret))
         @access_token = request_token.get_access_token(:oauth_verifier => request.params['oauth_verifier'])
-        
-        request['auth'] = self.auth_hash
-        
-        @app.call(self.env)
+        super
       rescue ::OAuth::Unauthorized
         fail!(:invalid_credentials)
       end
