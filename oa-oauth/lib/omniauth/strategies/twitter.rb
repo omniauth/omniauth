@@ -12,9 +12,9 @@ module OmniAuth
     #    use OmniAuth::Strategies::Twitter, 'consumerkey', 'consumersecret'
     #
     class Twitter < OmniAuth::Strategies::OAuth
-      def initialize(app, consumer_key, consumer_secret)
-        super(app, :twitter, consumer_key, consumer_secret,
-                :site => 'https://api.twitter.com')
+      def initialize(app, consumer_key, consumer_secret, options = {})
+        options[:site] = 'https://api.twitter.com'
+        super(app, :twitter, consumer_key, consumer_secret, options)
       end
       
       def auth_hash

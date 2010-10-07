@@ -1,9 +1,9 @@
 module OmniAuth
   module Strategies
     class Foursquare < OAuth
-      def initialize(app, consumer_key, consumer_secret)
-        super(app, :foursquare, consumer_key, consumer_secret,
-                :site => 'http://foursquare.com')
+      def initialize(app, consumer_key, consumer_secret, options = {})
+        options[:site] = 'http://foursquare.com'
+        super(app, :foursquare, consumer_key, consumer_secret, options)
       end
       
       def auth_hash
