@@ -42,7 +42,7 @@ module OmniAuth
           'image' => user_data["image_url"],
           'phone' => nil,
           'urls' => {
-            'Gowalla' => "http://www.gowalla.com/#{user_data['url']}",
+            'Gowalla' => "http://www.gowalla.com#{user_data['url']}",
             'Website' => user_data["website"]
           }
         }
