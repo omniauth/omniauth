@@ -22,6 +22,7 @@ OmniAuth currently supports the following external providers:
   * Foursquare
   * LinkedIn
   * GitHub
+  * Gowalla
 * OpenID
 * Google Apps (via OpenID)
 * CAS (Central Authentication Service)
