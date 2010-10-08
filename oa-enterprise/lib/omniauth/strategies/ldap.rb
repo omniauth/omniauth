@@ -50,8 +50,7 @@ module OmniAuth
 	
 	        @app.call(@env)
       	rescue Exception => e
-      		puts e.message
-      		fail!(:invalid_credentials)
+      		fail!(:invalid_credentials, e)
       	end
       end      
 

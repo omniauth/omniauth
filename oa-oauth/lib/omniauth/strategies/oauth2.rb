@@ -26,8 +26,8 @@ module OmniAuth
         verifier = request.params['code']
         @access_token = client.web_server.get_access_token(verifier, :redirect_uri => callback_url)
         super
-      rescue ::OAuth2::HTTPError => e
-        fail!(:invalid_credentials)
+      rescue ::OAuth2::HTTPError, ::OAuth2::AccessDenied => e
+        fail!(:invalid_credentials, e)
       end
       
       def auth_hash

@@ -40,8 +40,8 @@ module OmniAuth
         @env['PATH_INFO'] = "#{OmniAuth.config.path_prefix}/#{name}/callback"
 
         @app.call(@env)
-      rescue RestClient::Request::Unauthorized
-        fail!(:invalid_credentials)
+      rescue RestClient::Request::Unauthorized => e
+        fail!(:invalid_credentials, e)
       end
       
       def perform_authentication(uri, headers = request_headers)

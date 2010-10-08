@@ -77,7 +77,8 @@ module OmniAuth
     
     def user_info; {} end
     
-    def fail!(message_key)
+    def fail!(message_key, exception = nil)
+      self.env['rack.auth.error'] = exception
       OmniAuth.config.on_failure.call(self.env, message_key.to_sym)
     end
   end

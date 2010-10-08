@@ -24,8 +24,8 @@ module OmniAuth
         request_token = ::OAuth::RequestToken.new(consumer, session[:oauth][name.to_sym].delete(:request_token), session[:oauth][name.to_sym].delete(:request_secret))
         @access_token = request_token.get_access_token(:oauth_verifier => request.params['oauth_verifier'])
         super
-      rescue ::OAuth::Unauthorized
-        fail!(:invalid_credentials)
+      rescue ::OAuth::Unauthorized => e
+        fail!(:invalid_credentials, e)
       end
       
       def auth_hash
