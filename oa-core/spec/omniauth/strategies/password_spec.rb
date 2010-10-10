@@ -29,7 +29,7 @@ describe OmniAuth::Strategies::Password, :type => :strategy do
     sets_an_auth_hash
     sets_provider_to 'password'
     it 'should set the UID to an opaque identifier' do
-      uid = last_request.env['rack.auth']['uid']
+      uid = last_request.env['omniauth.auth']['uid']
       uid.should_not be_nil
       uid.should_not =~ /jerome/
       uid.should_not =~ /my password/
