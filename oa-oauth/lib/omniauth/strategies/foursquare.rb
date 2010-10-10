@@ -1,9 +1,10 @@
 module OmniAuth
   module Strategies
     class Foursquare < OAuth
-      def initialize(app, consumer_key, consumer_secret)
+      def initialize(app, consumer_key, consumer_secret, opts={})
         super(app, :foursquare, consumer_key, consumer_secret,
-                :site => 'http://foursquare.com')
+                :site => 'http://foursquare.com',
+                :authorize_path => opts[:mobile] ? '/mobile/oauth/authenticate' : '/oauth/authenticate')
       end
       
       def auth_hash
