@@ -39,7 +39,7 @@ module OmniAuth
     end
     
     def callback_phase
-      env['omniauth.auth'] = auth_hash
+      @env['omniauth.auth'] = auth_hash
       call_app!
     end
     

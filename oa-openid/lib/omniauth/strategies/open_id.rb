@@ -74,21 +74,20 @@ module OmniAuth
       
       def callback_phase
         env['REQUEST_METHOD'] = 'GET'
-        
         openid = Rack::OpenID.new(lambda{|env| [200,{},[]]}, @store)
         openid.call(env)
-        resp = env.delete('rack.openid.response')
-        if resp && resp.status == :success
+        @openid_response = env.delete('rack.openid.response')
+        if @openid_response && @openid_response.status == :success
           super
         else
           fail!(:invalid_credentials)
         end
       end
       
-      def auth_hash(response)
+      def auth_hash
         OmniAuth::Utils.deep_merge(super(), {
-          'uid' => response.display_identifier,
-          'user_info' => user_info(response)
+          'uid' => @openid_response.display_identifier,
+          'user_info' => user_info(@openid_response)
         })
       end
       
