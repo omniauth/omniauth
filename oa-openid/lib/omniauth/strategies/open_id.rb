@@ -24,7 +24,7 @@ module OmniAuth
       }
       
       def initialize(app, store = nil, options = {})
-        super(app, options[:name] || :open_id)
+        super(app, options.delete(:name) || :open_id)
         @options = options
         @options[:required] ||= [AX[:email], AX[:first_name], AX[:last_name], 'email', 'fullname']
         @options[:optional] ||= [AX[:nickname], AX[:city], AX[:state], AX[:website], AX[:image], 'postcode', 'nickname']
@@ -47,7 +47,7 @@ module OmniAuth
       end
       
       def identifier
-        request[IDENTIFIER_URL_PARAMETER]
+        options[:identifier] || request[IDENTIFIER_URL_PARAMETER]
       end
       
       def request_phase
