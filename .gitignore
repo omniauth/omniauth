@@ -28,3 +28,5 @@ oa-live
 *.gem
 .bundle
 .project
+
+Gemfile.lock
