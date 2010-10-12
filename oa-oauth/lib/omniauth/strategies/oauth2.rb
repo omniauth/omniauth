@@ -8,6 +8,8 @@ module OmniAuth
     class OAuth2
       include OmniAuth::Strategy
       
+      attr_accessor :options, :client
+      
       class CallbackError < StandardError
         attr_accessor :error, :error_reason, :error_uri
         
@@ -20,15 +22,13 @@ module OmniAuth
       
       def initialize(app, name, client_id, client_secret, options = {})
         super(app, name)
-        @options = options
-        @client = ::OAuth2::Client.new(client_id, client_secret, options)
+        self.options = options
+        self.client = ::OAuth2::Client.new(client_id, client_secret, options)
       end
       
       protected
-      
-      attr_accessor :client
-      
-      def request_phase(options = {})
+        
+      def request_phase
         redirect client.web_server.authorize_url({:redirect_uri => callback_url}.merge(options))
       end
       

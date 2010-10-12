@@ -26,9 +26,9 @@ module OmniAuth
         @data ||= MultiJson.decode(@access_token.get("/users/me.json"))
       end
       
-      def request_phase(options = {})
+      def request_phase
         options[:scope] ||= "email,offline_access"
-        super(options)
+        super
       end
       
       def user_info
