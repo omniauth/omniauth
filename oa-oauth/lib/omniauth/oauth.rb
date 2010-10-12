@@ -12,5 +12,6 @@ module OmniAuth
     autoload :ThirtySevenSignals, 'omniauth/strategies/thirty_seven_signals'
     autoload :Foursquare,         'omniauth/strategies/foursquare'
     autoload :Gowalla,            'omniauth/strategies/gowalla'
+    autoload :Identica,           'omniauth/strategies/identica'
   end
 end
