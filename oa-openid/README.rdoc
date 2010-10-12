@@ -21,7 +21,9 @@ Use the strategy as a middleware in your application:
     
     use OmniAuth::Strategies::OpenID, OpenID::Store::Filesystem.new('/tmp')
     
-Then simply direct users to '/auth/open_id' to prompt them for their OpenID identifier. You may also pre-set the identifier by passing an <tt>identifier</tt> parameter to the URL (Example: <tt>/auth/open_id?openid_url=google.com</tt>).
+Then simply direct users to '/auth/open_id' to prompt them for their OpenID identifier. You may also pre-set the identifier by passing an <tt>identifier</tt> parameter to the URL (Example: <tt>/auth/open_id?openid_url=some-openid-url.example.com</tt>).
+
+If you want to use Google, you can simply direct users to '/auth/google'.
 
 == OmniAuth Builder
 
@@ -33,5 +35,6 @@ If OpenID is one of several authentication strategies, use the OmniAuth Builder:
     
     use OmniAuth::Builder do
       provider :open_id, OpenID::Store::Filesystem.new('/tmp')
+      provider :google # just like openid but with Google's OpenID endpoint as the default
       provider :campfire
     end
