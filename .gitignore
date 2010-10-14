@@ -28,5 +28,7 @@ oa-live
 *.gem
 .bundle
 .project
+.yardoc
+doc
 
 Gemfile.lock
