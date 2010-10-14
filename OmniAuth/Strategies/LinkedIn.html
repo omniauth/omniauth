@@ -1,0 +1,365 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta name="Content-Type" content="text/html; charset=utf-8" />
+<title>Class: OmniAuth::Strategies::LinkedIn</title>
+<link rel="stylesheet" href="../../css/style.css" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="../../css/common.css" type="text/css" media="screen" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  relpath = '../..';
+  if (relpath != '') relpath += '/';
+</script>
+<script type="text/javascript" charset="utf-8" src="../../js/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../js/app.js"></script>
+
+  </head>
+  <body>
+    <script type="text/javascript" charset="utf-8">
+      if (window.top.frames.main) document.body.className = 'frames';
+    </script>
+    
+    <div id="header">
+      <div id="menu">
+  
+    <a href="../../_index.html">Index (L)</a> &raquo; 
+    <span class='title'><span class='object_link'><a href="../../OmniAuth.html" title="OmniAuth (module)">OmniAuth</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../Strategies.html" title="OmniAuth::Strategies (module)">Strategies</a></span></span>
+     &raquo; 
+    <span class="title">LinkedIn</span>
+  
+  
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  <a id="class_list_link" href="#">Class List</a>
+  <a id="method_list_link" href="#">Method List</a>
+  <a id ="file_list_link" href="#">File List</a>
+</div>
+
+      <div class="clear"></div>
+    </div>
+    
+    <iframe id="search_frame"></iframe>
+    
+    <div id="content"><h1>Class: OmniAuth::Strategies::LinkedIn
+  
+  
+  
+</h1>
+
+<dl class="box">
+  
+    <dt class="r1">Inherits:</dt>
+    <dd class="r1">
+      <span class="inheritName"><span class='object_link'><a href="OAuth.html" title="OmniAuth::Strategies::OAuth (class)">OAuth</a></span></span>
+      
+        <ul class="fullTree">
+          <li>Object</li>
+          
+            <li class="next"><span class='object_link'><a href="OAuth.html" title="OmniAuth::Strategies::OAuth (class)">OAuth</a></span></li>
+          
+            <li class="next">OmniAuth::Strategies::LinkedIn</li>
+          
+        </ul>
+        <a href="#" class="inheritanceTree">show all</a>
+      
+      </dd>
+    
+  
+  
+    
+  
+    
+  
+  
+  
+    <dt class="r2 last">Defined in:</dt>
+    <dd class="r2 last">oa-oauth/lib/omniauth/strategies/linked_in.rb</dd>
+  
+</dl>
+<div class="clear"></div>
+
+
+
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <h2>
+      Instance Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#auth_hash-instance_method" title="#auth_hash (instance method)">- (Object) <strong>auth_hash</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#initialize-instance_method" title="#initialize (instance method)">- (LinkedIn) <strong>initialize</strong>(app, consumer_key, consumer_secret) </a>
+    
+
+    
+  </span>
+  
+    <span class="note title constructor">constructor</span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>
+A new instance of LinkedIn.
+</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#user_hash-instance_method" title="#user_hash (instance method)">- (Object) <strong>user_hash</strong>(access_token) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+
+  
+  
+  
+  
+  
+  
+  
+  <h3 class="inherited">Methods inherited from <span class='object_link'><a href="OAuth.html" title="OmniAuth::Strategies::OAuth (class)">OAuth</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="OAuth.html#callback_phase-instance_method" title="OmniAuth::Strategies::OAuth#callback_phase (method)">#callback_phase</a></span>, <span class='object_link'><a href="OAuth.html#request_phase-instance_method" title="OmniAuth::Strategies::OAuth#request_phase (method)">#request_phase</a></span>, <span class='object_link'><a href="OAuth.html#unique_id-instance_method" title="OmniAuth::Strategies::OAuth#unique_id (method)">#unique_id</a></span></p>
+
+  
+  
+  
+  
+  
+  
+  
+  <h3 class="inherited">Methods included from <span class='object_link'><a href="../Strategy.html" title="OmniAuth::Strategy (module)">OmniAuth::Strategy</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="../Strategy.html#call-instance_method" title="OmniAuth::Strategy#call (method)">#call</a></span>, <span class='object_link'><a href="../Strategy.html#call%21-instance_method" title="OmniAuth::Strategy#call! (method)">#call!</a></span>, <span class='object_link'><a href="../Strategy.html#call_app%21-instance_method" title="OmniAuth::Strategy#call_app! (method)">#call_app!</a></span>, <span class='object_link'><a href="../Strategy.html#callback_phase-instance_method" title="OmniAuth::Strategy#callback_phase (method)">#callback_phase</a></span>, <span class='object_link'><a href="../Strategy.html#callback_url-instance_method" title="OmniAuth::Strategy#callback_url (method)">#callback_url</a></span>, <span class='object_link'><a href="../Strategy.html#fail%21-instance_method" title="OmniAuth::Strategy#fail! (method)">#fail!</a></span>, <span class='object_link'><a href="../Strategy.html#full_host-instance_method" title="OmniAuth::Strategy#full_host (method)">#full_host</a></span>, <span class='object_link'><a href="../Strategy.html#included-class_method" title="OmniAuth::Strategy.included (method)">included</a></span>, <span class='object_link'><a href="../Strategy.html#redirect-instance_method" title="OmniAuth::Strategy#redirect (method)">#redirect</a></span>, <span class='object_link'><a href="../Strategy.html#request-instance_method" title="OmniAuth::Strategy#request (method)">#request</a></span>, <span class='object_link'><a href="../Strategy.html#request_phase-instance_method" title="OmniAuth::Strategy#request_phase (method)">#request_phase</a></span>, <span class='object_link'><a href="../Strategy.html#session-instance_method" title="OmniAuth::Strategy#session (method)">#session</a></span>, <span class='object_link'><a href="../Strategy.html#user_info-instance_method" title="OmniAuth::Strategy#user_info (method)">#user_info</a></span></p>
+<div id="constructor_details" class="method_details_list">
+  <h2>Constructor Details</h2>
+  
+    <div class="method_details first">
+  <p class="signature first" id="initialize-instance_method">
+  
+    - (<tt><span class='object_link'><a href="" title="OmniAuth::Strategies::LinkedIn (class)">LinkedIn</a></span></tt>) <strong>initialize</strong>(app, consumer_key, consumer_secret) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+A new instance of LinkedIn
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+7
+8
+9
+10
+11
+12
+13
+14</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'oa-oauth/lib/omniauth/strategies/linked_in.rb', line 7</span>
+
+<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='app identifier id'>app</span><span class='comma token'>,</span> <span class='consumer_key identifier id'>consumer_key</span><span class='comma token'>,</span> <span class='consumer_secret identifier id'>consumer_secret</span><span class='rparen token'>)</span>
+  <span class='super super kw'>super</span><span class='lparen token'>(</span><span class='app identifier id'>app</span><span class='comma token'>,</span> <span class='symbol val'>:linked_in</span><span class='comma token'>,</span> <span class='consumer_key identifier id'>consumer_key</span><span class='comma token'>,</span> <span class='consumer_secret identifier id'>consumer_secret</span><span class='comma token'>,</span>
+          <span class='symbol val'>:site</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'https://api.linkedin.com'</span><span class='comma token'>,</span>
+          <span class='symbol val'>:request_token_path</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'/uas/oauth/requestToken'</span><span class='comma token'>,</span>
+          <span class='symbol val'>:access_token_path</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'/uas/oauth/accessToken'</span><span class='comma token'>,</span>
+          <span class='symbol val'>:authorize_path</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'/uas/oauth/authorize'</span><span class='comma token'>,</span>
+          <span class='symbol val'>:scheme</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='symbol val'>:header</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+  
+</div>
+
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+    
+    
+      <div class="method_details first">
+  <p class="signature first" id="auth_hash-instance_method">
+  
+    - (<tt>Object</tt>) <strong>auth_hash</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+16
+17
+18
+19
+20
+21
+22
+23</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'oa-oauth/lib/omniauth/strategies/linked_in.rb', line 16</span>
+
+<span class='def def kw'>def</span> <span class='auth_hash identifier id'>auth_hash</span>
+  <span class='hash identifier id'>hash</span> <span class='assign token'>=</span> <span class='user_hash identifier id'>user_hash</span><span class='lparen token'>(</span><span class='@access_token ivar id'>@access_token</span><span class='rparen token'>)</span>
+  
+  <span class='OmniAuth constant id'>OmniAuth</span><span class='colon2 op'>::</span><span class='Utils constant id'>Utils</span><span class='dot token'>.</span><span class='deep_merge identifier id'>deep_merge</span><span class='lparen token'>(</span><span class='super super kw'>super</span><span class='comma token'>,</span> <span class='lbrace token'>{</span>
+    <span class='string val'>'uid'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='hash identifier id'>hash</span><span class='dot token'>.</span><span class='delete identifier id'>delete</span><span class='lparen token'>(</span><span class='string val'>'id'</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+    <span class='string val'>'user_info'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='hash identifier id'>hash</span>
+  <span class='rbrace token'>}</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="user_hash-instance_method">
+  
+    - (<tt>Object</tt>) <strong>user_hash</strong>(access_token) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'oa-oauth/lib/omniauth/strategies/linked_in.rb', line 25</span>
+
+<span class='def def kw'>def</span> <span class='user_hash identifier id'>user_hash</span><span class='lparen token'>(</span><span class='access_token identifier id'>access_token</span><span class='rparen token'>)</span>
+  <span class='person identifier id'>person</span> <span class='assign token'>=</span> <span class='Nokogiri constant id'>Nokogiri</span><span class='colon2 op'>::</span><span class='XML constant id'>XML</span><span class='colon2 op'>::</span><span class='Document constant id'>Document</span><span class='dot token'>.</span><span class='parse identifier id'>parse</span><span class='lparen token'>(</span><span class='@access_token ivar id'>@access_token</span><span class='dot token'>.</span><span class='get identifier id'>get</span><span class='lparen token'>(</span><span class='string val'>'/v1/people/~:(id,first-name,last-name,headline,member-url-resources,picture-url,location)'</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='body identifier id'>body</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='xpath identifier id'>xpath</span><span class='lparen token'>(</span><span class='string val'>'person'</span><span class='rparen token'>)</span>
+  
+  <span class='hash identifier id'>hash</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span>
+    <span class='string val'>'id'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='person identifier id'>person</span><span class='dot token'>.</span><span class='xpath identifier id'>xpath</span><span class='lparen token'>(</span><span class='string val'>'id'</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='text identifier id'>text</span><span class='comma token'>,</span>
+    <span class='string val'>'first_name'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='person identifier id'>person</span><span class='dot token'>.</span><span class='xpath identifier id'>xpath</span><span class='lparen token'>(</span><span class='string val'>'first-name'</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='text identifier id'>text</span><span class='comma token'>,</span>
+    <span class='string val'>'last_name'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='person identifier id'>person</span><span class='dot token'>.</span><span class='xpath identifier id'>xpath</span><span class='lparen token'>(</span><span class='string val'>'last-name'</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='text identifier id'>text</span><span class='comma token'>,</span>
+    <span class='string val'>'location'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='person identifier id'>person</span><span class='dot token'>.</span><span class='xpath identifier id'>xpath</span><span class='lparen token'>(</span><span class='string val'>'location/name'</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='text identifier id'>text</span><span class='comma token'>,</span>
+    <span class='string val'>'image'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='person identifier id'>person</span><span class='dot token'>.</span><span class='xpath identifier id'>xpath</span><span class='lparen token'>(</span><span class='string val'>'picture-url'</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='text identifier id'>text</span><span class='comma token'>,</span>
+    <span class='string val'>'description'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='person identifier id'>person</span><span class='dot token'>.</span><span class='xpath identifier id'>xpath</span><span class='lparen token'>(</span><span class='string val'>'headline'</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='text identifier id'>text</span><span class='comma token'>,</span>
+    <span class='string val'>'urls'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='person identifier id'>person</span><span class='dot token'>.</span><span class='css identifier id'>css</span><span class='lparen token'>(</span><span class='string val'>'member-url-resources member-url'</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='inject identifier id'>inject</span><span class='lparen token'>(</span><span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='h identifier id'>h</span><span class='comma token'>,</span><span class='element identifier id'>element</span><span class='bitor op'>|</span>
+      <span class='h identifier id'>h</span><span class='lbrack token'>[</span><span class='element identifier id'>element</span><span class='dot token'>.</span><span class='xpath identifier id'>xpath</span><span class='lparen token'>(</span><span class='string val'>'name'</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='text identifier id'>text</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='element identifier id'>element</span><span class='dot token'>.</span><span class='xpath identifier id'>xpath</span><span class='lparen token'>(</span><span class='string val'>'url'</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='text identifier id'>text</span>
+      <span class='h identifier id'>h</span>
+    <span class='end end kw'>end</span>
+  <span class='rbrace token'>}</span>
+  
+  <span class='hash identifier id'>hash</span><span class='lbrack token'>[</span><span class='symbol val'>:name</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='dstring node'>&quot;#{hash['first_name']} #{hash['last_name']}&quot;</span>
+  <span class='hash identifier id'>hash</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+    
+    <div id="footer">
+  Generated on Thu Oct 14 09:55:27 2010 by 
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.6.1 (ruby-1.8.7).
+</div>
+
+  </body>
+</html>

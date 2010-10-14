@@ -1,0 +1,952 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta name="Content-Type" content="text/html; charset=utf-8" />
+<title>Module: OmniAuth::Strategy</title>
+<link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="../css/common.css" type="text/css" media="screen" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  relpath = '..';
+  if (relpath != '') relpath += '/';
+</script>
+<script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="../js/app.js"></script>
+
+  </head>
+  <body>
+    <script type="text/javascript" charset="utf-8">
+      if (window.top.frames.main) document.body.className = 'frames';
+    </script>
+    
+    <div id="header">
+      <div id="menu">
+  
+    <a href="../_index.html">Index (S)</a> &raquo; 
+    <span class='title'><span class='object_link'><a href="../OmniAuth.html" title="OmniAuth (module)">OmniAuth</a></span></span>
+     &raquo; 
+    <span class="title">Strategy</span>
+  
+  
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  <a id="class_list_link" href="#">Class List</a>
+  <a id="method_list_link" href="#">Method List</a>
+  <a id ="file_list_link" href="#">File List</a>
+</div>
+
+      <div class="clear"></div>
+    </div>
+    
+    <iframe id="search_frame"></iframe>
+    
+    <div id="content"><h1>Module: OmniAuth::Strategy
+  
+  
+  
+</h1>
+
+<dl class="box">
+  
+  
+    
+  
+    
+  
+  
+    <dt class="r1">Included in:</dt>
+    <dd class="r1"><span class='object_link'><a href="Strategies/CAS.html" title="OmniAuth::Strategies::CAS (class)">Strategies::CAS</a></span>, <span class='object_link'><a href="Strategies/HttpBasic.html" title="OmniAuth::Strategies::HttpBasic (class)">Strategies::HttpBasic</a></span>, <span class='object_link'><a href="Strategies/LDAP.html" title="OmniAuth::Strategies::LDAP (class)">Strategies::LDAP</a></span>, <span class='object_link'><a href="Strategies/OAuth.html" title="OmniAuth::Strategies::OAuth (class)">Strategies::OAuth</a></span>, <span class='object_link'><a href="Strategies/OAuth2.html" title="OmniAuth::Strategies::OAuth2 (class)">Strategies::OAuth2</a></span>, <span class='object_link'><a href="Strategies/OpenID.html" title="OmniAuth::Strategies::OpenID (class)">Strategies::OpenID</a></span>, <span class='object_link'><a href="Strategies/Password.html" title="OmniAuth::Strategies::Password (class)">Strategies::Password</a></span></dd>
+    
+  
+  
+    <dt class="r2 last">Defined in:</dt>
+    <dd class="r2 last">oa-core/lib/omniauth/strategy.rb</dd>
+  
+</dl>
+<div class="clear"></div>
+
+
+
+
+  
+    <h2>
+      Class Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#included-class_method" title="included (class method)">+ (Object) <strong>included</strong>(base) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
+  
+    <h2>
+      Instance Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#auth_hash-instance_method" title="#auth_hash (instance method)">- (Object) <strong>auth_hash</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#call-instance_method" title="#call (instance method)">- (Object) <strong>call</strong>(env) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#call%21-instance_method" title="#call! (instance method)">- (Object) <strong>call!</strong>(env) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#call_app%21-instance_method" title="#call_app! (instance method)">- (Object) <strong>call_app!</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#callback_phase-instance_method" title="#callback_phase (instance method)">- (Object) <strong>callback_phase</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#callback_url-instance_method" title="#callback_url (instance method)">- (Object) <strong>callback_url</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#fail%21-instance_method" title="#fail! (instance method)">- (Object) <strong>fail!</strong>(message_key, exception = nil) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#full_host-instance_method" title="#full_host (instance method)">- (Object) <strong>full_host</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#initialize-instance_method" title="#initialize (instance method)">- (Strategy) <strong>initialize</strong>(app, name, *args) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>
+A new instance of Strategy.
+</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#redirect-instance_method" title="#redirect (instance method)">- (Object) <strong>redirect</strong>(uri) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#request-instance_method" title="#request (instance method)">- (Object) <strong>request</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#request_phase-instance_method" title="#request_phase (instance method)">- (Object) <strong>request_phase</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#session-instance_method" title="#session (instance method)">- (Object) <strong>session</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#user_info-instance_method" title="#user_info (instance method)">- (Object) <strong>user_info</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+
+
+  <div id="class_method_details" class="method_details_list">
+    <h2>Class Method Details</h2>
+    
+    
+      <div class="method_details first">
+  <p class="signature first" id="included-class_method">
+  
+    + (<tt>Object</tt>) <strong>included</strong>(base) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+7
+8
+9
+10
+11</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'oa-core/lib/omniauth/strategy.rb', line 7</span>
+
+<span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='included identifier id'>included</span><span class='lparen token'>(</span><span class='base identifier id'>base</span><span class='rparen token'>)</span>
+  <span class='base identifier id'>base</span><span class='dot token'>.</span><span class='class_eval identifier id'>class_eval</span> <span class='do do kw'>do</span>
+    <span class='attr_reader identifier id'>attr_reader</span> <span class='symbol val'>:app</span><span class='comma token'>,</span> <span class='symbol val'>:name</span><span class='comma token'>,</span> <span class='symbol val'>:env</span>
+  <span class='end end kw'>end</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+    
+    
+      <div class="method_details first">
+  <p class="signature first" id="auth_hash-instance_method">
+  
+    - (<tt>Object</tt>) <strong>auth_hash</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+53
+54
+55
+56
+57
+58</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'oa-core/lib/omniauth/strategy.rb', line 53</span>
+
+<span class='def def kw'>def</span> <span class='auth_hash identifier id'>auth_hash</span>
+  <span class='lbrace token'>{</span>
+    <span class='string val'>'provider'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='name identifier id'>name</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span><span class='comma token'>,</span>
+    <span class='string val'>'uid'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='nil nil kw'>nil</span>
+  <span class='rbrace token'>}</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="call-instance_method">
+  
+    - (<tt>Object</tt>) <strong>call</strong>(env) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+18
+19
+20</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'oa-core/lib/omniauth/strategy.rb', line 18</span>
+
+<span class='def def kw'>def</span> <span class='call identifier id'>call</span><span class='lparen token'>(</span><span class='env identifier id'>env</span><span class='rparen token'>)</span>
+  <span class='dup identifier id'>dup</span><span class='dot token'>.</span><span class='call! fid id'>call!</span><span class='lparen token'>(</span><span class='env identifier id'>env</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="call!-instance_method">
+  
+    - (<tt>Object</tt>) <strong>call!</strong>(env) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'oa-core/lib/omniauth/strategy.rb', line 22</span>
+
+<span class='def def kw'>def</span> <span class='call! fid id'>call!</span><span class='lparen token'>(</span><span class='env identifier id'>env</span><span class='rparen token'>)</span>
+  <span class='@env ivar id'>@env</span> <span class='assign token'>=</span> <span class='env identifier id'>env</span>
+  <span class='if if kw'>if</span> <span class='request identifier id'>request</span><span class='dot token'>.</span><span class='path identifier id'>path</span> <span class='eq op'>==</span> <span class='dstring node'>&quot;#{OmniAuth.config.path_prefix}/#{name}&quot;</span>
+    <span class='request_phase identifier id'>request_phase</span>
+  <span class='elsif elsif kw'>elsif</span> <span class='request identifier id'>request</span><span class='dot token'>.</span><span class='path identifier id'>path</span> <span class='eq op'>==</span> <span class='dstring node'>&quot;#{OmniAuth.config.path_prefix}/#{name}/callback&quot;</span>
+    <span class='callback_phase identifier id'>callback_phase</span>
+  <span class='else else kw'>else</span>
+    <span class='if if kw'>if</span> <span class='respond_to? fid id'>respond_to?</span><span class='lparen token'>(</span><span class='symbol val'>:other_phase</span><span class='rparen token'>)</span>
+      <span class='other_phase identifier id'>other_phase</span>
+    <span class='else else kw'>else</span>
+      <span class='call_app! fid id'>call_app!</span>
+    <span class='end end kw'>end</span>
+  <span class='end end kw'>end</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="call_app!-instance_method">
+  
+    - (<tt>Object</tt>) <strong>call_app!</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+46
+47
+48
+49
+50
+51</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'oa-core/lib/omniauth/strategy.rb', line 46</span>
+
+<span class='def def kw'>def</span> <span class='call_app! fid id'>call_app!</span>
+  <span class='@env ivar id'>@env</span><span class='lbrack token'>[</span><span class='string val'>'rack.auth'</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='env identifier id'>env</span><span class='lbrack token'>[</span><span class='string val'>'omniauth.auth'</span><span class='rbrack token'>]</span> <span class='if if_mod kw'>if</span> <span class='env identifier id'>env</span><span class='dot token'>.</span><span class='key? fid id'>key?</span><span class='lparen token'>(</span><span class='string val'>'omniauth.auth'</span><span class='rparen token'>)</span>
+  <span class='@env ivar id'>@env</span><span class='lbrack token'>[</span><span class='string val'>'rack.auth.error'</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='env identifier id'>env</span><span class='lbrack token'>[</span><span class='string val'>'omniauth.error'</span><span class='rbrack token'>]</span> <span class='if if_mod kw'>if</span> <span class='env identifier id'>env</span><span class='dot token'>.</span><span class='key? fid id'>key?</span><span class='lparen token'>(</span><span class='string val'>'omniauth.error'</span><span class='rparen token'>)</span>
+  
+  <span class='@app ivar id'>@app</span><span class='dot token'>.</span><span class='call identifier id'>call</span><span class='lparen token'>(</span><span class='@env ivar id'>@env</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="callback_phase-instance_method">
+  
+    - (<tt>Object</tt>) <strong>callback_phase</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+41
+42
+43
+44</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'oa-core/lib/omniauth/strategy.rb', line 41</span>
+
+<span class='def def kw'>def</span> <span class='callback_phase identifier id'>callback_phase</span>
+  <span class='@env ivar id'>@env</span><span class='lbrack token'>[</span><span class='string val'>'omniauth.auth'</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='auth_hash identifier id'>auth_hash</span>
+  <span class='call_app! fid id'>call_app!</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="callback_url-instance_method">
+  
+    - (<tt>Object</tt>) <strong>callback_url</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+67
+68
+69</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'oa-core/lib/omniauth/strategy.rb', line 67</span>
+
+<span class='def def kw'>def</span> <span class='callback_url identifier id'>callback_url</span>
+  <span class='full_host identifier id'>full_host</span> <span class='plus op'>+</span> <span class='dstring node'>&quot;#{OmniAuth.config.path_prefix}/#{name}/callback&quot;</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="fail!-instance_method">
+  
+    - (<tt>Object</tt>) <strong>fail!</strong>(message_key, exception = nil) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+87
+88
+89
+90</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'oa-core/lib/omniauth/strategy.rb', line 87</span>
+
+<span class='def def kw'>def</span> <span class='fail! fid id'>fail!</span><span class='lparen token'>(</span><span class='message_key identifier id'>message_key</span><span class='comma token'>,</span> <span class='exception identifier id'>exception</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
+  <span class='self self kw'>self</span><span class='dot token'>.</span><span class='env identifier id'>env</span><span class='lbrack token'>[</span><span class='string val'>'omniauth.error'</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='exception identifier id'>exception</span>
+  <span class='OmniAuth constant id'>OmniAuth</span><span class='dot token'>.</span><span class='config identifier id'>config</span><span class='dot token'>.</span><span class='on_failure identifier id'>on_failure</span><span class='dot token'>.</span><span class='call identifier id'>call</span><span class='lparen token'>(</span><span class='self self kw'>self</span><span class='dot token'>.</span><span class='env identifier id'>env</span><span class='comma token'>,</span> <span class='message_key identifier id'>message_key</span><span class='dot token'>.</span><span class='to_sym identifier id'>to_sym</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="full_host-instance_method">
+  
+    - (<tt>Object</tt>) <strong>full_host</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+60
+61
+62
+63
+64
+65</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'oa-core/lib/omniauth/strategy.rb', line 60</span>
+
+<span class='def def kw'>def</span> <span class='full_host identifier id'>full_host</span>
+  <span class='uri identifier id'>uri</span> <span class='assign token'>=</span> <span class='URI constant id'>URI</span><span class='dot token'>.</span><span class='parse identifier id'>parse</span><span class='lparen token'>(</span><span class='request identifier id'>request</span><span class='dot token'>.</span><span class='url identifier id'>url</span><span class='rparen token'>)</span>
+  <span class='uri identifier id'>uri</span><span class='dot token'>.</span><span class='path identifier id'>path</span> <span class='assign token'>=</span> <span class='string val'>''</span>
+  <span class='uri identifier id'>uri</span><span class='dot token'>.</span><span class='query identifier id'>query</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span>
+  <span class='uri identifier id'>uri</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="initialize-instance_method">
+  
+    - (<tt><span class='object_link'><a href="" title="OmniAuth::Strategy (module)">Strategy</a></span></tt>) <strong>initialize</strong>(app, name, *args) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+A new instance of Strategy
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+13
+14
+15
+16</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'oa-core/lib/omniauth/strategy.rb', line 13</span>
+
+<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='app identifier id'>app</span><span class='comma token'>,</span> <span class='name identifier id'>name</span><span class='comma token'>,</span> <span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
+  <span class='@app ivar id'>@app</span> <span class='assign token'>=</span> <span class='app identifier id'>app</span>
+  <span class='@name ivar id'>@name</span> <span class='assign token'>=</span> <span class='name identifier id'>name</span><span class='dot token'>.</span><span class='to_sym identifier id'>to_sym</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="redirect-instance_method">
+  
+    - (<tt>Object</tt>) <strong>redirect</strong>(uri) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+79
+80
+81
+82
+83</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'oa-core/lib/omniauth/strategy.rb', line 79</span>
+
+<span class='def def kw'>def</span> <span class='redirect identifier id'>redirect</span><span class='lparen token'>(</span><span class='uri identifier id'>uri</span><span class='rparen token'>)</span>
+  <span class='r identifier id'>r</span> <span class='assign token'>=</span> <span class='Rack constant id'>Rack</span><span class='colon2 op'>::</span><span class='Response constant id'>Response</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='dstring node'>&quot;Redirecting to #{uri}...&quot;</span><span class='rparen token'>)</span>
+  <span class='r identifier id'>r</span><span class='dot token'>.</span><span class='redirect identifier id'>redirect</span><span class='lparen token'>(</span><span class='uri identifier id'>uri</span><span class='rparen token'>)</span>
+  <span class='r identifier id'>r</span><span class='dot token'>.</span><span class='finish identifier id'>finish</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="request-instance_method">
+  
+    - (<tt>Object</tt>) <strong>request</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+75
+76
+77</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'oa-core/lib/omniauth/strategy.rb', line 75</span>
+
+<span class='def def kw'>def</span> <span class='request identifier id'>request</span>
+  <span class='@request ivar id'>@request</span> <span class='opasgn op'>||=</span> <span class='Rack constant id'>Rack</span><span class='colon2 op'>::</span><span class='Request constant id'>Request</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='@env ivar id'>@env</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="request_phase-instance_method">
+  
+    - (<tt>Object</tt>) <strong>request_phase</strong> 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  <h3>Raises:</h3>
+<ul class="raise">
+  
+    <li>
+      
+        <span class='type'>(<tt>NotImplementedError</tt>)</span>
+      
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+37
+38
+39</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'oa-core/lib/omniauth/strategy.rb', line 37</span>
+
+<span class='def def kw'>def</span> <span class='request_phase identifier id'>request_phase</span>
+  <span class='raise identifier id'>raise</span> <span class='NotImplementedError constant id'>NotImplementedError</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="session-instance_method">
+  
+    - (<tt>Object</tt>) <strong>session</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+71
+72
+73</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'oa-core/lib/omniauth/strategy.rb', line 71</span>
+
+<span class='def def kw'>def</span> <span class='session identifier id'>session</span>
+  <span class='@env ivar id'>@env</span><span class='lbrack token'>[</span><span class='string val'>'rack.session'</span><span class='rbrack token'>]</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="user_info-instance_method">
+  
+    - (<tt>Object</tt>) <strong>user_info</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+85</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'oa-core/lib/omniauth/strategy.rb', line 85</span>
+
+<span class='def def kw'>def</span> <span class='user_info identifier id'>user_info</span><span class='semicolon token'>;</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span> <span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+    
+    <div id="footer">
+  Generated on Thu Oct 14 09:55:25 2010 by 
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.6.1 (ruby-1.8.7).
+</div>
+
+  </body>
+</html>

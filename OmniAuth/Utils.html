@@ -1,0 +1,301 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta name="Content-Type" content="text/html; charset=utf-8" />
+<title>Module: OmniAuth::Utils</title>
+<link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="../css/common.css" type="text/css" media="screen" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  relpath = '..';
+  if (relpath != '') relpath += '/';
+</script>
+<script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="../js/app.js"></script>
+
+  </head>
+  <body>
+    <script type="text/javascript" charset="utf-8">
+      if (window.top.frames.main) document.body.className = 'frames';
+    </script>
+    
+    <div id="header">
+      <div id="menu">
+  
+    <a href="../_index.html">Index (U)</a> &raquo; 
+    <span class='title'><span class='object_link'><a href="../OmniAuth.html" title="OmniAuth (module)">OmniAuth</a></span></span>
+     &raquo; 
+    <span class="title">Utils</span>
+  
+  
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  <a id="class_list_link" href="#">Class List</a>
+  <a id="method_list_link" href="#">Method List</a>
+  <a id ="file_list_link" href="#">File List</a>
+</div>
+
+      <div class="clear"></div>
+    </div>
+    
+    <iframe id="search_frame"></iframe>
+    
+    <div id="content"><h1>Module: OmniAuth::Utils
+  
+  
+  
+</h1>
+
+<dl class="box">
+  
+  
+    
+  
+    
+  
+  
+  
+    <dt class="r1 last">Defined in:</dt>
+    <dd class="r1 last">oa-core/lib/omniauth/core.rb</dd>
+  
+</dl>
+<div class="clear"></div>
+
+
+  <h2>Constant Summary</h2>
+  
+    <dl class="constants">
+      
+        <dt id="CAMELIZE_SPECIAL-constant" class="">CAMELIZE_SPECIAL =
+          
+        </dt>
+        <dd><pre class="code"><span class='lbrace token'>{</span>
+  <span class='string val'>'oauth'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'OAuth'</span><span class='comma token'>,</span>
+  <span class='string val'>'oauth2'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'OAuth2'</span><span class='comma token'>,</span>
+  <span class='string val'>'openid'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'OpenID'</span><span class='comma token'>,</span>
+  <span class='string val'>'open_id'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'OpenID'</span><span class='comma token'>,</span>
+  <span class='string val'>'github'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'GitHub'</span>
+<span class='rbrace token'>}</span>
+</pre></dd>
+      
+    </dl>
+  
+
+
+
+  
+    <h2>
+      Instance Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#camelize-instance_method" title="#camelize (instance method)">- (Object) <strong>camelize</strong>(word, first_letter_in_uppercase = true) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#deep_merge-instance_method" title="#deep_merge (instance method)">- (Object) <strong>deep_merge</strong>(hash, other_hash) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#form_css-instance_method" title="#form_css (instance method)">- (Object) <strong>form_css</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+    
+    
+      <div class="method_details first">
+  <p class="signature first" id="camelize-instance_method">
+  
+    - (<tt>Object</tt>) <strong>camelize</strong>(word, first_letter_in_uppercase = true) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+85
+86
+87
+88
+89
+90
+91
+92
+93</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'oa-core/lib/omniauth/core.rb', line 85</span>
+
+<span class='def def kw'>def</span> <span class='camelize identifier id'>camelize</span><span class='lparen token'>(</span><span class='word identifier id'>word</span><span class='comma token'>,</span> <span class='first_letter_in_uppercase identifier id'>first_letter_in_uppercase</span> <span class='assign token'>=</span> <span class='true true kw'>true</span><span class='rparen token'>)</span>
+  <span class='return return kw'>return</span> <span class='CAMELIZE_SPECIAL constant id'>CAMELIZE_SPECIAL</span><span class='lbrack token'>[</span><span class='word identifier id'>word</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span><span class='rbrack token'>]</span> <span class='if if_mod kw'>if</span> <span class='CAMELIZE_SPECIAL constant id'>CAMELIZE_SPECIAL</span><span class='lbrack token'>[</span><span class='word identifier id'>word</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span><span class='rbrack token'>]</span>
+
+  <span class='if if kw'>if</span> <span class='first_letter_in_uppercase identifier id'>first_letter_in_uppercase</span>
+    <span class='word identifier id'>word</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span><span class='dot token'>.</span><span class='gsub identifier id'>gsub</span><span class='lparen token'>(</span><span class='regexp val'>/\/(.?)/</span><span class='rparen token'>)</span> <span class='lbrace token'>{</span> <span class='string val'>&quot;::&quot;</span> <span class='plus op'>+</span> <span class='$1 nth_ref id'>$1</span><span class='dot token'>.</span><span class='upcase identifier id'>upcase</span> <span class='rbrace token'>}</span><span class='dot token'>.</span><span class='gsub identifier id'>gsub</span><span class='lparen token'>(</span><span class='regexp val'>/(^|_)(.)/</span><span class='rparen token'>)</span> <span class='lbrace token'>{</span> <span class='$2 nth_ref id'>$2</span><span class='dot token'>.</span><span class='upcase identifier id'>upcase</span> <span class='rbrace token'>}</span>
+  <span class='else else kw'>else</span>
+    <span class='word identifier id'>word</span><span class='dot token'>.</span><span class='first identifier id'>first</span> <span class='plus op'>+</span> <span class='camelize identifier id'>camelize</span><span class='lparen token'>(</span><span class='word identifier id'>word</span><span class='rparen token'>)</span><span class='lbrack token'>[</span><span class='float val'>1</span><span class='dot2 op'>..</span><span class='integer val'>-1</span><span class='rbrack token'>]</span>
+  <span class='end end kw'>end</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="deep_merge-instance_method">
+  
+    - (<tt>Object</tt>) <strong>deep_merge</strong>(hash, other_hash) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'oa-core/lib/omniauth/core.rb', line 70</span>
+
+<span class='def def kw'>def</span> <span class='deep_merge identifier id'>deep_merge</span><span class='lparen token'>(</span><span class='hash identifier id'>hash</span><span class='comma token'>,</span> <span class='other_hash identifier id'>other_hash</span><span class='rparen token'>)</span>
+  <span class='target identifier id'>target</span> <span class='assign token'>=</span> <span class='hash identifier id'>hash</span><span class='dot token'>.</span><span class='dup identifier id'>dup</span>
+
+  <span class='other_hash identifier id'>other_hash</span><span class='dot token'>.</span><span class='keys identifier id'>keys</span><span class='dot token'>.</span><span class='each identifier id'>each</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='key identifier id'>key</span><span class='bitor op'>|</span>
+    <span class='if if kw'>if</span> <span class='other_hash identifier id'>other_hash</span><span class='lbrack token'>[</span><span class='key identifier id'>key</span><span class='rbrack token'>]</span><span class='dot token'>.</span><span class='is_a? fid id'>is_a?</span> <span class='colon3 op'>::</span><span class='Hash constant id'>Hash</span> <span class='and and kw'>and</span> <span class='hash identifier id'>hash</span><span class='lbrack token'>[</span><span class='key identifier id'>key</span><span class='rbrack token'>]</span><span class='dot token'>.</span><span class='is_a? fid id'>is_a?</span> <span class='colon3 op'>::</span><span class='Hash constant id'>Hash</span>
+      <span class='target identifier id'>target</span><span class='lbrack token'>[</span><span class='key identifier id'>key</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='deep_merge identifier id'>deep_merge</span><span class='lparen token'>(</span><span class='target identifier id'>target</span><span class='lbrack token'>[</span><span class='key identifier id'>key</span><span class='rbrack token'>]</span><span class='comma token'>,</span><span class='other_hash identifier id'>other_hash</span><span class='lbrack token'>[</span><span class='key identifier id'>key</span><span class='rbrack token'>]</span><span class='rparen token'>)</span>
+      <span class='next next kw'>next</span>
+    <span class='end end kw'>end</span>
+
+    <span class='target identifier id'>target</span><span class='lbrack token'>[</span><span class='key identifier id'>key</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='other_hash identifier id'>other_hash</span><span class='lbrack token'>[</span><span class='key identifier id'>key</span><span class='rbrack token'>]</span>
+  <span class='end end kw'>end</span>
+
+  <span class='target identifier id'>target</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="form_css-instance_method">
+  
+    - (<tt>Object</tt>) <strong>form_css</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+66
+67
+68</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'oa-core/lib/omniauth/core.rb', line 66</span>
+
+<span class='def def kw'>def</span> <span class='form_css identifier id'>form_css</span>
+  <span class='dstring node'>&quot;&lt;style type='text/css'&gt;#{OmniAuth.config.form_css}&lt;/style&gt;&quot;</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+    
+    <div id="footer">
+  Generated on Thu Oct 14 09:55:28 2010 by 
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.6.1 (ruby-1.8.7).
+</div>
+
+  </body>
+</html>
