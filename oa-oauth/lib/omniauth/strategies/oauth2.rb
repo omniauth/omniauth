@@ -5,11 +5,21 @@ require 'omniauth/oauth'
 
 module OmniAuth
   module Strategies
+    # Authentication strategy for connecting with APIs constructed using
+    # the [OAuth 2.0 Specification](http://tools.ietf.org/html/draft-ietf-oauth-v2-10).
+    # You must generally register your application with the provider and
+    # utilize an application id and secret in order to authenticate using
+    # OAuth 2.0.
     class OAuth2
       include OmniAuth::Strategy
       
-      attr_accessor :options, :client
+      # The options passed in to the strategy.
+      attr_accessor :options
+      # The `OAuth2::Client` for this strategy.
+      attr_accessor :client
       
+      # An error that is indicated in the OAuth 2.0 callback.
+      # This could be a `redirect_uri_mismatch` or other 
       class CallbackError < StandardError
         attr_accessor :error, :error_reason, :error_uri
         
@@ -20,6 +30,13 @@ module OmniAuth
         end
       end
       
+      # Initialize a new OAuth 2.0 authentication provider.
+      
+      # @param [Rack Application] app standard middleware application argument
+      # @param [String] name the name for this provider to be used in its URL, e.g. `/auth/name`
+      # @param [String] client_id the client/application ID of this provider
+      # @param [String] client_secret the client/application secret of this provider
+      # @param [Hash] options that will be passed through to the OAuth2::Client (see [oauth2 docs](http://rubydoc.info/gems/oauth2))
       def initialize(app, name, client_id, client_secret, options = {})
         super(app, name)
         self.options = options

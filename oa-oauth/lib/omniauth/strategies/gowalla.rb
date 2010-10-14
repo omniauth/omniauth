@@ -7,14 +7,13 @@ module OmniAuth
     # Authenticate to Gowalla utilizing OAuth 2.0 and retrieve
     # basic user information.
     #
-    # Usage:
-    #
-    #    use OmniAuth::Strategies::Gowalla, 'API Key', 'Secret Key'
-    #
-    # Options:
-    #
-    # <tt>:scope</tt> :: Extended permissions such as <tt>email</tt> and <tt>offline_access</tt> (which are the defaults).
+    # @example Basic Usage
+    #     use OmniAuth::Strategies::Gowalla, 'API Key', 'Secret Key'
     class Gowalla < OAuth2
+      # @param [Rack Application] app standard middleware application parameter
+      # @param [String] api_key the application id as [registered on Gowalla](http://gowalla.com/api/keys)
+      # @param [String] secret_key the application secret as [registered on Gowalla](http://gowalla.com/api/keys)
+      # @option options ['read','read-write'] :scope ('read') the scope of your authorization request; must be `read` or `read-write`
       def initialize(app, api_key, secret_key, options = {})
         options[:site] = 'https://api.gowalla.com/api/oauth'
         options[:authorize_url] = 'https://gowalla.com/api/oauth/new'
@@ -22,12 +21,14 @@ module OmniAuth
         super(app, :gowalla, api_key, secret_key, options)
       end
       
+      protected
+      
       def user_data
         @data ||= MultiJson.decode(@access_token.get("/users/me.json"))
       end
       
       def request_phase
-        options[:scope] ||= "email,offline_access"
+        options[:scope] ||= "read"
         super
       end
       

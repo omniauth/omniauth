@@ -31,7 +31,7 @@ module OmniAuth
 
         private
         
-        # turns an <cas:authenticationSuccess> node into a Hash;
+        # turns an `<cas:authenticationSuccess>` node into a Hash;
         # returns nil if given nil
         def parse_user_info(node)
           return nil if node.nil?
@@ -45,8 +45,8 @@ module OmniAuth
           end
         end
         
-        # finds an <cas:authenticationSuccess> node in
-        # a <cas:serviceResponse> body if present; returns nil
+        # finds an `<cas:authenticationSuccess>` node in
+        # a `<cas:serviceResponse>` body if present; returns nil
         # if the passed body is nil or if there is no such node.
         def find_authentication_success(body)
           return nil if body.nil? || body == ''
@@ -62,7 +62,7 @@ module OmniAuth
           end
         end
         
-        # retrieves the <cas:serviceResponse> XML from the CAS server
+        # retrieves the `<cas:serviceResponse>` XML from the CAS server
         def get_service_response_body
           result = ''
           http = Net::HTTP.new(@uri.host, @uri.port)

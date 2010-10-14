@@ -4,7 +4,7 @@ module OmniAuth
   # OmniAuth::OpenID provides strategies for authenticating to providers
   # using the OpenID standard. 
   # 
-  # == Installation
+  # # Installation
   # 
   # To get just OpenID functionality:
   # 
@@ -14,7 +14,7 @@ module OmniAuth
   # 
   #     gem install omniauth
   # 
-  # == Stand-Alone Example
+  # # Stand-Alone Example
   # 
   # Use the strategy as a middleware in your application:
   # 
@@ -28,7 +28,7 @@ module OmniAuth
   # 
   # A list of all OpenID stores is available at http://github.com/openid/ruby-openid/tree/master/lib/openid/store/
   # 
-  # == OmniAuth Builder
+  # # OmniAuth Builder
   # 
   # If OpenID is one of several authentication strategies, use the OmniAuth Builder:
   # 
@@ -41,7 +41,7 @@ module OmniAuth
   #       provider :campfire
   #     end
   # 
-  # == Configured Identifiers
+  # # Configured Identifiers
   # 
   # You may pre-configure an OpenID identifier.  For example, to use Google's main OpenID endpoint:
   # 

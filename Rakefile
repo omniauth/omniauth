@@ -136,17 +136,17 @@ end
 task :default => :spec
 
 begin
+  YARD_OPTS = ['-m', 'markdown', '-M', 'maruku']
   require 'yard'
   YARD::Rake::YardocTask.new(:doc) do |t|
-    t.name = 'doc'
     t.files   = OMNIAUTH_GEMS.inject([]){|a,g| a = a + ["#{g}/lib/**/*.rb"]; a} + ['README.markdown']
-    t.options = ["-o", "../omniauth.doc"]
+    t.options = YARD_OPTS
   end
   
   namespace :doc do
     YARD::Rake::YardocTask.new(:pages) do |t|
       t.files   = OMNIAUTH_GEMS.inject([]){|a,g| a = a + ["#{g}/lib/**/*.rb"]; a} + ['README.markdown']
-      t.options = ["-o", "../omniauth.doc"]
+      t.options = YARD_OPTS + ['-o', '../omniauth.doc']
     end
     
     namespace :pages do

@@ -5,8 +5,9 @@ module OmniAuth
   
   module Test
     
-    # Support for testing OmniAuth strategies. Usage:
+    # Support for testing OmniAuth strategies.
     #
+    # @example Usage
     #   class MyStrategyTest < Test::Unit::TestCase
     #     include OmniAuth::Test::StrategyTestCase
     #     def strategy
