@@ -66,27 +66,30 @@
 
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
-    <p>
-Support for testing OmniAuth strategies. Usage:
-</p>
-<pre class="code">
-  <span class='class class kw'>class</span> <span class='MyStrategyTest constant id'>MyStrategyTest</span> <span class='lt op'>&lt;</span> <span class='Test constant id'>Test</span><span class='colon2 op'>::</span><span class='Unit constant id'>Unit</span><span class='colon2 op'>::</span><span class='TestCase constant id'>TestCase</span>
-    <span class='include identifier id'>include</span> <span class='OmniAuth constant id'>OmniAuth</span><span class='colon2 op'>::</span><span class='Test constant id'>Test</span><span class='colon2 op'>::</span><span class='StrategyTestCase constant id'>StrategyTestCase</span>
-    <span class='def def kw'>def</span> <span class='strategy identifier id'>strategy</span>
-      <span class='comment val'># return the parameters to a Rack::Builder map call:</span>
-      <span class='lbrack token'>[</span><span class='MyStrategy constant id'>MyStrategy</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='comma token'>,</span> <span class='symbol val'>:some</span><span class='comma token'>,</span> <span class='symbol val'>:configuration</span><span class='comma token'>,</span> <span class='symbol val'>:options</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'here'</span><span class='rbrack token'>]</span>
-    <span class='end end kw'>end</span>
-    <span class='setup identifier id'>setup</span> <span class='do do kw'>do</span>
-      <span class='post identifier id'>post</span> <span class='string val'>'/auth/my_strategy/callback'</span><span class='comma token'>,</span> <span class='symbol val'>:user</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='lbrace token'>{</span> <span class='string val'>'name'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'Dylan'</span><span class='comma token'>,</span> <span class='string val'>'id'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'445'</span> <span class='rbrace token'>}</span>
-    <span class='end end kw'>end</span>
-  <span class='end end kw'>end</span>
-</pre>
-
+    <p>Support for testing OmniAuth strategies.</p>
 
   </div>
 </div>
 <div class="tags">
   
+  <div class="examples">
+    <h3>Examples:</h3>
+    
+      <h4><div class='inline'><p>Usage</p></div></h4>
+      <pre class="example code"><span class='class class kw'>class</span> <span class='MyStrategyTest constant id'>MyStrategyTest</span> <span class='lt op'>&lt;</span> <span class='Test constant id'>Test</span><span class='colon2 op'>::</span><span class='Unit constant id'>Unit</span><span class='colon2 op'>::</span><span class='TestCase constant id'>TestCase</span>
+  <span class='include identifier id'>include</span> <span class='OmniAuth constant id'>OmniAuth</span><span class='colon2 op'>::</span><span class='Test constant id'>Test</span><span class='colon2 op'>::</span><span class='StrategyTestCase constant id'>StrategyTestCase</span>
+  <span class='def def kw'>def</span> <span class='strategy identifier id'>strategy</span>
+    <span class='comment val'># return the parameters to a Rack::Builder map call:</span>
+    <span class='lbrack token'>[</span><span class='MyStrategy constant id'>MyStrategy</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='comma token'>,</span> <span class='symbol val'>:some</span><span class='comma token'>,</span> <span class='symbol val'>:configuration</span><span class='comma token'>,</span> <span class='symbol val'>:options</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'here'</span><span class='rbrack token'>]</span>
+  <span class='end end kw'>end</span>
+  <span class='setup identifier id'>setup</span> <span class='do do kw'>do</span>
+    <span class='post identifier id'>post</span> <span class='string val'>'/auth/my_strategy/callback'</span><span class='comma token'>,</span> <span class='symbol val'>:user</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='lbrace token'>{</span> <span class='string val'>'name'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'Dylan'</span><span class='comma token'>,</span> <span class='string val'>'id'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'445'</span> <span class='rbrace token'>}</span>
+  <span class='end end kw'>end</span>
+<span class='end end kw'>end</span>
+</pre>
+    
+  </div>
+
 </div>
 
 
@@ -183,17 +186,17 @@ Support for testing OmniAuth strategies. Usage:
       <pre class="lines">
 
 
-22
 23
 24
 25
 26
 27
 28
-29</pre>
+29
+30</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'oa-core/lib/omniauth/test/strategy_test_case.rb', line 22</span>
+      <pre class="code"><span class="info file"># File 'oa-core/lib/omniauth/test/strategy_test_case.rb', line 23</span>
 
 <span class='def def kw'>def</span> <span class='app identifier id'>app</span>
   <span class='strategy identifier id'>strategy</span> <span class='assign token'>=</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='strategy identifier id'>strategy</span>
@@ -222,12 +225,12 @@ Support for testing OmniAuth strategies. Usage:
       <pre class="lines">
 
 
-31
 32
-33</pre>
+33
+34</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'oa-core/lib/omniauth/test/strategy_test_case.rb', line 31</span>
+      <pre class="code"><span class="info file"># File 'oa-core/lib/omniauth/test/strategy_test_case.rb', line 32</span>
 
 <span class='def def kw'>def</span> <span class='session identifier id'>session</span>
   <span class='last_request identifier id'>last_request</span><span class='dot token'>.</span><span class='env identifier id'>env</span><span class='lbrack token'>[</span><span class='string val'>'rack.session'</span><span class='rbrack token'>]</span>
@@ -272,12 +275,12 @@ Support for testing OmniAuth strategies. Usage:
       <pre class="lines">
 
 
-35
 36
-37</pre>
+37
+38</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'oa-core/lib/omniauth/test/strategy_test_case.rb', line 35</span>
+      <pre class="code"><span class="info file"># File 'oa-core/lib/omniauth/test/strategy_test_case.rb', line 36</span>
 
 <span class='def def kw'>def</span> <span class='strategy identifier id'>strategy</span>
   <span class='raise identifier id'>raise</span> <span class='NotImplementedError constant id'>NotImplementedError</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='string val'>'Including specs must define #strategy'</span><span class='rparen token'>)</span>
@@ -293,7 +296,7 @@ Support for testing OmniAuth strategies. Usage:
 </div>
     
     <div id="footer">
-  Generated on Thu Oct 14 10:21:59 2010 by 
+  Generated on Thu Oct 14 16:21:32 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.6.1 (ruby-1.8.7).
 </div>

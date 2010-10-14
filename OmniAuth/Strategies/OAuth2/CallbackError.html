@@ -81,7 +81,15 @@
 </dl>
 <div class="clear"></div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    <p>An error that is indicated in the OAuth 2.0 callback. This could be a <code>redirect_uri_mismatch</code> or other</p>
 
+  </div>
+</div>
+<div class="tags">
+  
+</div>
 
   
   <h2>Instance Attribute Summary <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
@@ -106,10 +114,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Returns the value of attribute error.
-</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute error.</p></div></span>
   
 </li>
 
@@ -133,10 +138,7 @@ Returns the value of attribute error.
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Returns the value of attribute error_reason.
-</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute error_reason.</p></div></span>
   
 </li>
 
@@ -160,10 +162,7 @@ Returns the value of attribute error_reason.
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Returns the value of attribute error_uri.
-</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute error_uri.</p></div></span>
   
 </li>
 
@@ -197,10 +196,7 @@ Returns the value of attribute error_uri.
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-A new instance of CallbackError.
-</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>A new instance of CallbackError.</p></div></span>
   
 </li>
 
@@ -221,10 +217,7 @@ A new instance of CallbackError.
   
 </p><div class="docstring">
   <div class="discussion">
-    <p>
-A new instance of CallbackError
-</p>
-
+    <p>A new instance of CallbackError</p>
 
   </div>
 </div>
@@ -236,14 +229,14 @@ A new instance of CallbackError
       <pre class="lines">
 
 
-16
-17
-18
-19
-20</pre>
+26
+27
+28
+29
+30</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'oa-oauth/lib/omniauth/strategies/oauth2.rb', line 16</span>
+      <pre class="code"><span class="info file"># File 'oa-oauth/lib/omniauth/strategies/oauth2.rb', line 26</span>
 
 <span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='error identifier id'>error</span><span class='comma token'>,</span> <span class='error_reason identifier id'>error_reason</span><span class='assign token'>=</span><span class='nil nil kw'>nil</span><span class='comma token'>,</span> <span class='error_uri identifier id'>error_uri</span><span class='assign token'>=</span><span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
   <span class='self self kw'>self</span><span class='dot token'>.</span><span class='error identifier id'>error</span> <span class='assign token'>=</span> <span class='error identifier id'>error</span>
@@ -273,10 +266,7 @@ A new instance of CallbackError
   
 </p><div class="docstring">
   <div class="discussion">
-    <p>
-Returns the value of attribute error
-</p>
-
+    <p>Returns the value of attribute error</p>
 
   </div>
 </div>
@@ -288,12 +278,12 @@ Returns the value of attribute error
       <pre class="lines">
 
 
-14
-15
-16</pre>
+24
+25
+26</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'oa-oauth/lib/omniauth/strategies/oauth2.rb', line 14</span>
+      <pre class="code"><span class="info file"># File 'oa-oauth/lib/omniauth/strategies/oauth2.rb', line 24</span>
 
 <span class='def def kw'>def</span> <span class='error identifier id'>error</span>
   <span class='@error ivar id'>@error</span>
@@ -316,10 +306,7 @@ Returns the value of attribute error
   
 </p><div class="docstring">
   <div class="discussion">
-    <p>
-Returns the value of attribute error_reason
-</p>
-
+    <p>Returns the value of attribute error_reason</p>
 
   </div>
 </div>
@@ -331,12 +318,12 @@ Returns the value of attribute error_reason
       <pre class="lines">
 
 
-14
-15
-16</pre>
+24
+25
+26</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'oa-oauth/lib/omniauth/strategies/oauth2.rb', line 14</span>
+      <pre class="code"><span class="info file"># File 'oa-oauth/lib/omniauth/strategies/oauth2.rb', line 24</span>
 
 <span class='def def kw'>def</span> <span class='error_reason identifier id'>error_reason</span>
   <span class='@error_reason ivar id'>@error_reason</span>
@@ -359,10 +346,7 @@ Returns the value of attribute error_reason
   
 </p><div class="docstring">
   <div class="discussion">
-    <p>
-Returns the value of attribute error_uri
-</p>
-
+    <p>Returns the value of attribute error_uri</p>
 
   </div>
 </div>
@@ -374,12 +358,12 @@ Returns the value of attribute error_uri
       <pre class="lines">
 
 
-14
-15
-16</pre>
+24
+25
+26</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'oa-oauth/lib/omniauth/strategies/oauth2.rb', line 14</span>
+      <pre class="code"><span class="info file"># File 'oa-oauth/lib/omniauth/strategies/oauth2.rb', line 24</span>
 
 <span class='def def kw'>def</span> <span class='error_uri identifier id'>error_uri</span>
   <span class='@error_uri ivar id'>@error_uri</span>
@@ -396,7 +380,7 @@ Returns the value of attribute error_uri
 </div>
     
     <div id="footer">
-  Generated on Thu Oct 14 10:21:59 2010 by 
+  Generated on Thu Oct 14 16:21:30 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.6.1 (ruby-1.8.7).
 </div>

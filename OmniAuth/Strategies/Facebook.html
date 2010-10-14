@@ -83,32 +83,21 @@
 
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
-    <p>
-Authenticate to Facebook utilizing OAuth 2.0 and retrieve basic user
-information.
-</p>
-<p>
-Usage:
-</p>
-<pre class="code">
-   <span class='use identifier id'>use</span> <span class='OmniAuth constant id'>OmniAuth</span><span class='colon2 op'>::</span><span class='Strategies constant id'>Strategies</span><span class='colon2 op'>::</span><span class='Facebook constant id'>Facebook</span><span class='comma token'>,</span> <span class='string val'>'app_id'</span><span class='comma token'>,</span> <span class='string val'>'app_secret'</span>
-</pre>
-<p>
-Options:
-</p>
-<table>
-<tr><td valign="top"><tt>:scope</tt> </td><td><p>
-Extended permissions such as <tt>email</tt> and <tt>offline_access</tt>
-(which are the defaults).
-</p>
-</td></tr>
-</table>
-
+    <p>Authenticate to Facebook utilizing OAuth 2.0 and retrieve basic user information.</p>
 
   </div>
 </div>
 <div class="tags">
   
+  <div class="examples">
+    <h3>Examples:</h3>
+    
+      <h4><div class='inline'><p>Basic Usage</p></div></h4>
+      <pre class="example code"><span class='use identifier id'>use</span> <span class='OmniAuth constant id'>OmniAuth</span><span class='colon2 op'>::</span><span class='Strategies constant id'>Strategies</span><span class='colon2 op'>::</span><span class='Facebook constant id'>Facebook</span><span class='comma token'>,</span> <span class='string val'>'app_id'</span><span class='comma token'>,</span> <span class='string val'>'app_secret'</span>
+</pre>
+    
+  </div>
+
 </div>
 
   
@@ -167,10 +156,7 @@ Extended permissions such as <tt>email</tt> and <tt>offline_access</tt>
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-A new instance of Facebook.
-</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>A new instance of Facebook.</p></div></span>
   
 </li>
 
@@ -268,28 +254,114 @@ A new instance of Facebook.
   
 </p><div class="docstring">
   <div class="discussion">
-    <p>
-A new instance of Facebook
-</p>
-
+    <p>A new instance of Facebook</p>
 
   </div>
 </div>
 <div class="tags">
+  <h3>Parameters:</h3>
+<ul class="param">
   
+    <li>
+      
+        <span class='type'>(<tt>Rack Application</tt>)</span>
+      
+      
+        <span class='name'>app</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>standard middleware application parameter</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <span class='name'>app_id</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>the application id as <a href='http://www.facebook.com/developers/'>registered on Facebook</a></p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <span class='name'>app_secret</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>the application secret as registered on Facebook</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <span class='name'>options</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>a customizable set of options</p></div>
+      
+    </li>
+  
+</ul>
+
+  
+    
+    
+    
+    
+    
+    
+    
+    
+    <h3>Options Hash (<tt>options</tt>):</h3>
+    <ul class="option">
+      
+        <li>
+          <span class="type">(<tt>String</tt>)</span>
+          <span class="name">:scope</span>
+          <span class="default">
+            
+              &mdash; default:
+              <tt>'email</tt>, <tt>offline_access'</tt>
+            
+          </span>
+          &mdash;<div class='inline'><p>comma-separated extended permissions such as <code>email</code> and <code>manage_pages</code></p></div>
+        </tr>
+      
+    </ul>
+  
+
 </div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+16
+17
 18
-19
-20
-21</pre>
+19</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'oa-oauth/lib/omniauth/strategies/facebook.rb', line 18</span>
+      <pre class="code"><span class="info file"># File 'oa-oauth/lib/omniauth/strategies/facebook.rb', line 16</span>
 
 <span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='app identifier id'>app</span><span class='comma token'>,</span> <span class='app_id identifier id'>app_id</span><span class='comma token'>,</span> <span class='app_secret identifier id'>app_secret</span><span class='comma token'>,</span> <span class='options identifier id'>options</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
   <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:site</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='string val'>'https://graph.facebook.com/'</span>
@@ -321,16 +393,16 @@ A new instance of Facebook
       <pre class="lines">
 
 
+43
+44
 45
 46
 47
 48
-49
-50
-51</pre>
+49</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'oa-oauth/lib/omniauth/strategies/facebook.rb', line 45</span>
+      <pre class="code"><span class="info file"># File 'oa-oauth/lib/omniauth/strategies/facebook.rb', line 43</span>
 
 <span class='def def kw'>def</span> <span class='auth_hash identifier id'>auth_hash</span>
   <span class='OmniAuth constant id'>OmniAuth</span><span class='colon2 op'>::</span><span class='Utils constant id'>Utils</span><span class='dot token'>.</span><span class='deep_merge identifier id'>deep_merge</span><span class='lparen token'>(</span><span class='super super kw'>super</span><span class='comma token'>,</span> <span class='lbrace token'>{</span>
@@ -358,13 +430,13 @@ A new instance of Facebook
       <pre class="lines">
 
 
+25
+26
 27
-28
-29
-30</pre>
+28</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'oa-oauth/lib/omniauth/strategies/facebook.rb', line 27</span>
+      <pre class="code"><span class="info file"># File 'oa-oauth/lib/omniauth/strategies/facebook.rb', line 25</span>
 
 <span class='def def kw'>def</span> <span class='request_phase identifier id'>request_phase</span>
   <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:scope</span><span class='rbrack token'>]</span> <span class='opasgn op'>||=</span> <span class='string val'>&quot;email,offline_access&quot;</span>
@@ -389,12 +461,12 @@ A new instance of Facebook
       <pre class="lines">
 
 
-23
-24
-25</pre>
+21
+22
+23</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'oa-oauth/lib/omniauth/strategies/facebook.rb', line 23</span>
+      <pre class="code"><span class="info file"># File 'oa-oauth/lib/omniauth/strategies/facebook.rb', line 21</span>
 
 <span class='def def kw'>def</span> <span class='user_data identifier id'>user_data</span>
   <span class='@data ivar id'>@data</span> <span class='opasgn op'>||=</span> <span class='MultiJson constant id'>MultiJson</span><span class='dot token'>.</span><span class='decode identifier id'>decode</span><span class='lparen token'>(</span><span class='@access_token ivar id'>@access_token</span><span class='dot token'>.</span><span class='get identifier id'>get</span><span class='lparen token'>(</span><span class='string val'>'/me'</span><span class='rparen token'>)</span><span class='rparen token'>)</span>
@@ -418,6 +490,8 @@ A new instance of Facebook
       <pre class="lines">
 
 
+30
+31
 32
 33
 34
@@ -427,12 +501,10 @@ A new instance of Facebook
 38
 39
 40
-41
-42
-43</pre>
+41</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'oa-oauth/lib/omniauth/strategies/facebook.rb', line 32</span>
+      <pre class="code"><span class="info file"># File 'oa-oauth/lib/omniauth/strategies/facebook.rb', line 30</span>
 
 <span class='def def kw'>def</span> <span class='user_info identifier id'>user_info</span>
   <span class='lbrace token'>{</span>
@@ -457,7 +529,7 @@ A new instance of Facebook
 </div>
     
     <div id="footer">
-  Generated on Thu Oct 14 10:21:57 2010 by 
+  Generated on Thu Oct 14 16:21:30 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.6.1 (ruby-1.8.7).
 </div>

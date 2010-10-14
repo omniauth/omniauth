@@ -133,10 +133,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-A new instance of Configuration.
-</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>A new instance of Configuration.</p></div></span>
   
 </li>
 
@@ -157,10 +154,7 @@ A new instance of Configuration.
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Build a CAS login URL from <tt>service</tt>.
-</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Build a CAS login URL from +service+.</p></div></span>
   
 </li>
 
@@ -181,10 +175,7 @@ Build a CAS login URL from <tt>service</tt>.
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Build a service-validation URL from <tt>service</tt> and <tt>ticket</tt>.
-</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Build a service-validation URL from +service+ and +ticket+.</p></div></span>
   
 </li>
 
@@ -204,10 +195,7 @@ Build a service-validation URL from <tt>service</tt> and <tt>ticket</tt>.
   
 </p><div class="docstring">
   <div class="discussion">
-    <p>
-A new instance of Configuration
-</p>
-
+    <p>A new instance of Configuration</p>
 
   </div>
 </div>
@@ -225,10 +213,7 @@ A new instance of Configuration
       
       
         &mdash;
-        <div class='inline'><p>
-configuration options
-</p>
-</div>
+        <div class='inline'><p>configuration options</p></div>
       
     </li>
   
@@ -248,13 +233,7 @@ configuration options
               <span class="na">N/A</span>
             
           </span>
-          &mdash;<div class='inline'><p>
-the CAS server root URL; probably something like &#8216;<a
-href="http://cas.mycompany.com">cas.mycompany.com</a>&#8217; or &#8216;<a
-href="http://cas.mycompany.com/cas">cas.mycompany.com/cas</a>&#8217;;
-optional.
-</p>
-</div>
+          &mdash;<div class='inline'><p>the CAS server root URL; probably something like <code>http://cas.mycompany.com</code> or <code>http://cas.mycompany.com/cas</code>; optional.</p></div>
         </tr>
       
         <li>
@@ -266,11 +245,7 @@ optional.
               <tt>:cas_server + '/login'</tt>
             
           </span>
-          &mdash;<div class='inline'><p>
-the URL to which to redirect for logins; options if <tt>:cas_server</tt> is
-specified, required otherwise.
-</p>
-</div>
+          &mdash;<div class='inline'><p>the URL to which to redirect for logins; options if <code>:cas_server</code> is specified, required otherwise.</p></div>
         </tr>
       
         <li>
@@ -282,11 +257,7 @@ specified, required otherwise.
               <tt>:cas_server + '/serviceValidate'</tt>
             
           </span>
-          &mdash;<div class='inline'><p>
-the URL to use for validating service tickets; optional if
-<tt>:cas_server</tt> is specified, requred otherwise.
-</p>
-</div>
+          &mdash;<div class='inline'><p>the URL to use for validating service tickets; optional if <code>:cas_server</code> is specified, requred otherwise.</p></div>
         </tr>
       
     </ul>
@@ -330,14 +301,7 @@ the URL to use for validating service tickets; optional if
   
 </p><div class="docstring">
   <div class="discussion">
-    <p>
-Build a CAS login URL from <tt>service</tt>.
-</p>
-<p>
-&#8220;<a
-href="http://cas.mycompany.com/login?service">cas.mycompany.com/login?service</a>=&#8230;&#8220;
-</p>
-
+    <p>Build a CAS login URL from +service+.</p>
 
   </div>
 </div>
@@ -355,10 +319,7 @@ href="http://cas.mycompany.com/login?service">cas.mycompany.com/login?service</a
       
       
         &mdash;
-        <div class='inline'><p>
-the service (a.k.a. return-to) URL
-</p>
-</div>
+        <div class='inline'><p>the service (a.k.a. return-to) URL</p></div>
       
     </li>
   
@@ -374,10 +335,7 @@ the service (a.k.a. return-to) URL
       
       
         &mdash;
-        <div class='inline'><p>
-a URL like
-</p>
-</div>
+        <div class='inline'><p>a URL like <code>http://cas.mycompany.com/login?service=...</code></p></div>
       
     </li>
   
@@ -389,12 +347,12 @@ a URL like
       <pre class="lines">
 
 
+30
 31
-32
-33</pre>
+32</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'oa-enterprise/lib/omniauth/strategies/cas/configuration.rb', line 31</span>
+      <pre class="code"><span class="info file"># File 'oa-enterprise/lib/omniauth/strategies/cas/configuration.rb', line 30</span>
 
 <span class='def def kw'>def</span> <span class='login_url identifier id'>login_url</span><span class='lparen token'>(</span><span class='service identifier id'>service</span><span class='rparen token'>)</span>
   <span class='append_service identifier id'>append_service</span> <span class='@login_url ivar id'>@login_url</span><span class='comma token'>,</span> <span class='service identifier id'>service</span>
@@ -414,14 +372,7 @@ a URL like
   
 </p><div class="docstring">
   <div class="discussion">
-    <p>
-Build a service-validation URL from <tt>service</tt> and <tt>ticket</tt>.
-</p>
-<p>
-&#8220;<a
-href="http://cas.mycompany.com/serviceValidate?service=...&ticket">cas.mycompany.com/serviceValidate?service=...&ticket</a>=&#8230;&#8220;
-</p>
-
+    <p>Build a service-validation URL from +service+ and +ticket+.</p>
 
   </div>
 </div>
@@ -439,10 +390,7 @@ href="http://cas.mycompany.com/serviceValidate?service=...&ticket">cas.mycompany
       
       
         &mdash;
-        <div class='inline'><p>
-the service (a.k.a. return-to) URL
-</p>
-</div>
+        <div class='inline'><p>the service (a.k.a. return-to) URL</p></div>
       
     </li>
   
@@ -456,10 +404,7 @@ the service (a.k.a. return-to) URL
       
       
         &mdash;
-        <div class='inline'><p>
-the ticket to validate
-</p>
-</div>
+        <div class='inline'><p>the ticket to validate</p></div>
       
     </li>
   
@@ -475,10 +420,7 @@ the ticket to validate
       
       
         &mdash;
-        <div class='inline'><p>
-a URL like
-</p>
-</div>
+        <div class='inline'><p>a URL like <code>http://cas.mycompany.com/serviceValidate?service=...&amp;ticket=...</code></p></div>
       
     </li>
   
@@ -490,13 +432,13 @@ a URL like
       <pre class="lines">
 
 
+40
+41
 42
-43
-44
-45</pre>
+43</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'oa-enterprise/lib/omniauth/strategies/cas/configuration.rb', line 42</span>
+      <pre class="code"><span class="info file"># File 'oa-enterprise/lib/omniauth/strategies/cas/configuration.rb', line 40</span>
 
 <span class='def def kw'>def</span> <span class='service_validate_url identifier id'>service_validate_url</span><span class='lparen token'>(</span><span class='service identifier id'>service</span><span class='comma token'>,</span> <span class='ticket identifier id'>ticket</span><span class='rparen token'>)</span>
   <span class='url identifier id'>url</span> <span class='assign token'>=</span> <span class='append_service identifier id'>append_service</span> <span class='@service_validate_url ivar id'>@service_validate_url</span><span class='comma token'>,</span> <span class='service identifier id'>service</span>
@@ -513,7 +455,7 @@ a URL like
 </div>
     
     <div id="footer">
-  Generated on Thu Oct 14 10:22:00 2010 by 
+  Generated on Thu Oct 14 16:21:33 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.6.1 (ruby-1.8.7).
 </div>
