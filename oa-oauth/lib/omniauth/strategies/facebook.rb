@@ -16,6 +16,7 @@ module OmniAuth
     # <tt>:scope</tt> :: Extended permissions such as <tt>email</tt> and <tt>offline_access</tt> (which are the defaults).
     class Facebook < OAuth2
       def initialize(app, app_id, app_secret, options = {})
+        @scope = options[:scope]
         options[:site] = 'https://graph.facebook.com/'
         super(app, :facebook, app_id, app_secret, options)
       end
@@ -25,8 +26,8 @@ module OmniAuth
       end
       
       def request_phase
-        options[:scope] ||= "email,offline_access"
-        super
+        @scope ||= (options[:scope] || "email,offline_access")
+        super(options.merge(:scope => @scope))
       end
       
       def user_info
