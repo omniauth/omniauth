@@ -13,5 +13,7 @@ module OmniAuth
     autoload :Foursquare,         'omniauth/strategies/foursquare'
     autoload :Gowalla,            'omniauth/strategies/gowalla'
     autoload :Identica,           'omniauth/strategies/identica'
+    autoload :Tripit,             'omniauth/strategies/tripit'
+    autoload :Dopplr,             'omniauth/strategies/dopplr'
   end
 end
