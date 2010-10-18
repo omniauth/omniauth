@@ -29,7 +29,7 @@ module OmniAuth
         if respond_to?(:other_phase)
           other_phase
         else
-          @app.call(env)
+          call_app!
         end
       end
     end
@@ -39,8 +39,15 @@ module OmniAuth
     end
     
     def callback_phase
-      env['rack.auth'] = auth_hash
-      @app.call(env)
+      @env['omniauth.auth'] = auth_hash
+      call_app!
+    end
+    
+    def call_app!
+      @env['rack.auth'] = env['omniauth.auth'] if env.key?('omniauth.auth')
+      @env['rack.auth.error'] = env['omniauth.error'] if env.key?('omniauth.error')
+      
+      @app.call(@env)
     end
     
     def auth_hash
@@ -77,7 +84,8 @@ module OmniAuth
     
     def user_info; {} end
     
-    def fail!(message_key)
+    def fail!(message_key, exception = nil)
+      self.env['omniauth.error'] = exception
       OmniAuth.config.on_failure.call(self.env, message_key.to_sym)
     end
   end

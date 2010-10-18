@@ -11,12 +11,12 @@ module OmniAuth
 
         # @param [Hash] params configuration options
         # @option params [String, nil] :cas_server the CAS server root URL; probably something like
-        #         'http://cas.mycompany.com' or 'http://cas.mycompany.com/cas'; optional.
+        #         `http://cas.mycompany.com` or `http://cas.mycompany.com/cas`; optional.
         # @option params [String, nil] :cas_login_url (:cas_server + '/login') the URL to which to
-        #         redirect for logins; options if <tt>:cas_server</tt> is specified,
+        #         redirect for logins; options if `:cas_server` is specified,
         #         required otherwise.
         # @option params [String, nil] :cas_service_validate_url (:cas_server + '/serviceValidate') the
-        #         URL to use for validating service tickets; optional if <tt>:cas_server</tt> is
+        #         URL to use for validating service tickets; optional if `:cas_server` is
         #         specified, requred otherwise.
         def initialize(params)
           parse_params params
@@ -26,8 +26,7 @@ module OmniAuth
         #
         # @param [String] service the service (a.k.a. return-to) URL
         # 
-        # @return [String] a URL like
-        # "http://cas.mycompany.com/login?service=..."
+        # @return [String] a URL like `http://cas.mycompany.com/login?service=...`
         def login_url(service)
           append_service @login_url, service
         end
@@ -37,8 +36,7 @@ module OmniAuth
         # @param [String] service the service (a.k.a. return-to) URL
         # @param [String] ticket the ticket to validate
         #
-        # @return [String] a URL like
-        # "http://cas.mycompany.com/serviceValidate?service=...&ticket=..."
+        # @return [String] a URL like `http://cas.mycompany.com/serviceValidate?service=...&ticket=...`
         def service_validate_url(service, ticket)
           url = append_service @service_validate_url, service
           url << '&ticket=' << Rack::Utils.escape(ticket)

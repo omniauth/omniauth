@@ -1,5 +1,5 @@
 require 'rack/openid'
-require 'gapps_openid'
+require 'omniauth/openid/gapps'
 require 'omniauth/openid'
 
 module OmniAuth
@@ -24,7 +24,7 @@ module OmniAuth
       }
       
       def initialize(app, store = nil, options = {})
-        super(app, options[:name] || :open_id)
+        super(app, options.delete(:name) || :open_id)
         @options = options
         @options[:required] ||= [AX[:email], AX[:first_name], AX[:last_name], 'email', 'fullname']
         @options[:optional] ||= [AX[:nickname], AX[:city], AX[:state], AX[:website], AX[:image], 'postcode', 'nickname']
@@ -47,7 +47,7 @@ module OmniAuth
       end
       
       def identifier
-        request[IDENTIFIER_URL_PARAMETER]
+        options[:identifier] || request[IDENTIFIER_URL_PARAMETER]
       end
       
       def request_phase
@@ -74,22 +74,20 @@ module OmniAuth
       
       def callback_phase
         env['REQUEST_METHOD'] = 'GET'
-        
         openid = Rack::OpenID.new(lambda{|env| [200,{},[]]}, @store)
         openid.call(env)
-        resp = env.delete('rack.openid.response')
-        if resp && resp.status == :success
-          request['auth'] = auth_hash(resp)
-          @app.call(env)
+        @openid_response = env.delete('rack.openid.response')
+        if @openid_response && @openid_response.status == :success
+          super
         else
           fail!(:invalid_credentials)
         end
       end
       
-      def auth_hash(response)
+      def auth_hash
         OmniAuth::Utils.deep_merge(super(), {
-          'uid' => response.display_identifier,
-          'user_info' => user_info(response)
+          'uid' => @openid_response.display_identifier,
+          'user_info' => user_info(@openid_response)
         })
       end
       

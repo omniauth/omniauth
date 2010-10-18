@@ -19,8 +19,8 @@ module OmniAuth
         return fail!(:password_mismatch) if request[:password_confirmation] && request[:password_confirmation] != '' && request[:password] != request[:password_confirmation]
         env['REQUEST_METHOD'] = 'GET'
         env['PATH_INFO'] = request.path + '/callback'
-        request['auth'] = auth_hash(encrypt(request[:identifier], request[:password]))
-        @app.call(env)
+        env['omniauth.auth'] = auth_hash(encrypt(request[:identifier], request[:password]))
+        call_app!
       end
       
       def auth_hash(crypted_password)
@@ -33,7 +33,7 @@ module OmniAuth
       end
       
       def callback_phase
-        @app.call(env)
+        call_app!
       end
       
       def encrypt(identifier, password)

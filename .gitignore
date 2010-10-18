@@ -29,3 +29,7 @@ oa-live
 .bundle
 .project
 .loadpath
+.yardoc
+doc
+
+Gemfile.lock

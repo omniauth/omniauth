@@ -35,13 +35,13 @@ module OmniAuth
       
       def perform
         @response = perform_authentication(endpoint)
-        request.POST['auth'] = auth_hash
+        @env['omniauth.auth'] = auth_hash
         @env['REQUEST_METHOD'] = 'GET'
         @env['PATH_INFO'] = "#{OmniAuth.config.path_prefix}/#{name}/callback"
-
-        @app.call(@env)
-      rescue RestClient::Request::Unauthorized
-        fail!(:invalid_credentials)
+        
+        call_app!
+      rescue RestClient::Request::Unauthorized => e
+        fail!(:invalid_credentials, e)
       end
       
       def perform_authentication(uri, headers = request_headers)

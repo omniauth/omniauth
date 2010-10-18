@@ -7,6 +7,14 @@ module OmniAuth
       super(&block)
     end
     
+    def on_failure(&block)
+      OmniAuth.config.on_failure = block
+    end
+    
+    def configure(&block)
+      OmniAuth.configure(&block)
+    end
+    
     def provider(klass, *args, &block)
       if klass.is_a?(Class)
         middleware = klass

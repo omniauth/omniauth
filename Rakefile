@@ -1,8 +1,14 @@
 require 'rubygems'
 require 'rake'
-require 'term/ansicolor'
 
-include Term::ANSIColor
+begin
+  require 'term/ansicolor'
+  include Term::ANSIColor
+rescue LoadError
+  def cyan; '' end
+  def blue; '' end
+  def clear; '' end
+end
 
 OMNIAUTH_GEMS = %w(oa-basic oa-core oa-oauth oa-openid oa-enterprise omniauth)
 
@@ -60,6 +66,15 @@ namespace :dependencies do
   end
 end
 
+task :release => ['release:tag', 'gems:publish', 'doc:pages:publish']
+
+namespace :release do
+  task :tag do
+    system("git tag v#{version}")
+    system('git push origin --tags')
+  end
+end
+
 namespace :gems do
 
   desc 'Build all gems'
@@ -70,7 +85,7 @@ namespace :gems do
   end
   
   desc 'Push all gems to Gemcutter'
-  task :release do
+  task :push do
     each_gem('is releasing to Gemcutter...') do
       system('rake gem:publish')
     end
@@ -119,3 +134,33 @@ namespace :version do
 end
 
 task :default => :spec
+
+begin
+  YARD_OPTS = ['-m', 'markdown', '-M', 'maruku']
+  require 'yard'
+  YARD::Rake::YardocTask.new(:doc) do |t|
+    t.files   = OMNIAUTH_GEMS.inject([]){|a,g| a = a + ["#{g}/lib/**/*.rb"]; a} + ['README.markdown']
+    t.options = YARD_OPTS
+  end
+  
+  namespace :doc do
+    YARD::Rake::YardocTask.new(:pages) do |t|
+      t.files   = OMNIAUTH_GEMS.inject([]){|a,g| a = a + ["#{g}/lib/**/*.rb"]; a} + ['README.markdown']
+      t.options = YARD_OPTS + ['-o', '../omniauth.doc']
+    end
+    
+    namespace :pages do
+      desc 'Generate and publish YARD docs to GitHub pages.'
+      task :publish => ['doc:pages'] do
+        Dir.chdir(File.dirname(__FILE__) + '/../omniauth.doc') do
+          system("git add .")
+          system("git add -u")
+          system("git commit -m 'Generating docs for version #{version}.'")
+          system("git push origin gh-pages")
+        end
+      end
+    end
+  end
+rescue LoadError
+  puts "You need to install YARD."
+end

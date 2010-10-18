@@ -3,21 +3,23 @@ require 'multi_json'
 
 module OmniAuth
   module Strategies
-    # 
-    # Authenticate to Twitter via OAuth and retrieve basic
+    #
+    # Authenticate to Identica via OAuth and retrieve basic
     # user information.
     #
     # Usage:
     #
-    #    use OmniAuth::Strategies::Twitter, 'consumerkey', 'consumersecret'
+    #    use OmniAuth::Strategies::Identica, 'consumerkey', 'consumersecret'
     #
-    class Twitter < OmniAuth::Strategies::OAuth
+    class Identica < OmniAuth::Strategies::OAuth
       def initialize(app, consumer_key, consumer_secret)
-        super(app, :twitter, consumer_key, consumer_secret,
-                :site => 'https://api.twitter.com',
-                :authorize_path => '/oauth/authenticate')
+        super(app, :identica, consumer_key, consumer_secret,
+                :site => 'http://identi.ca',
+                :request_token_path => "/api/oauth/request_token",
+                :access_token_path  => "/api/oauth/access_token",
+                :authorize_path     => "/api/oauth/authorize")
       end
-      
+
       def auth_hash
         OmniAuth::Utils.deep_merge(super, {
           'uid' => @access_token.params[:user_id],
@@ -25,10 +27,10 @@ module OmniAuth
           'extra' => {'user_hash' => user_hash}
         })
       end
-      
+
       def user_info
         user_hash = self.user_hash
-        
+
         {
           'nickname' => user_hash['screen_name'],
           'name' => user_hash['name'],
@@ -38,9 +40,9 @@ module OmniAuth
           'urls' => {'Website' => user_hash['url']}
         }
       end
-      
+
       def user_hash
-        @user_hash ||= MultiJson.decode(@access_token.get('/1/account/verify_credentials.json').body)
+        @user_hash ||= MultiJson.decode(@access_token.get('/api/account/verify_credentials.json').body)
       end
     end
   end
