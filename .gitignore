@@ -28,3 +28,4 @@ oa-live
 *.gem
 .bundle
 .project
+.loadpath

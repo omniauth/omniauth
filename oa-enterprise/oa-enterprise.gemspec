@@ -17,6 +17,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency  'nokogiri',   '~> 1.4.2'
   gem.add_dependency  'net-ldap',   '~> 0.1.1'
   gem.add_dependency  'rubyntlm',   '~> 0.1.1'
+  gem.add_dependency  'pyu-ruby-sasl',  '~>0.0.3.1'
   
   eval File.read(File.join(File.dirname(__FILE__), '../development_dependencies.rb'))
 end

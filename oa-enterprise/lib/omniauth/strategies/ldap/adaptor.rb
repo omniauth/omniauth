@@ -192,60 +192,14 @@ module OmniAuth
 	          end
 	        false
 			  end
-
-      def parse_sasl_digest_md5_credential(cred)
-        params = {}
-        cred.scan(/(\w+)=(\"?)(.+?)\2(?:,|$)/) do |name, sep, value|
-          params[name] = value
-        end
-        params
-      end			  
-      CHARS = ("a".."z").to_a + ("A".."Z").to_a + ("0".."9").to_a
-      def generate_client_nonce(size=32)
-        nonce = ""
-        size.times do |i|
-          nonce << CHARS[rand(CHARS.size)]
-        end
-        nonce
-      end      
+ 
       def sasl_bind_setup_digest_md5(bind_dn, options)
         initial_credential = ""
-        nonce_count = 1
         challenge_response = Proc.new do |cred|
-          params = parse_sasl_digest_md5_credential(cred)
-          qops = params["qop"].split(/,/)
-          unless qops.include?("auth")
-            raise ActiveLdap::AuthenticationError,
-                  _("unsupported qops: %s") % qops.inspect
-          end
-          qop = "auth"
-          server = @connection.instance_variable_get("@conn").addr[2]
-          realm = params['realm']
-          uri = "ldap/#{server}"
-          nc = "%08x" % nonce_count
-          nonce = params["nonce"]
-          cnonce = generate_client_nonce
-          requests = {
-            :username => bind_dn.inspect,
-            :realm => realm.inspect,
-            :nonce => nonce.inspect,
-            :cnonce => cnonce.inspect,
-            :nc => nc,
-            :qop => qop,
-            :maxbuf => "65536",
-            "digest-uri" => uri.inspect,
-          }
-          a1 = "#{bind_dn}:#{realm}:#{options[:password]||@password}"
-          a1 = "#{Digest::MD5.digest(a1)}:#{nonce}:#{cnonce}"
-          ha1 = Digest::MD5.hexdigest(a1)
-          a2 = "AUTHENTICATE:#{uri}"
-          ha2 = Digest::MD5.hexdigest(a2)
-          response = "#{ha1}:#{nonce}:#{nc}:#{cnonce}:#{qop}:#{ha2}"
-          requests["response"] = Digest::MD5.hexdigest(response)
-          nonce_count += 1
-          requests.collect do |key, value|
-            "#{key}=#{value}"
-          end.join(",")
+          pref = SASL::Preferences.new :digest_uri => "ldap/#{@host}", :username => bind_dn, :has_password? => true, :password => options[:password]||@password
+          sasl = SASL.new("DIGEST-MD5", pref)
+          response = sasl.receive("challenge", cred)
+          response[1]
         end
         [initial_credential, challenge_response]
       end

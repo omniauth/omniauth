@@ -1,6 +1,7 @@
 require 'omniauth/enterprise'
 require 'net/ldap'
-
+require 'sasl/base'
+require 'sasl'
 module OmniAuth
   module Strategies
     class LDAP
