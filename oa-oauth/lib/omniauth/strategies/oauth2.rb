@@ -50,7 +50,7 @@ module OmniAuth
       end
       
       def callback_phase
-        if request.params['error']
+        if request.params['error'] || request.params['error_reason']
           raise CallbackError.new(request.params['error'], request.params['error_description'] || request.params['error_reason'], request.params['error_uri'])
         end
         
