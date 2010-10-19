@@ -36,7 +36,7 @@ module OmniAuth
       def initialize(app, store = nil, options = {})
         super(app, options[:name] || :open_id)
         @options = options
-        @options[:required] ||= [AX[:email], AX[:first_name], AX[:last_name], 'email', 'fullname']
+        @options[:required] ||= [AX[:email], AX[:name], AX[:first_name], AX[:last_name], 'email', 'fullname']
         @options[:optional] ||= [AX[:nickname], AX[:city], AX[:state], AX[:website], AX[:image], 'postcode', 'nickname']
         @store = store
       end
@@ -48,7 +48,8 @@ module OmniAuth
           :identifier => identifier,
           :return_to => callback_url,
           :required => @options[:required],
-          :optional => @options[:optional]
+          :optional => @options[:optional],
+          :method => 'post'
         )}, []]}
       end
       
@@ -122,11 +123,13 @@ module OmniAuth
         ax = ::OpenID::AX::FetchResponse.from_success_response(response)
         return {} unless ax
         {
-          'email' => ax[AX[:email]],
-          'name' => ax[AX[:name]],
-          'location' => ("#{ax[AX[:city]]}, #{ax[AX[:state]]}" if Array(ax[AX[:city]]).any? && Array(ax[AX[:state]]).any?),
-          'nickname' => ax[AX[:nickname]],
-          'urls' => ({'Website' => Array(ax[AX[:website]]).first} if Array(ax[AX[:website]]).any?)
+          'email' => ax.get_single(AX[:email]),
+          'first_name' => ax.get_single(AX[:first_name]),
+          'last_name' => ax.get_single(AX[:last_name]),
+          'name' => (ax.get_single(AX[:name]) || [ax.get_single(AX[:first_name]), ax.get_single(AX[:last_name])].join(' ')),
+          'location' => ("#{ax.get_single(AX[:city])}, #{ax.get_single(AX[:state])}" if Array(ax.get_single(AX[:city])).any? && Array(ax.get_single(AX[:state])).any?),
+          'nickname' => ax.get_single(AX[:nickname]),
+          'urls' => ({'Website' => Array(ax.get_single(AX[:website])).first} if Array(ax.get_single(AX[:website])).any?)
         }.inject({}){|h,(k,v)| h[k] = Array(v).first; h}.reject{|k,v| v.nil? || v == ''}
       end
     end
