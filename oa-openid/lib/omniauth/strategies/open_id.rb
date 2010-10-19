@@ -4,6 +4,8 @@ require 'omniauth/openid'
 
 module OmniAuth
   module Strategies
+    # OmniAuth strategy for connecting via OpenID. This allows for connection
+    # to a wide variety of sites, some of which are listed [on the OpenID website](http://openid.net/get-an-openid/).
     class OpenID
       include OmniAuth::Strategy
       
@@ -23,13 +25,23 @@ module OmniAuth
         :image => 'http://axschema.org/media/image/aspect11'
       }
       
+      # @param app [Rack Application] Standard Rack middleware application argument.
+      # @param store [OpenID Store] The [OpenID Store](http://github.com/openid/ruby-openid/tree/master/lib/openid/store/)
+      #   you wish to use. Defaults to OpenID::MemoryStore.
+      # @option options [Array] :required The identity fields that are required for the OpenID 
+      #   request. May be an ActiveExchange schema URL or an sreg identifier.
+      # @option options [Array] :optional The optional attributes for the OpenID request. May
+      #   be ActiveExchange or sreg.
+      # @option options [Symbol, :open_id] :name The URL segment name for this provider.
       def initialize(app, store = nil, options = {})
-        super(app, options.delete(:name) || :open_id)
+        super(app, options[:name] || :open_id)
         @options = options
         @options[:required] ||= [AX[:email], AX[:first_name], AX[:last_name], 'email', 'fullname']
         @options[:optional] ||= [AX[:nickname], AX[:city], AX[:state], AX[:website], AX[:image], 'postcode', 'nickname']
         @store = store
       end
+      
+      protected
       
       def dummy_app
         lambda{|env| [401, {"WWW-Authenticate" => Rack::OpenID.build_header(
