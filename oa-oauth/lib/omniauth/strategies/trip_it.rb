@@ -9,7 +9,7 @@ module OmniAuth
     #
     #    use OmniAuth::Strategies::TripIt, 'consumerkey', 'consumersecret'
     #
-    class Tripit < OmniAuth::Strategies::OAuth
+    class TripIt < OmniAuth::Strategies::OAuth
       def initialize(app, consumer_key, consumer_secret)
         super(app, :tripit, consumer_key, consumer_secret,
                 :site => 'https://api.tripit.com',

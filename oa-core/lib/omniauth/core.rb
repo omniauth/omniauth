@@ -58,7 +58,8 @@ module OmniAuth
       'oauth2' => 'OAuth2',
       'openid' => 'OpenID',
       'open_id' => 'OpenID',
-      'github' => 'GitHub'
+      'github' => 'GitHub',
+      'tripit' => 'TripIt'
     }
 
     module_function
