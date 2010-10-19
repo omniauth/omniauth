@@ -83,7 +83,15 @@
 </dl>
 <div class="clear"></div>
 
-<div id="subclasses">
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    <p>OmniAuth strategy for connecting via OpenID. This allows for connection to a wide variety of sites, some of which are listed <a href='http://openid.net/get-an-openid/'>on the OpenID website</a>.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><div id="subclasses">
   <h2>Direct Known Subclasses</h2>
   <p class="children"><span class='object_link'><a href="GoogleApps.html" title="OmniAuth::Strategies::GoogleApps (class)">GoogleApps</a></span></p>
 </div>
@@ -163,153 +171,6 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#auth_hash-instance_method" title="#auth_hash (instance method)">- (Object) <strong>auth_hash</strong> </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#ax_user_info-instance_method" title="#ax_user_info (instance method)">- (Object) <strong>ax_user_info</strong>(response) </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#callback_phase-instance_method" title="#callback_phase (instance method)">- (Object) <strong>callback_phase</strong> </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#callback_url-instance_method" title="#callback_url (instance method)">- (Object) <strong>callback_url</strong> </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#dummy_app-instance_method" title="#dummy_app (instance method)">- (Object) <strong>dummy_app</strong> </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#get_identifier-instance_method" title="#get_identifier (instance method)">- (Object) <strong>get_identifier</strong> </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#identifier-instance_method" title="#identifier (instance method)">- (Object) <strong>identifier</strong> </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#initialize-instance_method" title="#initialize (instance method)">- (OpenID) <strong>initialize</strong>(app, store = nil, options = {}) </a>
     
 
@@ -326,90 +187,6 @@
 
   
     <span class="summary_desc"><div class='inline'><p>A new instance of OpenID.</p></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#request_phase-instance_method" title="#request_phase (instance method)">- (Object) <strong>request_phase</strong> </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#sreg_user_info-instance_method" title="#sreg_user_info (instance method)">- (Object) <strong>sreg_user_info</strong>(response) </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#start-instance_method" title="#start (instance method)">- (Object) <strong>start</strong> </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#user_info-instance_method" title="#user_info (instance method)">- (Object) <strong>user_info</strong>(response) </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
@@ -444,28 +221,124 @@
   </div>
 </div>
 <div class="tags">
+  <h3>Parameters:</h3>
+<ul class="param">
   
+    <li>
+      
+        <span class='type'>(<tt>Rack Application</tt>)</span>
+      
+      
+        <span class='name'>app</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>Standard Rack middleware application argument.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="OmniAuth::Strategies::OpenID (class)">OpenID</a></span> Store</tt>)</span>
+      
+      
+        <span class='name'>store</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The <a href='http://github.com/openid/ruby-openid/tree/master/lib/openid/store/'>OpenID Store</a> you wish to use. Defaults to OpenID::MemoryStore.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <span class='name'>options</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>a customizable set of options</p></div>
+      
+    </li>
+  
+</ul>
+
+  
+    
+    
+    
+    
+    
+    
+    <h3>Options Hash (<tt>options</tt>):</h3>
+    <ul class="option">
+      
+        <li>
+          <span class="type">(<tt>Array</tt>)</span>
+          <span class="name">:required</span>
+          <span class="default">
+            
+              <span class="na">N/A</span>
+            
+          </span>
+          &mdash;<div class='inline'><p>The identity fields that are required for the OpenID request. May be an ActiveExchange schema URL or an sreg identifier.</p></div>
+        </tr>
+      
+        <li>
+          <span class="type">(<tt>Array</tt>)</span>
+          <span class="name">:optional</span>
+          <span class="default">
+            
+              <span class="na">N/A</span>
+            
+          </span>
+          &mdash;<div class='inline'><p>The optional attributes for the OpenID request. May be ActiveExchange or sreg.</p></div>
+        </tr>
+      
+        <li>
+          <span class="type">(<tt>Symbol</tt>, <tt>:open_id</tt>)</span>
+          <span class="name">:name</span>
+          <span class="default">
+            
+              <span class="na">N/A</span>
+            
+          </span>
+          &mdash;<div class='inline'><p>The URL segment name for this provider.</p></div>
+        </tr>
+      
+    </ul>
+  
+
 </div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-26
-27
-28
-29
-30
-31
-32</pre>
+36
+37
+38
+39
+40
+41
+42</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'oa-openid/lib/omniauth/strategies/open_id.rb', line 26</span>
+      <pre class="code"><span class="info file"># File 'oa-openid/lib/omniauth/strategies/open_id.rb', line 36</span>
 
 <span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='app identifier id'>app</span><span class='comma token'>,</span> <span class='store identifier id'>store</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='comma token'>,</span> <span class='options identifier id'>options</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
-  <span class='super super kw'>super</span><span class='lparen token'>(</span><span class='app identifier id'>app</span><span class='comma token'>,</span> <span class='options identifier id'>options</span><span class='dot token'>.</span><span class='delete identifier id'>delete</span><span class='lparen token'>(</span><span class='symbol val'>:name</span><span class='rparen token'>)</span> <span class='orop op'>||</span> <span class='symbol val'>:open_id</span><span class='rparen token'>)</span>
+  <span class='super super kw'>super</span><span class='lparen token'>(</span><span class='app identifier id'>app</span><span class='comma token'>,</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:name</span><span class='rbrack token'>]</span> <span class='orop op'>||</span> <span class='symbol val'>:open_id</span><span class='rparen token'>)</span>
   <span class='@options ivar id'>@options</span> <span class='assign token'>=</span> <span class='options identifier id'>options</span>
-  <span class='@options ivar id'>@options</span><span class='lbrack token'>[</span><span class='symbol val'>:required</span><span class='rbrack token'>]</span> <span class='opasgn op'>||=</span> <span class='lbrack token'>[</span><span class='AX constant id'>AX</span><span class='lbrack token'>[</span><span class='symbol val'>:email</span><span class='rbrack token'>]</span><span class='comma token'>,</span> <span class='AX constant id'>AX</span><span class='lbrack token'>[</span><span class='symbol val'>:first_name</span><span class='rbrack token'>]</span><span class='comma token'>,</span> <span class='AX constant id'>AX</span><span class='lbrack token'>[</span><span class='symbol val'>:last_name</span><span class='rbrack token'>]</span><span class='comma token'>,</span> <span class='string val'>'email'</span><span class='comma token'>,</span> <span class='string val'>'fullname'</span><span class='rbrack token'>]</span>
+  <span class='@options ivar id'>@options</span><span class='lbrack token'>[</span><span class='symbol val'>:required</span><span class='rbrack token'>]</span> <span class='opasgn op'>||=</span> <span class='lbrack token'>[</span><span class='AX constant id'>AX</span><span class='lbrack token'>[</span><span class='symbol val'>:email</span><span class='rbrack token'>]</span><span class='comma token'>,</span> <span class='AX constant id'>AX</span><span class='lbrack token'>[</span><span class='symbol val'>:name</span><span class='rbrack token'>]</span><span class='comma token'>,</span> <span class='AX constant id'>AX</span><span class='lbrack token'>[</span><span class='symbol val'>:first_name</span><span class='rbrack token'>]</span><span class='comma token'>,</span> <span class='AX constant id'>AX</span><span class='lbrack token'>[</span><span class='symbol val'>:last_name</span><span class='rbrack token'>]</span><span class='comma token'>,</span> <span class='string val'>'email'</span><span class='comma token'>,</span> <span class='string val'>'fullname'</span><span class='rbrack token'>]</span>
   <span class='@options ivar id'>@options</span><span class='lbrack token'>[</span><span class='symbol val'>:optional</span><span class='rbrack token'>]</span> <span class='opasgn op'>||=</span> <span class='lbrack token'>[</span><span class='AX constant id'>AX</span><span class='lbrack token'>[</span><span class='symbol val'>:nickname</span><span class='rbrack token'>]</span><span class='comma token'>,</span> <span class='AX constant id'>AX</span><span class='lbrack token'>[</span><span class='symbol val'>:city</span><span class='rbrack token'>]</span><span class='comma token'>,</span> <span class='AX constant id'>AX</span><span class='lbrack token'>[</span><span class='symbol val'>:state</span><span class='rbrack token'>]</span><span class='comma token'>,</span> <span class='AX constant id'>AX</span><span class='lbrack token'>[</span><span class='symbol val'>:website</span><span class='rbrack token'>]</span><span class='comma token'>,</span> <span class='AX constant id'>AX</span><span class='lbrack token'>[</span><span class='symbol val'>:image</span><span class='rbrack token'>]</span><span class='comma token'>,</span> <span class='string val'>'postcode'</span><span class='comma token'>,</span> <span class='string val'>'nickname'</span><span class='rbrack token'>]</span>
   <span class='@store ivar id'>@store</span> <span class='assign token'>=</span> <span class='store identifier id'>store</span>
 <span class='end end kw'>end</span>
@@ -504,12 +377,12 @@
       <pre class="lines">
 
 
-10
-11
-12</pre>
+12
+13
+14</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'oa-openid/lib/omniauth/strategies/open_id.rb', line 10</span>
+      <pre class="code"><span class="info file"># File 'oa-openid/lib/omniauth/strategies/open_id.rb', line 12</span>
 
 <span class='def def kw'>def</span> <span class='options identifier id'>options</span>
   <span class='@options ivar id'>@options</span>
@@ -523,421 +396,10 @@
   </div>
 
 
-  <div id="instance_method_details" class="method_details_list">
-    <h2>Instance Method Details</h2>
-    
-    
-      <div class="method_details first">
-  <p class="signature first" id="auth_hash-instance_method">
-  
-    - (<tt>Object</tt>) <strong>auth_hash</strong> 
-  
-
-  
-</p><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-87
-88
-89
-90
-91
-92</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'oa-openid/lib/omniauth/strategies/open_id.rb', line 87</span>
-
-<span class='def def kw'>def</span> <span class='auth_hash identifier id'>auth_hash</span>
-  <span class='OmniAuth constant id'>OmniAuth</span><span class='colon2 op'>::</span><span class='Utils constant id'>Utils</span><span class='dot token'>.</span><span class='deep_merge identifier id'>deep_merge</span><span class='lparen token'>(</span><span class='super super kw'>super</span><span class='lparen token'>(</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='lbrace token'>{</span>
-    <span class='string val'>'uid'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='@openid_response ivar id'>@openid_response</span><span class='dot token'>.</span><span class='display_identifier identifier id'>display_identifier</span><span class='comma token'>,</span>
-    <span class='string val'>'user_info'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='user_info identifier id'>user_info</span><span class='lparen token'>(</span><span class='@openid_response ivar id'>@openid_response</span><span class='rparen token'>)</span>
-  <span class='rbrace token'>}</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <p class="signature " id="ax_user_info-instance_method">
-  
-    - (<tt>Object</tt>) <strong>ax_user_info</strong>(response) 
-  
-
-  
-</p><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-109
-110
-111
-112
-113
-114
-115
-116
-117
-118
-119</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'oa-openid/lib/omniauth/strategies/open_id.rb', line 109</span>
-
-<span class='def def kw'>def</span> <span class='ax_user_info identifier id'>ax_user_info</span><span class='lparen token'>(</span><span class='response identifier id'>response</span><span class='rparen token'>)</span>
-  <span class='ax identifier id'>ax</span> <span class='assign token'>=</span> <span class='colon3 op'>::</span><span class='OpenID constant id'>OpenID</span><span class='colon2 op'>::</span><span class='AX constant id'>AX</span><span class='colon2 op'>::</span><span class='FetchResponse constant id'>FetchResponse</span><span class='dot token'>.</span><span class='from_success_response identifier id'>from_success_response</span><span class='lparen token'>(</span><span class='response identifier id'>response</span><span class='rparen token'>)</span>
-  <span class='return return kw'>return</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span> <span class='unless unless_mod kw'>unless</span> <span class='ax identifier id'>ax</span>
-  <span class='lbrace token'>{</span>
-    <span class='string val'>'email'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='ax identifier id'>ax</span><span class='lbrack token'>[</span><span class='AX constant id'>AX</span><span class='lbrack token'>[</span><span class='symbol val'>:email</span><span class='rbrack token'>]</span><span class='rbrack token'>]</span><span class='comma token'>,</span>
-    <span class='string val'>'name'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='ax identifier id'>ax</span><span class='lbrack token'>[</span><span class='AX constant id'>AX</span><span class='lbrack token'>[</span><span class='symbol val'>:name</span><span class='rbrack token'>]</span><span class='rbrack token'>]</span><span class='comma token'>,</span>
-    <span class='string val'>'location'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='lparen token'>(</span><span class='dstring node'>&quot;#{ax[AX[:city]]}, #{ax[AX[:state]]}&quot;</span> <span class='if if_mod kw'>if</span> <span class='Array constant id'>Array</span><span class='lparen token'>(</span><span class='ax identifier id'>ax</span><span class='lbrack token'>[</span><span class='AX constant id'>AX</span><span class='lbrack token'>[</span><span class='symbol val'>:city</span><span class='rbrack token'>]</span><span class='rbrack token'>]</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='any? fid id'>any?</span> <span class='andop op'>&amp;&amp;</span> <span class='Array constant id'>Array</span><span class='lparen token'>(</span><span class='ax identifier id'>ax</span><span class='lbrack token'>[</span><span class='AX constant id'>AX</span><span class='lbrack token'>[</span><span class='symbol val'>:state</span><span class='rbrack token'>]</span><span class='rbrack token'>]</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='any? fid id'>any?</span><span class='rparen token'>)</span><span class='comma token'>,</span>
-    <span class='string val'>'nickname'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='ax identifier id'>ax</span><span class='lbrack token'>[</span><span class='AX constant id'>AX</span><span class='lbrack token'>[</span><span class='symbol val'>:nickname</span><span class='rbrack token'>]</span><span class='rbrack token'>]</span><span class='comma token'>,</span>
-    <span class='string val'>'urls'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='lparen token'>(</span><span class='lbrace token'>{</span><span class='string val'>'Website'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='Array constant id'>Array</span><span class='lparen token'>(</span><span class='ax identifier id'>ax</span><span class='lbrack token'>[</span><span class='AX constant id'>AX</span><span class='lbrack token'>[</span><span class='symbol val'>:website</span><span class='rbrack token'>]</span><span class='rbrack token'>]</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='first identifier id'>first</span><span class='rbrace token'>}</span> <span class='if if_mod kw'>if</span> <span class='Array constant id'>Array</span><span class='lparen token'>(</span><span class='ax identifier id'>ax</span><span class='lbrack token'>[</span><span class='AX constant id'>AX</span><span class='lbrack token'>[</span><span class='symbol val'>:website</span><span class='rbrack token'>]</span><span class='rbrack token'>]</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='any? fid id'>any?</span><span class='rparen token'>)</span>
-  <span class='rbrace token'>}</span><span class='dot token'>.</span><span class='inject identifier id'>inject</span><span class='lparen token'>(</span><span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span><span class='lbrace token'>{</span><span class='bitor op'>|</span><span class='h identifier id'>h</span><span class='comma token'>,</span><span class='lparen token'>(</span><span class='k identifier id'>k</span><span class='comma token'>,</span><span class='v identifier id'>v</span><span class='rparen token'>)</span><span class='bitor op'>|</span> <span class='h identifier id'>h</span><span class='lbrack token'>[</span><span class='k identifier id'>k</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='Array constant id'>Array</span><span class='lparen token'>(</span><span class='v identifier id'>v</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='first identifier id'>first</span><span class='semicolon token'>;</span> <span class='h identifier id'>h</span><span class='rbrace token'>}</span><span class='dot token'>.</span><span class='reject identifier id'>reject</span><span class='lbrace token'>{</span><span class='bitor op'>|</span><span class='k identifier id'>k</span><span class='comma token'>,</span><span class='v identifier id'>v</span><span class='bitor op'>|</span> <span class='v identifier id'>v</span><span class='dot token'>.</span><span class='nil? fid id'>nil?</span> <span class='orop op'>||</span> <span class='v identifier id'>v</span> <span class='eq op'>==</span> <span class='string val'>''</span><span class='rbrace token'>}</span>
-<span class='end end kw'>end</span>
-</pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <p class="signature " id="callback_phase-instance_method">
-  
-    - (<tt>Object</tt>) <strong>callback_phase</strong> 
-  
-
-  
-</p><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-75
-76
-77
-78
-79
-80
-81
-82
-83
-84
-85</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'oa-openid/lib/omniauth/strategies/open_id.rb', line 75</span>
-
-<span class='def def kw'>def</span> <span class='callback_phase identifier id'>callback_phase</span>
-  <span class='env identifier id'>env</span><span class='lbrack token'>[</span><span class='string val'>'REQUEST_METHOD'</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='string val'>'GET'</span>
-  <span class='openid identifier id'>openid</span> <span class='assign token'>=</span> <span class='Rack constant id'>Rack</span><span class='colon2 op'>::</span><span class='OpenID constant id'>OpenID</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='lambda identifier id'>lambda</span><span class='lbrace token'>{</span><span class='bitor op'>|</span><span class='env identifier id'>env</span><span class='bitor op'>|</span> <span class='lbrack token'>[</span><span class='integer val'>200</span><span class='comma token'>,</span><span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='comma token'>,</span><span class='lbrack token'>[</span><span class='rbrack token'>]</span><span class='rbrack token'>]</span><span class='rbrace token'>}</span><span class='comma token'>,</span> <span class='@store ivar id'>@store</span><span class='rparen token'>)</span>
-  <span class='openid identifier id'>openid</span><span class='dot token'>.</span><span class='call identifier id'>call</span><span class='lparen token'>(</span><span class='env identifier id'>env</span><span class='rparen token'>)</span>
-  <span class='@openid_response ivar id'>@openid_response</span> <span class='assign token'>=</span> <span class='env identifier id'>env</span><span class='dot token'>.</span><span class='delete identifier id'>delete</span><span class='lparen token'>(</span><span class='string val'>'rack.openid.response'</span><span class='rparen token'>)</span>
-  <span class='if if kw'>if</span> <span class='@openid_response ivar id'>@openid_response</span> <span class='andop op'>&amp;&amp;</span> <span class='@openid_response ivar id'>@openid_response</span><span class='dot token'>.</span><span class='status identifier id'>status</span> <span class='eq op'>==</span> <span class='symbol val'>:success</span>
-    <span class='super super kw'>super</span>
-  <span class='else else kw'>else</span>
-    <span class='fail! fid id'>fail!</span><span class='lparen token'>(</span><span class='symbol val'>:invalid_credentials</span><span class='rparen token'>)</span>
-  <span class='end end kw'>end</span>
-<span class='end end kw'>end</span>
-</pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <p class="signature " id="callback_url-instance_method">
-  
-    - (<tt>Object</tt>) <strong>callback_url</strong> 
-  
-
-  
-</p><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-43
-44
-45
-46
-47</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'oa-openid/lib/omniauth/strategies/open_id.rb', line 43</span>
-
-<span class='def def kw'>def</span> <span class='callback_url identifier id'>callback_url</span>
-  <span class='uri identifier id'>uri</span> <span class='assign token'>=</span> <span class='URI constant id'>URI</span><span class='dot token'>.</span><span class='parse identifier id'>parse</span><span class='lparen token'>(</span><span class='request identifier id'>request</span><span class='dot token'>.</span><span class='url identifier id'>url</span><span class='rparen token'>)</span>
-  <span class='uri identifier id'>uri</span><span class='dot token'>.</span><span class='path identifier id'>path</span> <span class='opasgn op'>+=</span> <span class='string val'>'/callback'</span>
-  <span class='uri identifier id'>uri</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span>
-<span class='end end kw'>end</span>
-</pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <p class="signature " id="dummy_app-instance_method">
-  
-    - (<tt>Object</tt>) <strong>dummy_app</strong> 
-  
-
-  
-</p><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-34
-35
-36
-37
-38
-39
-40
-41</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'oa-openid/lib/omniauth/strategies/open_id.rb', line 34</span>
-
-<span class='def def kw'>def</span> <span class='dummy_app identifier id'>dummy_app</span>
-  <span class='lambda identifier id'>lambda</span><span class='lbrace token'>{</span><span class='bitor op'>|</span><span class='env identifier id'>env</span><span class='bitor op'>|</span> <span class='lbrack token'>[</span><span class='integer val'>401</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='string val'>&quot;WWW-Authenticate&quot;</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='Rack constant id'>Rack</span><span class='colon2 op'>::</span><span class='OpenID constant id'>OpenID</span><span class='dot token'>.</span><span class='build_header identifier id'>build_header</span><span class='lparen token'>(</span>
-    <span class='symbol val'>:identifier</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='identifier identifier id'>identifier</span><span class='comma token'>,</span>
-    <span class='symbol val'>:return_to</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='callback_url identifier id'>callback_url</span><span class='comma token'>,</span>
-    <span class='symbol val'>:required</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='@options ivar id'>@options</span><span class='lbrack token'>[</span><span class='symbol val'>:required</span><span class='rbrack token'>]</span><span class='comma token'>,</span>
-    <span class='symbol val'>:optional</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='@options ivar id'>@options</span><span class='lbrack token'>[</span><span class='symbol val'>:optional</span><span class='rbrack token'>]</span>
-  <span class='rparen token'>)</span><span class='rbrace token'>}</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='rbrack token'>]</span><span class='rbrack token'>]</span><span class='rbrace token'>}</span>
-<span class='end end kw'>end</span>
-</pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <p class="signature " id="get_identifier-instance_method">
-  
-    - (<tt>Object</tt>) <strong>get_identifier</strong> 
-  
-
-  
-</p><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-68
-69
-70
-71
-72
-73</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'oa-openid/lib/omniauth/strategies/open_id.rb', line 68</span>
-
-<span class='def def kw'>def</span> <span class='get_identifier identifier id'>get_identifier</span>
-  <span class='OmniAuth constant id'>OmniAuth</span><span class='colon2 op'>::</span><span class='Form constant id'>Form</span><span class='dot token'>.</span><span class='build identifier id'>build</span><span class='lparen token'>(</span><span class='string val'>'OpenID Authentication'</span><span class='rparen token'>)</span> <span class='do do kw'>do</span>
-    <span class='label_field identifier id'>label_field</span><span class='lparen token'>(</span><span class='string val'>'OpenID Identifier'</span><span class='comma token'>,</span> <span class='IDENTIFIER_URL_PARAMETER constant id'>IDENTIFIER_URL_PARAMETER</span><span class='rparen token'>)</span>
-    <span class='input_field identifier id'>input_field</span><span class='lparen token'>(</span><span class='string val'>'url'</span><span class='comma token'>,</span> <span class='IDENTIFIER_URL_PARAMETER constant id'>IDENTIFIER_URL_PARAMETER</span><span class='rparen token'>)</span>
-  <span class='end end kw'>end</span><span class='dot token'>.</span><span class='to_response identifier id'>to_response</span>
-<span class='end end kw'>end</span>
-</pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <p class="signature " id="identifier-instance_method">
-  
-    - (<tt>Object</tt>) <strong>identifier</strong> 
-  
-
-  
-</p><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-49
-50
-51</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'oa-openid/lib/omniauth/strategies/open_id.rb', line 49</span>
-
-<span class='def def kw'>def</span> <span class='identifier identifier id'>identifier</span>
-  <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:identifier</span><span class='rbrack token'>]</span> <span class='orop op'>||</span> <span class='request identifier id'>request</span><span class='lbrack token'>[</span><span class='IDENTIFIER_URL_PARAMETER constant id'>IDENTIFIER_URL_PARAMETER</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <p class="signature " id="request_phase-instance_method">
-  
-    - (<tt>Object</tt>) <strong>request_phase</strong> 
-  
-
-  
-</p><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-53
-54
-55</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'oa-openid/lib/omniauth/strategies/open_id.rb', line 53</span>
-
-<span class='def def kw'>def</span> <span class='request_phase identifier id'>request_phase</span>
-  <span class='identifier identifier id'>identifier</span> <span class='integer val'>? </span><span class='start identifier id'>start</span> <span class='colon op'>:</span> <span class='get_identifier identifier id'>get_identifier</span>
-<span class='end end kw'>end</span>
-</pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <p class="signature " id="sreg_user_info-instance_method">
-  
-    - (<tt>Object</tt>) <strong>sreg_user_info</strong>(response) 
-  
-
-  
-</p><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-98
-99
-100
-101
-102
-103
-104
-105
-106
-107</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'oa-openid/lib/omniauth/strategies/open_id.rb', line 98</span>
-
-<span class='def def kw'>def</span> <span class='sreg_user_info identifier id'>sreg_user_info</span><span class='lparen token'>(</span><span class='response identifier id'>response</span><span class='rparen token'>)</span>
-  <span class='sreg identifier id'>sreg</span> <span class='assign token'>=</span> <span class='colon3 op'>::</span><span class='OpenID constant id'>OpenID</span><span class='colon2 op'>::</span><span class='SReg constant id'>SReg</span><span class='colon2 op'>::</span><span class='Response constant id'>Response</span><span class='dot token'>.</span><span class='from_success_response identifier id'>from_success_response</span><span class='lparen token'>(</span><span class='response identifier id'>response</span><span class='rparen token'>)</span>
-  <span class='return return kw'>return</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span> <span class='unless unless_mod kw'>unless</span> <span class='sreg identifier id'>sreg</span>
-  <span class='lbrace token'>{</span>
-    <span class='string val'>'email'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='sreg identifier id'>sreg</span><span class='lbrack token'>[</span><span class='string val'>'email'</span><span class='rbrack token'>]</span><span class='comma token'>,</span>
-    <span class='string val'>'name'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='sreg identifier id'>sreg</span><span class='lbrack token'>[</span><span class='string val'>'fullname'</span><span class='rbrack token'>]</span><span class='comma token'>,</span>
-    <span class='string val'>'location'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='sreg identifier id'>sreg</span><span class='lbrack token'>[</span><span class='string val'>'postcode'</span><span class='rbrack token'>]</span><span class='comma token'>,</span>
-    <span class='string val'>'nickname'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='sreg identifier id'>sreg</span><span class='lbrack token'>[</span><span class='string val'>'nickname'</span><span class='rbrack token'>]</span>
-  <span class='rbrace token'>}</span><span class='dot token'>.</span><span class='reject identifier id'>reject</span><span class='lbrace token'>{</span><span class='bitor op'>|</span><span class='k identifier id'>k</span><span class='comma token'>,</span><span class='v identifier id'>v</span><span class='bitor op'>|</span> <span class='v identifier id'>v</span><span class='dot token'>.</span><span class='nil? fid id'>nil?</span> <span class='orop op'>||</span> <span class='v identifier id'>v</span> <span class='eq op'>==</span> <span class='string val'>''</span><span class='rbrace token'>}</span>
-<span class='end end kw'>end</span>
-</pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <p class="signature " id="start-instance_method">
-  
-    - (<tt>Object</tt>) <strong>start</strong> 
-  
-
-  
-</p><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-57
-58
-59
-60
-61
-62
-63
-64
-65
-66</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'oa-openid/lib/omniauth/strategies/open_id.rb', line 57</span>
-
-<span class='def def kw'>def</span> <span class='start identifier id'>start</span>
-  <span class='openid identifier id'>openid</span> <span class='assign token'>=</span> <span class='Rack constant id'>Rack</span><span class='colon2 op'>::</span><span class='OpenID constant id'>OpenID</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='dummy_app identifier id'>dummy_app</span><span class='comma token'>,</span> <span class='@store ivar id'>@store</span><span class='rparen token'>)</span>
-  <span class='response identifier id'>response</span> <span class='assign token'>=</span> <span class='openid identifier id'>openid</span><span class='dot token'>.</span><span class='call identifier id'>call</span><span class='lparen token'>(</span><span class='env identifier id'>env</span><span class='rparen token'>)</span>
-  <span class='case case kw'>case</span> <span class='env identifier id'>env</span><span class='lbrack token'>[</span><span class='string val'>'rack.openid.response'</span><span class='rbrack token'>]</span>
-  <span class='when when kw'>when</span> <span class='Rack constant id'>Rack</span><span class='colon2 op'>::</span><span class='OpenID constant id'>OpenID</span><span class='colon2 op'>::</span><span class='MissingResponse constant id'>MissingResponse</span><span class='comma token'>,</span> <span class='Rack constant id'>Rack</span><span class='colon2 op'>::</span><span class='OpenID constant id'>OpenID</span><span class='colon2 op'>::</span><span class='TimeoutResponse constant id'>TimeoutResponse</span>
-    <span class='fail! fid id'>fail!</span><span class='lparen token'>(</span><span class='symbol val'>:connection_failed</span><span class='rparen token'>)</span>
-  <span class='else else kw'>else</span>
-    <span class='response identifier id'>response</span>
-  <span class='end end kw'>end</span>
-<span class='end end kw'>end</span>
-</pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <p class="signature " id="user_info-instance_method">
-  
-    - (<tt>Object</tt>) <strong>user_info</strong>(response) 
-  
-
-  
-</p><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-94
-95
-96</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'oa-openid/lib/omniauth/strategies/open_id.rb', line 94</span>
-
-<span class='def def kw'>def</span> <span class='user_info identifier id'>user_info</span><span class='lparen token'>(</span><span class='response identifier id'>response</span><span class='rparen token'>)</span>
-  <span class='sreg_user_info identifier id'>sreg_user_info</span><span class='lparen token'>(</span><span class='response identifier id'>response</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='merge identifier id'>merge</span><span class='lparen token'>(</span><span class='ax_user_info identifier id'>ax_user_info</span><span class='lparen token'>(</span><span class='response identifier id'>response</span><span class='rparen token'>)</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-  </div>
-
 </div>
     
     <div id="footer">
-  Generated on Thu Oct 14 16:21:33 2010 by 
+  Generated on Tue Oct 19 18:02:24 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.6.1 (ruby-1.8.7).
 </div>

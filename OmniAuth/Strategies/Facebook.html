@@ -469,7 +469,7 @@
       <pre class="code"><span class="info file"># File 'oa-oauth/lib/omniauth/strategies/facebook.rb', line 21</span>
 
 <span class='def def kw'>def</span> <span class='user_data identifier id'>user_data</span>
-  <span class='@data ivar id'>@data</span> <span class='opasgn op'>||=</span> <span class='MultiJson constant id'>MultiJson</span><span class='dot token'>.</span><span class='decode identifier id'>decode</span><span class='lparen token'>(</span><span class='@access_token ivar id'>@access_token</span><span class='dot token'>.</span><span class='get identifier id'>get</span><span class='lparen token'>(</span><span class='string val'>'/me'</span><span class='rparen token'>)</span><span class='rparen token'>)</span>
+  <span class='@data ivar id'>@data</span> <span class='opasgn op'>||=</span> <span class='MultiJson constant id'>MultiJson</span><span class='dot token'>.</span><span class='decode identifier id'>decode</span><span class='lparen token'>(</span><span class='@access_token ivar id'>@access_token</span><span class='dot token'>.</span><span class='get identifier id'>get</span><span class='lparen token'>(</span><span class='string val'>'/me'</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='comma token'>,</span> <span class='lbrace token'>{</span> <span class='string val'>&quot;Accept-Language&quot;</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;en-us,en;&quot;</span><span class='rbrace token'>}</span><span class='rparen token'>)</span><span class='rparen token'>)</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -529,7 +529,7 @@
 </div>
     
     <div id="footer">
-  Generated on Thu Oct 14 16:21:30 2010 by 
+  Generated on Tue Oct 19 18:02:21 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.6.1 (ruby-1.8.7).
 </div>
