@@ -66,3 +66,7 @@ The best place to find more information is the [OmniAuth Wiki](http://github.com
 * [Changelog](http://github.com/intridea/omniauth/wiki/Changelog)
 * [Report Issues](http://github.com/intridea/omniauth/issues)
 * [Mailing List](http://groups.google.com/group/omniauth)
+
+## License
+
+OmniAuth is licensed under the MIT License.
