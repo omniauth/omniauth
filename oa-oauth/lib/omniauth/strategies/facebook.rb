@@ -7,7 +7,7 @@ module OmniAuth
     # basic user information.
     #
     # @example Basic Usage
-    #     use OmniAuth::Strategies::Facebook, 'app_id', 'app_secret'
+    # use OmniAuth::Strategies::Facebook, 'app_id', 'app_secret'
     class Facebook < OAuth2
       # @param [Rack Application] app standard middleware application parameter
       # @param [String] app_id the application id as [registered on Facebook](http://www.facebook.com/developers/)
@@ -19,7 +19,7 @@ module OmniAuth
       end
       
       def user_data
-        @data ||= MultiJson.decode(@access_token.get('/me'))
+        @data ||= MultiJson.decode(@access_token.get('/me', {}, { "Accept-Language" => "en-us,en;"}))
       end
       
       def request_phase
