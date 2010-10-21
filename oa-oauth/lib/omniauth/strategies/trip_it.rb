@@ -28,8 +28,8 @@ module OmniAuth
       end
       
       def urlencode(str)
-        str.gsub(/[^a-zA-Z0-9_\.\-]/n) {|s| sprintf('%%%02x', s[0]) }
-      end      
+        str.gsub(/[^a-zA-Z0-9_\.\-]/n) { sprintf('%%%02x', $&[0].ord) }
+      end
     end
   end
 end
