@@ -26,6 +26,7 @@ OmniAuth currently supports the following external providers:
   * Gowalla (credit: [kvnsmth](http://github.com/kvnsmth))
   * Dopplr (credit: [flextrip](http://github.com/flextrip))
   * TripIt (credit: [flextrip](http://github.com/flextrip))
+	* SoundCloud (credit: [leemartin](http://github.com/leemartin))
 * OpenID
 * Google Apps (via OpenID)
 * CAS (Central Authentication Service) (credit: [jamesarosen](http://github.com/jamesarosen))
