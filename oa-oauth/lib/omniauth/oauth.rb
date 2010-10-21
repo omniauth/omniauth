@@ -15,6 +15,6 @@ module OmniAuth
     autoload :Identica,           'omniauth/strategies/identica'
     autoload :TripIt,             'omniauth/strategies/trip_it'
     autoload :Dopplr,             'omniauth/strategies/dopplr'
-    autoload :SoundCloud,         'omniauth/strategies/soundcloud'
+    autoload :SoundCloud,         'omniauth/strategies/sound_cloud'
   end
 end
