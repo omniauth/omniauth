@@ -25,6 +25,8 @@ module OmniAuth
         :image => 'http://axschema.org/media/image/aspect11'
       }
       
+      # Initialize the strategy as a Rack Middleware.
+      #
       # @param app [Rack Application] Standard Rack middleware application argument.
       # @param store [OpenID Store] The [OpenID Store](http://github.com/openid/ruby-openid/tree/master/lib/openid/store/)
       #   you wish to use. Defaults to OpenID::MemoryStore.
