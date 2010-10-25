@@ -78,7 +78,8 @@
   <span class='string val'>'openid'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'OpenID'</span><span class='comma token'>,</span>
   <span class='string val'>'open_id'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'OpenID'</span><span class='comma token'>,</span>
   <span class='string val'>'github'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'GitHub'</span><span class='comma token'>,</span>
-  <span class='string val'>'tripit'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'TripIt'</span>
+  <span class='string val'>'tripit'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'TripIt'</span><span class='comma token'>,</span>
+  <span class='string val'>'soundcloud'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'SoundCloud'</span>
 <span class='rbrace token'>}</span>
 </pre></dd>
       
@@ -180,7 +181,6 @@
       <pre class="lines">
 
 
-86
 87
 88
 89
@@ -188,10 +188,11 @@
 91
 92
 93
-94</pre>
+94
+95</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'oa-core/lib/omniauth/core.rb', line 86</span>
+      <pre class="code"><span class="info file"># File 'oa-core/lib/omniauth/core.rb', line 87</span>
 
 <span class='def def kw'>def</span> <span class='camelize identifier id'>camelize</span><span class='lparen token'>(</span><span class='word identifier id'>word</span><span class='comma token'>,</span> <span class='first_letter_in_uppercase identifier id'>first_letter_in_uppercase</span> <span class='assign token'>=</span> <span class='true true kw'>true</span><span class='rparen token'>)</span>
   <span class='return return kw'>return</span> <span class='CAMELIZE_SPECIAL constant id'>CAMELIZE_SPECIAL</span><span class='lbrack token'>[</span><span class='word identifier id'>word</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span><span class='rbrack token'>]</span> <span class='if if_mod kw'>if</span> <span class='CAMELIZE_SPECIAL constant id'>CAMELIZE_SPECIAL</span><span class='lbrack token'>[</span><span class='word identifier id'>word</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span><span class='rbrack token'>]</span>
@@ -221,7 +222,6 @@
       <pre class="lines">
 
 
-71
 72
 73
 74
@@ -234,10 +234,11 @@
 81
 82
 83
-84</pre>
+84
+85</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'oa-core/lib/omniauth/core.rb', line 71</span>
+      <pre class="code"><span class="info file"># File 'oa-core/lib/omniauth/core.rb', line 72</span>
 
 <span class='def def kw'>def</span> <span class='deep_merge identifier id'>deep_merge</span><span class='lparen token'>(</span><span class='hash identifier id'>hash</span><span class='comma token'>,</span> <span class='other_hash identifier id'>other_hash</span><span class='rparen token'>)</span>
   <span class='target identifier id'>target</span> <span class='assign token'>=</span> <span class='hash identifier id'>hash</span><span class='dot token'>.</span><span class='dup identifier id'>dup</span>
@@ -272,12 +273,12 @@
       <pre class="lines">
 
 
-67
 68
-69</pre>
+69
+70</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'oa-core/lib/omniauth/core.rb', line 67</span>
+      <pre class="code"><span class="info file"># File 'oa-core/lib/omniauth/core.rb', line 68</span>
 
 <span class='def def kw'>def</span> <span class='form_css identifier id'>form_css</span>
   <span class='dstring node'>&quot;&lt;style type='text/css'&gt;#{OmniAuth.config.form_css}&lt;/style&gt;&quot;</span>
@@ -293,7 +294,7 @@
 </div>
     
     <div id="footer">
-  Generated on Tue Oct 19 18:02:21 2010 by 
+  Generated on Mon Oct 25 17:24:50 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.6.1 (ruby-1.8.7).
 </div>

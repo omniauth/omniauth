@@ -186,7 +186,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'><p>A new instance of OpenID.</p></div></span>
+    <span class="summary_desc"><div class='inline'><p>Initialize the strategy as a Rack Middleware.</p></div></span>
   
 </li>
 
@@ -216,7 +216,7 @@
   
 </p><div class="docstring">
   <div class="discussion">
-    <p>A new instance of OpenID</p>
+    <p>Initialize the strategy as a Rack Middleware.</p>
 
   </div>
 </div>
@@ -324,16 +324,16 @@
       <pre class="lines">
 
 
-36
-37
 38
 39
 40
 41
-42</pre>
+42
+43
+44</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'oa-openid/lib/omniauth/strategies/open_id.rb', line 36</span>
+      <pre class="code"><span class="info file"># File 'oa-openid/lib/omniauth/strategies/open_id.rb', line 38</span>
 
 <span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='app identifier id'>app</span><span class='comma token'>,</span> <span class='store identifier id'>store</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='comma token'>,</span> <span class='options identifier id'>options</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
   <span class='super super kw'>super</span><span class='lparen token'>(</span><span class='app identifier id'>app</span><span class='comma token'>,</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:name</span><span class='rbrack token'>]</span> <span class='orop op'>||</span> <span class='symbol val'>:open_id</span><span class='rparen token'>)</span>
@@ -399,7 +399,7 @@
 </div>
     
     <div id="footer">
-  Generated on Tue Oct 19 18:02:24 2010 by 
+  Generated on Mon Oct 25 17:24:48 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.6.1 (ruby-1.8.7).
 </div>
