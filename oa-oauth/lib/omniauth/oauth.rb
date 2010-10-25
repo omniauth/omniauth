@@ -16,5 +16,6 @@ module OmniAuth
     autoload :TripIt,             'omniauth/strategies/trip_it'
     autoload :Dopplr,             'omniauth/strategies/dopplr'
     autoload :Meetup,             'omniauth/strategies/meetup'
+    autoload :SoundCloud,         'omniauth/strategies/sound_cloud'
   end
 end
