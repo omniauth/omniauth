@@ -1,0 +1,17 @@
+= OmniAuth::WebService
+
+WebService stratgies for APIs (such as Flickr).
+
+== Installation
+
+For the full auth suite:
+
+    gem install omniauth
+    
+== OmniAuth Builder
+
+If you want to allow multiple providers, use the OmniAuth Builder:
+
+    use OmniAuth::Builder do
+      provider :flickr, 'api_key', 'secret_key', :scope => 'read'
+    end

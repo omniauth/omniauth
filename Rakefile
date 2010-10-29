@@ -10,7 +10,7 @@ rescue LoadError
   def clear; '' end
 end
 
-OMNIAUTH_GEMS = %w(oa-basic oa-core oa-oauth oa-openid oa-enterprise omniauth)
+OMNIAUTH_GEMS = %w(oa-basic oa-core oa-oauth oa-openid oa-enterprise oa-webservice omniauth)
 
 def each_gem(action, &block)
   OMNIAUTH_GEMS.each_with_index do |dir, i|

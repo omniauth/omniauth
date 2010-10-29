@@ -1,0 +1,8 @@
+source "http://rubygems.org"
+
+gem 'oa-core',  :path => File.expand_path('../../oa-core/', __FILE__)
+gem 'oa-webservice', :path => File.expand_path("..", __FILE__)
+gem 'rest-client'
+gem 'multi_json'
+
+eval File.read(File.join(File.dirname(__FILE__), '../development_dependencies.rb'))
