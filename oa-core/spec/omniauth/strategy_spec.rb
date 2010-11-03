@@ -3,7 +3,9 @@ require 'spec_helper'
 class ExampleStrategy
   include OmniAuth::Strategy
   def call(env); self.call!(env) end
+  attr_reader :last_env
   def request_phase
+    @last_env = env
     raise "Request Phase"
   end
   def callback_phase
@@ -36,6 +38,15 @@ describe OmniAuth::Strategy do
       it 'should use the default callback path' do
         lambda{ strategy.call({'PATH_INFO' => '/auth/test/callback'}) }.should raise_error("Callback Phase")
       end
+    end
+    
+    it 'should be able to modify the env on the fly before the request_phase' do
+      app = lambda{|env| env['omniauth.boom'] = true; [404, {}, ['Whatev']] }
+      
+      s = ExampleStrategy.new(app, 'test')
+      lambda{ s.call({'PATH_INFO' => '/auth/test'}) }.should raise_error("Request Phase")
+      s.response.status.should == 404
+      s.last_env.should be_key('omniauth.boom')
     end
     
     context 'custom paths' do

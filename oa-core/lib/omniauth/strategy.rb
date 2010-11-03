@@ -6,7 +6,7 @@ module OmniAuth
     
     def self.included(base)
       base.class_eval do
-        attr_reader :app, :name, :env, :options
+        attr_reader :app, :name, :env, :options, :response
       end
     end
      
@@ -23,6 +23,8 @@ module OmniAuth
     def call!(env)
       @env = env
       if request.path == request_path
+        status, headers, body = *call_app!
+        @response = Rack::Response.new(body, status, headers)
         request_phase
       elsif request.path == callback_path
         callback_phase
