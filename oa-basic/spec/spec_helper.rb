@@ -1,6 +1,6 @@
 require 'rubygems'
-require 'spec'
-require 'spec/autorun'
+require 'rspec'
+require 'rspec/autorun'
 require 'rack/test'
 require 'webmock/rspec'
 

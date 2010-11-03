@@ -9,7 +9,7 @@ module OmniAuth
       autoload :ServiceTicketValidator, 'omniauth/strategies/cas/service_ticket_validator'
       
       def initialize(app, options = {})
-        super(app, options.delete(:name) || :cas)
+        super(app, options.delete(:name) || :cas, options)
         @configuration = OmniAuth::Strategies::CAS::Configuration.new(options)
       end
       

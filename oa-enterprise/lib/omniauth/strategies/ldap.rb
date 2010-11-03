@@ -18,9 +18,12 @@ module OmniAuth
 										'url' => ['wwwhomepage'],
 										'image' => 'jpegPhoto',
 										'description' => 'description'}
+      # Initialize the LDAP Middleware
+      #
+      # @param [Rack Application] app Standard Rack middleware argument.
+      # @option options [String, 'LDAP Authentication'] :title A title for the authentication form.
       def initialize(app, title, options = {})
-      	@options = options.dup
-        super(app, @options.delete(:name) || :ldap)
+        super(app, @options.delete(:name) || :ldap, options.dup)
         @title = title
         @name_proc = (@options.delete(:name_proc) || Proc.new {|name| name})
         @adaptor = OmniAuth::Strategies::LDAP::Adaptor.new(options)
@@ -37,7 +40,7 @@ module OmniAuth
       end
 
 			def get_credentials
-        OmniAuth::Form.build(@title) do
+        OmniAuth::Form.build(options[:title] || "LDAP Authentication") do
           text_field 'Login', 'username'
           password_field 'Password', 'password'
         end.to_response

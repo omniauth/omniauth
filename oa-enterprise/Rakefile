@@ -6,10 +6,9 @@ require 'rake'
 require 'mg'
 MG.new('oa-enterprise.gemspec')
 
-require 'spec/rake/spectask'
-Spec::Rake::SpecTask.new(:spec) do |spec|
-  spec.libs << '../oa-core/lib' << 'lib' << 'spec'
-  spec.spec_files = FileList['spec/**/*_spec.rb']
+require 'rspec/core/rake_task'
+RSpec::Core::RakeTask.new(:spec) do |s|
+  s.rspec_opts = "--format=#{ENV['RSPEC_FORMAT'] || 'nested'} --colour"
 end
 
 task :default => :spec

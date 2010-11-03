@@ -8,6 +8,8 @@ rescue LoadError
   def cyan; '' end
   def blue; '' end
   def clear; '' end
+  def green; '' end
+  def red; '' end
 end
 
 OMNIAUTH_GEMS = %w(oa-basic oa-core oa-oauth oa-openid oa-enterprise omniauth)
@@ -15,7 +17,9 @@ OMNIAUTH_GEMS = %w(oa-basic oa-core oa-oauth oa-openid oa-enterprise omniauth)
 def each_gem(action, &block)
   OMNIAUTH_GEMS.each_with_index do |dir, i|
     print blue, "\n\n== ", cyan, dir, blue, " ", action, clear, "\n\n"
-    Dir.chdir(dir, &block)
+    Dir.chdir(dir) do
+      block.call(dir)
+    end
   end
 end
 
@@ -52,8 +56,20 @@ end
 
 desc 'Run specs for all of the gems.'
 task :spec do
-  each_gem('specs are running...') do
-    system('rake spec')
+  error_gems = []
+  each_gem('specs are running...') do |jem|
+    ENV['RSPEC_FORMAT'] = 'progress'
+    unless system('rake spec')
+      error_gems << jem
+    end
+  end
+  
+  puts
+  if error_gems.any?
+    puts "#{red}#{error_gems.size} gems with failing specs: #{error_gems.join(', ')}#{clear}"
+    exit(1)
+  else
+    puts "#{green}All gems passed specs.#{clear}"
   end
 end
 

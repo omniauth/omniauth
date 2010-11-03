@@ -14,8 +14,7 @@ module OmniAuth
       # @param [String] app_secret the application secret as registered on Facebook
       # @option options [String] :scope ('email,offline_access') comma-separated extended permissions such as `email` and `manage_pages`
       def initialize(app, app_id, app_secret, options = {})
-        options[:site] = 'https://graph.facebook.com/'
-        super(app, :facebook, app_id, app_secret, options)
+        super(app, :facebook, app_id, app_secret, {:site => 'https://graph.facebook.com/'}, options)
       end
       
       def user_data

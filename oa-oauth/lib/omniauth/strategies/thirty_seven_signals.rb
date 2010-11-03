@@ -5,10 +5,13 @@ module OmniAuth
   module Strategies
     class ThirtySevenSignals < OAuth2
       def initialize(app, app_id, app_secret, options = {})
-        options[:site] = 'https://launchpad.37signals.com/'
-        options[:authorize_path] = '/authorization/new'
-        options[:access_token_path] = '/authorization/token'
-        super(app, :thirty_seven_signals, app_id, app_secret, options)
+        client_options = {
+          :site => 'https://launchpad.37signals.com/',
+          :authorize_path => '/authorization/new',
+          :access_token_path => '/authorization/token'
+        } 
+        
+        super(app, :thirty_seven_signals, app_id, app_secret, client_options, options)
       end
       
       def user_data
