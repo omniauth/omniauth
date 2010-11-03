@@ -25,4 +25,8 @@ def strategy_class
   meta[:describes]
 end
 
+def app
+  lambda{|env| [200, {}, ['Hello']]}
+end
+
 WebMock.disable_net_connect!

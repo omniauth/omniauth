@@ -12,10 +12,16 @@ module OmniAuth
     #    use OmniAuth::Strategies::Twitter, 'consumerkey', 'consumersecret'
     #
     class Twitter < OmniAuth::Strategies::OAuth
+      # Initialize the middleware
+      #
+      # @option options [Boolean, true] :sign_in When true, use the "Sign in with Twitter" flow instead of the authorization flow.
       def initialize(app, consumer_key, consumer_secret, options = {})
-        super(app, :twitter, consumer_key, consumer_secret,
-                {:site => 'https://api.twitter.com',
-                :authorize_path => '/oauth/authenticate'}, options)
+        client_options = {
+          :site => 'https://api.twitter.com'
+        }
+        
+        client_options[:authorize_path] = '/oauth/authenticate' unless options[:sign_in] == false
+        super(app, :twitter, consumer_key, consumer_secret, client_options, options)
       end
       
       def auth_hash
