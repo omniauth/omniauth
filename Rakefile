@@ -143,8 +143,11 @@ namespace :version do
   end
   
   namespace :bump do
+    desc "Increment the major version."
     task(:major){ bump_version(0) }
+    desc "Increment the minor version."
     task(:minor){ bump_version(1) }
+    desc "Increment the patch version."
     task(:patch){ bump_version(2) }
   end
 end
