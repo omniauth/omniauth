@@ -19,8 +19,10 @@ module OmniAuth
 										'image' => 'jpegPhoto',
 										'description' => 'description'}
       def initialize(app, title, options = {})
-        super(app, options.delete(:name) || :ldap)
+      	@options = options.dup
+        super(app, @options.delete(:name) || :ldap)
         @title = title
+        @name_proc = (@options.delete(:name_proc) || Proc.new {|name| name})
         @adaptor = OmniAuth::Strategies::LDAP::Adaptor.new(options)
       end
       
@@ -43,8 +45,9 @@ module OmniAuth
       def perform
       	begin
       		@adaptor.bind(:bind_dn => request.POST['username'], :password => request.POST['password'])
-      		@ldap_user_info = @adaptor.search(:filter => Net::LDAP::Filter.eq(@adaptor.uid, request.POST['username']),:limit => 1)
+      		@ldap_user_info = @adaptor.search(:filter => Net::LDAP::Filter.eq(@adaptor.uid, @name_proc.call(request.POST['username'])),:limit => 1)
       		@user_info = self.class.map_user(@@config, @ldap_user_info)
+					@env['omniauth.auth'] = auth_hash
 	        @env['REQUEST_METHOD'] = 'GET'
 	        @env['PATH_INFO'] = "#{OmniAuth.config.path_prefix}/#{name}/callback"
 	
