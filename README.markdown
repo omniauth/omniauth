@@ -28,6 +28,7 @@ OmniAuth currently supports the following external providers:
   * TripIt (credit: [flextrip](http://github.com/flextrip))
   * Meetup (credit [coderoshi](http://github.com/coderoshi))
   * SoundCloud (credit: [leemartin](http://github.com/leemartin))
+  * SmugMug (credit: [pchilton](http://github.com/pchilton))
 * OpenID
 * Google Apps (via OpenID)
 * CAS (Central Authentication Service) (credit: [jamesarosen](http://github.com/jamesarosen))

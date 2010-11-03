@@ -17,5 +17,6 @@ module OmniAuth
     autoload :Dopplr,             'omniauth/strategies/dopplr'
     autoload :Meetup,             'omniauth/strategies/meetup'
     autoload :SoundCloud,         'omniauth/strategies/sound_cloud'
+    autoload :SmugMug,            'omniauth/strategies/smug_mug'
   end
 end

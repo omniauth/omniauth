@@ -60,7 +60,8 @@ module OmniAuth
       'open_id' => 'OpenID',
       'github' => 'GitHub',
       'tripit' => 'TripIt',
-      'soundcloud' => 'SoundCloud'
+      'soundcloud' => 'SoundCloud',
+      'smugmug' => 'SmugMug'
     }
 
     module_function
