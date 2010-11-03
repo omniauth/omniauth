@@ -42,10 +42,10 @@ If CAS is one of several authentication strategies, use the OmniAuth Builder:
 
 LDAP strategy
 
-    use OmniAuth::Strategies::LDAP, :host => '10.101.10.1', :port => 389, :method => :plain, :base => 'dc=intridea, dc=com', :uid => 'sAMAccountName', :try_sasl => true, :sasl_mechanisms => "GSS-SPNEGO"
+    use OmniAuth::Strategies::LDAP, "My LDAP", :host => '10.101.10.1', :port => 389, :method => :plain, :base => 'dc=intridea, dc=com', :uid => 'sAMAccountName', :try_sasl => true, :sasl_mechanisms => "GSS-SPNEGO"
 		or
     use OmniAuth::Builder do
-      provider :LDAP, :host => '10.101.10.1', :port => 389, :method => :plain, :base => 'dc=intridea, dc=com', :uid => 'sAMAccountName', :try_sasl => true, :sasl_mechanisms => "GSS-SPNEGO"
+      provider :LDAP, 'My LDAP', :host => '10.101.10.1', :port => 389, :method => :plain, :base => 'dc=intridea, dc=com', :uid => 'sAMAccountName', :try_sasl => true, :sasl_mechanisms => "GSS-SPNEGO"
     end
 		    
     LDAP server's :host and :port are required, :method is also a required field, and allowed values are :plain, :ssl, and :tls.
