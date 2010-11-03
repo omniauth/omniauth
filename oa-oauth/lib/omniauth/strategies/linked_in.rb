@@ -23,7 +23,7 @@ module OmniAuth
       end
       
       def user_hash(access_token)
-        person = Nokogiri::XML::Document.parse(@access_token.get('/v1/people/~:(id,first-name,last-name,headline,member-url-resources,picture-url,location)').body).xpath('person')
+        person = Nokogiri::XML::Document.parse(@access_token.get('/v1/people/~:(id,first-name,last-name,headline,member-url-resources,picture-url,location,public-profile-url)').body).xpath('person')
         
         hash = {
           'id' => person.xpath('id').text,
@@ -38,7 +38,9 @@ module OmniAuth
           end
         }
         
+        hash['urls']['LinkedIn'] = person.xpath('public-profile-url').text
         hash[:name] = "#{hash['first_name']} #{hash['last_name']}"
+        
         hash
       end
     end
