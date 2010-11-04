@@ -57,6 +57,7 @@ module OmniAuth
       'oauth' => 'OAuth',
       'oauth2' => 'OAuth2',
       'openid' => 'OpenID',
+      'google_open_id' => 'GoogleOpenID',
       'open_id' => 'OpenID',
       'github' => 'GitHub',
       'tripit' => 'TripIt',

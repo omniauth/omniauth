@@ -38,6 +38,7 @@ module OmniAuth
   # 
   #     use OmniAuth::Builder do
   #       provider :open_id, OpenID::Store::Filesystem.new('/tmp')
+  #       provider :google_open_id
   #       provider :campfire
   #     end
   # 
@@ -50,10 +51,11 @@ module OmniAuth
   #     end
   # 
   # Note the use of nil, which will trigger ruby-openid's default Memory Store.
+
   module OpenID; end
-  
   module Strategies
     autoload :OpenID, 'omniauth/strategies/open_id'
     autoload :GoogleApps, 'omniauth/strategies/google_apps'
+    autoload :GoogleOpenID, 'omniauth/strategies/google_open_id'
   end
 end
