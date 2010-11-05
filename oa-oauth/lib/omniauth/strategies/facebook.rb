@@ -32,6 +32,7 @@ module OmniAuth
           'first_name' => user_data["first_name"],
           'last_name' => user_data["last_name"],
           'name' => "#{user_data['first_name']} #{user_data['last_name']}",
+          'image' => "http://graph.facebook.com/#{user_data['id']}/picture?type=square",
           'urls' => {
             'Facebook' => user_data["link"],
             'Website' => user_data["website"],
