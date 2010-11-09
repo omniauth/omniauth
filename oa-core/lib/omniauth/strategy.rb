@@ -103,6 +103,8 @@ module OmniAuth
     
     def fail!(message_key, exception = nil)
       self.env['omniauth.error'] = exception
+      self.env['omniauth.failure_key'] = message_key
+      self.env['omniauth.failed_strategy'] = self
       OmniAuth.config.on_failure.call(self.env, message_key.to_sym)
     end
   end
