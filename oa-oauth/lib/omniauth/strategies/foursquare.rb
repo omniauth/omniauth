@@ -1,3 +1,6 @@
+require 'omniauth/oauth'
+require 'multi_json'
+
 module OmniAuth
   module Strategies
     class Foursquare < OAuth
