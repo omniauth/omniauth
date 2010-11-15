@@ -5,6 +5,7 @@ module OmniAuth
   module Strategy
     
     def self.included(base)
+      OmniAuth.strategies << base
       base.class_eval do
         attr_reader :app, :name, :env, :options, :response
       end

@@ -11,6 +11,10 @@ module OmniAuth
   module Strategies
     autoload :Password, 'omniauth/strategies/password'
   end
+  
+  def self.strategies
+    @@strategies ||= []
+  end
 
   class Configuration
     include Singleton
