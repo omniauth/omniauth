@@ -38,6 +38,16 @@ describe OmniAuth::Strategy do
       it 'should use the default callback path' do
         lambda{ strategy.call({'PATH_INFO' => '/auth/test/callback'}) }.should raise_error("Callback Phase")
       end
+
+      context 'callback_url' do
+        it 'uses the default callback_path' do
+          strategy.should_receive(:full_host).and_return('http://example.com')
+
+          lambda{ strategy.call({'PATH_INFO' => '/auth/test'}) }.should raise_error("Request Phase")
+
+          strategy.callback_url.should == 'http://example.com/auth/test/callback'
+        end
+      end
     end
     
     it 'should be able to modify the env on the fly before the request_phase' do
@@ -59,6 +69,17 @@ describe OmniAuth::Strategy do
         @options = {:callback_path => '/radical'}
         lambda{ strategy.call({'PATH_INFO' => '/radical'}) }.should raise_error("Callback Phase")
       end
+
+      context 'callback_url' do
+        it 'uses a custom callback_path if one is provided' do
+          @options = {:callback_path => '/radical'}
+          strategy.should_receive(:full_host).and_return('http://example.com')
+
+          lambda{ strategy.call({'PATH_INFO' => '/radical'}) }.should raise_error("Callback Phase")
+
+          strategy.callback_url.should == 'http://example.com/radical'
+        end
+      end
     end
     
     context 'custom prefix' do
@@ -72,6 +93,16 @@ describe OmniAuth::Strategy do
       
       it 'should use a custom prefix for callback' do
         lambda{ strategy.call({'PATH_INFO' => '/wowzers/test/callback'}) }.should raise_error("Callback Phase")
+      end
+
+      context 'callback_url' do
+        it 'uses a custom prefix' do
+          strategy.should_receive(:full_host).and_return('http://example.com')
+
+          lambda{ strategy.call({'PATH_INFO' => '/wowzers/test'}) }.should raise_error("Request Phase")
+
+          strategy.callback_url.should == 'http://example.com/wowzers/test/callback'
+        end
       end
     end
   end

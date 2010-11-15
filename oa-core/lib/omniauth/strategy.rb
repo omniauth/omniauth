@@ -82,7 +82,7 @@ module OmniAuth
     end
     
     def callback_url
-      full_host + "#{OmniAuth.config.path_prefix}/#{name}/callback"
+      full_host + callback_path
     end
     
     def session
