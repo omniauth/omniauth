@@ -37,10 +37,9 @@ module OmniAuth
       # @param [String] client_id the client/application ID of this provider
       # @param [String] client_secret the client/application secret of this provider
       # @param [Hash] options that will be passed through to the OAuth2::Client (see [oauth2 docs](http://rubydoc.info/gems/oauth2))
-      def initialize(app, name, client_id, client_secret, options = {})
-        super(app, name)
-        self.options = options
-        self.client = ::OAuth2::Client.new(client_id, client_secret, options)
+      def initialize(app, name, client_id, client_secret, client_options = {}, options = {})
+        super
+        self.client = ::OAuth2::Client.new(client_id, client_secret, client_options.merge(options[:client_options] || {}))
       end
       
       protected

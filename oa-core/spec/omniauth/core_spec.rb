@@ -1,6 +1,15 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe OmniAuth do
+  describe '.strategies' do
+    it 'should increase when a new strategy is made' do
+      lambda{ class ExampleStrategy
+        include OmniAuth::Strategy
+      end }.should change(OmniAuth.strategies, :size).by(1)
+      OmniAuth.strategies.last.should == ExampleStrategy
+    end
+  end
+  
   context 'configuration' do
     it 'should be callable from .configure' do
       OmniAuth.configure do |c|

@@ -1,13 +1,15 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
-describe 'OmniAuth::Strategies::Twitter' do
+describe OmniAuth::Strategies::Twitter do
+  it_should_behave_like 'an oauth strategy'
   
-  it 'should subclass OAuth' do
-    OmniAuth::Strategies::Twitter.should < OmniAuth::Strategies::OAuth
+  it 'should use the authenticate (sign in) path by default' do
+    s = strategy_class.new(app, 'abc', 'def')
+    s.consumer.options[:authorize_path].should == '/oauth/authenticate'
   end
   
-  it 'should initialize with just consumer key and secret' do
-    lambda{OmniAuth::Strategies::Twitter.new({},'abc','def')}.should_not raise_error
+  it 'should use the authorize path if :sign_in is false' do
+    s = strategy_class.new(app, 'abc', 'def', :sign_in => false)
+    s.consumer.options[:authorize_path].should == '/oauth/authorize'
   end
-  
 end

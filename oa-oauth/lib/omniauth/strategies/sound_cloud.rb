@@ -13,8 +13,8 @@ module OmniAuth
     #
     
     class SoundCloud < OmniAuth::Strategies::OAuth
-      def initialize(app, consumer_key, consumer_secret)
-        super(app, :soundcloud, consumer_key, consumer_secret, :site => 'https://api.soundcloud.com')
+      def initialize(app, consumer_key, consumer_secret, options = {})
+        super(app, :soundcloud, consumer_key, consumer_secret, {:site => 'https://api.soundcloud.com'}, options)
       end
       
       def auth_hash

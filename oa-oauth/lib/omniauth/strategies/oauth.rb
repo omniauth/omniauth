@@ -6,9 +6,9 @@ module OmniAuth
     class OAuth
       include OmniAuth::Strategy
       
-      def initialize(app, name, consumer_key, consumer_secret, options = {})
+      def initialize(app, name, consumer_key, consumer_secret, consumer_options = {}, options = {})
         super
-        @consumer = ::OAuth::Consumer.new(consumer_key, consumer_secret, options)
+        @consumer = ::OAuth::Consumer.new(consumer_key, consumer_secret, consumer_options.merge(options[:client_options] || options[:consumer_options] || {}))
       end
       attr_reader :name, :consumer
     

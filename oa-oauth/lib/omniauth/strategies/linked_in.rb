@@ -4,13 +4,13 @@ require 'omniauth/oauth'
 module OmniAuth
   module Strategies
     class LinkedIn < OmniAuth::Strategies::OAuth
-      def initialize(app, consumer_key, consumer_secret)
+      def initialize(app, consumer_key, consumer_secret, options = {})
         super(app, :linked_in, consumer_key, consumer_secret,
-                :site => 'https://api.linkedin.com',
+                {:site => 'https://api.linkedin.com',
                 :request_token_path => '/uas/oauth/requestToken',
                 :access_token_path => '/uas/oauth/accessToken',
                 :authorize_path => '/uas/oauth/authorize',
-                :scheme => :header)
+                :scheme => :header}, options)
       end
       
       def auth_hash
@@ -23,7 +23,7 @@ module OmniAuth
       end
       
       def user_hash(access_token)
-        person = Nokogiri::XML::Document.parse(@access_token.get('/v1/people/~:(id,first-name,last-name,headline,member-url-resources,picture-url,location)').body).xpath('person')
+        person = Nokogiri::XML::Document.parse(@access_token.get('/v1/people/~:(id,first-name,last-name,headline,member-url-resources,picture-url,location,public-profile-url)').body).xpath('person')
         
         hash = {
           'id' => person.xpath('id').text,
@@ -38,7 +38,9 @@ module OmniAuth
           end
         }
         
+        hash['urls']['LinkedIn'] = person.xpath('public-profile-url').text
         hash[:name] = "#{hash['first_name']} #{hash['last_name']}"
+        
         hash
       end
     end

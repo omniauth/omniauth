@@ -18,9 +18,14 @@ module OmniAuth
 										'url' => ['wwwhomepage'],
 										'image' => 'jpegPhoto',
 										'description' => 'description'}
+      # Initialize the LDAP Middleware
+      #
+      # @param [Rack Application] app Standard Rack middleware argument.
+      # @option options [String, 'LDAP Authentication'] :title A title for the authentication form.
       def initialize(app, title, options = {})
-        super(app, options.delete(:name) || :ldap)
+        super(app, options[:name] || :ldap, options.dup)
         @title = title
+        @name_proc = (@options.delete(:name_proc) || Proc.new {|name| name})
         @adaptor = OmniAuth::Strategies::LDAP::Adaptor.new(options)
       end
       
@@ -35,7 +40,7 @@ module OmniAuth
       end
 
 			def get_credentials
-        OmniAuth::Form.build(@title) do
+        OmniAuth::Form.build(options[:title] || "LDAP Authentication") do
           text_field 'Login', 'username'
           password_field 'Password', 'password'
         end.to_response
@@ -43,8 +48,9 @@ module OmniAuth
       def perform
       	begin
       		@adaptor.bind(:bind_dn => request.POST['username'], :password => request.POST['password'])
-      		@ldap_user_info = @adaptor.search(:filter => Net::LDAP::Filter.eq(@adaptor.uid, request.POST['username']),:limit => 1)
+      		@ldap_user_info = @adaptor.search(:filter => Net::LDAP::Filter.eq(@adaptor.uid, @name_proc.call(request.POST['username'])),:limit => 1)
       		@user_info = self.class.map_user(@@config, @ldap_user_info)
+					@env['omniauth.auth'] = auth_hash
 	        @env['REQUEST_METHOD'] = 'GET'
 	        @env['PATH_INFO'] = "#{OmniAuth.config.path_prefix}/#{name}/callback"
 	

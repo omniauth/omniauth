@@ -5,14 +5,16 @@ module OmniAuth
   module Strategy
     
     def self.included(base)
+      OmniAuth.strategies << base
       base.class_eval do
-        attr_reader :app, :name, :env
+        attr_reader :app, :name, :env, :options, :response
       end
     end
      
     def initialize(app, name, *args)
       @app = app
       @name = name.to_sym
+      @options = args.last.is_a?(Hash) ? args.pop : {}
     end
     
     def call(env)
@@ -21,9 +23,11 @@ module OmniAuth
 
     def call!(env)
       @env = env
-      if request.path == "#{OmniAuth.config.path_prefix}/#{name}"
+      if request.path == request_path
+        status, headers, body = *call_app!
+        @response = Rack::Response.new(body, status, headers)
         request_phase
-      elsif request.path == "#{OmniAuth.config.path_prefix}/#{name}/callback"
+      elsif request.path == callback_path
         callback_phase
       else
         if respond_to?(:other_phase)
@@ -43,7 +47,20 @@ module OmniAuth
       call_app!
     end
     
+    def path_prefix
+      options[:path_prefix] || OmniAuth.config.path_prefix
+    end
+    
+    def request_path
+      options[:request_path] || "#{path_prefix}/#{name}"
+    end
+    
+    def callback_path
+      options[:callback_path] || "#{path_prefix}/#{name}/callback"
+    end
+    
     def call_app!
+      # TODO: Remove this when we get to 0.2.0
       @env['rack.auth'] = env['omniauth.auth'] if env.key?('omniauth.auth')
       @env['rack.auth.error'] = env['omniauth.error'] if env.key?('omniauth.error')
       
@@ -65,7 +82,7 @@ module OmniAuth
     end
     
     def callback_url
-      full_host + "#{OmniAuth.config.path_prefix}/#{name}/callback"
+      full_host + callback_path
     end
     
     def session

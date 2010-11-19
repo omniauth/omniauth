@@ -11,10 +11,13 @@ module OmniAuth
       # @param [String] app_id the application ID for your client
       # @param [String] app_secret the application secret
       def initialize(app, app_id, app_secret, options = {})
-        options[:site] = 'https://github.com/'
-        options[:authorize_path] = '/login/oauth/authorize'
-        options[:access_token_path] = '/login/oauth/access_token'
-        super(app, :github, app_id, app_secret, options)
+        client_options = {
+          :site => 'https://github.com/',
+          :authorize_path => '/login/oauth/authorize',
+          :access_token_path => '/login/oauth/access_token'
+        }
+        
+        super(app, :github, app_id, app_secret, client_options, options)
       end
       
       protected
