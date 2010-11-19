@@ -22,7 +22,31 @@ module OmniAuth
         }
         
         super(app, :dopplr, consumer_key, consumer_secret, client_options, options)
-      end     
+      end  
+      
+      def user_data
+        @data ||= MultiJson.decode(@access_token.get('/oauthapi/whoami').body)['whoami']
+      end
+      
+      def user_info
+        {
+          'nickname' => user_data["nick"],
+          'first_name' => user_data["forename"],
+          'last_name' => user_data["surname"],
+          'name' => "#{user_data['forename']} #{user_data['surname']}",
+          'urls' => {
+            'Dopplr' => user_data["dopplr_url"],
+            'DopplrMobile' => user_data["mobile_url"],
+          }
+        }
+      end      
+
+      def auth_hash
+        OmniAuth::Utils.deep_merge(super, {
+          'uid' => user_data['nick'],
+          'user_info' => user_info
+        })
+      end      
     end
   end
 end
