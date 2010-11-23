@@ -47,6 +47,8 @@ module OmniAuth
       end
       def perform
       	begin
+            bind_dn = "#{@adaptor.uid}=#{request.POST['username']}"
+            bind_dn << ",#{@adaptor.base}" unless @adaptor.base == ''
       		@adaptor.bind(:bind_dn => request.POST['username'], :password => request.POST['password'])
       		@ldap_user_info = @adaptor.search(:filter => Net::LDAP::Filter.eq(@adaptor.uid, @name_proc.call(request.POST['username'])),:limit => 1)
       		@user_info = self.class.map_user(@@config, @ldap_user_info)
