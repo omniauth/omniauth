@@ -39,7 +39,7 @@ module OmniAuth
         }
         
         hash['urls']['LinkedIn'] = person.xpath('public-profile-url').text
-        hash[:name] = "#{hash['first_name']} #{hash['last_name']}"
+        hash['name'] = "#{hash['first_name']} #{hash['last_name']}"
         
         hash
       end
