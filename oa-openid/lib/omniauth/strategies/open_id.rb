@@ -128,7 +128,7 @@ module OmniAuth
           'email' => ax.get_single(AX[:email]),
           'first_name' => ax.get_single(AX[:first_name]),
           'last_name' => ax.get_single(AX[:last_name]),
-          'name' => (ax.get_single(AX[:name]) || [ax.get_single(AX[:first_name]), ax.get_single(AX[:last_name])].join(' ')),
+          'name' => (ax.get_single(AX[:name]) || [ax.get_single(AX[:first_name]), ax.get_single(AX[:last_name])].join(' ')).strip,
           'location' => ("#{ax.get_single(AX[:city])}, #{ax.get_single(AX[:state])}" if Array(ax.get_single(AX[:city])).any? && Array(ax.get_single(AX[:state])).any?),
           'nickname' => ax.get_single(AX[:nickname]),
           'urls' => ({'Website' => Array(ax.get_single(AX[:website])).first} if Array(ax.get_single(AX[:website])).any?)
