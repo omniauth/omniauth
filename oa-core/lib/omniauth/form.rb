@@ -117,7 +117,7 @@ module OmniAuth
       </head>
       <body>
       <h1>#{title}</h1>
-      <form method='post'>
+      <form method='post' noValidate='noValidate'>
       HTML
       self
     end
