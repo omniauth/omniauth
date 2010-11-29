@@ -12,10 +12,9 @@ For the full auth suite:
 
     gem install omniauth
 
-CAS strategy    
-== Stand-Alone Example
+== CAS
 
-Use the strategy as a middleware in your application:
+Use the CAS strategy as a middleware in your application:
 
     require 'omniauth/enterprise'
     
@@ -23,13 +22,47 @@ Use the strategy as a middleware in your application:
     
 Then simply direct users to '/auth/cas' to have them sign in via your company's CAS server.
 See OmniAuth::Strategies::CAS::Configuration for more configuration options.
+
+== LDAP
+
+Use the LDAP strategy as a middleware in your applicaiton:
+
+    require 'omniauth/enterprise'
+    use OmniAuth::Strategies::LDAP, 
+        "My LDAP", 
+        :host => '10.101.10.1',
+        :port => 389,
+        :method => :plain,
+        :base => 'dc=intridea, dc=com',
+        :uid => 'sAMAccountName',
+        :name_proc => Proc.new {|name| name.gsub(/@.*$/,''}}
+
+All of the listed options are required, with the exception of :name_proc.
+Allowed values of :method are: :plain, :ssl, :tls.
+
+:uid is the LDAP attribute name for the user name in the login form. typically
+AD would be 'sAMAccountName' or 'UserPrincipalName', while OpenLDAP is 'uid'.
+You can also use 'dn', if your user choose the put in the dn in the login form
+(but usually is too long for user to remember or know).
+
+:name_proc allows you to match the user name entered with the format of the
+:uid attributes. For example, value of 'sAMAccountName' in AD contains only the
+windows user name. If your user prefers use email to login, a name_proc as
+above will trim the email string down to just the windows name. In summary,
+:name_proc helps you to fill the gap between the authentication and user lookup
+process.
+ 
+:try_sasl and :sasl_mechanisms are optional. Use them to initialize a SASL
+connection to server. Allowed values are 'DIGEST-MD5' and 'GSS-SPNEGO'. If you
+are not familiar with these authentication methods, please just avoid them.
+
+Direct users to '/auth/ldap' to have them authenticated via your
+company's LDAP server.
     
-Then simply direct users to '/auth/cas' to have them sign in via your company's CAS server.
-See OmniAuth::Strategies::CAS::Configuration for more configuration options.
+== Multiple Strategies
 
-== OmniAuth Builder
-
-If CAS is one of several authentication strategies, use the OmniAuth Builder:
+If you're using multiple strategies together, use OmniAuth's Builder. That's
+what it's there for:
 
     require 'omniauth/enterprise'
     require 'omniauth/oauth'  # for Campfire
@@ -39,27 +72,3 @@ If CAS is one of several authentication strategies, use the OmniAuth Builder:
       provider :cas, :server => 'http://cas.mycompany.com/cas'
       provider :campfire
     end
-
-LDAP strategy
-
-    use OmniAuth::Strategies::LDAP, "My LDAP", :host => '10.101.10.1', :port => 389, :method => :plain, :base => 'dc=intridea, dc=com', :uid => 'sAMAccountName', :name_proc => Proc.new {|name| name.gsub(/@.*$/,''}}
-		or
-    use OmniAuth::Builder do
-      provider :LDAP, 'My LDAP', :host => '10.101.10.1', :port => 389, :method => :plain, :base => 'dc=intridea, dc=com', :uid => 'sAMAccountName', :name_proc => Proc.new {|name| name.gsub(/@.*$/,''}}
-    end
-		    
-    LDAP server's :host and :port are required, :method is also a required field, and allowed values are :plain, :ssl, and :tls.
-    :base is required, it is the distinguish name (DN) for your organization, all users should be searchable under this base.
-    
-    :uid is required, it is the LDAP attribute name for the user name in the login form. typically AD would be 'sAMAccountName' or 'UserPrincipalName', while 
-    OpenLDAP is 'uid'. You can also use 'dn', if your user choose the put in the dn in the login form (but usually is too long for user to remember or know).
-    
-    :name_proc allows you to match the user name entered with the format of the :uid attributes. For example, value of 'sAMAccountName' in AD contains only
-    the windows user name. If your user prefers use email to login, a name_proc as above will trim the email string down to just the windows name. In summary, 
-    :name_proc helps you to fill the gap between the authentication and user lookup process.
-     
-    :try_sasl and :sasl_mechanisms are optional, use it to initial SASL connection to server. mechanism supported are DIGEST-MD5 and GSS-SPNEGO. If you are not familiar
-    with those authentication method, please just avoid them.
-
-Then simply direct users to '/auth/ldap' to have them authenticated via your company's LDAP server.
-    
