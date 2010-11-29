@@ -29,6 +29,7 @@ module OmniAuth
       def user_info
         {
           'nickname' => user_data["link"].split('/').last,
+          'email' => (user_data["email"] if user_data["email"]),
           'first_name' => user_data["first_name"],
           'last_name' => user_data["last_name"],
           'name' => "#{user_data['first_name']} #{user_data['last_name']}",
