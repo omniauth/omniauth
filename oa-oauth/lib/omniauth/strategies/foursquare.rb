@@ -8,7 +8,7 @@ module OmniAuth
       #
       # @option options [Boolean, true] :sign_in When true, use a sign-in flow instead of the authorization flow.
       # @option options [Boolean, false] :mobile When true, use the mobile sign-in interface.
-      def initialize(app, consumer_key, consumer_secret, options = {})
+      def initialize(app, consumer_key = nil, consumer_secret = nil, options = {}, &block)
         client_options = {:site => 'http://foursquare.com'}
         
         auth_path = (options[:sign_in] == false) ? '/oauth/authorize' : '/oauth/authenticate'
@@ -16,7 +16,7 @@ module OmniAuth
         
         client_options[:authorize_path] = auth_path
         
-        super(app, :foursquare, consumer_key, consumer_secret, client_options, options)
+        super(app, :foursquare, consumer_key, consumer_secret, client_options, options, &block)
       end
       
       def auth_hash

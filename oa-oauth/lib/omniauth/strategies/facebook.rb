@@ -7,14 +7,14 @@ module OmniAuth
     # basic user information.
     #
     # @example Basic Usage
-    #   use OmniAuth::Strategies::Facebook, 'app_id', 'app_secret'
+    #   use OmniAuth::Strategies::Facebook, 'client_id', 'client_secret'
     class Facebook < OAuth2
       # @param [Rack Application] app standard middleware application parameter
-      # @param [String] app_id the application id as [registered on Facebook](http://www.facebook.com/developers/)
-      # @param [String] app_secret the application secret as registered on Facebook
+      # @param [String] client_id the application id as [registered on Facebook](http://www.facebook.com/developers/)
+      # @param [String] client_secret the application secret as registered on Facebook
       # @option options [String] :scope ('email,offline_access') comma-separated extended permissions such as `email` and `manage_pages`
-      def initialize(app, app_id, app_secret, options = {})
-        super(app, :facebook, app_id, app_secret, {:site => 'https://graph.facebook.com/'}, options)
+      def initialize(app, client_id = nil, client_secret = nil, options = {}, &block)
+        super(app, :facebook, client_id, client_secret, {:site => 'https://graph.facebook.com/'}, options, &block)
       end
       
       def user_data

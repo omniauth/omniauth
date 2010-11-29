@@ -14,14 +14,14 @@ module OmniAuth
       # @param [String] api_key the application id as [registered on Gowalla](http://gowalla.com/api/keys)
       # @param [String] secret_key the application secret as [registered on Gowalla](http://gowalla.com/api/keys)
       # @option options ['read','read-write'] :scope ('read') the scope of your authorization request; must be `read` or `read-write`
-      def initialize(app, api_key, secret_key, options = {})
+      def initialize(app, api_key = nil, secret_key = nil, options = {}, &block)
         client_options = {
           :site => 'https://api.gowalla.com/api/oauth',
           :authorize_url => 'https://gowalla.com/api/oauth/new',
           :access_token_url => 'https://api.gowalla.com/api/oauth/token'
         }
         
-        super(app, :gowalla, api_key, secret_key, client_options, options)
+        super(app, :gowalla, api_key, secret_key, client_options, options, &block)
       end
       
       protected

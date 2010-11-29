@@ -6,7 +6,7 @@ module OmniAuth
     class HttpBasic
       include OmniAuth::Strategy
       
-      def initialize(app, name, endpoint, headers = {})
+      def initialize(app, name, endpoint = nil, headers = {}, &block)
         super
         @endpoint = endpoint
         @request_headers = headers

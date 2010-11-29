@@ -6,7 +6,9 @@ module OmniAuth
     class OAuth
       include OmniAuth::Strategy
       
-      def initialize(app, name, consumer_key, consumer_secret, consumer_options = {}, options = {})
+      def initialize(app, name, consumer_key = nil, consumer_secret = nil, consumer_options = {}, options = {}, &block)
+        self.consumer_key = consumer_key
+        self.consumer_secret = consumer_secret
         self.consumer_options = consumer_options
         super
       end

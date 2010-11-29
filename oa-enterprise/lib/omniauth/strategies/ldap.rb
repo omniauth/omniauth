@@ -27,9 +27,8 @@ module OmniAuth
       #
       # @param [Rack Application] app Standard Rack middleware argument.
       # @option options [String, 'LDAP Authentication'] :title A title for the authentication form.
-      def initialize(app, title, options = {})
-        super(app, options[:name] || :ldap, options.dup)
-        @title = title
+      def initialize(app, options = {}, &block)
+        super(app, options[:name] || :ldap, options.dup, &block)
         @name_proc = (@options.delete(:name_proc) || Proc.new {|name| name})
         @adaptor = OmniAuth::Strategies::LDAP::Adaptor.new(options)
       end

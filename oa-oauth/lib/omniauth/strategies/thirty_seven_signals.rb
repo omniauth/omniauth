@@ -4,14 +4,14 @@ require 'multi_json'
 module OmniAuth
   module Strategies
     class ThirtySevenSignals < OAuth2
-      def initialize(app, app_id, app_secret, options = {})
+      def initialize(app, client_id = nil, client_secret = nil, options = {}, &block)
         client_options = {
           :site => 'https://launchpad.37signals.com/',
           :authorize_path => '/authorization/new',
           :access_token_path => '/authorization/token'
         } 
         
-        super(app, :thirty_seven_signals, app_id, app_secret, client_options, options)
+        super(app, :thirty_seven_signals, client_id, client_secret, client_options, options, &block)
       end
       
       def user_data

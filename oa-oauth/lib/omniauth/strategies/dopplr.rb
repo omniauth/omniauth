@@ -13,7 +13,7 @@ module OmniAuth
       # Initialize the Dopplr strategy.
       #
       # @option options [Hash, {}] :client_options Options to be passed directly to the OAuth Consumer
-      def initialize(app, consumer_key, consumer_secret, options = {})
+      def initialize(app, consumer_key = nil, consumer_secret = nil, options = {}, &block)
         client_options = {
           :site => 'https://www.dopplr.com',
           :request_token_path => "/oauth/request_token",
@@ -21,7 +21,7 @@ module OmniAuth
           :authorize_path    => "/oauth/authorize"
         }
         
-        super(app, :dopplr, consumer_key, consumer_secret, client_options, options)
+        super(app, :dopplr, consumer_key, consumer_secret, client_options, options, &block)
       end  
       
       def user_data
