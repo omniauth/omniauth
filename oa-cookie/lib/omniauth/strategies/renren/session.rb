@@ -13,7 +13,8 @@ module OmniAuth
         attr_reader :expires
         attr_reader :uid
 
-        def initialize(options)
+        def initialize(cookies)
+          options = extract_renren_cookies(cookies)
           @expires = options['expires'] ? Integer(options['expires']) : 0
           @session_key = options['session_key']
           @uid = options['user']
@@ -52,6 +53,36 @@ module OmniAuth
           xn_params.merge!(params) if params
           xn_params.merge!(:sig => compute_sig(xn_params))
           MultiJson.decode(Service.new.post(xn_params).body)
+        end
+
+        private
+        def extract_renren_cookies(cookies)
+          parsed = {}
+          xn_cookie_names(cookies).each { |key| parsed[key[xn_cookie_prefix.size, key.size]] = cookies[key] }
+
+          # #returning gracefully if the cookies aren't set or have expired
+          # return unless parsed['session_key'] && parsed['user'] && parsed['expires'] && parsed['ss']
+          # # TODO: check expires, why it alway less than Time.now
+          # return unless (Time.at(parsed['expires'].to_s.to_f) > Time.now) || (parsed['expires'] == "0")
+          # #if we have the unexpired cookies, we'll throw an exception if the sig doesn't verify
+          verify_signature(parsed, cookies[Renren.api_key], true)
+          parsed
+        end
+
+        def xn_cookie_names(cookies)
+          xn_cookie_names = cookies.keys.select {|k| k && k.starts_with?(xn_cookie_prefix) }
+        end
+
+        def xn_cookie_prefix
+          Renren.api_key + '_'
+        end
+
+        def verify_signature(renren_sig_params, expected_signature, force=false)
+          raw_string = renren_sig_params.map{ |*args| args.join('=') }.sort.join
+          actual_sig = Digest::MD5.hexdigest([raw_string, Renren.secret_key].join)
+          raise Renren::Session::IncorrectSignature if actual_sig != expected_signature
+          # raise Renren::Session::SignatureTooOld if renren_sig_params['time'] && Time.at(renren_sig_params['time'].to_f) < earliest_valid_session
+          true
         end
       end
     end
