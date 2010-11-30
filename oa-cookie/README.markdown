@@ -20,7 +20,17 @@ Use the strategy as a middleware in your application:
 
     use OmniAuth::Strategies::Renren, 'api_key', 'secret_key'
 
-TODO: Generator and helper setup
+Run the generator to generate `xd_receiver.html` and include helper into ApplicationHelper:
+
+    rails g omniauth_renren:install
+
+Place the Renren Connect button on any page by simply call `omniauth_renren_connect_button`:
+
+    <%= omniauth_renren_connect_button %>
+
+Route `/auth/renren` to the page that contain Renren Connect button:
+
+    match '/auth/renren' => 'users#show'
 
 ## OmniAuth Builder
 
