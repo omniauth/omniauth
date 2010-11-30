@@ -2,6 +2,8 @@
 
 Cookie based strategies for the OmniAuth gem.
 
+The implementation of OmniAuth::Strategies::Renren is heavily based on [taweili](http://github.com/taweili)'s [renren](http://github.com/taweili/renren) gem.
+
 ## Installation
 
 To get just Cookie functionality:
