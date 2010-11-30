@@ -3,4 +3,5 @@ require 'omniauth/basic'
 require 'omniauth/oauth'
 require 'omniauth/openid'
 require 'omniauth/enterprise'
+require 'omniauth/cookie'
 

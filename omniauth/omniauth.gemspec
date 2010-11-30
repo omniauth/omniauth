@@ -8,10 +8,10 @@ Gem::Specification.new do |gem|
   gem.email = "michael@intridea.com"
   gem.homepage = "http://github.com/intridea/omniauth"
   gem.authors = ["Michael Bleigh"]
-  
+
   gem.files = Dir.glob("{lib}/**/*") + %w(README.rdoc LICENSE.rdoc CHANGELOG.rdoc)
-  
-  %w(oa-core oa-oauth oa-basic oa-openid oa-enterprise).each do |subgem|
+
+  %w(oa-core oa-oauth oa-basic oa-openid oa-enterprise oa-cookie).each do |subgem|
     gem.add_dependency subgem, version
   end
 
