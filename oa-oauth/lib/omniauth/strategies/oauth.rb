@@ -22,7 +22,7 @@ module OmniAuth
       
       def request_phase
         request_token = consumer.get_request_token(:oauth_callback => callback_url)
-        (session['oauth']||={})[name.to_sym] = {:callback_confirmed => request_token.callback_confirmed?, :request_token => request_token.token, :request_secret => request_token.secret}
+        (session['oauth']||={})[name.to_s] = {'callback_confirmed' => request_token.callback_confirmed?, 'request_token' => request_token.token, 'request_secret' => request_token.secret}
         r = Rack::Response.new
         
         if request_token.callback_confirmed?
@@ -35,10 +35,10 @@ module OmniAuth
       end
     
       def callback_phase
-        request_token = ::OAuth::RequestToken.new(consumer, session['oauth'][name.to_sym].delete(:request_token), session['oauth'][name.to_sym].delete(:request_secret))
+        request_token = ::OAuth::RequestToken.new(consumer, session['oauth'][name.to_s].delete('request_token'), session['oauth'][name.to_s].delete('request_secret'))
         
         opts = {}
-        opts[:oauth_callback] = callback_url if session['oauth'][:callback_confirmed]
+        opts[:oauth_callback] = callback_url if session['oauth']['callback_confirmed']
         @access_token = request_token.get_access_token(opts)
         super
       rescue ::OAuth::Unauthorized => e
