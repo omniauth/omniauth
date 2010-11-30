@@ -3,7 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 describe 'OmniAuth::Strategies::Renren' do
 
   before do
-    OmniAuth::Strategies::Renren.stub!(:verify_signature).and_return(true)
+    OmniAuth::Strategies::Renren::Session.stub!(:verify_signature).and_return(true)
   end
 
   def app

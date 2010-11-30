@@ -50,6 +50,20 @@ module OmniAuth
           MultiJson.decode(Service.new.post(xn_params).body)
         end
 
+        class << self
+          private
+          def verify_signature(renren_sig_params, expected_signature)
+            raise Renren::Session::IncorrectSignature if compute_sig(renren_sig_params) != expected_signature
+            # raise Renren::Session::SignatureTooOld if renren_sig_params['time'] && Time.at(renren_sig_params['time'].to_f) < earliest_valid_session
+            true
+          end
+
+          def compute_sig(params)
+            raw_string = params.collect {|*args| args.join('=') }.sort.join
+            actual_sig = Digest::MD5.hexdigest([raw_string, Renren.secret_key].join)
+          end
+        end
+
         private
         def extract_renren_cookies(cookies)
           parsed = {}
@@ -73,14 +87,11 @@ module OmniAuth
         end
 
         def verify_signature(renren_sig_params, expected_signature)
-          raise Renren::Session::IncorrectSignature if compute_sig(renren_sig_params) != expected_signature
-          # raise Renren::Session::SignatureTooOld if renren_sig_params['time'] && Time.at(renren_sig_params['time'].to_f) < earliest_valid_session
-          true
+          self.class.send :verify_signature, renren_sig_params, expected_signature
         end
 
         def compute_sig(params)
-          raw_string = params.collect {|*args| args.join('=') }.sort.join
-          actual_sig = Digest::MD5.hexdigest([raw_string, Renren.secret_key].join)
+          self.class.send :compute_sig, params
         end
       end
     end
