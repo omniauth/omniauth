@@ -36,11 +36,6 @@ module OmniAuth
           !@session_key.nil? && !expired?
         end
 
-        def compute_sig(params)
-          str = params.collect {|k,v| "#{k}=#{v}"}.sort.join("") + Renren.secret_key
-          str = Digest::MD5.hexdigest(str)
-        end
-
         def invoke_method(method, params = {})
           xn_params = {
             :method => method,
@@ -65,7 +60,7 @@ module OmniAuth
           # # TODO: check expires, why it alway less than Time.now
           # return unless (Time.at(parsed['expires'].to_s.to_f) > Time.now) || (parsed['expires'] == "0")
           # #if we have the unexpired cookies, we'll throw an exception if the sig doesn't verify
-          verify_signature(parsed, cookies[Renren.api_key], true)
+          verify_signature(parsed, cookies[Renren.api_key])
           parsed
         end
 
@@ -77,12 +72,15 @@ module OmniAuth
           Renren.api_key + '_'
         end
 
-        def verify_signature(renren_sig_params, expected_signature, force=false)
-          raw_string = renren_sig_params.map{ |*args| args.join('=') }.sort.join
-          actual_sig = Digest::MD5.hexdigest([raw_string, Renren.secret_key].join)
-          raise Renren::Session::IncorrectSignature if actual_sig != expected_signature
+        def verify_signature(renren_sig_params, expected_signature)
+          raise Renren::Session::IncorrectSignature if compute_sig(renren_sig_params) != expected_signature
           # raise Renren::Session::SignatureTooOld if renren_sig_params['time'] && Time.at(renren_sig_params['time'].to_f) < earliest_valid_session
           true
+        end
+
+        def compute_sig(params)
+          raw_string = params.collect {|*args| args.join('=') }.sort.join
+          actual_sig = Digest::MD5.hexdigest([raw_string, Renren.secret_key].join)
         end
       end
     end
