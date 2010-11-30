@@ -62,9 +62,7 @@ module OmniAuth
     end
     
     def call_app!
-      # TODO: Remove this when we get to 0.2.0
-      @env['rack.auth'] = env['omniauth.auth'] if env.key?('omniauth.auth')
-      @env['rack.auth.error'] = env['omniauth.error'] if env.key?('omniauth.error')
+      @env['omniauth.strategy'] = self
       
       @app.call(@env)
     end
