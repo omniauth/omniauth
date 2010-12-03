@@ -60,7 +60,7 @@ module OmniAuth
       	  @user_info = self.class.map_user(@@config, @ldap_user_info)
 
           @env['omniauth.auth'] = auth_hash
-	      @env['REQUEST_METHOD'] = 'GET'
+	      #@env['REQUEST_METHOD'] = 'GET'
 	      @env['PATH_INFO'] = "#{OmniAuth.config.path_prefix}/#{name}/callback"
 	
 	      call_app!

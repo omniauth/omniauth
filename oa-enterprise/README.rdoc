@@ -29,13 +29,13 @@ Use the LDAP strategy as a middleware in your applicaiton:
 
     require 'omniauth/enterprise'
     use OmniAuth::Strategies::LDAP, 
-        :title => "My LDAP", 
+        "My LDAP", 
         :host => '10.101.10.1',
         :port => 389,
         :method => :plain,
         :base => 'dc=intridea, dc=com',
         :uid => 'sAMAccountName',
-        :name_proc => Proc.new {|name| name.gsub(/@.*$/,''}}
+        :name_proc => Proc.new {|name| name.gsub(/@.*$/,'')}
 
 All of the listed options are required, with the exception of :name_proc.
 Allowed values of :method are: :plain, :ssl, :tls.
