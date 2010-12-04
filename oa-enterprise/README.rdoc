@@ -29,7 +29,7 @@ Use the LDAP strategy as a middleware in your applicaiton:
 
     require 'omniauth/enterprise'
     use OmniAuth::Strategies::LDAP, 
-        "My LDAP", 
+        :title => "My LDAP", 
         :host => '10.101.10.1',
         :port => 389,
         :method => :plain,
