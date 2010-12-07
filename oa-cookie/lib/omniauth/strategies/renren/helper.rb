@@ -3,7 +3,7 @@ module OmniAuth
     class Renren
       module Helper
         def omniauth_renren_connect_button
-          callback_path = '/auth/renren/callback'
+          callback_path = "#{OmniAuth.config.path_prefix}/renren/callback"
           @renren_connect_form_id = 'omniauth_renren_connect_form'
 
           if defined?(::ActionView::Helpers::FormTagHelper)
