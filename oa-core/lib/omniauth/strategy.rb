@@ -62,7 +62,11 @@ module OmniAuth
     end
 
     def query_string
-      request.query_string.empty? ? "" : "?#{request.query_string}"
+      request.query_string.empty? ? "" : "?#{filter_callback_params(request.query_string)}"
+    end
+
+    def filter_callback_params(query_string)
+      query_string
     end
     
     def call_app!
