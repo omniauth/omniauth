@@ -14,8 +14,7 @@ describe OmniAuth::Strategies::Password, :type => :strategy do
     end
     it 'should be unauthorized' do
       last_response.should be_redirect
-      redirect_to = OmniAuth.config.path_prefix + '/failure?message=missing_information'
-      last_response.headers['Location'].should == redirect_to
+      last_request.env['omniauth.error.type'].should == :missing_information
     end
   end
   

@@ -8,16 +8,16 @@ module OmniAuth
     # and provide the proper credentials to this middleware.
     class GitHub < OAuth2
       # @param [Rack Application] app standard middleware application argument
-      # @param [String] app_id the application ID for your client
-      # @param [String] app_secret the application secret
-      def initialize(app, app_id, app_secret, options = {})
+      # @param [String] client_id the application ID for your client
+      # @param [String] client_secret the application secret
+      def initialize(app, client_id = nil, client_secret = nil, options = {}, &block)
         client_options = {
           :site => 'https://github.com/',
           :authorize_path => '/login/oauth/authorize',
           :access_token_path => '/login/oauth/access_token'
         }
         
-        super(app, :github, app_id, app_secret, client_options, options)
+        super(app, :github, client_id, client_secret, client_options, options, &block)
       end
       
       protected

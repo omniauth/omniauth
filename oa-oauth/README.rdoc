@@ -30,6 +30,6 @@ If you want to allow multiple providers, use the OmniAuth Builder:
     
     use OmniAuth::Builder do
       provider :twitter, 'consumer_key', 'consumer_secret'
-      provider :facebook, 'app_id', 'app_secret'
+      provider :facebook, 'client_id', 'client_secret'
     end
     

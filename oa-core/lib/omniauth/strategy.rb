@@ -11,10 +11,12 @@ module OmniAuth
       end
     end
      
-    def initialize(app, name, *args)
+    def initialize(app, name, *args, &block)
       @app = app
       @name = name.to_sym
       @options = args.last.is_a?(Hash) ? args.pop : {}
+      
+      yield self if block_given?
     end
     
     def call(env)
@@ -60,9 +62,7 @@ module OmniAuth
     end
     
     def call_app!
-      # TODO: Remove this when we get to 0.2.0
-      @env['rack.auth'] = env['omniauth.auth'] if env.key?('omniauth.auth')
-      @env['rack.auth.error'] = env['omniauth.error'] if env.key?('omniauth.error')
+      @env['omniauth.strategy'] = self
       
       @app.call(@env)
     end
@@ -94,8 +94,15 @@ module OmniAuth
     end
     
     def redirect(uri)
-      r = Rack::Response.new("Redirecting to #{uri}...")
-      r.redirect(uri)
+      r = Rack::Response.new
+
+      if options[:iframe]
+        r.write("<script type='text/javascript' charset='utf-8'>top.location.href = '#{uri}';</script>")
+      else
+        r.write("Redirecting to #{uri}...")
+        r.redirect(uri)
+      end
+      
       r.finish
     end
     
@@ -103,7 +110,10 @@ module OmniAuth
     
     def fail!(message_key, exception = nil)
       self.env['omniauth.error'] = exception
-      OmniAuth.config.on_failure.call(self.env, message_key.to_sym)
+      self.env['omniauth.error.type'] = message_key.to_sym
+      self.env['omniauth.error.strategy'] = self
+      
+      OmniAuth.config.on_failure.call(self.env)
     end
   end
 end

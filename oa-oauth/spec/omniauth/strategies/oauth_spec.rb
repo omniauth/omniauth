@@ -31,7 +31,7 @@ describe "OmniAuth::Strategies::OAuth" do
     end
   
     it 'should set appropriate session variables' do
-      session[:oauth].should == {:"example.org" => {:callback_confirmed => true, :request_token => 'yourtoken', :request_secret => 'yoursecret'}}
+      session['oauth'].should == {"example.org" => {'callback_confirmed' => true, 'request_token' => 'yourtoken', 'request_secret' => 'yoursecret'}}
     end
   end
   
@@ -39,7 +39,7 @@ describe "OmniAuth::Strategies::OAuth" do
     before do
       stub_request(:post, 'https://api.example.org/oauth/access_token').
          to_return(:body => "oauth_token=yourtoken&oauth_token_secret=yoursecret")
-      get '/auth/example.org/callback', {:oauth_verifier => 'dudeman'}, {'rack.session' => {:oauth => {:"example.org" => {:callback_confirmed => true, :request_token => 'yourtoken', :request_secret => 'yoursecret'}}}}
+      get '/auth/example.org/callback', {:oauth_verifier => 'dudeman'}, {'rack.session' => {'oauth' => {"example.org" => {'callback_confirmed' => true, 'request_token' => 'yourtoken', 'request_secret' => 'yoursecret'}}}}
     end
     
     it 'should exchange the request token for an access token' do

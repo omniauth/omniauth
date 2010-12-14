@@ -9,12 +9,12 @@ module OmniAuth
     #    use OmniAuth::Strategies::SmugMug, 'consumerkey', 'consumersecret'
     #
     class SmugMug < OmniAuth::Strategies::OAuth
-      def initialize(app, consumer_key, consumer_secret, options = {})
+      def initialize(app, consumer_key = nil, consumer_secret = nil, options = {}, &block)
         super(app, :smugmug, consumer_key, consumer_secret,
                 {:site               => 'http://api.smugmug.com',
                 :request_token_path => "/services/oauth/getRequestToken.mg",
                 :access_token_path  => "/services/oauth/getAccessToken.mg",
-                :authorize_path     => "/services/oauth/authorize.mg"}, options)
+                :authorize_path     => "/services/oauth/authorize.mg"}, options, &block)
       end
       
       def auth_hash

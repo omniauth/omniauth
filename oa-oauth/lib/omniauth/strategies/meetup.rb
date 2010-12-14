@@ -11,7 +11,7 @@ module OmniAuth
     #    use OmniAuth::Strategies::Meetup, 'consumerkey', 'consumersecret'
     #
     class Meetup < OmniAuth::Strategies::OAuth
-      def initialize(app, consumer_key, consumer_secret, options = {})
+      def initialize(app, consumer_key = nil, consumer_secret = nil, options = {}, &block)
         super(app, :meetup, consumer_key, consumer_secret,
                 # :site => 'https://api.meetup.com',
                 {:request_token_path => "https://api.meetup.com/oauth/request",

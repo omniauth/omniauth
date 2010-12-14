@@ -12,17 +12,17 @@ module OmniAuth
     #    use OmniAuth::Strategies::Identica, 'consumerkey', 'consumersecret'
     #
     class Identica < OmniAuth::Strategies::OAuth
-      def initialize(app, consumer_key, consumer_secret, options = {})
+      def initialize(app, consumer_key = nil, consumer_secret = nil, options = {}, &block)
         super(app, :identica, consumer_key, consumer_secret,
                 {:site => 'http://identi.ca',
                 :request_token_path => "/api/oauth/request_token",
                 :access_token_path  => "/api/oauth/access_token",
-                :authorize_path     => "/api/oauth/authorize"}, options)
+                :authorize_path     => "/api/oauth/authorize"}, options, &block)
       end
 
       def auth_hash
         OmniAuth::Utils.deep_merge(super, {
-          'uid' => @access_token.params[:user_id],
+          'uid' => user_hash['id'],
           'user_info' => user_info,
           'extra' => {'user_hash' => user_hash}
         })

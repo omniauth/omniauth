@@ -1,3 +1,9 @@
+require 'spec_helper'
+
+describe OmniAuth::Strategies::OpenID do
+
+end
+
 # require File.dirname(__FILE__) + '/../../spec_helper'
 # 
 # describe OmniAuth::Strategies::OpenID, :type => :strategy do
