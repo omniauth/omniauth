@@ -37,6 +37,7 @@ module OmniAuth
         {
           'name' => member['name'],
           'image' => member['photo_url'],
+          'location' => member['city'],
           'urls' => {
             'profile' => member['link']
           }
