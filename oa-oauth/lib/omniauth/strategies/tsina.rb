@@ -40,7 +40,7 @@ module OmniAuth
       end
 
       def auth_hash
-        raise @access_token.inspect
+        # raise @access_token.inspect
         OmniAuth::Utils.deep_merge(super, {
           'uid' => @access_token.params[:id],
           'user_info' => user_info,
@@ -58,7 +58,7 @@ module OmniAuth
         # http://api.t.sina.com.cn/users/show/:id.json?source=appkey
         # @access_token.params[:id] is the UID
         # Tsina.api_key is the appkey
-        uid = @access_token.params[:id]
+        # uid = @access_token.params[:id]
         @user_hash ||= MultiJson.decode(@access_token.get("http://api.t.sina.com.cn/users/show/#{uid}.json?source=#{Tsina.api_key}").body)
       end
     end
