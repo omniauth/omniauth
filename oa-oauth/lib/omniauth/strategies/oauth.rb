@@ -35,6 +35,7 @@ module OmniAuth
       end
     
       def callback_phase
+        raise session[:oauth].inspect
         request_token = ::OAuth::RequestToken.new(consumer, session[:oauth][name.to_sym].delete(:request_token), session[:oauth][name.to_sym].delete(:request_secret))
         
         opts = {}
