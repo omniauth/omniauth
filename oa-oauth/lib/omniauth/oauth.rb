@@ -19,5 +19,6 @@ module OmniAuth
     autoload :SoundCloud,         'omniauth/strategies/sound_cloud'
     autoload :SmugMug,            'omniauth/strategies/smug_mug'
     autoload :Douban,             'omniauth/strategies/douban'
+    autoload :Tsina,              'omniauth/strategies/tsina'
   end
 end
