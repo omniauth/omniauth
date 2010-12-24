@@ -33,7 +33,7 @@ module OmniAuth
           :request_token_path => '/oauth/request_token',
           :access_token_path  => '/oauth/access_token',
           :authorize_path     => '/oauth/authorize',
-          :realm              => 'OmniAuth'
+          # :realm              => 'OmniAuth'
         }
 
         super(app, :tsina, consumer_key, consumer_secret, client_options, options, &block)
@@ -58,7 +58,8 @@ module OmniAuth
         # http://api.t.sina.com.cn/users/show/:id.json?source=appkey
         # @access_token.params[:id] is the UID
         # Tsina.api_key is the appkey
-        # uid = @access_token.params[:id]
+        uid = @access_token.params[:id]
+        raise @access_token.inspect
         @user_hash ||= MultiJson.decode(@access_token.get("http://api.t.sina.com.cn/users/show/#{uid}.json?source=#{Tsina.api_key}").body)
       end
     end
