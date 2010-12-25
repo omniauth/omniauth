@@ -33,7 +33,7 @@ module OmniAuth
           :request_token_path => '/oauth/request_token',
           :access_token_path  => '/oauth/access_token',
           :authorize_path     => '/oauth/authorize',
-          # :realm              => 'OmniAuth'
+          :realm              => 'OmniAuth'
         }
 
         super(app, :tsina, consumer_key, consumer_secret, client_options, options, &block)
