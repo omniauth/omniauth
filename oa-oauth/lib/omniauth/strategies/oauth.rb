@@ -40,7 +40,6 @@ module OmniAuth
         opts = {}
         opts[:oauth_callback] = callback_url if session[:oauth][:callback_confirmed]
         @access_token = request_token.get_access_token(opts)
-        raise @access_token.inspect
         super
       rescue ::OAuth::Unauthorized => e
         fail!(:invalid_credentials, e)
