@@ -65,7 +65,8 @@ module OmniAuth
       'github' => 'GitHub',
       'tripit' => 'TripIt',
       'soundcloud' => 'SoundCloud',
-      'smugmug' => 'SmugMug'
+      'smugmug' => 'SmugMug',
+      'goodreads' => 'GoodReads'
     }
 
     module_function

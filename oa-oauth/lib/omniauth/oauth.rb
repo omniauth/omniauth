@@ -18,5 +18,7 @@ module OmniAuth
     autoload :Meetup,             'omniauth/strategies/meetup'
     autoload :SoundCloud,         'omniauth/strategies/sound_cloud'
     autoload :SmugMug,            'omniauth/strategies/smug_mug'
+    autoload :GoodReads,          'omniauth/strategies/good_reads'
+
   end
 end
