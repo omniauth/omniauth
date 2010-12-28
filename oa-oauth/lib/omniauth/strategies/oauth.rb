@@ -42,6 +42,7 @@ module OmniAuth
         @access_token = request_token.get_access_token(opts)
         super
       rescue ::OAuth::Unauthorized => e
+        raise e.inspect
         fail!(:invalid_credentials, e)
       end
       
