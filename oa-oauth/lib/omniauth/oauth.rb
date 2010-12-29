@@ -19,5 +19,6 @@ module OmniAuth
     autoload :SoundCloud,         'omniauth/strategies/sound_cloud'
     autoload :SmugMug,            'omniauth/strategies/smug_mug'
     autoload :Goodreads,          'omniauth/strategies/goodreads'
+    autoload :Yahoo,              'omniauth/strategies/yahoo'
   end
 end
