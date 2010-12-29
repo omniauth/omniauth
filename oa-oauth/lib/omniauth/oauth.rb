@@ -20,5 +20,6 @@ module OmniAuth
     autoload :SmugMug,            'omniauth/strategies/smug_mug'
     autoload :Goodreads,          'omniauth/strategies/goodreads'
     autoload :Yahoo,              'omniauth/strategies/yahoo'
+    autoload :TypePad,            'omniauth/strategies/type_pad'
   end
 end
