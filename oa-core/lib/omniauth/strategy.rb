@@ -46,7 +46,8 @@ module OmniAuth
     
     def callback_phase
       @env['omniauth.auth'] = auth_hash
-      call_app!
+      
+      call_app! 
     end
     
     def path_prefix
