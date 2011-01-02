@@ -36,9 +36,17 @@ Use the LDAP strategy as a middleware in your applicaiton:
         :base => 'dc=intridea, dc=com',
         :uid => 'sAMAccountName',
         :name_proc => Proc.new {|name| name.gsub(/@.*$/,'')}
+        :bind_dn => 'default_bind_dn'
+        :password => 'password'
 
-All of the listed options are required, with the exception of :name_proc.
+All of the listed options are required, with the exception of :name_proc, :bind_dn, and :password
 Allowed values of :method are: :plain, :ssl, :tls.
+
+:bind_dn and :password are used to perform the initial binding if user lookup is
+needed. If the user lookup returns result, the DN attribute from the result set is used
+to perform the final binding. This is needed only when the LDAP server requires 
+DN to be used for binding and you may only want user to using email or username
+in the login form.
 
 :uid is the LDAP attribute name for the user name in the login form. typically
 AD would be 'sAMAccountName' or 'UserPrincipalName', while OpenLDAP is 'uid'.

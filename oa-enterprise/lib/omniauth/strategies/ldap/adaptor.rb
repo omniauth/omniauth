@@ -25,7 +25,7 @@ module OmniAuth
 	      :plain => nil
 	    }     
 	      
-        attr_accessor :bind_dn, :password                                     
+    attr_accessor :bind_dn, :password                                     
 		attr_reader :connection, :uid, :base
 
 	    def initialize(configuration={})
@@ -46,9 +46,8 @@ module OmniAuth
 	
 		def connect(options={})
 	      host = options[:host] || @host
-	      method = options[:method] || @method || :plain
+	      method = ensure_method(options[:method] || @method || :plain)
 	      port = options[:port] || @port || ensure_port(method)
-	      method = ensure_method(method)
 	      @disconnected = false
 	      @bound = false
 	      @bind_tried = false
@@ -179,65 +178,65 @@ module OmniAuth
           available_methods = METHOD.keys.collect {|m| m.inspect}.join(", ")
           format = "%s is not one of the available connect methods: %s"
           raise ConfigurationError, format % [method.inspect, available_methods]
-        end
-	      
-        def sasl_bind(bind_dn, options={})
-          sasl_mechanisms = options[:sasl_mechanisms] || @sasl_mechanisms
-            sasl_mechanisms.each do |mechanism|
-              begin
-                normalized_mechanism = mechanism.downcase.gsub(/-/, '_')
-                sasl_bind_setup = "sasl_bind_setup_#{normalized_mechanism}"
-                next unless respond_to?(sasl_bind_setup, true)
-                initial_credential, challenge_response = send(sasl_bind_setup, bind_dn, options)
+      end
+      
+      def sasl_bind(bind_dn, options={})
+        sasl_mechanisms = options[:sasl_mechanisms] || @sasl_mechanisms
+          sasl_mechanisms.each do |mechanism|
+            begin
+              normalized_mechanism = mechanism.downcase.gsub(/-/, '_')
+              sasl_bind_setup = "sasl_bind_setup_#{normalized_mechanism}"
+              next unless respond_to?(sasl_bind_setup, true)
+              initial_credential, challenge_response = send(sasl_bind_setup, bind_dn, options)
 
-                args = {
-                  :method => :sasl,
-                  :initial_credential => initial_credential,
-                  :mechanism => mechanism,
-                  :challenge_response => challenge_response,
-                }
-                
-                info = {
-                  :name => "bind: SASL", :dn => bind_dn, :mechanism => mechanism,
-                }
-                puts info.inspect
+              args = {
+                :method => :sasl,
+                :initial_credential => initial_credential,
+                :mechanism => mechanism,
+                :challenge_response => challenge_response,
+              }
+              
+              info = {
+                :name => "bind: SASL", :dn => bind_dn, :mechanism => mechanism,
+              }
+              puts info.inspect
 
-                execute(:bind, args)
-                return true
-                
-              rescue Exception => e
-                puts e.message
-              end
+              execute(:bind, args)
+              return true
+              
+            rescue Exception => e
+              puts e.message
             end
-
-          false
-        end
-
-        def sasl_bind_setup_digest_md5(bind_dn, options)
-          initial_credential = ""
-          challenge_response = Proc.new do |cred|
-            pref = SASL::Preferences.new :digest_uri => "ldap/#{@host}", :username => bind_dn, :has_password? => true, :password => options[:password]||@password
-            sasl = SASL.new("DIGEST-MD5", pref)
-            response = sasl.receive("challenge", cred)
-            response[1]
           end
-          [initial_credential, challenge_response]
-        end
 
-        def sasl_bind_setup_gss_spnego(bind_dn, options)
-          puts options.inspect
-          user,psw = [bind_dn, options[:password]||@password]
-          raise LdapError.new( "invalid binding information" ) unless (user && psw)
+        false
+      end
 
-          nego = proc {|challenge|
-            t2_msg = Net::NTLM::Message.parse( challenge )
-            user, domain = user.split('\\').reverse
-            t2_msg.target_name = Net::NTLM::encode_utf16le(domain) if domain
-            t3_msg = t2_msg.response( {:user => user, :password => psw}, {:ntlmv2 => true} )
-            t3_msg.serialize
-          }        
-          [Net::NTLM::Message::Type1.new.serialize, nego]        
+      def sasl_bind_setup_digest_md5(bind_dn, options)
+        initial_credential = ""
+        challenge_response = Proc.new do |cred|
+          pref = SASL::Preferences.new :digest_uri => "ldap/#{@host}", :username => bind_dn, :has_password? => true, :password => options[:password]||@password
+          sasl = SASL.new("DIGEST-MD5", pref)
+          response = sasl.receive("challenge", cred)
+          response[1]
         end
+        [initial_credential, challenge_response]
+      end
+
+      def sasl_bind_setup_gss_spnego(bind_dn, options)
+        puts options.inspect
+        user,psw = [bind_dn, options[:password]||@password]
+        raise LdapError.new( "invalid binding information" ) unless (user && psw)
+
+        nego = proc {|challenge|
+          t2_msg = Net::NTLM::Message.parse( challenge )
+          user, domain = user.split('\\').reverse
+          t2_msg.target_name = Net::NTLM::encode_utf16le(domain) if domain
+          t3_msg = t2_msg.response( {:user => user, :password => psw}, {:ntlmv2 => true} )
+          t3_msg.serialize
+        }        
+        [Net::NTLM::Message::Type1.new.serialize, nego]        
+      end
       
 	    def simple_bind(bind_dn, options={})
 	      args = {
@@ -249,19 +248,19 @@ module OmniAuth
           true
         end
 	      
-        def construct_uri(host, port, ssl)
-          protocol = ssl ? "ldaps" : "ldap"
-          URI.parse("#{protocol}://#{host}:#{port}").to_s
+      def construct_uri(host, port, ssl)
+        protocol = ssl ? "ldaps" : "ldap"
+        URI.parse("#{protocol}://#{host}:#{port}").to_s
+      end
+
+      def target
+        return nil if @uri.nil?
+        if @with_start_tls
+          "#{@uri}(StartTLS)"
+        else
+          @uri
         end
-  
-        def target
-          return nil if @uri.nil?
-          if @with_start_tls
-            "#{@uri}(StartTLS)"
-          else
-            @uri
-          end
-        end	
+      end	
       end
     end
   end
