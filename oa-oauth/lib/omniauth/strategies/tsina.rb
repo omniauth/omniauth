@@ -13,20 +13,8 @@ module OmniAuth
     #
     class Tsina < OmniAuth::Strategies::OAuth
       
-      class << self
-        def api_key
-          @@api_key
-        end
-
-        def secret_key
-          @@secret_key
-        end
-        
-      end
-      
       def initialize(app, consumer_key = nil, consumer_secret = nil, options = {}, &block)
-        @@api_key = consumer_key
-        @@secret_key = consumer_secret
+        @api_key = consumer_key
         
         client_options = {
           :site               => 'http://api.t.sina.com.cn',
@@ -50,15 +38,24 @@ module OmniAuth
       
       def user_info
         user_hash = self.user_hash
-        raise user_hash.inspect
+        {
+          'username' => user_hash['screen_name'],
+          'name' => user_hash['name'],
+          'location' => user_hash['location'],
+          'image' => user_hash['profile_image_url'],
+          'description' => user_hash['description'],
+          'urls' => {
+            'Tsina' => user_hash['url']
+          }
+        }
       end
 
       def user_hash
         # http://api.t.sina.com.cn/users/show/:id.json?source=appkey
-        # @access_token.params[:id] is the UID
-        # Tsina.api_key is the appkey
-        uid = @access_token.params[:id]
-        @user_hash ||= MultiJson.decode(@access_token.get("http://api.t.sina.com.cn/users/show/#{uid}.json?source=#{Tsina.api_key}").body)
+        # @access_token.params[:user_id] is the UID
+        # @api_key is the appkey
+        uid = @access_token.params[:user_id]
+        @user_hash ||= MultiJson.decode(@access_token.get("http://api.t.sina.com.cn/users/show/#{uid}.json?source=#{@api_key}").body)
       end
     end
   end
