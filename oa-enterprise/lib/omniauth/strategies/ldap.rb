@@ -52,15 +52,16 @@ module OmniAuth
 
       def perform
       	begin
-          bind_dn = "#{@adaptor.uid}=#{request.POST['username']}"
-          bind_dn << ",#{@adaptor.base}" unless @adaptor.base == ''
+				@ldap_user_info = {}
+        (@adaptor.bind unless @adaptor.bound?) rescue puts "failed to bind with the default credentials"          
+        @ldap_user_info = @adaptor.search(:filter => Net::LDAP::Filter.eq(@adaptor.uid, @name_proc.call(request.POST['username'])),:limit => 1) if @adaptor.bound?
+				bind_dn = request.POST['username']
+				bind_dn = @ldap_user_info[:dn].to_a.first if @ldap_user_info[:dn]
+        @adaptor.bind(:bind_dn => bind_dn, :password => request.POST['password'])
+        @ldap_user_info = @adaptor.search(:filter => Net::LDAP::Filter.eq(@adaptor.uid, @name_proc.call(request.POST['username'])),:limit => 1) if @ldap_user_info.empty?
+    	  @user_info = self.class.map_user(@@config, @ldap_user_info)
 
-          @adaptor.bind(:bind_dn => bind_dn, :password => request.POST['password'])
-      	  @ldap_user_info = @adaptor.search(:filter => Net::LDAP::Filter.eq(@adaptor.uid, @name_proc.call(request.POST['username'])),:limit => 1)
-      	  @user_info = self.class.map_user(@@config, @ldap_user_info)
-
-          @env['omniauth.auth'] = auth_hash
-	      #@env['REQUEST_METHOD'] = 'GET'
+        @env['omniauth.auth'] = auth_hash
 	      @env['PATH_INFO'] = "#{OmniAuth.config.path_prefix}/#{name}/callback"
 	
 	      call_app!
