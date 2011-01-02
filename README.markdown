@@ -30,6 +30,7 @@ OmniAuth currently supports the following external providers:
   * SoundCloud (credit: [leemartin](http://github.com/leemartin))
   * SmugMug (credit: [pchilton](http://github.com/pchilton))
   * Douban (credit: [rainux](http://github.com/rainux))
+  * Tsina (credit: [he9qi](http://github.com/he9qi))
 * OpenID
 * Google Apps (via OpenID)
 * CAS (Central Authentication Service) (credit: [jamesarosen](http://github.com/jamesarosen))
