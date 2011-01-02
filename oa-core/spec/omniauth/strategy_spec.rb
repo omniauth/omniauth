@@ -47,6 +47,14 @@ describe OmniAuth::Strategy do
 
           strategy.callback_url.should == 'http://example.com/auth/test/callback'
         end
+
+        it 'preserves the query parameters' do
+          strategy.stub(:full_host).and_return('http://example.com')
+          begin
+            strategy.call({'PATH_INFO' => '/auth/test', 'QUERY_STRING' => 'id=5'})
+          rescue RuntimeError; end
+          strategy.callback_url.should == 'http://example.com/auth/test/callback?id=5'
+        end
       end
     end
     
@@ -79,6 +87,15 @@ describe OmniAuth::Strategy do
 
           strategy.callback_url.should == 'http://example.com/radical'
         end
+
+        it 'preserves the query parameters' do
+          @options = {:callback_path => '/radical'}
+          strategy.stub(:full_host).and_return('http://example.com')
+          begin
+            strategy.call({'QUERY_STRING' => 'id=5'})
+          rescue RuntimeError; end
+          strategy.callback_url.should == 'http://example.com/radical?id=5'
+        end
       end
     end
     
@@ -102,6 +119,14 @@ describe OmniAuth::Strategy do
           lambda{ strategy.call({'PATH_INFO' => '/wowzers/test'}) }.should raise_error("Request Phase")
 
           strategy.callback_url.should == 'http://example.com/wowzers/test/callback'
+        end
+
+        it 'preserves the query parameters' do
+          strategy.stub(:full_host).and_return('http://example.com')
+          begin
+            strategy.call({'PATH_INFO' => '/wowzers/test', 'QUERY_STRING' => 'id=5'})
+          rescue RuntimeError; end
+          strategy.callback_url.should == 'http://example.com/wowzers/test/callback?id=5'
         end
       end
     end

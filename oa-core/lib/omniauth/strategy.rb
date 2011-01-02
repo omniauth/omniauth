@@ -61,6 +61,14 @@ module OmniAuth
     def callback_path
       options[:callback_path] || "#{path_prefix}/#{name}/callback"
     end
+
+    def query_string
+      request.query_string.empty? ? "" : "?#{filter_callback_params(request.query_string)}"
+    end
+
+    def filter_callback_params(query_string)
+      query_string
+    end
     
     def call_app!
       @env['omniauth.strategy'] = self
@@ -83,7 +91,7 @@ module OmniAuth
     end
     
     def callback_url
-      full_host + callback_path
+      full_host + callback_path + query_string
     end
     
     def session
