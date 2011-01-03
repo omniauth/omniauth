@@ -48,6 +48,10 @@ module OmniAuth
         ::OAuth2::Client.new(client_id, client_secret, client_options.merge(options[:client_options] || {}))
       end
       
+      def callback_url
+        full_host + callback_path
+      end
+
       protected
         
       def request_phase
