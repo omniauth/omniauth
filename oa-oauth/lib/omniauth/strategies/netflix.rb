@@ -6,7 +6,7 @@ module OmniAuth
     #
     # Authenticate to Netflix via OAuth and retrieve basic user information.
     # Usage:
-    #    use OmniAuth::Strategies::Netflix, 'consumerkey', 'consumersecret', :app => 'ApplicationName'
+    #    use OmniAuth::Strategies::Netflix, 'consumerkey', 'consumersecret'
     #
     class Netflix < OmniAuth::Strategies::OAuth
       def initialize(app, consumer_key = nil, consumer_secret = nil, options = {}, &block)
