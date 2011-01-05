@@ -29,6 +29,8 @@ OmniAuth currently supports the following external providers:
   * Meetup (credit [coderoshi](http://github.com/coderoshi))
   * SoundCloud (credit: [leemartin](http://github.com/leemartin))
   * SmugMug (credit: [pchilton](http://github.com/pchilton))
+  * GoodReads (credit: [cristoffer](http://github.com/christoffer))
+  * Netflix (credit: [caged](http://github.com/caged))
 * OpenID
 * Google Apps (via OpenID)
 * CAS (Central Authentication Service) (credit: [jamesarosen](http://github.com/jamesarosen))
