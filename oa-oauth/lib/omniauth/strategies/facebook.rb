@@ -48,10 +48,6 @@ module OmniAuth
           'extra' => {'user_hash' => user_data}
         })
       end
-
-      def filter_callback_params(query_string)
-        "&#{query_string}".gsub(/(&code=[^&]*)/, '')[1..-1].to_s
-      end
     end
   end
 end

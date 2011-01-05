@@ -37,7 +37,7 @@ module OmniAuth
       def callback_phase
         request_token = ::OAuth::RequestToken.new(consumer, session['oauth'][name.to_s].delete('request_token'), session['oauth'][name.to_s].delete('request_secret'))
         
-        opts = {:oauth_verifier => request.params['oauth_verifier']}
+        opts = {}
         opts[:oauth_callback] = callback_url if session['oauth']['callback_confirmed']
         @access_token = request_token.get_access_token(opts)
         super
