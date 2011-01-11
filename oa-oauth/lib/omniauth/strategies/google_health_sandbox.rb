@@ -64,7 +64,7 @@ module OmniAuth
         r = Rack::Response.new
 
         if request_token.callback_confirmed?
-          r.redirect(request_token.authorize_url)
+          r.redirect("http://localhost:3000")#request_token.authorize_url)
         else
           r.redirect(request_token.authorize_url(:oauth_callback => callback_url))        
         end
