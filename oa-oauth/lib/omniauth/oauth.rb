@@ -23,6 +23,7 @@ module OmniAuth
     autoload :TypePad,            'omniauth/strategies/type_pad'
     autoload :Google,             'omniauth/strategies/google'
 		autoload :GoogleHealth,       'omniauth/strategies/google_health'
+		autoload :GoogleHealthSandbox,'omniauth/strategies/google_health_sandbox'
     autoload :Netflix,            'omniauth/strategies/netflix'
   end
 end
