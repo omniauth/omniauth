@@ -22,6 +22,7 @@ module OmniAuth
     autoload :Yahoo,              'omniauth/strategies/yahoo'
     autoload :TypePad,            'omniauth/strategies/type_pad'
     autoload :Google,             'omniauth/strategies/google'
+		autoload :GoogleHealth,       'omniauth/startegies/google_health'
     autoload :Netflix,            'omniauth/strategies/netflix'
   end
 end
