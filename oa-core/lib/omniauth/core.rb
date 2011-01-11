@@ -1,12 +1,11 @@
 require 'rack'
 require 'singleton'
-require 'omniauth/form'
 
 module OmniAuth
-
   autoload :Builder,  'omniauth/builder'
   autoload :Strategy, 'omniauth/strategy'
   autoload :Test,     'omniauth/test'
+  autoload :Form,     'omniauth/form'
 
   module Strategies
     autoload :Password, 'omniauth/strategies/password'
@@ -25,7 +24,18 @@ module OmniAuth
         new_path = "#{OmniAuth.config.path_prefix}/failure?message=#{message_key}"
         [302, {'Location' => "#{new_path}", 'Content-Type'=> 'text/html'}, []]
       end,
-      :form_css => Form::DEFAULT_CSS
+      :form_css => Form::DEFAULT_CSS,
+      :test_mode => false,
+      :mock_auth => {
+        :default => {
+          'uid' => '1234',
+          'user_info' => {
+            'name' => 'Bob Example',
+            'email' => 'bob@example.com',
+            'nickname' => 'bob'
+          }
+        }
+      }
     }
 
     def self.defaults
@@ -45,15 +55,19 @@ module OmniAuth
     end
 
     attr_writer :on_failure
-    attr_accessor :path_prefix, :form_css
+    attr_accessor :path_prefix, :form_css, :test_mode, :mock_auth
   end
-
+  
   def self.config
     Configuration.instance
   end
 
   def self.configure
     yield config
+  end
+
+  def self.mock_auth_for(provider)
+    config.mock_auth[provider.to_sym] || config.mock_auth[:default]
   end
 
   module Utils

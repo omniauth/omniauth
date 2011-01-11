@@ -130,5 +130,32 @@ describe OmniAuth::Strategy do
         end
       end
     end
+
+    context 'test mode' do
+      before do
+        OmniAuth.config.test_mode = true
+      end
+
+      it 'should short circuit the request phase entirely' do
+        response = strategy.call({'PATH_INFO' => '/auth/test'})
+        response[0].should == 302
+        response[1]['Location'].should == '/auth/test/callback'
+      end
+
+      it 'should respond with the default hash if none is set' do
+        strategy.call 'PATH_INFO' => '/auth/test/callback'
+        strategy.env['omniauth.auth']['uid'].should == '1234'
+      end
+
+      it 'should respond with a provider-specific hash if one is set' do
+        OmniAuth.config.mock_auth[:test] = {
+          'uid' => 'abc'
+        }
+
+        strategy.call 'PATH_INFO' => '/auth/test/callback'
+        raise OmniAuth.config.mock_auth.inspect
+        strategy.env['omniauth.auth']['uid'].should == 'abc'
+      end
+    end
   end
 end
