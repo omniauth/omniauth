@@ -4,7 +4,7 @@ Bundler.setup
 require 'rake'
 
 require 'mg'
-MG.new('oa-basic.gemspec')
+MG.new('oa-more.gemspec')
 
 require 'rspec/core/rake_task'
 RSpec::Core::RakeTask.new(:spec) do |s|

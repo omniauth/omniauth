@@ -153,7 +153,6 @@ describe OmniAuth::Strategy do
         }
 
         strategy.call 'PATH_INFO' => '/auth/test/callback'
-        raise OmniAuth.config.mock_auth.inspect
         strategy.env['omniauth.auth']['uid'].should == 'abc'
       end
     end
