@@ -156,5 +156,18 @@ describe OmniAuth::Strategy do
         strategy.env['omniauth.auth']['uid'].should == 'abc'
       end
     end
+
+    context 'custom full_host' do
+      it 'should be the string when a string is there' do
+        OmniAuth.config.full_host = 'my.host.com'
+        strategy.full_host.should == 'my.host.com'
+      end
+
+      it 'should run the proc with the env when it is a proc' do
+        OmniAuth.config.full_host = Proc.new{|env| env['HOST']}
+        strategy.call('HOST' => 'my.host.net')
+        strategy.full_host.should == 'my.host.net'
+      end
+    end
   end
 end
