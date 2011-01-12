@@ -91,10 +91,17 @@ module OmniAuth
     end
     
     def full_host
-      uri = URI.parse(request.url)
-      uri.path = ''
-      uri.query = nil
-      uri.to_s
+      case OmniAuth.config.full_host
+        when String
+          OmniAuth.config.full_host
+        when Proc
+          OmniAuth.config.full_host.call(env)
+        else
+          uri = URI.parse(request.url)
+          uri.path = ''
+          uri.query = nil
+          uri.to_s
+      end
     end
     
     def callback_url

@@ -55,7 +55,7 @@ module OmniAuth
     end
 
     attr_writer :on_failure
-    attr_accessor :path_prefix, :form_css, :test_mode, :mock_auth
+    attr_accessor :path_prefix, :form_css, :test_mode, :mock_auth, :full_host
   end
   
   def self.config
@@ -79,7 +79,7 @@ module OmniAuth
       'github' => 'GitHub',
       'tripit' => 'TripIt',
       'soundcloud' => 'SoundCloud',
-      'smugmug' => 'SmugMug'
+      'smugmug' => 'SmugMug',
       'cas' => 'CAS'
     }
 
