@@ -80,6 +80,7 @@ module OmniAuth
       'tripit' => 'TripIt',
       'soundcloud' => 'SoundCloud',
       'smugmug' => 'SmugMug'
+      'cas' => 'CAS'
     }
 
     module_function
