@@ -9,7 +9,7 @@ Gem::Specification.new do |gem|
   gem.homepage = "http://github.com/intridea/omniauth"
   gem.authors = ["Michael Bleigh"]
   
-  gem.files = Dir.glob("{lib}/**/*") + %w(LICENSE.rdoc CHANGELOG.rdoc)
+  gem.files = Dir.glob("{lib}/**/*") + %w(README.rdoc LICENSE)
   
   gem.add_dependency 'oa-core', version
   gem.add_dependency 'rack-openid', '~> 1.2.0'
