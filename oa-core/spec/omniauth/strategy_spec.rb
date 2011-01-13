@@ -142,6 +142,11 @@ describe OmniAuth::Strategy do
         response[1]['Location'].should == '/auth/test/callback'
       end
 
+      it 'should not short circuit requests outside of authentication' do
+        env = {'PATH_INFO' => '/'}
+        strategy.call(env).should == app.call(env)
+      end
+
       it 'should respond with the default hash if none is set' do
         strategy.call 'PATH_INFO' => '/auth/test/callback'
         strategy.env['omniauth.auth']['uid'].should == '1234'

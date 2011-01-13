@@ -48,6 +48,8 @@ module OmniAuth
       elsif request.path == callback_path
         @env['omniauth.auth'] = OmniAuth.mock_auth_for(name.to_sym)
         call_app!
+      else
+        call_app!
       end
     end
     
