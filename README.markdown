@@ -22,19 +22,20 @@ OmniAuth currently supports the following external providers:
   * Foursquare
   * LinkedIn
   * GitHub
-  * Identi.ca (credit: [dcu](http://github.com/dcu))
-  * Gowalla (credit: [kvnsmth](http://github.com/kvnsmth))
-  * Dopplr (credit: [flextrip](http://github.com/flextrip))
-  * TripIt (credit: [flextrip](http://github.com/flextrip))
-  * Meetup (credit [coderoshi](http://github.com/coderoshi))
-  * SoundCloud (credit: [leemartin](http://github.com/leemartin))
-  * SmugMug (credit: [pchilton](http://github.com/pchilton))
-  * GoodReads (credit: [cristoffer](http://github.com/christoffer))
-  * Netflix (credit: [caged](http://github.com/caged))
+  * Identi.ca (credit: [dcu](https://github.com/dcu))
+  * Gowalla (credit: [kvnsmth](https://github.com/kvnsmth))
+  * Dopplr (credit: [flextrip](https://github.com/flextrip))
+  * TripIt (credit: [flextrip](https://github.com/flextrip))
+  * Meetup (credit [coderoshi](https://github.com/coderoshi))
+  * SoundCloud (credit: [leemartin](https://github.com/leemartin))
+  * SmugMug (credit: [pchilton](https://github.com/pchilton))
+  * GoodReads (credit: [cristoffer](https://github.com/christoffer))
+  * Netflix (credit: [caged](https://github.com/caged))
+  * Bit.ly (credit: [philnash](https://github.com/philnash))
 * OpenID
 * Google Apps (via OpenID)
-* CAS (Central Authentication Service) (credit: [jamesarosen](http://github.com/jamesarosen))
-* LDAP (credit: [pyu10055](http://github.com/pyu10055))
+* CAS (Central Authentication Service) (credit: [jamesarosen](https://github.com/jamesarosen))
+* LDAP (credit: [pyu10055](https://github.com/pyu10055))
 
 ## Usage
 
