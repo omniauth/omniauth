@@ -44,7 +44,6 @@ module OmniAuth
           opts[:oauth_callback] = callback_url  
         end
 
-        puts "** OPTS ** #{opts}"
         @access_token = request_token.get_access_token(opts)
         super
       rescue ::OAuth::Unauthorized => e
