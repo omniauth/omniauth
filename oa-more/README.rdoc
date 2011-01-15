@@ -13,4 +13,10 @@ To install just the providers in the "more" gem:
 
     gem install oa-more
 
+== OmniAuth Builder
 
+If you want to allow multiple providers, use the OmniAuth Builder:
+
+    use OmniAuth::Builder do
+        provider :flickr, 'api_key', 'secret_key', :scope => 'read'
+    end
