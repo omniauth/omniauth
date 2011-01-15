@@ -14,6 +14,8 @@ Gem::Specification.new do |gem|
   gem.files = Dir.glob("{lib}/**/*") + %w(README.rdoc LICENSE)
   
   gem.add_dependency  'oa-core', version
+  gem.add_dependency  'rest-client',  '~> 1.6.0'
+  gem.add_dependency  'multi_json',   '~> 0.0.2'
   
   eval File.read(File.join(File.dirname(__FILE__), '../development_dependencies.rb'))
 end
