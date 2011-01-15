@@ -130,5 +130,49 @@ describe OmniAuth::Strategy do
         end
       end
     end
+
+    context 'test mode' do
+      before do
+        OmniAuth.config.test_mode = true
+      end
+
+      it 'should short circuit the request phase entirely' do
+        response = strategy.call({'PATH_INFO' => '/auth/test'})
+        response[0].should == 302
+        response[1]['Location'].should == '/auth/test/callback'
+      end
+
+      it 'should not short circuit requests outside of authentication' do
+        env = {'PATH_INFO' => '/'}
+        strategy.call(env).should == app.call(env)
+      end
+
+      it 'should respond with the default hash if none is set' do
+        strategy.call 'PATH_INFO' => '/auth/test/callback'
+        strategy.env['omniauth.auth']['uid'].should == '1234'
+      end
+
+      it 'should respond with a provider-specific hash if one is set' do
+        OmniAuth.config.mock_auth[:test] = {
+          'uid' => 'abc'
+        }
+
+        strategy.call 'PATH_INFO' => '/auth/test/callback'
+        strategy.env['omniauth.auth']['uid'].should == 'abc'
+      end
+    end
+
+    context 'custom full_host' do
+      it 'should be the string when a string is there' do
+        OmniAuth.config.full_host = 'my.host.com'
+        strategy.full_host.should == 'my.host.com'
+      end
+
+      it 'should run the proc with the env when it is a proc' do
+        OmniAuth.config.full_host = Proc.new{|env| env['HOST']}
+        strategy.call('HOST' => 'my.host.net')
+        strategy.full_host.should == 'my.host.net'
+      end
+    end
   end
 end

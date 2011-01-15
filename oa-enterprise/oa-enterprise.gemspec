@@ -11,7 +11,7 @@ Gem::Specification.new do |gem|
   gem.homepage = "http://github.com/intridea/omniauth"
   gem.authors = ["James A. Rosen", "Ping Yu"]
   
-  gem.files = Dir.glob("{lib}/**/*") + %w(README.rdoc LICENSE.rdoc CHANGELOG.rdoc)
+  gem.files = Dir.glob("{lib}/**/*") + %w(README.rdoc LICENSE)
   
   gem.add_dependency  'oa-core',    version
   gem.add_dependency  'nokogiri',   '~> 1.4.2'

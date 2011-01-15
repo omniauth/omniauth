@@ -55,12 +55,6 @@ module OmniAuth
         )}, []]}
       end
       
-      def callback_url
-        uri = URI.parse(request.url)
-        uri.path += '/callback'
-        uri.to_s
-      end
-      
       def identifier
         options[:identifier] || request[IDENTIFIER_URL_PARAMETER]
       end
@@ -88,7 +82,6 @@ module OmniAuth
       end
       
       def callback_phase
-        env['REQUEST_METHOD'] = 'GET'
         openid = Rack::OpenID.new(lambda{|env| [200,{},[]]}, @store)
         openid.call(env)
         @openid_response = env.delete('rack.openid.response')

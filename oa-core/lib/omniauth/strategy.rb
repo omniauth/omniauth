@@ -25,6 +25,8 @@ module OmniAuth
 
     def call!(env)
       @env = env
+      return mock_call!(env) if OmniAuth.config.test_mode
+
       if request.path == request_path
         status, headers, body = *call_app!
         @response = Rack::Response.new(body, status, headers)
@@ -37,6 +39,17 @@ module OmniAuth
         else
           call_app!
         end
+      end
+    end
+
+    def mock_call!(env)
+      if request.path == request_path
+        redirect callback_path
+      elsif request.path == callback_path
+        @env['omniauth.auth'] = OmniAuth.mock_auth_for(name.to_sym)
+        call_app!
+      else
+        call_app!
       end
     end
     
@@ -80,10 +93,17 @@ module OmniAuth
     end
     
     def full_host
-      uri = URI.parse(request.url)
-      uri.path = ''
-      uri.query = nil
-      uri.to_s
+      case OmniAuth.config.full_host
+        when String
+          OmniAuth.config.full_host
+        when Proc
+          OmniAuth.config.full_host.call(env)
+        else
+          uri = URI.parse(request.url)
+          uri.path = ''
+          uri.query = nil
+          uri.to_s
+      end
     end
     
     def callback_url

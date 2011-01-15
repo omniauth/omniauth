@@ -23,5 +23,6 @@ module OmniAuth
     autoload :TypePad,            'omniauth/strategies/type_pad'
     autoload :Google,             'omniauth/strategies/google'
     autoload :Netflix,            'omniauth/strategies/netflix'
+    autoload :Bitly,              'omniauth/strategies/bitly'
   end
 end

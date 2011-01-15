@@ -48,6 +48,10 @@ module OmniAuth
         ::OAuth2::Client.new(client_id, client_secret, client_options.merge(options[:client_options] || {}))
       end
       
+      def callback_url
+        full_host + callback_path
+      end
+
       protected
         
       def request_phase
@@ -61,6 +65,17 @@ module OmniAuth
         
         verifier = request.params['code']
         @access_token = client.web_server.get_access_token(verifier, :redirect_uri => callback_url)
+        
+        if @access_token.expires? && @access_token.expires_in <= 0
+          client.request(:post, client.access_token_url, { 
+              'client_id' => client_id,
+              'grant_type' => 'refresh_token', 
+              'client_secret' => client_secret,
+              'refresh_token' => @access_token.refresh_token 
+            })
+          @access_token = client.web_server.get_access_token(verifier, :redirect_uri => callback_url)
+        end
+        
         super
       rescue ::OAuth2::HTTPError, ::OAuth2::AccessDenied, CallbackError => e
         fail!(:invalid_credentials, e)
