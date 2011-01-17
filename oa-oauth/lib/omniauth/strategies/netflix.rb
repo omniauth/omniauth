@@ -52,10 +52,6 @@ module OmniAuth
           'nickname' => user['nickname'], 
           'first_name' => user['first_name'],
           'last_name' => user['last_name'],
-          'can_instant_watch' => user['can_instant_watch'],
-          'link' => user['link'],
-          'max_maturity_level' => user['max_maturity_level'],
-          'preferred_formats' => user['preferred_formats']
         }
       end
       
