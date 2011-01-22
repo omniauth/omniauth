@@ -22,6 +22,11 @@ module OmniAuth
         end
       end
       
+      def sets_user_info_to(user_info)
+        it "should set the user_info to #{user_info}" do
+          (last_request.env['omniauth.auth'] || {})['user_info'].should == user_info
+        end
+      end
     end
     
   end
