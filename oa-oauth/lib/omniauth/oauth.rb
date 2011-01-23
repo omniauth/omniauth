@@ -25,5 +25,6 @@ module OmniAuth
     autoload :Netflix,            'omniauth/strategies/netflix'
     autoload :Bitly,              'omniauth/strategies/bitly'
     autoload :Vimeo,              'omniauth/strategies/vimeo'
+    autoload :YouTube,            'omniauth/strategies/you_tube'
   end
 end
