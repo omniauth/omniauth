@@ -4,7 +4,7 @@ module OmniAuth
   module Strategies
     autoload :OAuth,              'omniauth/strategies/oauth'
     autoload :OAuth2,             'omniauth/strategies/oauth2'
-    
+
     autoload :Twitter,            'omniauth/strategies/twitter'
     autoload :LinkedIn,           'omniauth/strategies/linked_in'
     autoload :Facebook,           'omniauth/strategies/facebook'
@@ -24,5 +24,6 @@ module OmniAuth
     autoload :Google,             'omniauth/strategies/google'
     autoload :Netflix,            'omniauth/strategies/netflix'
     autoload :Bitly,              'omniauth/strategies/bitly'
+    autoload :Vimeo,              'omniauth/strategies/vimeo'
   end
 end
