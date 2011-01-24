@@ -58,6 +58,7 @@ module OmniAuth
         (@adaptor.bind unless @adaptor.bound?) rescue puts "failed to bind with the default credentials"          
         @ldap_user_info = @adaptor.search(:filter => Net::LDAP::Filter.eq(@adaptor.uid, @name_proc.call(creds['username'])),:limit => 1) if @adaptor.bound?
 				bind_dn = creds['username']
+				bind_dn = "CN=#{bind_dn},#{@adaptor.base}"
 				bind_dn = @ldap_user_info[:dn].to_a.first if @ldap_user_info[:dn]
         @adaptor.bind(:bind_dn => bind_dn, :password => creds['password'])
         @ldap_user_info = @adaptor.search(:filter => Net::LDAP::Filter.eq(@adaptor.uid, @name_proc.call(creds['username'])),:limit => 1) if @ldap_user_info.empty?

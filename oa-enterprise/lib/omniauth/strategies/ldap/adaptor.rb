@@ -131,7 +131,7 @@ module OmniAuth
 	        :size => limit
 	      }
 		  
-          puts args.inspect
+          # puts args.inspect
 
           attributes = {}
           execute(:search, args) do |entry|
@@ -199,7 +199,7 @@ module OmniAuth
               info = {
                 :name => "bind: SASL", :dn => bind_dn, :mechanism => mechanism,
               }
-              puts info.inspect
+              # puts info.inspect
 
               execute(:bind, args)
               return true
@@ -224,7 +224,7 @@ module OmniAuth
       end
 
       def sasl_bind_setup_gss_spnego(bind_dn, options)
-        puts options.inspect
+        # puts options.inspect
         user,psw = [bind_dn, options[:password]||@password]
         raise LdapError.new( "invalid binding information" ) unless (user && psw)
 
