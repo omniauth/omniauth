@@ -65,10 +65,10 @@ module OmniAuth
 
         @env['omniauth.auth'] = auth_hash
 	
-	      call_app!
       	rescue Exception => e
       	  fail!(:invalid_credentials, e)
       	end
+	      call_app!
       end      
       
       def auth_hash

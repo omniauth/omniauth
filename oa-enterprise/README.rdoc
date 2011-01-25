@@ -25,7 +25,7 @@ See OmniAuth::Strategies::CAS::Configuration for more configuration options.
 
 == LDAP
 
-Use the LDAP strategy as a middleware in your applicaiton:
+Use the LDAP strategy as a middleware in your application:
 
     require 'omniauth/enterprise'
     use OmniAuth::Strategies::LDAP, 
