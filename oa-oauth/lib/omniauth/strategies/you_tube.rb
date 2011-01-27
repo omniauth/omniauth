@@ -38,11 +38,11 @@ module OmniAuth
         {
           'uid' => entry['id']['$t'],
           'nickname' => entry['author'].first['name']['$t'],
-          'first_name' => entry['yt$firstName']['$t'],
-          'last_name' => entry['yt$lastName']['$t'],
-          'image' => entry['media$thumbnail']['url'],
-          'description' => entry['yt$description']['$t'],
-          'location' => entry['yt$location']['$t']
+          'first_name' => entry['yt$firstName'] && entry['yt$firstName']['$t'],
+          'last_name' => entry['yt$lastName'] && entry['yt$lastName']['$t'],
+          'image' => entry['media$thumbnail'] && entry['media$thumbnail']['url'],
+          'description' => entry['yt$description'] && entry['yt$description']['$t'],
+          'location' => entry['yt$location'] && entry['yt$location']['$t']
         }
       end
 
