@@ -32,6 +32,9 @@ OmniAuth currently supports the following external providers:
   * GoodReads (credit: [cristoffer](https://github.com/christoffer))
   * Netflix (credit: [caged](https://github.com/caged))
   * Bit.ly (credit: [philnash](https://github.com/philnash))
+  * Vimeo (credit: [jamiew](https://github.com/jamiew))
+  * YouTube (credit: [jamiew](https://github.com/jamiew))
+* Flickr (credit: [pchilton](https://github.com/pchilton))
 * OpenID
 * Google Apps (via OpenID)
 * CAS (Central Authentication Service) (credit: [jamesarosen](https://github.com/jamesarosen))
