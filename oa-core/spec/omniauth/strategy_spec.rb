@@ -39,6 +39,14 @@ describe OmniAuth::Strategy do
         lambda{ strategy.call({'PATH_INFO' => '/auth/test/callback'}) }.should raise_error("Callback Phase")
       end
 
+      it 'should strip trailing spaces on request' do
+        lambda{ strategy.call({'PATH_INFO' => '/auth/test/'}) }.should raise_error("Request Phase")        
+      end
+
+      it 'should strip trailing spaces on callback' do
+        lambda{ strategy.call({'PATH_INFO' => '/auth/test/callback/'}) }.should raise_error("Callback Phase")
+      end
+
       context 'callback_url' do
         it 'uses the default callback_path' do
           strategy.should_receive(:full_host).and_return('http://example.com')
