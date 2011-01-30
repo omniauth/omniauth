@@ -27,11 +27,11 @@ module OmniAuth
       @env = env
       return mock_call!(env) if OmniAuth.config.test_mode
 
-      if request.path == request_path
+      if current_path == request_path
         status, headers, body = *call_app!
         @response = Rack::Response.new(body, status, headers)
         request_phase
-      elsif request.path == callback_path
+      elsif current_path == callback_path
         callback_phase
       else
         if respond_to?(:other_phase)
@@ -43,9 +43,9 @@ module OmniAuth
     end
 
     def mock_call!(env)
-      if request.path == request_path
+      if current_path == request_path
         redirect callback_path
-      elsif request.path == callback_path
+      elsif current_path == callback_path
         @env['omniauth.auth'] = OmniAuth.mock_auth_for(name.to_sym)
         call_app!
       else
@@ -73,6 +73,10 @@ module OmniAuth
     
     def callback_path
       options[:callback_path] || "#{path_prefix}/#{name}/callback"
+    end
+
+    def current_path
+      request.path.sub(/\/$/,'')
     end
 
     def query_string
