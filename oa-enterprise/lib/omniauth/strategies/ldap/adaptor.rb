@@ -15,7 +15,7 @@ module OmniAuth
 		class ConnectionError < StandardError; end
 	      
         VALID_ADAPTER_CONFIGURATION_KEYS = [:host, :port, :method, :bind_dn, :password,
-	                                        :try_sasl, :sasl_mechanisms, :uid, :base]
+	                                        :try_sasl, :sasl_mechanisms, :uid, :base, :allow_anonymous]
 	      
         MUST_HAVE_KEYS = [:host, :port, :method, :uid, :base]
 	      
@@ -33,15 +33,17 @@ module OmniAuth
 	      @disconnected = false
 	      @bound = false
 	      @configuration = configuration.dup
-          @logger = @configuration.delete(:logger)
-          message = []
-          MUST_HAVE_KEYS.each do |name|
-              message << name if configuration[name].nil? 
-          end
-          raise ArgumentError.new(message.join(",") +" MUST be provided") unless message.empty?
+        @configuration[:allow_anonymous] ||= false          
+        @logger = @configuration.delete(:logger)
+        message = []
+        MUST_HAVE_KEYS.each do |name|
+            message << name if configuration[name].nil? 
+        end
+        raise ArgumentError.new(message.join(",") +" MUST be provided") unless message.empty?
           VALID_ADAPTER_CONFIGURATION_KEYS.each do |name|
             instance_variable_set("@#{name}", configuration[name])
           end
+
 	    end
 	
 		def connect(options={})
@@ -81,14 +83,21 @@ module OmniAuth
 
 		    bind_dn = (options[:bind_dn] || @bind_dn).to_s
 		    try_sasl = options.has_key?(:try_sasl) ? options[:try_sasl] : @try_sasl
-		
+		    if options.has_key?(:allow_anonymous)
+          allow_anonymous = options[:allow_anonymous]
+        else
+          allow_anonymous = @allow_anonymous
+        end
             # Rough bind loop:
             # Attempt 1: SASL if available
             # Attempt 2: SIMPLE with credentials if password block
+        		# Attempt 3: SIMPLE ANONYMOUS if 1 and 2 fail and allow anonymous is set to true            
             if try_sasl and sasl_bind(bind_dn, options)
-                puts "bind with sasl"
+                puts "bound with sasl"
             elsif simple_bind(bind_dn, options)
-                puts "bind with simple"
+                puts "bound with simple"
+						elsif allow_anonymous and bind_as_anonymous(options)
+							puts "bound as anonymous"
             else
               message = yield if block_given?
               message ||= ('All authentication methods for %s exhausted.') % target
@@ -242,12 +251,19 @@ module OmniAuth
 	      args = {
                   :method => :simple,
                   :username => bind_dn,
-                  :password => options[:password]||@password,
+                  :password => (options[:password]||@password).to_s,
                  }
+        begin
           execute(:bind, args)
           true
+        rescue Exception
+          false
         end
-	      
+      end
+      def bind_as_anonymous(options={})
+        execute(:bind, {:method => :anonymous})
+        true
+      end	      
       def construct_uri(host, port, ssl)
         protocol = ssl ? "ldaps" : "ldap"
         URI.parse("#{protocol}://#{host}:#{port}").to_s
