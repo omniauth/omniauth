@@ -7,9 +7,8 @@ module OmniAuth
       include OmniAuth::Strategy
       
       def initialize(app, secret = 'changethisappsecret', options = {}, &block)
-        @options = options
         @secret = secret
-        super(app, :password, &block)
+        super(app, :password, options, &block)
       end
 
       attr_reader :secret
