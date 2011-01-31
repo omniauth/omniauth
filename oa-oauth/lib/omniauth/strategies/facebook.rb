@@ -23,7 +23,27 @@ module OmniAuth
       
       def request_phase
         options[:scope] ||= "email,offline_access"
-        super
+        if facebook_session.blank?
+          super
+        else
+          callback_phase
+        end
+      end
+      
+      def callback_phase
+        if request.params['error'] || request.params['error_reason']
+          raise CallbackError.new(request.params['error'], request.params['error_description'] || request.params['error_reason'], request.params['error_uri'])
+        end
+        if facebook_session.blank?
+          verifier = request.params['code']
+          @access_token = client.web_server.get_access_token(verifier, :redirect_uri => callback_url)
+        else
+          @access_token = ::OAuth2::AccessToken.new(client, facebook_session['access_token'])
+        end
+        @env['omniauth.auth'] = auth_hash
+        call_app!
+      rescue ::OAuth2::HTTPError, ::OAuth2::AccessDenied, CallbackError => e
+        fail!(:invalid_credentials, e)
       end
       
       def user_info
@@ -47,6 +67,10 @@ module OmniAuth
           'user_info' => user_info,
           'extra' => {'user_hash' => user_data}
         })
+      end
+      
+      def facebook_session
+        @facebook_session ||= Rack::Utils.parse_query(request.cookies["fbs_#{SiteConfig[:facebook][:app_id]}"].gsub('"', ''))
       end
     end
   end
