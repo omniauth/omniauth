@@ -40,7 +40,7 @@ module OmniAuth
       def request_phase
         params = { :api_key => api_key, :perms => options[:scope] }
         params[:api_sig] = flickr_sign(params)
-        query_string = params.collect{ |key,value| "#{key}=#{Rack::Utils.escape(value)}" }.join('&')
+        query_string = params.map{|key,value| "#{key}=#{Rack::Utils.escape(value)}" }.join('&')
         redirect "http://flickr.com/services/auth/?#{query_string}"
       end
       
