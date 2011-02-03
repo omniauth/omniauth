@@ -26,5 +26,6 @@ module OmniAuth
     autoload :Bitly,              'omniauth/strategies/bitly'
     autoload :Vimeo,              'omniauth/strategies/vimeo'
     autoload :YouTube,            'omniauth/strategies/you_tube'
+    autoload :Hyves,              'omniauth/strategies/hyves'
   end
 end
