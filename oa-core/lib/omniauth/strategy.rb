@@ -44,6 +44,8 @@ module OmniAuth
 
     def mock_call!(env)
       if current_path == request_path
+        status, headers, body = *call_app!
+        @response = Rack::Response.new(body, status, headers)
         redirect callback_path
       elsif current_path == callback_path
         @env['omniauth.auth'] = OmniAuth.mock_auth_for(name.to_sym)
