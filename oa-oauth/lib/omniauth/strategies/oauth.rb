@@ -48,6 +48,8 @@ module OmniAuth
         super
       rescue ::OAuth::Unauthorized => e
         fail!(:invalid_credentials, e)
+      rescue ::MultiJson::DecodeError => e
+        fail!(:invalid_response, e)
       end
       
       def auth_hash
