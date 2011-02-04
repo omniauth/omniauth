@@ -26,8 +26,8 @@ module OmniAuth
     def call!(env)
       @env = env
       return mock_call!(env) if OmniAuth.config.test_mode
-
-      if current_path == request_path
+      
+      if current_path == request_path && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
         status, headers, body = *call_app!
         @response = Rack::Response.new(body, status, headers)
         request_phase

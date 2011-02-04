@@ -32,26 +32,26 @@ describe OmniAuth::Strategy do
     
     context 'default paths' do
       it 'should use the default request path' do
-        lambda{ strategy.call({'PATH_INFO' => '/auth/test'}) }.should raise_error("Request Phase")
+        lambda{ strategy.call({'REQUEST_METHOD' => 'GET', 'PATH_INFO' => '/auth/test'}) }.should raise_error("Request Phase")
       end
       
       it 'should use the default callback path' do
-        lambda{ strategy.call({'PATH_INFO' => '/auth/test/callback'}) }.should raise_error("Callback Phase")
+        lambda{ strategy.call({'REQUEST_METHOD' => 'GET','PATH_INFO' => '/auth/test/callback'}) }.should raise_error("Callback Phase")
       end
 
       it 'should strip trailing spaces on request' do
-        lambda{ strategy.call({'PATH_INFO' => '/auth/test/'}) }.should raise_error("Request Phase")        
+        lambda{ strategy.call({'REQUEST_METHOD' => 'GET','PATH_INFO' => '/auth/test/'}) }.should raise_error("Request Phase")        
       end
 
       it 'should strip trailing spaces on callback' do
-        lambda{ strategy.call({'PATH_INFO' => '/auth/test/callback/'}) }.should raise_error("Callback Phase")
+        lambda{ strategy.call({'REQUEST_METHOD' => 'GET', 'PATH_INFO' => '/auth/test/callback/'}) }.should raise_error("Callback Phase")
       end
 
       context 'callback_url' do
         it 'uses the default callback_path' do
           strategy.should_receive(:full_host).and_return('http://example.com')
 
-          lambda{ strategy.call({'PATH_INFO' => '/auth/test'}) }.should raise_error("Request Phase")
+          lambda{ strategy.call({'REQUEST_METHOD' => 'GET', 'PATH_INFO' => '/auth/test'}) }.should raise_error("Request Phase")
 
           strategy.callback_url.should == 'http://example.com/auth/test/callback'
         end
@@ -59,7 +59,7 @@ describe OmniAuth::Strategy do
         it 'preserves the query parameters' do
           strategy.stub(:full_host).and_return('http://example.com')
           begin
-            strategy.call({'PATH_INFO' => '/auth/test', 'QUERY_STRING' => 'id=5'})
+            strategy.call({'REQUEST_METHOD' => 'GET', 'PATH_INFO' => '/auth/test', 'QUERY_STRING' => 'id=5'})
           rescue RuntimeError; end
           strategy.callback_url.should == 'http://example.com/auth/test/callback?id=5'
         end
@@ -70,7 +70,7 @@ describe OmniAuth::Strategy do
       app = lambda{|env| env['omniauth.boom'] = true; [404, {}, ['Whatev']] }
       
       s = ExampleStrategy.new(app, 'test')
-      lambda{ s.call({'PATH_INFO' => '/auth/test'}) }.should raise_error("Request Phase")
+      lambda{ s.call({'REQUEST_METHOD' => 'GET', 'PATH_INFO' => '/auth/test'}) }.should raise_error("Request Phase")
       s.response.status.should == 404
       s.last_env.should be_key('omniauth.boom')
     end
@@ -78,12 +78,12 @@ describe OmniAuth::Strategy do
     context 'custom paths' do
       it 'should use a custom request_path if one is provided' do
         @options = {:request_path => '/awesome'}
-        lambda{ strategy.call({'PATH_INFO' => '/awesome'}) }.should raise_error("Request Phase")
+        lambda{ strategy.call({'REQUEST_METHOD' => 'GET', 'PATH_INFO' => '/awesome'}) }.should raise_error("Request Phase")
       end
     
       it 'should use a custom callback_path if one is provided' do
         @options = {:callback_path => '/radical'}
-        lambda{ strategy.call({'PATH_INFO' => '/radical'}) }.should raise_error("Callback Phase")
+        lambda{ strategy.call({'REQUEST_METHOD' => 'GET', 'PATH_INFO' => '/radical'}) }.should raise_error("Callback Phase")
       end
 
       context 'callback_url' do
@@ -91,7 +91,7 @@ describe OmniAuth::Strategy do
           @options = {:callback_path => '/radical'}
           strategy.should_receive(:full_host).and_return('http://example.com')
 
-          lambda{ strategy.call({'PATH_INFO' => '/radical'}) }.should raise_error("Callback Phase")
+          lambda{ strategy.call({'REQUEST_METHOD' => 'GET', 'PATH_INFO' => '/radical'}) }.should raise_error("Callback Phase")
 
           strategy.callback_url.should == 'http://example.com/radical'
         end
@@ -100,7 +100,7 @@ describe OmniAuth::Strategy do
           @options = {:callback_path => '/radical'}
           strategy.stub(:full_host).and_return('http://example.com')
           begin
-            strategy.call({'QUERY_STRING' => 'id=5'})
+            strategy.call({'REQUEST_METHOD' => 'GET', 'QUERY_STRING' => 'id=5'})
           rescue RuntimeError; end
           strategy.callback_url.should == 'http://example.com/radical?id=5'
         end
@@ -113,18 +113,18 @@ describe OmniAuth::Strategy do
       end
       
       it 'should use a custom prefix for request' do
-        lambda{ strategy.call({'PATH_INFO' => '/wowzers/test'}) }.should raise_error("Request Phase")
+        lambda{ strategy.call({'REQUEST_METHOD' => 'GET', 'PATH_INFO' => '/wowzers/test'}) }.should raise_error("Request Phase")
       end
       
       it 'should use a custom prefix for callback' do
-        lambda{ strategy.call({'PATH_INFO' => '/wowzers/test/callback'}) }.should raise_error("Callback Phase")
+        lambda{ strategy.call({'REQUEST_METHOD' => 'GET', 'PATH_INFO' => '/wowzers/test/callback'}) }.should raise_error("Callback Phase")
       end
 
       context 'callback_url' do
         it 'uses a custom prefix' do
           strategy.should_receive(:full_host).and_return('http://example.com')
 
-          lambda{ strategy.call({'PATH_INFO' => '/wowzers/test'}) }.should raise_error("Request Phase")
+          lambda{ strategy.call({'REQUEST_METHOD' => 'GET', 'PATH_INFO' => '/wowzers/test'}) }.should raise_error("Request Phase")
 
           strategy.callback_url.should == 'http://example.com/wowzers/test/callback'
         end
@@ -132,10 +132,28 @@ describe OmniAuth::Strategy do
         it 'preserves the query parameters' do
           strategy.stub(:full_host).and_return('http://example.com')
           begin
-            strategy.call({'PATH_INFO' => '/wowzers/test', 'QUERY_STRING' => 'id=5'})
+            strategy.call({'REQUEST_METHOD' => 'GET', 'PATH_INFO' => '/wowzers/test', 'QUERY_STRING' => 'id=5'})
           rescue RuntimeError; end
           strategy.callback_url.should == 'http://example.com/wowzers/test/callback?id=5'
         end
+      end
+    end
+    
+    context 'request method restriction' do
+      before do
+        OmniAuth.config.allowed_request_methods = [:post]
+      end
+      
+      it 'should not allow a request method of the wrong type' do
+        lambda{ strategy.call({'REQUEST_METHOD' => 'GET', 'PATH_INFO' => '/auth/test'})}.should_not raise_error
+      end
+      
+      it 'should allow a request method of the correct type' do
+        lambda{ strategy.call({'REQUEST_METHOD' => 'POST', 'PATH_INFO' => '/auth/test'})}.should raise_error("Request Phase")
+      end
+      
+      after do
+        OmniAuth.config.allowed_request_methods = [:get, :post]        
       end
     end
 
@@ -145,18 +163,18 @@ describe OmniAuth::Strategy do
       end
 
       it 'should short circuit the request phase entirely' do
-        response = strategy.call({'PATH_INFO' => '/auth/test'})
+        response = strategy.call({'REQUEST_METHOD' => 'GET', 'PATH_INFO' => '/auth/test'})
         response[0].should == 302
         response[1]['Location'].should == '/auth/test/callback'
       end
 
       it 'should not short circuit requests outside of authentication' do
-        env = {'PATH_INFO' => '/'}
+        env = {'REQUEST_METHOD' => 'GET', 'PATH_INFO' => '/'}
         strategy.call(env).should == app.call(env)
       end
 
       it 'should respond with the default hash if none is set' do
-        strategy.call 'PATH_INFO' => '/auth/test/callback'
+        strategy.call 'REQUEST_METHOD' => 'GET', 'PATH_INFO' => '/auth/test/callback'
         strategy.env['omniauth.auth']['uid'].should == '1234'
       end
 
@@ -165,7 +183,7 @@ describe OmniAuth::Strategy do
           'uid' => 'abc'
         }
 
-        strategy.call 'PATH_INFO' => '/auth/test/callback'
+        strategy.call 'REQUEST_METHOD' => 'GET', 'PATH_INFO' => '/auth/test/callback'
         strategy.env['omniauth.auth']['uid'].should == 'abc'
       end
     end
@@ -178,7 +196,7 @@ describe OmniAuth::Strategy do
 
       it 'should run the proc with the env when it is a proc' do
         OmniAuth.config.full_host = Proc.new{|env| env['HOST']}
-        strategy.call('HOST' => 'my.host.net')
+        strategy.call('REQUEST_METHOD' => 'GET', 'HOST' => 'my.host.net')
         strategy.full_host.should == 'my.host.net'
       end
     end

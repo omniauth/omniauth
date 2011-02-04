@@ -26,6 +26,7 @@ module OmniAuth
       end,
       :form_css => Form::DEFAULT_CSS,
       :test_mode => false,
+      :allowed_request_methods => [:get, :post],
       :mock_auth => {
         :default => {
           'uid' => '1234',
@@ -55,7 +56,7 @@ module OmniAuth
     end
 
     attr_writer :on_failure
-    attr_accessor :path_prefix, :form_css, :test_mode, :mock_auth, :full_host
+    attr_accessor :path_prefix, :allowed_request_methods, :form_css, :test_mode, :mock_auth, :full_host
   end
   
   def self.config
