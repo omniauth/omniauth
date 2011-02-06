@@ -22,7 +22,7 @@ module OmniAuth
       end
       
       def request_phase
-        options[:scope] ||= "email,offline_access"
+        options[:scope] ||= request["scope"] ||= "email,offline_access"
         super
       end
       
