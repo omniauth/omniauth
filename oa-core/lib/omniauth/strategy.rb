@@ -113,6 +113,7 @@ module OmniAuth
     end
     
     def callback_url
+      logger.info "Full host"+callback_path
       full_host + callback_path + query_string
     end
     
