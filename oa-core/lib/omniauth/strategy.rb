@@ -28,25 +28,21 @@ module OmniAuth
       return mock_call!(env) if OmniAuth.config.test_mode
       
       if current_path == request_path && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
-        status, headers, body = *call_app!
-        @response = Rack::Response.new(body, status, headers)
-        request_phase
+        call_through_to_app || request_phase
       elsif current_path == callback_path
         callback_phase
       else
         if respond_to?(:other_phase)
           other_phase
         else
-          call_app!
+          @app.call(env)
         end
       end
     end
 
     def mock_call!(env)
-      if current_path == request_path
-        status, headers, body = *call_app!
-        @response = Rack::Response.new(body, status, headers)
-        redirect callback_path
+      if current_path == request_path 
+        call_through_to_app || redirect(callback_path)
       elsif current_path == callback_path
         @env['omniauth.auth'] = OmniAuth.mock_auth_for(name.to_sym)
         call_app!
@@ -61,7 +57,6 @@ module OmniAuth
     
     def callback_phase
       @env['omniauth.auth'] = auth_hash
-      
       call_app! 
     end
     
@@ -85,9 +80,15 @@ module OmniAuth
       request.query_string.empty? ? "" : "?#{request.query_string}"
     end
     
-    def call_app!
-      @env['omniauth.strategy'] = self
+    def call_through_to_app
+      status, headers, body = *call_app!
+      @response = Rack::Response.new(body, status, headers)
       
+      status == 404 ? nil : @response.finish
+    end
+
+    def call_app!
+      @env['omniauth.strategy'] = self      
       @app.call(@env)
     end
     

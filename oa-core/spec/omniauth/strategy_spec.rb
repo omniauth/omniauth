@@ -14,7 +14,7 @@ class ExampleStrategy
 end
 
 describe OmniAuth::Strategy do
-  let(:app){ lambda{|env| [200, {}, ['Awesome']]}}
+  let(:app){ lambda{|env| [404, {}, ['Awesome']]}}
   describe '#initialize' do
     context 'options extraction' do
       it 'should be the last argument if the last argument is a Hash' do
@@ -66,13 +66,19 @@ describe OmniAuth::Strategy do
       end
     end
     
-    it 'should be able to modify the env on the fly before the request_phase' do
-      app = lambda{|env| env['omniauth.boom'] = true; [404, {}, ['Whatev']] }
-      
-      s = ExampleStrategy.new(app, 'test')
-      lambda{ s.call({'REQUEST_METHOD' => 'GET', 'PATH_INFO' => '/auth/test'}) }.should raise_error("Request Phase")
-      s.response.status.should == 404
-      s.last_env.should be_key('omniauth.boom')
+    context 'pre-request call through' do  
+      subject { ExampleStrategy.new(app, 'test') }
+      let(:app){ lambda{|env| env['omniauth.boom'] = true; [env['test.status'] || 404, {}, ['Whatev']] } }
+      it 'should be able to modify the env on the fly before the request_phase' do 
+        lambda{ subject.call({'REQUEST_METHOD' => 'GET', 'PATH_INFO' => '/auth/test'}) }.should raise_error("Request Phase")
+        subject.response.status.should == 404
+        subject.last_env.should be_key('omniauth.boom')
+      end
+
+      it 'should call through to the app instead if a non-404 response is received' do
+        lambda{ subject.call('REQUEST_METHOD' => 'GET', 'PATH_INFO' => '/auth/test', 'test.status' => 200) }.should_not raise_error
+        subject.response.body.should == ['Whatev']
+      end
     end
     
     context 'custom paths' do
