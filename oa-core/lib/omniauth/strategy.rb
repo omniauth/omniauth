@@ -37,6 +37,8 @@ module OmniAuth
         end
       elsif current_path == callback_path
         env['omniauth.origin'] = session.delete('omniauth.origin')
+        env['omniauth.origin'] = nil if env['omniauth.origin'] == ''
+
         callback_phase
       else
         if respond_to?(:other_phase)
