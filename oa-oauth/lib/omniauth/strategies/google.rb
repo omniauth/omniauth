@@ -20,6 +20,8 @@ module OmniAuth
           :authorize_path => '/accounts/OAuthAuthorizeToken'
         }
 
+        options[:scope] ||= "http://www.google.com/m8/feeds"
+
         super(app, :google, consumer_key, consumer_secret, client_options, options)
       end
       
@@ -58,7 +60,7 @@ module OmniAuth
 
       # Monkeypatch OmniAuth to pass the scope in the consumer.get_request_token call
       def request_phase
-        request_token = consumer.get_request_token({:oauth_callback => callback_url}, {:scope => "http://www.google.com/m8/feeds"})
+        request_token = consumer.get_request_token({:oauth_callback => callback_url}, {:scope => options[:scope]})
 
         (session['oauth']||={})[name.to_s] = {'callback_confirmed' => request_token.callback_confirmed?, 'request_token' => request_token.token, 'request_secret' => request_token.secret}
         r = Rack::Response.new
