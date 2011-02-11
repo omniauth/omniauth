@@ -1,9 +1,8 @@
 require 'omniauth/core'
 
 module OmniAuth
-  
-  module Strategy
-    
+  class NoSessionError < StandardError; end 
+  module Strategy 
     def self.included(base)
       OmniAuth.strategies << base
       base.class_eval do
@@ -24,12 +23,20 @@ module OmniAuth
     end
 
     def call!(env)
+      raise OmniAuth::NoSessionError.new("You must provide a session to use OmniAuth.") unless env['rack.session']
+
       @env = env
       return mock_call!(env) if OmniAuth.config.test_mode
       
       if current_path == request_path && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
-        call_through_to_app || request_phase
+        if response = call_through_to_app
+          response
+        else
+          env['rack.session']['omniauth.origin'] = env['HTTP_REFERER']
+          request_phase
+        end
       elsif current_path == callback_path
+        env['omniauth.origin'] = session.delete('omniauth.origin')
         callback_phase
       else
         if respond_to?(:other_phase)
@@ -42,7 +49,12 @@ module OmniAuth
 
     def mock_call!(env)
       if current_path == request_path 
-        call_through_to_app || redirect(callback_path)
+        if response = call_through_to_app
+          response
+        else
+          env['rack.session']['omniauth.origin'] = env['HTTP_REFERER']
+          redirect(callback_path)
+        end
       elsif current_path == callback_path
         @env['omniauth.auth'] = OmniAuth.mock_auth_for(name.to_sym)
         call_app!
