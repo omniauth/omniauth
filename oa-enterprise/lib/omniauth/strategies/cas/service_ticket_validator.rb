@@ -30,7 +30,7 @@ module OmniAuth
         end
 
         private
-        
+
         # turns an `<cas:authenticationSuccess>` node into a Hash;
         # returns nil if given nil
         def parse_user_info(node)

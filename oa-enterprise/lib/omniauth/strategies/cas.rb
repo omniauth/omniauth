@@ -41,7 +41,7 @@ module OmniAuth
           'extra' => @user_info
         })
       end
-      
+
     end
   end
 end

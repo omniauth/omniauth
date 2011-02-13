@@ -47,8 +47,13 @@ describe OmniAuth::Strategies::CAS, :type => :strategy do
   describe 'GET /auth/cas/callback with a valid ticket' do
     before do
       stub_request(:get, /^https:\/\/cas.example.org(:443)?\/serviceValidate\?([^&]+&)?ticket=593af/).
+         with { |request| @request_uri = request.uri.to_s }.
          to_return(:body => File.read(File.join(File.dirname(__FILE__), '..', '..', 'fixtures', 'cas_success.xml')))
       get '/auth/cas/callback?ticket=593af'
+    end
+
+    it 'should strip the ticket parameter from the callback URL before sending it to the CAS server' do
+      @request_uri.scan('ticket=').length.should == 1
     end
 
     sets_an_auth_hash
