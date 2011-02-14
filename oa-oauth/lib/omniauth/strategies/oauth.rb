@@ -46,6 +46,8 @@ module OmniAuth
 
         @access_token = request_token.get_access_token(opts)
         super
+      rescue ::Net::HTTPFatalError => e
+        fail!(:service_unavailable, e)
       rescue ::OAuth::Unauthorized => e
         fail!(:invalid_credentials, e)
       rescue ::MultiJson::DecodeError => e
