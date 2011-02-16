@@ -30,6 +30,7 @@ module OmniAuth
       :allowed_request_methods => [:get, :post],
       :mock_auth => {
         :default => {
+          'provider' => 'default',
           'uid' => '1234',
           'user_info' => {
             'name' => 'Bob Example',
