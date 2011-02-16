@@ -9,7 +9,7 @@ module OmniAuth
                 {:site => 'https://api.linkedin.com',
                 :request_token_path => '/uas/oauth/requestToken',
                 :access_token_path => '/uas/oauth/accessToken',
-                :authorize_path => '/uas/oauth/authorize',
+                :authorize_path => '/uas/oauth/authenticate',
                 :scheme => :header}, options, &block)
       end
       
