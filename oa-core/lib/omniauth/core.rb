@@ -33,9 +33,7 @@ module OmniAuth
           'provider' => 'default',
           'uid' => '1234',
           'user_info' => {
-            'name' => 'Bob Example',
-            'email' => 'bob@example.com',
-            'nickname' => 'bob'
+            'name' => 'Bob Example'
           }
         }
       }
