@@ -55,6 +55,23 @@ module OmniAuth
       end
     end
 
+    def add_mock_auth(provider, mock={})
+      # Stringify keys recursively one level.
+      mock.stringify_keys!
+      mock.keys.each do|key|
+        if mock[key].is_a? Hash
+          mock[key].stringify_keys!
+        end
+      end
+
+      # Merge with the default mock and ensure provider is correct.
+      mock = self.mock_auth[:default].dup.merge(mock)
+      mock["provider"] = provider.to_s
+
+      # Add it to the mocks.
+      self.mock_auth[provider.to_sym] = mock
+    end
+
     attr_writer :on_failure
     attr_accessor :path_prefix, :allowed_request_methods, :form_css, :test_mode, :mock_auth, :full_host
   end
