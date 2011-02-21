@@ -73,20 +73,22 @@ describe OmniAuth::Strategies::CAS, :type => :strategy do
     end
   end
 
-  describe 'GET /auth/cas/callback with a valid ticket and gzipped response from the server' do
-    before do
-      zipped = StringIO.new
-      Zlib::GzipWriter.wrap zipped do |io|
-        io.write File.read(File.join(File.dirname(__FILE__), '..', '..', 'fixtures', 'cas_success.xml'))
+  unless RUBY_VERSION =~ /^1\.8\.\d$/
+    describe 'GET /auth/cas/callback with a valid ticket and gzipped response from the server on ruby >1.8' do
+      before do
+        zipped = StringIO.new
+        Zlib::GzipWriter.wrap zipped do |io|
+          io.write File.read(File.join(File.dirname(__FILE__), '..', '..', 'fixtures', 'cas_success.xml'))
+        end
+        stub_request(:get, /^https:\/\/cas.example.org(:443)?\/serviceValidate\?([^&]+&)?ticket=593af/).
+           with { |request| @request_uri = request.uri.to_s }.
+           to_return(:body => zipped.string, :headers => { 'content-encoding' => 'gzip' })
+        get '/auth/cas/callback?ticket=593af'
       end
-      stub_request(:get, /^https:\/\/cas.example.org(:443)?\/serviceValidate\?([^&]+&)?ticket=593af/).
-         with { |request| @request_uri = request.uri.to_s }.
-         to_return(:body => zipped.string, :headers => { 'content-encoding' => 'gzip' })
-      get '/auth/cas/callback?ticket=593af'
-    end
 
-    it 'should call through to the master app when response is gzipped' do
-      last_response.body.should == 'true'
+      it 'should call through to the master app when response is gzipped' do     
+          last_response.body.should == 'true' 
+      end
     end
   end
 end
