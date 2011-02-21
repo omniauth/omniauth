@@ -68,7 +68,7 @@ module OmniAuth
           http = Net::HTTP.new(@uri.host, @uri.port)
           http.use_ssl = @uri.port == 443 || @uri.instance_of?(URI::HTTPS)
           http.start do |c|
-            response = c.get "#{@uri.path}?#{@uri.query}", VALIDATION_REQUEST_HEADERS
+            response = c.get "#{@uri.path}?#{@uri.query}", VALIDATION_REQUEST_HEADERS.dup
             result = response.body
           end
           result
