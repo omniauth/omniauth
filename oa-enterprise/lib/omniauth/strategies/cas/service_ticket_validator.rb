@@ -14,7 +14,8 @@ module OmniAuth
         # @param [String] return_to_url the URL of this CAS client service
         # @param [String] ticket the service ticket to validate
         def initialize(configuration, return_to_url, ticket)
-          @uri = URI.parse(configuration.service_validate_url(return_to_url, ticket))
+          @configuration = configuration
+          @uri = URI.parse(@configuration.service_validate_url(return_to_url, ticket))
         end
 
         # Request validation of the ticket from the CAS server's
@@ -67,6 +68,7 @@ module OmniAuth
           result = ''
           http = Net::HTTP.new(@uri.host, @uri.port)
           http.use_ssl = @uri.port == 443 || @uri.instance_of?(URI::HTTPS)
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE if http.use_ssl? && @configuration.disable_ssl_verification?
           http.start do |c|
             response = c.get "#{@uri.path}?#{@uri.query}", VALIDATION_REQUEST_HEADERS
             result = response.body
