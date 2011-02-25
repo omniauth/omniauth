@@ -8,7 +8,7 @@ describe "OmniAuth::Strategies::OAuth" do
       use OmniAuth::Builder do
         provider :oauth, 'example.org', 'abc', 'def', :site => 'https://api.example.org'
       end
-      run lambda { |env| [200, {'Content-Type' => 'text/plain'}, [env.key?('omniauth.auth').to_s]] }
+      run lambda { |env| [404, {'Content-Type' => 'text/plain'}, [env.key?('omniauth.auth').to_s]] }
     }.to_app
   end
 

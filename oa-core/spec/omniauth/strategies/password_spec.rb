@@ -22,9 +22,6 @@ describe OmniAuth::Strategies::Password, :type => :strategy do
     before do
       get '/auth/password', { :identifier => 'jerome', :password => 'my password'}
     end
-    it 'should be OK' do
-      last_response.should be_ok
-    end
     sets_an_auth_hash
     sets_provider_to 'password'
     sets_user_info_to "username" => "jerome"

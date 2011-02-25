@@ -26,7 +26,7 @@ module OmniAuth
         Rack::Builder.new {
           use OmniAuth::Test::PhonySession
           use *strat
-          run lambda { |env| [200, {'Content-Type' => 'text/plain'}, [resp || env.key?('omniauth.auth').to_s]] }
+          run lambda {|env| [404, {'Content-Type' => 'text/plain'}, [resp || env.key?('omniauth.auth').to_s]] }
         }.to_app
       end
       
