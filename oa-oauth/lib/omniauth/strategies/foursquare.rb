@@ -16,8 +16,8 @@ module OmniAuth
               :verify => OpenSSL::SSL::VERIFY_NONE
             }
           },
-          :authorize_url      => "https://foursquare.com/oauth2/authenticate",
-          :access_token_url   => "https://foursquare.com/oauth2/access_token"
+          :authorize_url      => "https://foursquare.com/oauth2/authenticate?response_type=code",
+          :access_token_url   => "https://foursquare.com/oauth2/access_token?grant_type=authorization_code"
         }, options, &block)
       end
       
@@ -25,16 +25,9 @@ module OmniAuth
         @data ||= MultiJson.decode(@access_token.get('/users/self', {'oauth_token' => @access_token.token}))
       end
       
-      def request_phase
-        options[:response_type] ||= 'code'
-        super
-      end
-      
       def callback_phase
-        options.delete(:response_type)
         options[:client_id] ||= client_id
         options[:client_secret] ||= client_secret
-        options[:grant_type] ||= 'authorization_code'
         
         log = Logger.new(STDOUT)
         log.level = Logger::DEBUG
