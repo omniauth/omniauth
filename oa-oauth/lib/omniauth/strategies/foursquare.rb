@@ -22,7 +22,7 @@ module OmniAuth
       end
       
       def user_data
-        @data ||= MultiJson.decode(@access_token.get('/users/self', {'oauth_token' => @access_token.token}))
+        @data ||= MultiJson.decode(@access_token.get('https://api.foursquare.com/v2/users/self', {'oauth_token' => @access_token.token}))
       end
       
       def user_info
