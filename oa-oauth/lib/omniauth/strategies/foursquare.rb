@@ -21,47 +21,43 @@ module OmniAuth
         }, options, &block)
       end
       
+      def user_data['response']['user']
+        @data ||= MultiJson.decode(@access_token.get('/me', {}, { "Accept-Language" => "en-us,en;"}))
+      end
+      
       def request_phase
         options[:response_type] ||= 'code'
         super
       end
       
       def callback_phase
-        options ||= {
-          'client_id' => client_id,
-          'client_secret' => client_secret,
-          'grant_type' => 'authorization_code'
-        }
+        options[:client_id] ||= client_id
+        options[:client_secret] ||= client_secret
+        options[:grant_type] ||= 'authorization_code'
         super
       end
       
-      def auth_hash
-        OmniAuth::Utils.deep_merge(super, {
-          'uid' => user_hash['response']['user']['id'],
-          'user_info' => user_info,
-          'extra' => {'user_hash' => user_hash}
-        })
-      end
-      
       def user_info
-        user_hash = self.user_hash['response']['user']
-        
         {
-          'nickname' => user_hash['contact']['twitter'],
-          'first_name' => user_hash['firstName'],
-          'last_name' => user_hash['lastName'],
-          'email' => user_hash['contact']['twitter'],
-          'name' => "#{user_hash['firstName']} #{user_hash['lastName']}".strip,
-        # 'location' => user_hash['location'],
-          'image' => user_hash['photo'],
-        # 'description' => user_hash['description'],
-          'phone' => user_hash['contact']['phone'],
+          'nickname' => user_data['response']['user']['contact']['twitter'],
+          'first_name' => user_data['response']['user']['firstName'],
+          'last_name' => user_data['response']['user']['lastName'],
+          'email' => user_data['response']['user']['contact']['twitter'],
+          'name' => "#{user_data['response']['user']['firstName']} #{user_data['response']['user']['lastName']}".strip,
+        # 'location' => user_data['response']['user']['location'],
+          'image' => user_data['response']['user']['photo'],
+        # 'description' => user_data['response']['user']['description'],
+          'phone' => user_data['response']['user']['contact']['phone'],
           'urls' => {}
         }
       end
       
-      def user_hash
-        @user_hash ||= @access_token.get('https://api.foursquare.com/v2/users/self', {'oauth_token' => @access_token.token})
+      def auth_hash
+        OmniAuth::Utils.deep_merge(super, {
+          'uid' => user_data['response']['user']['response']['user']['id'],
+          'user_info' => user_info,
+          'extra' => {'user_data['response']['user']' => user_data['response']['user']}
+        })
       end
     end
   end
