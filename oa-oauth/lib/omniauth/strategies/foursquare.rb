@@ -34,6 +34,11 @@ module OmniAuth
         options[:client_id] ||= client_id
         options[:client_secret] ||= client_secret
         options[:grant_type] ||= 'authorization_code'
+        
+        log = Logger.new(STDOUT)
+        log.level = Logger::DEBUG
+        log.debug options
+        
         super
       end
       
