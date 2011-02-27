@@ -17,8 +17,7 @@ module OmniAuth
             }
           },
           :authorize_url      => "https://foursquare.com/oauth2/authenticate",
-          :access_token_url   => "https://foursquare.com/oauth2/access_token",
-          :parse_json         => true
+          :access_token_url   => "https://foursquare.com/oauth2/access_token"
         }, options, &block)
       end
       
@@ -28,26 +27,12 @@ module OmniAuth
       end
       
       def callback_phase
-        if request.params['error'] || request.params['error_reason']
-          raise CallbackError.new(request.params['error'], request.params['error_description'] || request.params['error_reason'], request.params['error_uri'])
-        end
-        
-        response = client.request(:get, client.access_token_url, {
+        options ||= {
           'client_id' => client_id,
           'client_secret' => client_secret,
-          'grant_type' => 'authorization_code',
-          'redirect_uri' => callback_url,
-          'code' => request.params['code']
+          'grant_type' => 'authorization_code'
         })
-        
-        @access_token = ::OAuth2::AccessToken.new(client, response['access_token'])
-        
-        @env['omniauth.auth'] = auth_hash
-        call_app!
-      rescue ::OAuth2::HTTPError, ::OAuth2::AccessDenied, CallbackError => e
-        fail!(:invalid_credentials, e)
-      rescue ::MultiJson::DecodeError => e
-        fail!(:invalid_response, e)
+        super
       end
       
       def auth_hash
