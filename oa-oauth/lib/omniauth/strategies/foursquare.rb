@@ -25,17 +25,6 @@ module OmniAuth
         @data ||= MultiJson.decode(@access_token.get('/users/self', {'oauth_token' => @access_token.token}))
       end
       
-      def callback_phase
-        options[:client_id] ||= client_id
-        options[:client_secret] ||= client_secret
-        
-        log = Logger.new(STDOUT)
-        log.level = Logger::DEBUG
-        log.debug options
-        
-        super
-      end
-      
       def user_info
         {
           'nickname' => user_data['response']['user']['contact']['twitter'],
