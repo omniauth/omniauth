@@ -11,7 +11,7 @@ module OmniAuth
       def initialize(app, client_id = nil, client_secret = nil, options = {}, &block)
         super(app, :foursquare, client_id, client_secret, {
           :site => {
-            :url => "https://api.foursquare.com/v2",
+            :url => "https://api.foursquare.com/v2/",
             :ssl => {
               :verify => OpenSSL::SSL::VERIFY_NONE
             }
@@ -21,8 +21,8 @@ module OmniAuth
         }, options, &block)
       end
       
-      def user_data['response']['user']
-        @data ||= MultiJson.decode(@access_token.get('/me', {}, { "Accept-Language" => "en-us,en;"}))
+      def user_data
+        @data ||= MultiJson.decode(@access_token.get('/users/self', {'oauth_token' => @access_token.token}))
       end
       
       def request_phase
@@ -56,7 +56,7 @@ module OmniAuth
         OmniAuth::Utils.deep_merge(super, {
           'uid' => user_data['response']['user']['response']['user']['id'],
           'user_info' => user_info,
-          'extra' => {'user_data['response']['user']' => user_data['response']['user']}
+          'extra' => {'user_hash' => user_data['response']['user']}
         })
       end
     end
