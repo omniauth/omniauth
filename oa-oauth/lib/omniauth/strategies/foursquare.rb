@@ -31,6 +31,7 @@ module OmniAuth
       end
       
       def callback_phase
+        options.delete(:response_type)
         options[:client_id] ||= client_id
         options[:client_secret] ||= client_secret
         options[:grant_type] ||= 'authorization_code'
