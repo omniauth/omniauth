@@ -31,7 +31,7 @@ module OmniAuth
           'client_id' => client_id,
           'client_secret' => client_secret,
           'grant_type' => 'authorization_code'
-        })
+        }
         super
       end
       
