@@ -10,19 +10,14 @@ module OmniAuth
       # @option options [Boolean, false] :mobile When true, use the mobile sign-in interface.
       def initialize(app, client_id = nil, client_secret = nil, options = {}, &block)
         super(app, :foursquare, client_id, client_secret, {
-          :site => {
-            :url => "https://api.foursquare.com/v2",
-            :ssl => {
-              :verify => OpenSSL::SSL::VERIFY_NONE
-            }
-          },
+          :site => "https://api.foursquare.com/v2",
           :authorize_url      => "https://foursquare.com/oauth2/authenticate",
           :access_token_url   => "https://foursquare.com/oauth2/access_token"
         }, options, &block)
       end
       
       def user_data
-        @data ||= MultiJson.decode(@access_token.get(client.site[:url]+'/users/self', {'oauth_token' => @access_token.token}))
+        @data ||= MultiJson.decode(@access_token.get(client.site+'/users/self', {'oauth_token' => @access_token.token}))
       end
       
       def request_phase
