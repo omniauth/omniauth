@@ -26,6 +26,9 @@ module OmniAuth
       raise OmniAuth::NoSessionError.new("You must provide a session to use OmniAuth.") unless env['rack.session']
 
       @env = env
+      @env['omniauth.strategy'] = self      
+      
+      setup_phase            
       return mock_call!(env) if OmniAuth.config.test_mode
       
       if current_path == request_path && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
@@ -70,6 +73,15 @@ module OmniAuth
       end
     end
     
+    def setup_phase
+      if options[:setup].respond_to?(:call)
+        options[:setup].call(env) 
+      elsif options[:setup]
+        setup_env = env.merge('PATH_INFO' => setup_path, 'REQUEST_METHOD' => 'GET')
+        call_app!(setup_env)
+      end
+    end
+
     def request_phase
       raise NotImplementedError
     end
@@ -91,6 +103,10 @@ module OmniAuth
       options[:callback_path] || "#{path_prefix}/#{name}/callback"
     end
 
+    def setup_path
+      options[:setup_path] || "#{path_prefix}/#{name}/setup"
+    end
+
     def current_path
       request.path.sub(/\/$/,'')
     end
@@ -106,9 +122,8 @@ module OmniAuth
       status == 404 ? nil : @response.finish
     end
 
-    def call_app!
-      @env['omniauth.strategy'] = self      
-      @app.call(@env)
+    def call_app!(env = @env)
+      @app.call(env)
     end
     
     def auth_hash

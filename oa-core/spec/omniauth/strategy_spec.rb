@@ -234,4 +234,31 @@ describe OmniAuth::Strategy do
       end
     end
   end
+
+  context 'setup phase' do
+    context 'when options[:setup] = true' do
+      let(:strategy){ ExampleStrategy.new(app, 'test', :setup => true) }      
+      let(:app){lambda{|env| env['omniauth.strategy'].options[:awesome] = 'sauce'; [404, {}, 'Awesome']}}
+
+      it 'should call through to /auth/:provider/setup' do
+        strategy.call(make_env('/auth/test'))
+        strategy.options[:awesome].should == 'sauce'
+      end
+    end
+
+    context 'when options[:setup] is an app' do
+      let(:setup_proc) do
+        Proc.new do |env|
+          env['omniauth.strategy'].options[:awesome] = 'sauce'
+        end
+      end
+
+      let(:strategy){ ExampleStrategy.new(app, 'test', :setup => setup_proc) }
+      
+      it 'should call the rack app' do
+        strategy.call(make_env('/auth/test'))
+        strategy.options[:awesome].should == 'sauce'  
+      end
+    end
+  end
 end
