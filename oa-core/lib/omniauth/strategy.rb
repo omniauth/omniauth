@@ -108,7 +108,7 @@ module OmniAuth
     end
 
     def current_path
-      request.path.sub(/\/$/,'')
+      request.path.downcase.sub(/\/$/,'')
     end
 
     def query_string
