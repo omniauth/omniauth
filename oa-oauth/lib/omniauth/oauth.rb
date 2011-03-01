@@ -27,5 +27,6 @@ module OmniAuth
     autoload :Vimeo,              'omniauth/strategies/vimeo'
     autoload :YouTube,            'omniauth/strategies/you_tube'
     autoload :Hyves,              'omniauth/strategies/hyves'
+    autoload :Miso,               'omniauth/strategies/miso'
   end
 end

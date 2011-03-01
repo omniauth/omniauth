@@ -35,6 +35,7 @@ OmniAuth currently supports the following external providers:
   * Twitter
   * Vimeo (credit: [jamiew](https://github.com/jamiew))
   * YouTube (credit: [jamiew](https://github.com/jamiew))
+  * Miso (credit: [rickenharp](https://github.com/rickenharp))
 * Flickr (credit: [pchilton](https://github.com/pchilton))
 * OpenID
 * Google Apps (via OpenID)
