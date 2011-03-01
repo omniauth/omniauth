@@ -34,25 +34,57 @@ module OmniAuth
           end
           simple_renren_connect_button(p).html_safe
         end
+        
+        def omniauth_renren_friends(options = {})
+          params = {
+            :max_rows => "2",
+            :face_space => "5",
+            :width => "217"
+          }.merge(options)
+          renren_friends(params).html_safe
+        end
+        
+        def omniauth_renren_live_widget(options = {})
+          params = {
+            :width => "370px",
+            :height => "390px"
+          }.merge(options)
+          renren_live_widget(params).html_safe
+        end
 
         private
+        
+        def renren_live_widget(options = {})
+          <<-HTML
+<iframe scrolling="no" frameborder="0" src="http://www.connect.renren.com/widget/liveWidget?api_key=#{Renren.api_key}&xid=default&desp=%E5%A4%A7%E5%AE%B6%E6%9D%A5%E8%AE%A8%E8%AE%BA" style="width: #{options[:width]};height: #{options[:height]};"></iframe>
+#{renren_javascript}
+          HTML
+        end
+        
+        def renren_friends(options = {})
+          <<-HTML
+<xn:friendpile show-faces="all" face-size="small" max-rows="#{options[:max_rows]}" face-space="#{options[:face_space]}" width="#{options[:width]}"></xn:friendpile>
+#{renren_javascript}
+          HTML
+        end
         
         def simple_renren_connect_button(properties)
           callback_path = "#{OmniAuth.config.path_prefix}/renren/callback"
           <<-HTML
 <img #{properties} onclick="XN.Connect.requireSession(function(){window.location.href='#{callback_path}';});return false;"></img>        
-<script src="http://static.connect.renren.com/js/v1.0/FeatureLoader.jsp" type="text/javascript"></script>
-<script type="text/javascript">
-  //<![CDATA[
-  XN_RequireFeatures(['EXNML'], function(){ XN.Main.init('#{Renren.api_key}', '/xd_receiver.html'); });
-  //]]>
-</script>
+#{renren_javascript}
           HTML
         end
         
         def renren_connect_button
           <<-HTML
 <xn:login-button autologoutlink="true" onlogin="document.getElementById('#{@renren_connect_form_id}').submit();"></xn:login-button>
+#{renren_javascript}
+          HTML
+        end
+
+        def renren_javascript
+          <<-HTML      
 <script src="http://static.connect.renren.com/js/v1.0/FeatureLoader.jsp" type="text/javascript"></script>
 <script type="text/javascript">
   //<![CDATA[
