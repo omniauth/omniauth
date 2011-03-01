@@ -212,6 +212,13 @@ describe OmniAuth::Strategy do
         strategy.call make_env('/auth/test/callback')
         strategy.env['omniauth.auth']['uid'].should == 'abc'
       end
+
+      it 'should simulate login failure if mocked data is set as a symbol' do
+        OmniAuth.config.mock_auth[:test] = :invalid_credentials
+
+        strategy.call make_env('/auth/test/callback')
+        strategy.env['omniauth.error.type'].should == :invalid_credentials
+      end
     end
 
     context 'custom full_host' do
