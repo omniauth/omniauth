@@ -51,8 +51,24 @@ module OmniAuth
           }.merge(options)
           renren_live_widget(params).html_safe
         end
+        
+        def omniauth_renren_like_button(options = {})
+          params = {
+            :width => "200px",
+            :height => "70px",
+            :url => root_url
+          }.merge(options)
+          renren_like_button(params).html_safe
+        end
 
         private
+        
+        def renren_like_button(options = {})
+          <<-HTML
+<iframe scrolling="no" frameborder="0" allowtransparency="true" src="http://www.connect.renren.com/like?url=#{options[:url]}" style="width: #{options[:width]};height: #{options[:height]};"></iframe>
+#{renren_javascript}
+          HTML
+        end
         
         def renren_live_widget(options = {})
           <<-HTML
