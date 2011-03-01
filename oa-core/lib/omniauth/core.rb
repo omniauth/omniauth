@@ -55,7 +55,7 @@ module OmniAuth
       end
     end
 
-    def add_mock_auth(provider, mock={})
+    def add_mock(provider, mock={})
       # Stringify keys recursively one level.
       mock.stringify_keys!
       mock.keys.each do|key|
