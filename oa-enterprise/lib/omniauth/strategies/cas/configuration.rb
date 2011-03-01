@@ -32,13 +32,17 @@ module OmniAuth
         end
 
         # Build a service-validation URL from +service+ and +ticket+.
+        # If +service+ has a ticket param, first remove it. URL-encode
+        # +service+ and add it and the +ticket+ as paraemters to the
+        # CAS serviceValidate URL.
         #
         # @param [String] service the service (a.k.a. return-to) URL
         # @param [String] ticket the ticket to validate
         #
         # @return [String] a URL like `http://cas.mycompany.com/serviceValidate?service=...&ticket=...`
         def service_validate_url(service, ticket)
-          url = append_service @service_validate_url, service
+          service = service.sub(/[?&]ticket=[^?&]+/, '')
+          url = append_service(@service_validate_url, service)
           url << '&ticket=' << Rack::Utils.escape(ticket)
         end
 
