@@ -28,5 +28,6 @@ module OmniAuth
     autoload :YouTube,            'omniauth/strategies/you_tube'
     autoload :Hyves,              'omniauth/strategies/hyves'
     autoload :Miso,               'omniauth/strategies/miso'
+    autoload :Dailymile,          'omniauth/strategies/dailymile'
   end
 end
