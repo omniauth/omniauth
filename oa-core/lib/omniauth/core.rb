@@ -30,11 +30,10 @@ module OmniAuth
       :allowed_request_methods => [:get, :post],
       :mock_auth => {
         :default => {
+          'provider' => 'default',
           'uid' => '1234',
           'user_info' => {
-            'name' => 'Bob Example',
-            'email' => 'bob@example.com',
-            'nickname' => 'bob'
+            'name' => 'Bob Example'
           }
         }
       }
@@ -54,6 +53,23 @@ module OmniAuth
       else
         @on_failure
       end
+    end
+
+    def add_mock_auth(provider, mock={})
+      # Stringify keys recursively one level.
+      mock.stringify_keys!
+      mock.keys.each do|key|
+        if mock[key].is_a? Hash
+          mock[key].stringify_keys!
+        end
+      end
+
+      # Merge with the default mock and ensure provider is correct.
+      mock = self.mock_auth[:default].dup.merge(mock)
+      mock["provider"] = provider.to_s
+
+      # Add it to the mocks.
+      self.mock_auth[provider.to_sym] = mock
     end
 
     attr_writer :on_failure
