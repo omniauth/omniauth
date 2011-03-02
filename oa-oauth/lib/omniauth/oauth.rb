@@ -28,5 +28,7 @@ module OmniAuth
     autoload :YouTube,            'omniauth/strategies/you_tube'
     autoload :Hyves,              'omniauth/strategies/hyves'
     autoload :Miso,               'omniauth/strategies/miso'
+    autoload :Instagram,          'omniauth/strategies/instagram'
+    autoload :Mixi,               'omniauth/strategies/mixi'
   end
 end
