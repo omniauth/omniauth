@@ -31,5 +31,6 @@ module OmniAuth
     autoload :Dailymile,          'omniauth/strategies/dailymile'
     autoload :Instagram,          'omniauth/strategies/instagram'
     autoload :Mixi,               'omniauth/strategies/mixi'
+    autoload :Evernote,           'omniauth/strategies/evernote'
   end
 end

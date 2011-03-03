@@ -39,6 +39,7 @@ OmniAuth currently supports the following external providers:
   * DailyMile (credit: [cdmwebs](https://github.com/cdmwebs))
   * Instagram (credit: [kiyoshi](https://github.com/kiyoshi))
   * Mixi (credit: [kiyoshi](https://github.com/kiyoshi))
+  * Evernote (credit: [szimek](https://github.com/szimek))
 * Flickr (credit: [pchilton](https://github.com/pchilton))
 * OpenID
 * Google Apps (via OpenID)
