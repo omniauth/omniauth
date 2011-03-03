@@ -29,5 +29,7 @@ module OmniAuth
     autoload :Hyves,              'omniauth/strategies/hyves'
     autoload :Miso,               'omniauth/strategies/miso'
     autoload :Dailymile,          'omniauth/strategies/dailymile'
+    autoload :Instagram,          'omniauth/strategies/instagram'
+    autoload :Mixi,               'omniauth/strategies/mixi'
   end
 end

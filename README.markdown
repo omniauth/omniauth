@@ -37,6 +37,8 @@ OmniAuth currently supports the following external providers:
   * YouTube (credit: [jamiew](https://github.com/jamiew))
   * Miso (credit: [rickenharp](https://github.com/rickenharp))
   * DailyMile (credit: [cdmwebs](https://github.com/cdmwebs))
+  * Instagram (credit: [kiyoshi](https://github.com/kiyoshi))
+  * Mixi (credit: [kiyoshi](https://github.com/kiyoshi))
 * Flickr (credit: [pchilton](https://github.com/pchilton))
 * OpenID
 * Google Apps (via OpenID)
