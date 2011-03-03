@@ -56,8 +56,8 @@ module OmniAuth
       # TODO this is an easy patch to the underlying OAuth strategy a la OAuth2
       def request_phase
         request_token = consumer.get_request_token({:oauth_callback => callback_url}, {:scope => 'http://gdata.youtube.com'})
-
-        (session['oauth']||={})[name.to_s] = {'callback_confirmed' => request_token.callback_confirmed?, 'request_token' => request_token.token, 'request_secret' => request_token.secret}
+        session['oauth'] ||= {}
+        session['oauth'][name.to_s] = {'callback_confirmed' => request_token.callback_confirmed?, 'request_token' => request_token.token, 'request_secret' => request_token.secret}
         r = Rack::Response.new
 
         if request_token.callback_confirmed?
