@@ -140,7 +140,7 @@ module OmniAuth
         when Proc
           OmniAuth.config.full_host.call(env)
         else
-          uri = URI.parse(request.url)
+          uri = URI.parse(request.url.gsub(/\?.*$/,''))
           uri.path = ''
           uri.query = nil
           uri.to_s

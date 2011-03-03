@@ -35,6 +35,14 @@ describe OmniAuth::Strategy do
       end
     end
   end
+
+  describe '#full_host' do
+    let(:strategy){ ExampleStrategy.new(app, 'test', {}) }
+    it 'should not freak out if there is a pipe in the URL' do
+      strategy.call!(make_env('/whatever', 'rack.url_scheme' => 'http', 'SERVER_NAME' => 'facebook.lame', 'QUERY_STRING' => 'code=asofibasf|asoidnasd', 'SCRIPT_NAME' => '', 'SERVER_PORT' => 80))
+      lambda{ strategy.full_host }.should_not raise_error
+    end
+  end
   
   describe '#call' do
     let(:strategy){ ExampleStrategy.new(app, 'test', @options) }
