@@ -29,13 +29,12 @@ module OmniAuth
 
       def auth_hash
         OmniAuth::Utils.deep_merge(super, {
-          'uid' => @access_token.params[:id],
+          'uid' => @access_token.params[:user_id],
           'user_info' => user_info,
           'extra' => {'user_hash' => user_hash}
         })
       end
 
-      
       def user_info
         user_hash = self.user_hash
         {

@@ -36,13 +36,14 @@ module OmniAuth
     
       def callback_phase
         request_token = ::OAuth::RequestToken.new(consumer, session[:oauth][name.to_sym].delete(:request_token), session[:oauth][name.to_sym].delete(:request_secret))
- 
-        opts = {}
+        verifier = request.params['oauth_verifier']
+        
+        opts = verifier ? { :oauth_verifier => verifier } : {}
         opts[:oauth_callback] = callback_url if session[:oauth][:callback_confirmed]
+        
         @access_token = request_token.get_access_token(opts)
         super
       rescue ::OAuth::Unauthorized => e
-        # raise e.inspect
         fail!(:invalid_credentials, e)
       end
       
