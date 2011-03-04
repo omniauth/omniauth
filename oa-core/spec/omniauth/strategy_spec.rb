@@ -92,6 +92,14 @@ describe OmniAuth::Strategy do
           rescue RuntimeError; end
           strategy.callback_url.should == 'http://example.com/auth/test/callback?id=5'
         end
+
+        it 'consider script name' do
+          strategy.stub(:full_host).and_return('http://example.com')
+          begin
+            strategy.call(make_env('/auth/test', 'SCRIPT_NAME' => '/sub_uri'))
+          rescue RuntimeError; end
+          strategy.callback_url.should == 'http://example.com/sub_uri/auth/test/callback'
+        end
       end
     end
     
