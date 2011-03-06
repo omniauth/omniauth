@@ -14,7 +14,10 @@ module OmniAuth
       end
 
       def consumer
-        ::OAuth::Consumer.new(consumer_key, consumer_secret, consumer_options.merge(options[:client_options] || options[:consumer_options] || {}))
+        consumer = ::OAuth::Consumer.new(consumer_key, consumer_secret, consumer_options.merge(options[:client_options] || options[:consumer_options] || {}))
+        consumer.http.open_timeout = options[:open_timeout] if options[:open_timeout]
+        consumer.http.read_timeout = options[:read_timeout] if options[:read_timeout]
+        consumer
       end
 
       attr_reader :name
@@ -33,6 +36,8 @@ module OmniAuth
         end
 
         r.finish
+      rescue ::Timeout::Error => e
+        fail!(:timeout_error_in_request_phase, e)
       end
 
       def callback_phase
@@ -47,6 +52,8 @@ module OmniAuth
 
         @access_token = request_token.get_access_token(opts)
         super
+      rescue ::Timeout::Error => e
+        fail!(:timeout_error_in_callback_phase, e)
       rescue ::Net::HTTPFatalError => e
         fail!(:service_unavailable, e)
       rescue ::OAuth::Unauthorized => e
