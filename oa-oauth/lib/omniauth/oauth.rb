@@ -20,5 +20,6 @@ module OmniAuth
     autoload :SmugMug,            'omniauth/strategies/smug_mug'
     autoload :Douban,             'omniauth/strategies/douban'
     autoload :Tsina,              'omniauth/strategies/tsina'
+    autoload :T163,               'omniauth/strategies/t163'
   end
 end
