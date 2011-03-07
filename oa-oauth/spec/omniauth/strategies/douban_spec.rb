@@ -28,7 +28,7 @@ describe OmniAuth::Strategies::Douban do
     it 'should redirect to authorize_url' do
       last_response.should be_redirect
       oauth_callback = CGI.escape('http://example.org/auth/douban/callback')
-      last_response.headers['Location'].should == "http://www.douban.com/service/auth/authorize?oauth_token=yourtoken&oauth_callback=#{oauth_callback}"
+      last_response.headers['Location'].should == "http://www.douban.com/service/auth/authorize?oauth_callback=#{oauth_callback}&oauth_token=yourtoken"
     end
 
     it 'should set appropriate session variables' do
