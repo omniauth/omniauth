@@ -85,6 +85,7 @@ module OmniAuth
 <xn:request-form content="#{options[:content]} &lt;xn:req-choice url=&quot;#{options[:url1]}&quot; label=&quot;#{options[:label1]}&quot;&gt;&lt;xn:req-choice url=&quot;#{options[:url2]}&quot; label=&quot;#{options[:label2]}&quot;&gt;" action="#{options[:action]}">
 <xn:multi-friend-selector-x actiontext="#{options[:friend_text]}" max="#{options[:max]}" mode="#{options[:mode]}"/>
 </xn:request-form></script></xn:serverxnml>
+#{renren_javascript}
           HTML
         end
         
