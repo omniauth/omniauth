@@ -77,6 +77,10 @@ module OmniAuth
           }.merge(options)
           renren_invite(params).html_safe
         end
+        
+        def omniauth_renren_javascript
+          renren_javascript.html_safe
+        end
 
         private
         
@@ -87,28 +91,24 @@ module OmniAuth
 <xn:request-form content="#{options[:content]} &lt;xn:req-choice url=&quot;#{options[:url1]}&quot; label=&quot;#{options[:label1]}&quot;&gt;&lt;xn:req-choice url=&quot;#{options[:url2]}&quot; label=&quot;#{options[:label2]}&quot;&gt;" action="#{options[:action]}">
 <xn:multi-friend-selector-x actiontext="#{options[:friend_text]}" max="#{options[:max]}" mode="#{options[:mode]}" width="#{options[:width]}" height="#{options[:height]}"  />
 </xn:request-form></script></xn:serverxnml>
-#{renren_javascript}
           HTML
         end
         
         def renren_like_button(options = {})
           <<-HTML
 <iframe scrolling="no" frameborder="0" allowtransparency="true" src="http://www.connect.renren.com/like?url=#{options[:url]}" style="width: #{options[:width]};height: #{options[:height]};"></iframe>
-#{renren_javascript}
           HTML
         end
         
         def renren_live_widget(options = {})
           <<-HTML
 <iframe scrolling="no" frameborder="0" src="http://www.connect.renren.com/widget/liveWidget?api_key=#{Renren.api_key}&xid=default&desp=%E5%A4%A7%E5%AE%B6%E6%9D%A5%E8%AE%A8%E8%AE%BA" style="width: #{options[:width]};height: #{options[:height]};"></iframe>
-#{renren_javascript}
           HTML
         end
         
         def renren_friends(options = {})
           <<-HTML
 <xn:friendpile show-faces="all" face-size="small" max-rows="#{options[:max_rows]}" face-space="#{options[:face_space]}" width="#{options[:width]}"></xn:friendpile>
-#{renren_javascript}
           HTML
         end
         
@@ -116,14 +116,12 @@ module OmniAuth
           callback_path = "#{OmniAuth.config.path_prefix}/renren/callback"
           <<-HTML
 <img #{properties} onclick="XN.Connect.requireSession(function(){window.location.href='#{callback_path}';});return false;"></img>        
-#{renren_javascript}
           HTML
         end
         
         def renren_connect_button
           <<-HTML
 <xn:login-button autologoutlink="true" onlogin="document.getElementById('#{@renren_connect_form_id}').submit();"></xn:login-button>
-#{renren_javascript}
           HTML
         end
 
