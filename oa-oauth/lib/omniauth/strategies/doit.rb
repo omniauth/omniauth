@@ -11,17 +11,15 @@ module OmniAuth
     #
     #    use OmniAuth::Strategies::Doit, 'consumer_key', 'consumer_secret'
     #
-    class Doit < OmniAuth::Strategies::OAuth
+    class Doit < OAuth2
       # Initialize the middleware
       #
       # @option options [Boolean, true] :sign_in When true, use the "Sign in with Doit.im" flow instead of the authorization flow.
-      def initialize(app, consumer_key = nil, consumer_secret = nil, options = {}, &block)
-        client_options = {
-          :site => 'https://openapi.doit.im'
-        }
-        
-        client_options[:authorize_path] = '/oauth/authenticate' unless options[:sign_in] == false
-        super(app, :doit, consumer_key, consumer_secret, client_options, options)
+      def initialize(app, client_id = nil, client_secret = nil, options = {}, &block)
+        super(app, :doit, client_id, client_secret, {
+          :site => "https://openapi.doit.im",
+          :authorize_url      => "https://openapi.doit.im/auth/authenticate"
+        }, options, &block)
       end
       
       def auth_hash
