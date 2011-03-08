@@ -61,7 +61,32 @@ module OmniAuth
           renren_like_button(params).html_safe
         end
 
+        def omniauth_renren_invite(options = {})
+          params = {
+            :content => "Join us",
+            :url1 => "http://www.renren.com",
+            :label1 => "Go",
+            :url2 => "http://apps.renren.com/yourapp",
+            :label2 => "Accept",
+            :action => "/yourapp/youraction",
+            :friend_text => "Invite your friends",
+            :max => "5",
+            :mode => "all"
+          }.merge(options)
+          renren_invite(params).html_safe
+        end
+
         private
+        
+        def renren_invite(options)
+          <<-HTML
+<xn:serverxnml>
+<script type="text/xnml">
+<xn:request-form content="#{options[:content]} &lt;xn:req-choice url=&quot;#{options[:url1]}&quot; label=&quot;#{options[:label1]}&quot;&gt;&lt;xn:req-choice url=&quot;#{options[:url2]}&quot; label=&quot;#{options[:label2]}&quot;&gt;" action="#{options[:action]}">
+<xn:multi-friend-selector-x actiontext="#{options[:friend_text]}" max="#{options[:max]}" mode="#{options[:mode]}"/>
+</xn:request-form></script></xn:serverxnml>
+          HTML
+        end
         
         def renren_like_button(options = {})
           <<-HTML
