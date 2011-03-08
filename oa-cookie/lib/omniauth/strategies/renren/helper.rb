@@ -71,7 +71,9 @@ module OmniAuth
             :action => "/yourapp/youraction",
             :friend_text => "Invite your friends",
             :max => "5",
-            :mode => "all"
+            :mode => "all",
+            :width => "735",
+            :height => "450"
           }.merge(options)
           renren_invite(params).html_safe
         end
@@ -83,7 +85,7 @@ module OmniAuth
 <xn:serverxnml>
 <script type="text/xnml">
 <xn:request-form content="#{options[:content]} &lt;xn:req-choice url=&quot;#{options[:url1]}&quot; label=&quot;#{options[:label1]}&quot;&gt;&lt;xn:req-choice url=&quot;#{options[:url2]}&quot; label=&quot;#{options[:label2]}&quot;&gt;" action="#{options[:action]}">
-<xn:multi-friend-selector-x actiontext="#{options[:friend_text]}" max="#{options[:max]}" mode="#{options[:mode]}"/>
+<xn:multi-friend-selector-x actiontext="#{options[:friend_text]}" max="#{options[:max]}" mode="#{options[:mode]}" width="#{options[:width]}" height="#{options[:height]}"  />
 </xn:request-form></script></xn:serverxnml>
 #{renren_javascript}
           HTML
