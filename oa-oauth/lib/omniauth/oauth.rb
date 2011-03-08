@@ -32,5 +32,6 @@ module OmniAuth
     autoload :Instagram,          'omniauth/strategies/instagram'
     autoload :Mixi,               'omniauth/strategies/mixi'
     autoload :Evernote,           'omniauth/strategies/evernote'
+    autoload :Doit,               'omniauth/strategies/doit'
   end
 end
