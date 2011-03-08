@@ -3,50 +3,56 @@ require 'multi_json'
 
 module OmniAuth
   module Strategies
-    # 
-    # Authenticate to Doit.im via OAuth and retrieve basic
-    # user information.
-    #
-    # Usage:
-    #
-    #    use OmniAuth::Strategies::Doit, 'consumer_key', 'consumer_secret'
-    #
     class Doit < OAuth2
-      # Initialize the middleware
-      #
-      # @option options [Boolean, true] :sign_in When true, use the "Sign in with Doit.im" flow instead of the authorization flow.
-      def initialize(app, client_id = nil, client_secret = nil, options = {}, &block)
-        super(app, :doit, client_id, client_secret, {
-          :site => "https://openapi.doit.im",
-          :authorize_url      => "https://openapi.doit.im/auth/authenticate"
-        }, options, &block)
+      
+      def initialize(app, consumer_key=nil, consumer_secret=nil, options={},&block)
+        client_options={
+          :site => 'https://openapi.doit.im',
+          :authorize_url => 'https://openapi.doit.im/oauth/authorize',
+          :access_token_url => 'https://openapi.doit.im/oauth/access_token'
+        }
+        
+        super(app, :doit, consumer_key, consume_secret, client_options, options, &block)
+      end
+      
+      def request_phase
+        options[:response_type] ||= 'code'
+        super
+      end
+      
+      def callback_phase
+        options[:grant_type] ||= 'authorizations_code'
+        super
+      end
+      
+      def user_data
+        @data ||= MultiJson.decode(@access_token.get(client_site+'/v1/setting',{'Authorization'=>'OAuth '+@access_token.token}))
+      end
+      
+      def user_info
+        {
+          'account' => user_data['account'],
+          'username'=> user_data['username'],
+          'nickname'=> user_data['nickname'],
+          'gender'=> user_data['gender'],
+          'week_start'=> user_data['week_start'],
+          'birthday_day'=> user_data['birthday_day'],
+          'birthday_month'=> user_data['birthday_month'],
+          'birthday_year'=> user_data['birthday_year'],
+          'language'=> user_data['language'],
+          'user_timezone'=> user_data['user_timezone'],
+          'remind_email'=> user_data['remind_email'],
+          'created'=> user_data['created'],
+          'updated'=> user_data['updated']
+        }
       end
       
       def auth_hash
         OmniAuth::Utils.deep_merge(super, {
-          'uid' => @access_token.params[:id],
-          'user_info' => user_info,
-          'extra' => {'user_hash' => user_hash}
+          'uid'=> user_data['id'],
+          'user_info'=> user_info,
+          'extra'=> {'user_hash'=> user_data['data']}
         })
-      end
-      
-      def user_info
-        user_hash = self.user_hash
-        
-        {
-          'language'=>user_hash['language'],
-          'nickname' => user_hash['nickname'],
-          'name' => user_hash['username'],
-          'account'=>user_hash['account'],
-          'email'=>user_hash['remind_email'],
-          'updated_at'=>user_hash['updated_at'],
-          'timezone'=>user_hash['user_timezone'],
-          'week_start'=>user_hash['week_start']
-        }
-      end
-      
-      def user_hash
-        @user_hash ||= MultiJson.decode(@access_token.get('/v1/settings').body)
       end
     end
   end
