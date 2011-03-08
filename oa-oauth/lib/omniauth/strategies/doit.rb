@@ -12,7 +12,7 @@ module OmniAuth
           :access_token_url => 'https://openapi.doit.im/oauth/access_token'
         }
         
-        super(app, :doit, consumer_key, consume_secret, client_options, options, &block)
+        super(app, :doit, consumer_key, consumer_secret, client_options, options, &block)
       end
       
       def request_phase
