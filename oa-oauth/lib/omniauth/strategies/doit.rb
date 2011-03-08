@@ -11,22 +11,22 @@ module OmniAuth
     #
     #    use OmniAuth::Strategies::Doit, 'consumer_key', 'consumer_secret'
     #
-    class Twitter < OmniAuth::Strategies::OAuth
+    class Doit < OmniAuth::Strategies::OAuth
       # Initialize the middleware
       #
-      # @option options [Boolean, true] :sign_in When true, use the "Sign in with Twitter" flow instead of the authorization flow.
+      # @option options [Boolean, true] :sign_in When true, use the "Sign in with Doit.im" flow instead of the authorization flow.
       def initialize(app, consumer_key = nil, consumer_secret = nil, options = {}, &block)
         client_options = {
-          :site => 'https://api.twitter.com'
+          :site => 'https://openapi.doit.im'
         }
         
         client_options[:authorize_path] = '/oauth/authenticate' unless options[:sign_in] == false
-        super(app, :twitter, consumer_key, consumer_secret, client_options, options)
+        super(app, :doit, consumer_key, consumer_secret, client_options, options)
       end
       
       def auth_hash
         OmniAuth::Utils.deep_merge(super, {
-          'uid' => @access_token.params[:user_id],
+          'uid' => @access_token.params[:id],
           'user_info' => user_info,
           'extra' => {'user_hash' => user_hash}
         })
@@ -36,20 +36,19 @@ module OmniAuth
         user_hash = self.user_hash
         
         {
-          'nickname' => user_hash['screen_name'],
-          'name' => user_hash['name'],
-          'location' => user_hash['location'],
-          'image' => user_hash['profile_image_url'],
-          'description' => user_hash['description'],
-          'urls' => {
-            'Website' => user_hash['url'],
-            'Twitter' => 'http://twitter.com/' + user_hash['screen_name']
-          }
+          'language'=>user_hash['language'],
+          'nickname' => user_hash['nickname'],
+          'name' => user_hash['username'],
+          'account'=>user_hash['account'],
+          'email'=>user_hash['remind_email'],
+          'updated_at'=>user_hash['updated_at'],
+          'timezone'=>user_hash['user_timezone'],
+          'week_start'=>user_hash['week_start']
         }
       end
       
       def user_hash
-        @user_hash ||= MultiJson.decode(@access_token.get('/1/account/verify_credentials.json').body)
+        @user_hash ||= MultiJson.decode(@access_token.get('/v1/settings').body)
       end
     end
   end
