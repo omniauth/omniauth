@@ -15,6 +15,7 @@ Gem::Specification.new do |gem|
   
   gem.add_dependency  'oa-core', version
   gem.add_dependency  'activesupport', '~> 3.0.0'
-  
+  gem.add_dependency  'uuid'
+
   eval File.read(File.join(File.dirname(__FILE__), '../development_dependencies.rb'))
 end
