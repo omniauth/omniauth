@@ -26,7 +26,7 @@ module OmniAuth
       end
       
       def user_data
-        @data ||= MultiJson.decode(@access_token.get(client_site+'/v1/setting',{'Authorization'=>'OAuth '+@access_token.token}))
+        @data ||= MultiJson.decode(@access_token.get(client.site+'/v1/setting',{'Authorization'=>'OAuth '+@access_token.token}))
       end
       
       def user_info
