@@ -108,7 +108,7 @@ module OmniAuth
     end
 
     def current_path
-      request.path.downcase.sub(/\/$/,'')
+      request.path_info.downcase.sub(/\/$/,'')
     end
 
     def query_string
@@ -146,11 +146,15 @@ module OmniAuth
           uri.to_s
       end
     end
-    
+
     def callback_url
-      full_host + callback_path + query_string
+      full_host + script_name + callback_path + query_string
     end
-    
+
+    def script_name
+      @env['SCRIPT_NAME'] || ''
+    end
+
     def session
       @env['rack.session']
     end

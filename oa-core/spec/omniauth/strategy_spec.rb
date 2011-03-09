@@ -57,6 +57,25 @@ describe OmniAuth::Strategy do
         lambda{ strategy.call(make_env('/auth/test/callback', 'rack.session' => {'omniauth.origin' => 'http://example.com/origin'})) }.should raise_error("Callback Phase")
         strategy.last_env['omniauth.origin'].should == 'http://example.com/origin'
       end
+
+      context "with script_name" do
+        it 'should be set on the request phase, containing full path' do
+          env = {'HTTP_REFERER' => 'http://example.com/sub_uri/origin', 'SCRIPT_NAME' => '/sub_uri' }
+          lambda{ strategy.call(make_env('/auth/test', env)) }.should raise_error("Request Phase")
+          strategy.last_env['rack.session']['omniauth.origin'].should == 'http://example.com/sub_uri/origin'
+        end
+
+        it 'should be turned into an env variable on the callback phase, containing full path' do
+          env = {
+            'rack.session' => {'omniauth.origin' => 'http://example.com/sub_uri/origin'},
+            'SCRIPT_NAME' => '/sub_uri'
+          }
+
+          lambda{ strategy.call(make_env('/auth/test/callback', env)) }.should raise_error("Callback Phase")
+          strategy.last_env['omniauth.origin'].should == 'http://example.com/sub_uri/origin'
+        end
+
+      end
     end
 
     context 'default paths' do
@@ -91,6 +110,14 @@ describe OmniAuth::Strategy do
             strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'id=5'))
           rescue RuntimeError; end
           strategy.callback_url.should == 'http://example.com/auth/test/callback?id=5'
+        end
+
+        it 'consider script name' do
+          strategy.stub(:full_host).and_return('http://example.com')
+          begin
+            strategy.call(make_env('/auth/test', 'SCRIPT_NAME' => '/sub_uri'))
+          rescue RuntimeError; end
+          strategy.callback_url.should == 'http://example.com/sub_uri/auth/test/callback'
         end
       end
     end
