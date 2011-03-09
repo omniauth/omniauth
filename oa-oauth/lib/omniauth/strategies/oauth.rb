@@ -11,6 +11,8 @@ module OmniAuth
         self.consumer_secret = consumer_secret
         self.consumer_options = consumer_options
         super
+        self.options[:open_timeout] ||= 30
+        self.options[:read_timeout] ||= 30
       end
 
       def consumer
@@ -37,7 +39,7 @@ module OmniAuth
 
         r.finish
       rescue ::Timeout::Error => e
-        fail!(:timeout_error_in_request_phase, e)
+        fail!(:timeout, e)
       end
 
       def callback_phase
@@ -53,7 +55,7 @@ module OmniAuth
         @access_token = request_token.get_access_token(opts)
         super
       rescue ::Timeout::Error => e
-        fail!(:timeout_error_in_callback_phase, e)
+        fail!(:timeout, e)
       rescue ::Net::HTTPFatalError => e
         fail!(:service_unavailable, e)
       rescue ::OAuth::Unauthorized => e
