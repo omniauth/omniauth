@@ -4,29 +4,25 @@ require 'multi_json'
 module OmniAuth
   module Strategies
     class Doit < OAuth2
-      
-      def initialize(app, consumer_key=nil, consumer_secret=nil, options={},&block)
-        client_options={
+      def initialize(app, api_key = nil, secret_key = nil, options = {}, &block)
+        client_options = {
           :site => 'https://openapi.doit.im',
           :authorize_url => 'https://openapi.doit.im/oauth/authorize',
           :access_token_url => 'https://openapi.doit.im/oauth/access_token'
         }
         
-        super(app, :doit, consumer_key, consumer_secret, client_options, options, &block)
+        super(app, :doit, api_key, secret_key, client_options, options, &block)
+      end
+      
+      protected
+      
+      def user_data
+        @data ||= MultiJson.decode(@access_token.get(client.site+"/v1/settings"),{'Authorization'=> 'OAuth'+@access_token.token})
       end
       
       def request_phase
-        options[:response_type] ||= 'code'
+        options[:response_type] ||= "code"
         super
-      end
-      
-      def callback_phase
-        options[:grant_type] ||= 'authorization_code'
-        super
-      end
-      
-      def user_data
-        @data ||= MultiJson.decode(@access_token.get(client.site+'/v1/setting',{'oauth_token'=>@access_token.token}))
       end
       
       def user_info
@@ -49,9 +45,9 @@ module OmniAuth
       
       def auth_hash
         OmniAuth::Utils.deep_merge(super, {
-          'uid'=> user_data['id'],
-          'user_info'=> user_info,
-          'extra'=> {'user_hash'=> user_data['data']}
+          'uid' => user_data['id'],
+          'user_info' => user_info,
+          'extra' => {'user_hash' => user_data}
         })
       end
     end
