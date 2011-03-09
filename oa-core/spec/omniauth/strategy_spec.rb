@@ -18,7 +18,8 @@ def make_env(path = '/auth/test', props = {})
   {
     'REQUEST_METHOD' => 'GET',
     'PATH_INFO' => path,
-    'rack.session' => {}
+    'rack.session' => {},
+    'rack.input' => StringIO.new('test=true')
   }.merge(props)
 end
 
@@ -56,6 +57,11 @@ describe OmniAuth::Strategy do
       it 'should be turned into an env variable on the callback phase' do
         lambda{ strategy.call(make_env('/auth/test/callback', 'rack.session' => {'omniauth.origin' => 'http://example.com/origin'})) }.should raise_error("Callback Phase")
         strategy.last_env['omniauth.origin'].should == 'http://example.com/origin'
+      end
+
+      it 'should set from the params if provided' do
+        lambda{ strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'origin=/foo')) }.should raise_error('Request Phase')
+        strategy.last_env['rack.session']['omniauth.origin'].should == '/foo'
       end
 
       context "with script_name" do

@@ -35,7 +35,9 @@ module OmniAuth
         if response = call_through_to_app
           response
         else
-          if env['HTTP_REFERER'] && !env['HTTP_REFERER'].match(/#{request_path}$/)
+          if request.params['origin']
+            env['rack.session']['omniauth.origin'] = request.params['origin']            
+          elsif env['HTTP_REFERER'] && !env['HTTP_REFERER'].match(/#{request_path}$/)
             env['rack.session']['omniauth.origin'] = env['HTTP_REFERER']
           end
           request_phase
