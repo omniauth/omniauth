@@ -35,6 +35,7 @@ module OmniAuth
           'id' => person.xpath('id').text,
           'first_name' => person.xpath('first-name').text,
           'last_name' => person.xpath('last-name').text,
+          'nickname' => person.xpath('public-profile-url').text.split('/').last,
           'location' => person.xpath('location/name').text,
           'image' => person.xpath('picture-url').text,
           'description' => person.xpath('headline').text,
