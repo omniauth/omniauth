@@ -35,7 +35,11 @@ module OmniAuth
         if response = call_through_to_app
           response
         else
-          env['rack.session']['omniauth.origin'] = env['HTTP_REFERER']
+          if request.params['origin']
+            env['rack.session']['omniauth.origin'] = request.params['origin']            
+          elsif env['HTTP_REFERER'] && !env['HTTP_REFERER'].match(/#{request_path}$/)
+            env['rack.session']['omniauth.origin'] = env['HTTP_REFERER']
+          end
           request_phase
         end
       elsif current_path == callback_path
@@ -108,7 +112,7 @@ module OmniAuth
     end
 
     def current_path
-      request.path.downcase.sub(/\/$/,'')
+      request.path_info.downcase.sub(/\/$/,'')
     end
 
     def query_string
@@ -146,11 +150,15 @@ module OmniAuth
           uri.to_s
       end
     end
-    
+
     def callback_url
-      full_host + callback_path + query_string
+      full_host + script_name + callback_path + query_string
     end
-    
+
+    def script_name
+      @env['SCRIPT_NAME'] || ''
+    end
+
     def session
       @env['rack.session']
     end
