@@ -15,7 +15,7 @@ To install OmniAuth, simply install the gem:
 
 OmniAuth currently supports the following external providers:
 
-* via OAuth
+* via OAuth (OAuth 1.0, OAuth 2, and xAuth)
   * 37signals ID
   * Bit.ly (credit: [philnash](https://github.com/philnash))
   * Dopplr (credit: [flextrip](https://github.com/flextrip))
@@ -41,6 +41,7 @@ OmniAuth currently supports the following external providers:
   * Mixi (credit: [kiyoshi](https://github.com/kiyoshi))
   * Evernote (credit: [szimek](https://github.com/szimek))
   * Doit.im (credit: [chouti](https://github.com/chouti))
+  * Instapaper (credit: [micpringle](https://github.com/micpringle))
 * Flickr (credit: [pchilton](https://github.com/pchilton))
 * OpenID
 * Google Apps (via OpenID)
