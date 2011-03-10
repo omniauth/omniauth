@@ -75,7 +75,7 @@ module OmniAuth
       end
       
       def get_identifier
-        OmniAuth::Form.build('OpenID Authentication') do
+        OmniAuth::Form.build(:title => 'OpenID Authentication') do
           label_field('OpenID Identifier', IDENTIFIER_URL_PARAMETER)
           input_field('url', IDENTIFIER_URL_PARAMETER)
         end.to_response
