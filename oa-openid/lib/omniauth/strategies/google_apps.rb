@@ -9,7 +9,7 @@ module OmniAuth
       end
       
       def get_identifier
-        OmniAuth::Form.build('Google Apps Authentication') do
+        OmniAuth::Form.build(:title => 'Google Apps Authentication') do
           label_field('Google Apps Domain', 'domain')
           input_field('url', 'domain')
         end.to_response

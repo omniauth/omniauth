@@ -45,7 +45,7 @@ module OmniAuth
       end
 
   	  def get_credentials
-        OmniAuth::Form.build(options[:title] || "LDAP Authentication") do
+        OmniAuth::Form.build(:title => (options[:title] || "LDAP Authentication")) do
           text_field 'Login', 'username'
           password_field 'Password', 'password'
         end.to_response
