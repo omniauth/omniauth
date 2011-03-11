@@ -18,6 +18,8 @@ module OmniAuth
         # @option params [String, nil] :cas_service_validate_url (:cas_server + '/serviceValidate') the
         #         URL to use for validating service tickets; optional if `:cas_server` is
         #         specified, requred otherwise.
+        # @option params [Boolean, nil] :disable_ssl_verification disable verification for SSL cert,
+        #         helpful when you developing with a fake cert.
         def initialize(params)
           parse_params params
         end
@@ -32,14 +34,22 @@ module OmniAuth
         end
 
         # Build a service-validation URL from +service+ and +ticket+.
+        # If +service+ has a ticket param, first remove it. URL-encode
+        # +service+ and add it and the +ticket+ as paraemters to the
+        # CAS serviceValidate URL.
         #
         # @param [String] service the service (a.k.a. return-to) URL
         # @param [String] ticket the ticket to validate
         #
         # @return [String] a URL like `http://cas.mycompany.com/serviceValidate?service=...&ticket=...`
         def service_validate_url(service, ticket)
-          url = append_service @service_validate_url, service
+          service = service.sub(/[?&]ticket=[^?&]+/, '')
+          url = append_service(@service_validate_url, service)
           url << '&ticket=' << Rack::Utils.escape(ticket)
+        end
+
+        def disable_ssl_verification?
+          @disable_ssl_verification
         end
 
         private
@@ -58,6 +68,8 @@ module OmniAuth
           @service_validate_url   = params[:cas_service_validate_url]
           @service_validate_url ||= DEFAULT_SERVICE_VALIDATE_URL % params[:cas_server]
           validate_is_url 'service-validate URL', @service_validate_url
+
+          @disable_ssl_verification = params[:disable_ssl_verification]
         end
 
         IS_NOT_URL_ERROR_MESSAGE = "%s is not a valid URL"

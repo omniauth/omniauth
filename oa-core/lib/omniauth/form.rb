@@ -72,12 +72,28 @@ module OmniAuth
       display: block;
       margin: 20px auto 0;
     }
+
+    fieldset {
+      border: 1px solid #ccc;
+      border-left: 0;
+      border-right: 0;
+      padding: 10px 0;
+    }
+
+    fieldset input {
+      width: 260px;
+      font-size: 16px;
+    }
     CSS
     
-    def initialize(title=nil)
-      title ||= "Authentication Info Required"
+    attr_accessor :options
+
+    def initialize(options = {})
+      options[:title] ||= "Authentication Info Required"
+      self.options = options
+
       @html = ""
-      header(title)
+      header(options[:title])
     end
     
     def self.build(title=nil, &block)
@@ -106,6 +122,21 @@ module OmniAuth
       input_field('password', name)
       self
     end
+
+    def button(text)
+      @html << "\n<button type='submit'>#{text}</button>"
+    end
+    
+    def html(html)
+      @html << html
+    end
+
+    def fieldset(legend, options = {}, &block)
+      @html << "\n<fieldset#{" style='#{options[:style]}'" if options[:style]}#{" id='#{options[:id]}'" if options[:id]}>\n  <legend>#{legend}</legend>\n"
+      self.instance_eval &block
+      @html << "\n</fieldset>"
+      self
+    end
     
     def header(title)
       @html << <<-HTML
@@ -117,7 +148,7 @@ module OmniAuth
       </head>
       <body>
       <h1>#{title}</h1>
-      <form method='post' noValidate='noValidate'>
+      <form method='post' #{"action='#{options[:url]}' " if options[:url]}noValidate='noValidate'>
       HTML
       self
     end

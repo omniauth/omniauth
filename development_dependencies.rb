@@ -8,11 +8,12 @@ if Object.const_defined?(:Bundler) && Bundler.const_defined?(:Dsl) && self.kind_
     gem 'rack'
     gem 'rake'
     gem 'mg',        '~> 0.0.8'
-    gem 'rspec',     '~> 2.4.0'
+    gem 'rspec',     '~> 2.5.0'
     gem 'webmock',   '~> 1.3.4'
     gem 'rack-test', '~> 0.5.4'
     gem 'json',      '~> 1.4.3' # multi_json implementation
-  end  
+    gem 'evernote',  '~> 0.9.0'
+  end
 else #gemspec
   gem.add_development_dependency  'rake'
   gem.add_development_dependency  'mg',         '~> 0.0.8'
@@ -20,4 +21,5 @@ else #gemspec
   gem.add_development_dependency  'webmock',    '~> 1.3.4'
   gem.add_development_dependency  'rack-test',  '~> 0.5.4'
   gem.add_development_dependency  'json',       '~> 1.4.3' # multi_json implementation
+  gem.add_development_dependency  'evernote',   '~> 0.9.0'
 end

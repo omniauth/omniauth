@@ -5,12 +5,18 @@ module OmniAuth
   module Strategies
     class LinkedIn < OmniAuth::Strategies::OAuth
       def initialize(app, consumer_key = nil, consumer_secret = nil, options = {}, &block)
-        super(app, :linked_in, consumer_key, consumer_secret,
-                {:site => 'https://api.linkedin.com',
-                :request_token_path => '/uas/oauth/requestToken',
-                :access_token_path => '/uas/oauth/accessToken',
-                :authorize_path => '/uas/oauth/authorize',
-                :scheme => :header}, options, &block)
+        client_options = {
+          :site => 'https://api.linkedin.com',
+          :request_token_path => '/uas/oauth/requestToken',
+          :access_token_path => '/uas/oauth/accessToken',
+          :authorize_path => '/uas/oauth/authorize',
+          :scheme => :header
+        }
+
+        client_options[:authorize_path] = '/uas/oauth/authenticate' unless options[:sign_in] == false
+
+        '/uas/oauth/authorize'
+        super(app, :linked_in, consumer_key, consumer_secret, client_options, options, &block)
       end
       
       def auth_hash
@@ -29,6 +35,7 @@ module OmniAuth
           'id' => person.xpath('id').text,
           'first_name' => person.xpath('first-name').text,
           'last_name' => person.xpath('last-name').text,
+          'nickname' => person.xpath('public-profile-url').text.split('/').last,
           'location' => person.xpath('location/name').text,
           'image' => person.xpath('picture-url').text,
           'description' => person.xpath('headline').text,

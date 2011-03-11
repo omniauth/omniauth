@@ -64,7 +64,7 @@ module OmniAuth
         end
         
         verifier = request.params['code']
-        @access_token = client.web_server.get_access_token(verifier, :redirect_uri => callback_url)
+        @access_token = client.web_server.get_access_token(verifier, {:redirect_uri => callback_url}.merge(options))
         
         if @access_token.expires? && @access_token.expires_in <= 0
           client.request(:post, client.access_token_url, { 
@@ -72,13 +72,15 @@ module OmniAuth
               'grant_type' => 'refresh_token', 
               'client_secret' => client_secret,
               'refresh_token' => @access_token.refresh_token 
-            })
-          @access_token = client.web_server.get_access_token(verifier, :redirect_uri => callback_url)
+            }.merge(options))
+          @access_token = client.web_server.get_access_token(verifier, {:redirect_uri => callback_url}.merge(options))
         end
         
         super
       rescue ::OAuth2::HTTPError, ::OAuth2::AccessDenied, CallbackError => e
         fail!(:invalid_credentials, e)
+      rescue ::MultiJson::DecodeError => e
+        fail!(:invalid_response, e)
       end
       
       def auth_hash
