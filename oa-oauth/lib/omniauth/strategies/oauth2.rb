@@ -57,14 +57,13 @@ module OmniAuth
       def request_phase
         redirect client.web_server.authorize_url({:redirect_uri => callback_url}.merge(options))
       end
-      
+
       def callback_phase
         if request.params['error'] || request.params['error_reason']
           raise CallbackError.new(request.params['error'], request.params['error_description'] || request.params['error_reason'], request.params['error_uri'])
         end
         
-        verifier = request.params['code']
-        @access_token = client.web_server.get_access_token(verifier, {:redirect_uri => callback_url}.merge(options))
+        @access_token = build_access_token
         
         if @access_token.expires? && @access_token.expires_in <= 0
           client.request(:post, client.access_token_url, { 
@@ -81,6 +80,11 @@ module OmniAuth
         fail!(:invalid_credentials, e)
       rescue ::MultiJson::DecodeError => e
         fail!(:invalid_response, e)
+      end
+
+      def build_access_token
+        verifier = request.params['code']        
+        client.web_server.get_access_token(verifier, {:redirect_uri => callback_url}.merge(options))
       end
       
       def auth_hash
