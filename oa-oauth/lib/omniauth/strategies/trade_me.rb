@@ -32,7 +32,7 @@ module OmniAuth
           'nickname'   => user_hash['Nickname'],
           'first_name' => user_hash['FirstName'],
           'last_name'  => user_hash['LastName'],
-          'name'       => [user_hash['FirstName'],user_hash['LastName']].reject{ |n| n.blank? }.join(' '),
+          'name'       => [user_hash['FirstName'],user_hash['LastName']].reject{ |n| n.nil? || n.empty? }.join(' '),
         }
       end
       
