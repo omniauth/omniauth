@@ -98,7 +98,8 @@ module OmniAuth
       'tripit' => 'TripIt',
       'soundcloud' => 'SoundCloud',
       'smugmug' => 'SmugMug',
-      'cas' => 'CAS'
+      'cas' => 'CAS',
+      'trademe' => 'TradeMe'
     }
 
     module_function
