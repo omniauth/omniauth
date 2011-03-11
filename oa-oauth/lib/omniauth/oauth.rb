@@ -35,5 +35,6 @@ module OmniAuth
     autoload :Evernote,           'omniauth/strategies/evernote'
     autoload :Doit,               'omniauth/strategies/doit'
     autoload :Instapaper,         'omniauth/strategies/instapaper'
+    autoload :TradeMe,            'omniauth/strategies/trade_me'
   end
 end

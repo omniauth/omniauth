@@ -31,6 +31,7 @@ OmniAuth currently supports the following external providers:
   * Netflix (credit: [caged](https://github.com/caged))
   * SmugMug (credit: [pchilton](https://github.com/pchilton))
   * SoundCloud (credit: [leemartin](https://github.com/leemartin))
+  * TradeMe (credit: [pchilton](https://github.com/pchilton))
   * TripIt (credit: [flextrip](https://github.com/flextrip))
   * Twitter
   * Vimeo (credit: [jamiew](https://github.com/jamiew))
@@ -42,7 +43,6 @@ OmniAuth currently supports the following external providers:
   * Evernote (credit: [szimek](https://github.com/szimek))
   * Doit.im (credit: [chouti](https://github.com/chouti))
   * Instapaper (credit: [micpringle](https://github.com/micpringle))
-* Flickr (credit: [pchilton](https://github.com/pchilton))
 * OpenID
 * Google Apps (via OpenID)
 * CAS (Central Authentication Service) (credit: [jamesarosen](https://github.com/jamesarosen))
