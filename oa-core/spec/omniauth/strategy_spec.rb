@@ -260,6 +260,23 @@ describe OmniAuth::Strategy do
         strategy.call make_env('/auth/test/callback')
         strategy.env['omniauth.error.type'].should == :invalid_credentials
       end
+      
+      it 'should set omniauth.origin on the request phase' do
+        strategy.call(make_env('/auth/test', 'HTTP_REFERER' => 'http://example.com/origin'))
+        strategy.env['rack.session']['omniauth.origin'].should == 'http://example.com/origin'
+      end
+      
+      it 'should set omniauth.origin from the params if provided' do
+        strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'origin=/foo'))
+        strategy.env['rack.session']['omniauth.origin'].should == '/foo'
+      end
+
+      it 'should turn omniauth.origin into an env variable on the callback phase' do
+        OmniAuth.config.mock_auth[:test] = {}
+        
+        strategy.call(make_env('/auth/test/callback', 'rack.session' => {'omniauth.origin' => 'http://example.com/origin'}))
+        strategy.env['omniauth.origin'].should == 'http://example.com/origin'
+      end
     end
 
     context 'custom full_host' do

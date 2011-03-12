@@ -61,7 +61,11 @@ module OmniAuth
         if response = call_through_to_app
           response
         else
-          env['rack.session']['omniauth.origin'] = env['HTTP_REFERER']
+          if request.params['origin']
+            env['rack.session']['omniauth.origin'] = request.params['origin']
+          elsif env['HTTP_REFERER'] && !env['HTTP_REFERER'].match(/#{request_path}$/)
+            env['rack.session']['omniauth.origin'] = env['HTTP_REFERER']
+          end
           redirect(callback_path)
         end
       elsif current_path == callback_path
@@ -70,6 +74,8 @@ module OmniAuth
           fail!(mocked_auth)
         else
           @env['omniauth.auth'] = mocked_auth
+          env['omniauth.origin'] = session.delete('omniauth.origin')
+          env['omniauth.origin'] = nil if env['omniauth.origin'] == ''
           call_app!
         end
       else
