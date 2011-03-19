@@ -36,7 +36,7 @@ module OmniAuth
       
       def callback_phase
         params = { :api_key => api_key, :method => 'yupoo.auth.getToken', :frob => request.params['frob'], :format => 'json', :nojsoncallback => '1' }
-        params[:api_sig] = flickr_sign(params)
+        params[:api_sig] = yupoo_sign(params)
         
         response = RestClient.get('http://www.yupoo.com/api/rest/', { :params => params })
         auth = MultiJson.decode(response.to_s)
