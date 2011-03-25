@@ -74,7 +74,7 @@ The hash in question will look something like this:
       }
     }
     
-The `user_info` hash will automatically be populated with as much information about the user as OmniAuth was able to pull from the given API or authentication provider.
+The `user_info` hash will automatically be populated with as much information about the user as OmniAuth was able to pull from the given API or authentication provider. Note that `uid` should be stored as an 8-byte integer (bigint) rather than a standard integer, since some providers (such as Facebook) have really long values for this field.
 
 ## Resources
 
