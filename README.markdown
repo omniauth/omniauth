@@ -32,6 +32,8 @@ OmniAuth currently supports the following external providers:
   * Douban (credit: [rainux](http://github.com/rainux))
   * Tsina (credit: [he9qi](http://github.com/he9qi))
   * T163 (credit: [he9qi](http://github.com/he9qi))
+  * Tsohu (credit: [he9qi](http://github.com/he9qi))
+  * Tqq (credit: [he9qi](http://github.com/he9qi))
 * OpenID
 * Google Apps (via OpenID)
 * CAS (Central Authentication Service) (credit: [jamesarosen](http://github.com/jamesarosen))
