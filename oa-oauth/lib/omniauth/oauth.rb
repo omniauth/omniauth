@@ -22,5 +22,6 @@ module OmniAuth
     autoload :Tsina,              'omniauth/strategies/tsina'
     autoload :T163,               'omniauth/strategies/t163'
     autoload :Tsohu,              'omniauth/strategies/tsohu'
+    autoload :Tqq,                'omniauth/strategies/tqq'
   end
 end
