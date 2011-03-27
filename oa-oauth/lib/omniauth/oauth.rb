@@ -21,5 +21,6 @@ module OmniAuth
     autoload :Douban,             'omniauth/strategies/douban'
     autoload :Tsina,              'omniauth/strategies/tsina'
     autoload :T163,               'omniauth/strategies/t163'
+    autoload :Tsohu,              'omniauth/strategies/tsohu'
   end
 end
