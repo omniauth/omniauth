@@ -7,6 +7,7 @@ describe "OmniAuth::Strategies::OAuth" do
       use OmniAuth::Test::PhonySession
       use OmniAuth::Builder do
         provider :oauth, 'example.org', 'abc', 'def', :site => 'https://api.example.org'
+        provider :oauth, 'example.org_with_authorize_params', 'abc', 'def', { :site => 'https://api.example.org' }, :authorize_params => {:abc => 'def'}
       end
       run lambda { |env| [404, {'Content-Type' => 'text/plain'}, [env.key?('omniauth.auth').to_s]] }
     }.to_app
@@ -28,6 +29,12 @@ describe "OmniAuth::Strategies::OAuth" do
     it 'should redirect to authorize_url' do
       last_response.should be_redirect
       last_response.headers['Location'].should == 'https://api.example.org/oauth/authorize?oauth_token=yourtoken'
+    end
+
+    it 'should redirect to authorize_url with authorize_params when set' do
+      get '/auth/example.org_with_authorize_params'
+      last_response.should be_redirect
+      last_response.headers['Location'].should == 'https://api.example.org/oauth/authorize?abc=def&oauth_token=yourtoken'
     end
 
     it 'should set appropriate session variables' do

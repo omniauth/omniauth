@@ -20,6 +20,7 @@ module OmniAuth
           :site => 'https://api.twitter.com'
         }
         
+        options[:authorize_params] = {:force_login => 'true'} if options.delete(:force_login) == true
         client_options[:authorize_path] = '/oauth/authenticate' unless options[:sign_in] == false
         super(app, :twitter, consumer_key, consumer_secret, client_options, options)
       end

@@ -13,6 +13,7 @@ module OmniAuth
         super
         self.options[:open_timeout] ||= 30
         self.options[:read_timeout] ||= 30
+        self.options[:authorize_params] = options[:authorize_params] || {}
       end
 
       def consumer
@@ -32,9 +33,9 @@ module OmniAuth
         r = Rack::Response.new
 
         if request_token.callback_confirmed?
-          r.redirect(request_token.authorize_url)
+          r.redirect(request_token.authorize_url(options[:authorize_params]))
         else
-          r.redirect(request_token.authorize_url(:oauth_callback => callback_url))
+          r.redirect(request_token.authorize_url(options[:authorize_params].merge(:oauth_callback => callback_url)))
         end
 
         r.finish
