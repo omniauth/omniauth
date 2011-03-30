@@ -34,9 +34,9 @@ module OmniAuth
       end
 
       def user_info
+        debugger
         entry = user_hash['entry']
         {
-          debugger
           'uid' => entry['id']['$t'],
           'nickname' => entry['author'].first['name']['$t'],
           'first_name' => entry['yt$firstName'] && entry['yt$firstName']['$t'],
