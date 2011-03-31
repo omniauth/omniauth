@@ -33,6 +33,7 @@ module OmniAuth
         })
       end
 
+			# TODO: Remove contact list from hash returned to the application
       def user_info
         {
           'uid' => user_hash['feed']['author'][0]['email']['$t'],
