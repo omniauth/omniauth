@@ -64,9 +64,18 @@ module OmniAuth
         OmniAuth::Utils.deep_merge(super, {
           'uid' => @user['nsid'],
           'credentials' => { 'token' => @access_token },
-          'user_info' => @user,
+          'user_info' => user_info,
           'extra' => { 'user_hash' => @user }
         })
+      end
+      
+      def user_info
+        name = @user['fullname']
+        name = @user['username'] if name.nil? || name.empty?
+        {
+          'nickname' => @user['username'],
+          'name' => name,
+        }
       end
       
       def flickr_sign(params)
