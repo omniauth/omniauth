@@ -36,6 +36,7 @@ OmniAuth currently supports the following external providers:
   * Miso (credit: [rickenharp](https://github.com/rickenharp))
   * Mixi (credit: [kiyoshi](https://github.com/kiyoshi))
   * Netflix (credit: [caged](https://github.com/caged))
+  * Salesforce (via [CloudSpokes](http://www.cloudspokes.com))
   * SmugMug (credit: [pchilton](https://github.com/pchilton))
   * SoundCloud (credit: [leemartin](https://github.com/leemartin))
   * TradeMe (credit: [pchilton](https://github.com/pchilton))

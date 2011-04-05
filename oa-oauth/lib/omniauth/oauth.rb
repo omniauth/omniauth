@@ -17,6 +17,7 @@ module OmniAuth
     autoload :TripIt,             'omniauth/strategies/trip_it'
     autoload :Dopplr,             'omniauth/strategies/dopplr'
     autoload :Meetup,             'omniauth/strategies/meetup'
+    autoload :Salesforce,         'omniauth/strategies/salesforce'
     autoload :SoundCloud,         'omniauth/strategies/sound_cloud'
     autoload :SmugMug,            'omniauth/strategies/smug_mug'
     autoload :Goodreads,          'omniauth/strategies/goodreads'
