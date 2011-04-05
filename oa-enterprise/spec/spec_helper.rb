@@ -10,7 +10,7 @@ require 'omniauth/test'
 require 'omniauth/enterprise'
 
 RSpec.configure do |config|
-  config.include WebMock
+  config.include WebMock::API
   config.include Rack::Test::Methods
   config.extend  OmniAuth::Test::StrategyMacros, :type => :strategy
 end
