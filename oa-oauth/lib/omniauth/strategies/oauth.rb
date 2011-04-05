@@ -1,3 +1,4 @@
+require 'multi_json'
 require 'oauth'
 require 'omniauth/oauth'
 
