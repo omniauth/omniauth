@@ -37,5 +37,6 @@ module OmniAuth
     autoload :Doit,               'omniauth/strategies/doit'
     autoload :Instapaper,         'omniauth/strategies/instapaper'
     autoload :TradeMe,            'omniauth/strategies/trade_me'
+    autoload :Teambox,            'omniauth/strategies/teambox'
   end
 end
