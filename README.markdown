@@ -18,7 +18,10 @@ OmniAuth currently supports the following external providers:
 * via OAuth (OAuth 1.0, OAuth 2, and xAuth)
   * 37signals ID
   * Bit.ly (credit: [philnash](https://github.com/philnash))
+  * DailyMile (credit: [cdmwebs](https://github.com/cdmwebs))
+  * Doit.im (credit: [chouti](https://github.com/chouti))
   * Dopplr (credit: [flextrip](https://github.com/flextrip))
+  * Evernote (credit: [szimek](https://github.com/szimek))
   * Facebook
   * Foursquare
   * GitHub
@@ -26,8 +29,12 @@ OmniAuth currently supports the following external providers:
   * Gowalla (credit: [kvnsmth](https://github.com/kvnsmth))
   * Hyves (credit: [mrdg](https://github.com/mrdg))
   * Identi.ca (credit: [dcu](https://github.com/dcu))
+  * Instagram (credit: [kiyoshi](https://github.com/kiyoshi))
+  * Instapaper (credit: [micpringle](https://github.com/micpringle))
   * LinkedIn
   * Meetup (credit [coderoshi](https://github.com/coderoshi))
+  * Miso (credit: [rickenharp](https://github.com/rickenharp))
+  * Mixi (credit: [kiyoshi](https://github.com/kiyoshi))
   * Netflix (credit: [caged](https://github.com/caged))
   * SmugMug (credit: [pchilton](https://github.com/pchilton))
   * SoundCloud (credit: [leemartin](https://github.com/leemartin))
@@ -36,13 +43,6 @@ OmniAuth currently supports the following external providers:
   * Twitter
   * Vimeo (credit: [jamiew](https://github.com/jamiew))
   * YouTube (credit: [jamiew](https://github.com/jamiew))
-  * Miso (credit: [rickenharp](https://github.com/rickenharp))
-  * DailyMile (credit: [cdmwebs](https://github.com/cdmwebs))
-  * Instagram (credit: [kiyoshi](https://github.com/kiyoshi))
-  * Mixi (credit: [kiyoshi](https://github.com/kiyoshi))
-  * Evernote (credit: [szimek](https://github.com/szimek))
-  * Doit.im (credit: [chouti](https://github.com/chouti))
-  * Instapaper (credit: [micpringle](https://github.com/micpringle))
 * OpenID
 * Google Apps (via OpenID)
 * CAS (Central Authentication Service) (credit: [jamesarosen](https://github.com/jamesarosen))
