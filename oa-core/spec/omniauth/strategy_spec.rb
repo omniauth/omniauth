@@ -307,11 +307,16 @@ describe OmniAuth::Strategy do
   context 'setup phase' do
     context 'when options[:setup] = true' do
       let(:strategy){ ExampleStrategy.new(app, 'test', :setup => true) }      
-      let(:app){lambda{|env| env['omniauth.strategy'].options[:awesome] = 'sauce'; [404, {}, 'Awesome']}}
+      let(:app){lambda{|env| env['omniauth.strategy'].options[:awesome] = 'sauce' if env['PATH_INFO'] == '/auth/test/setup'; [404, {}, 'Awesome'] }}
 
       it 'should call through to /auth/:provider/setup' do
         strategy.call(make_env('/auth/test'))
         strategy.options[:awesome].should == 'sauce'
+      end
+
+      it 'should not call through on a non-omniauth endpoint' do
+        strategy.call(make_env('/somewhere/else'))
+        strategy.options[:awesome].should_not == 'sauce'
       end
     end
 
@@ -324,6 +329,11 @@ describe OmniAuth::Strategy do
 
       let(:strategy){ ExampleStrategy.new(app, 'test', :setup => setup_proc) }
       
+      it 'should not call the app on a non-omniauth endpoint' do
+        strategy.call(make_env('/somehwere/else'))
+        strategy.options[:awesome].should_not == 'sauce'
+      end
+
       it 'should call the rack app' do
         strategy.call(make_env('/auth/test'))
         strategy.options[:awesome].should == 'sauce'  
