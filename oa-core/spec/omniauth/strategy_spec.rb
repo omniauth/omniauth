@@ -5,11 +5,16 @@ class ExampleStrategy
   def call(env); self.call!(env) end
   attr_reader :last_env
   def request_phase
-    @last_env = env
+    @fail = fail!(options[:failure]) if options[:failure]
+    @last_env = env    
+    return @fail if @fail    
     raise "Request Phase"
   end
   def callback_phase
+    @fail = fail!(options[:failure]) if options[:failure]
     @last_env = env
+    puts @fail.inspect
+    return @fail if @fail    
     raise "Callback Phase"
   end
 end
@@ -62,6 +67,12 @@ describe OmniAuth::Strategy do
       it 'should set from the params if provided' do
         lambda{ strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'origin=/foo')) }.should raise_error('Request Phase')
         strategy.last_env['rack.session']['omniauth.origin'].should == '/foo'
+      end
+
+      it 'should be set on the failure env' do
+        OmniAuth.config.should_receive(:on_failure).and_return(lambda{|env| env})
+        @options = {:failure => :forced_fail}
+        strategy.call(make_env('/auth/test/callback', 'rack.session' => {'omniauth.origin' => '/awesome'}))
       end
 
       context "with script_name" do
