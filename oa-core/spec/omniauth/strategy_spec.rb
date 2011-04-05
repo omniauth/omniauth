@@ -13,7 +13,6 @@ class ExampleStrategy
   def callback_phase
     @fail = fail!(options[:failure]) if options[:failure]
     @last_env = env
-    puts @fail.inspect
     return @fail if @fail    
     raise "Callback Phase"
   end

@@ -31,11 +31,9 @@ module OmniAuth
       end
 
       def user_data
-        puts "Requesting: #{@access_token['id']}"
         @data ||= MultiJson.decode(@access_token.get(@access_token['id']))
       rescue ::OAuth2::HTTPError => e
         if e.response.status == 302
-          puts "Requesting: #{e.response.headers['location']}"
           @data ||= MultiJson.decode(@access_token.get(e.response.headers['location']))
         else
           raise e
