@@ -1,3 +1,5 @@
+source 'http://rubyforge.org'
+
 OMNIAUTH_GEMS = %w(oa-basic oa-core oa-oauth oa-openid oa-enterprise oa-more omniauth)
 
 OMNIAUTH_GEMS.each do |jem|
