@@ -39,8 +39,10 @@ OmniAuth currently supports the following external providers:
   * Salesforce (via [CloudSpokes](http://www.cloudspokes.com))
   * SmugMug (credit: [pchilton](https://github.com/pchilton))
   * SoundCloud (credit: [leemartin](https://github.com/leemartin))
+  * TeamBox (credit [jrom](https://github.com/jrom))
   * TradeMe (credit: [pchilton](https://github.com/pchilton))
   * TripIt (credit: [flextrip](https://github.com/flextrip))
+  * Tumblr (credit: [jamiew](https://github.com/jamiew))
   * Twitter
   * Vimeo (credit: [jamiew](https://github.com/jamiew))
   * YouTube (credit: [jamiew](https://github.com/jamiew))

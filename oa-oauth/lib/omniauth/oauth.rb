@@ -38,5 +38,6 @@ module OmniAuth
     autoload :Instapaper,         'omniauth/strategies/instapaper'
     autoload :TradeMe,            'omniauth/strategies/trade_me'
     autoload :Teambox,            'omniauth/strategies/teambox'
+    autoload :Tumblr,             'omniauth/strategies/tumblr'
   end
 end
