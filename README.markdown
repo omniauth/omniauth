@@ -1,4 +1,4 @@
-# OmniAuth: Standardized Multi-Provider Authentication <a href='http://travis-ci.org/intridea/omniauth'><img src='http://travis-ci.org/intridea/omniauth.png' alt='Build Status'/></a>
+# OmniAuth: Standardized Multi-Provider Authentication
 
 OmniAuth is a new Rack-based authentication system for multi-provider external authentcation. OmniAuth is built from the ground up on the philosophy that **authentication is not the same as identity**, and is based on two observations:
 
@@ -94,6 +94,7 @@ The `user_info` hash will automatically be populated with as much information ab
 
 The best place to find more information is the [OmniAuth Wiki](http://github.com/intridea/omniauth/wiki). Some specific information you might be interested in:
 
+* [CI Build Status](http://travis-ci.org/#!/intridea/omniauth)
 * [Roadmap](http://github.com/intridea/omniauth/wiki/Roadmap)
 * [Changelog](http://github.com/intridea/omniauth/wiki/Changelog)
 * [Report Issues](http://github.com/intridea/omniauth/issues)
