@@ -1,4 +1,4 @@
-source 'http://rubyforge.org'
+source 'http://rubygems.org'
 
 OMNIAUTH_GEMS = %w(oa-basic oa-core oa-oauth oa-openid oa-enterprise oa-more omniauth)
 
