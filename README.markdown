@@ -1,5 +1,4 @@
-[![Build Status](http://travis-ci.org/intridea/omniauth.png)](http://travis-ci.org/intridea/omniauth)
-# OmniAuth: Standardized Multi-Provider Authentication 
+# OmniAuth: Standardized Multi-Provider Authentication [![Build Status](http://travis-ci.org/intridea/omniauth.png)](http://travis-ci.org/intridea/omniauth)
 
 OmniAuth is a new Rack-based authentication system for multi-provider external authentcation. OmniAuth is built from the ground up on the philosophy that **authentication is not the same as identity**, and is based on two observations:
 
