@@ -34,7 +34,10 @@ describe "OmniAuth::Strategies::OAuth" do
     it 'should redirect to authorize_url with authorize_params when set' do
       get '/auth/example.org_with_authorize_params'
       last_response.should be_redirect
-      last_response.headers['Location'].should == 'https://api.example.org/oauth/authorize?abc=def&oauth_token=yourtoken'
+      [
+        'https://api.example.org/oauth/authorize?abc=def&oauth_token=yourtoken',
+        'https://api.example.org/oauth/authorize?oauth_token=yourtoken&abc=def'
+      ].should be_include(last_response.headers['Location'])
     end
 
     it 'should set appropriate session variables' do

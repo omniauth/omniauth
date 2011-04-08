@@ -11,7 +11,7 @@ if Object.const_defined?(:Bundler) && Bundler.const_defined?(:Dsl) && self.kind_
     gem 'rspec',     '~> 2.5.0'
     gem 'webmock',   '~> 1.6.2'
     gem 'rack-test', '~> 0.5.4'
-    gem 'json',      '~> 1.4.3' # multi_json implementation
+    gem 'json_pure', '~> 1.5.1' # multi_json implementation
     gem 'evernote',  '~> 0.9.0'
   end
 else #gemspec
@@ -20,6 +20,6 @@ else #gemspec
   gem.add_development_dependency  'rspec',      '~> 1.3.0'
   gem.add_development_dependency  'webmock',    '~> 1.3.4'
   gem.add_development_dependency  'rack-test',  '~> 0.5.4'
-  gem.add_development_dependency  'json',       '~> 1.4.3' # multi_json implementation
+  gem.add_development_dependency  'json_pure',  '~> 1.5.1' # multi_json implementation
   gem.add_development_dependency  'evernote',   '~> 0.9.0'
 end
