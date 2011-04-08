@@ -53,6 +53,17 @@ OmniAuth currently supports the following external providers:
 * LDAP (credit: [pyu10055](https://github.com/pyu10055))
 * Flickr (credit: [pchilton](https://github.com/pchilton))
 
+## Compatibility
+
+OmniAuth is tested against the following Ruby versions:
+
+* 1.8.7
+* 1.9.1
+* 1.9.2
+* jRuby (note, the Evernote strategy is not available for jRuby)
+* Rubinius
+* REE
+
 ## Usage
 
 OmniAuth is a collection of Rack middleware. To use a single strategy, you simply need to add the middleware:

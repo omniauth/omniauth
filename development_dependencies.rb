@@ -12,7 +12,7 @@ if Object.const_defined?(:Bundler) && Bundler.const_defined?(:Dsl) && self.kind_
     gem 'webmock',   '~> 1.6.2'
     gem 'rack-test', '~> 0.5.4'
     gem 'json_pure', '~> 1.5.1' # multi_json implementation
-    gem 'evernote',  '~> 0.9.0'
+    gem 'evernote',  '~> 0.9.0' unless defined?(JRUBY_VERSION)
   end
 else #gemspec
   gem.add_development_dependency  'rake'
