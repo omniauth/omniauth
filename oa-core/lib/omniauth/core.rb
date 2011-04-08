@@ -2,14 +2,12 @@ require 'rack'
 require 'singleton'
 
 module OmniAuth
+  module Strategies; end
+
   autoload :Builder,  'omniauth/builder'
   autoload :Strategy, 'omniauth/strategy'
   autoload :Test,     'omniauth/test'
   autoload :Form,     'omniauth/form'
-
-  module Strategies
-    autoload :Password, 'omniauth/strategies/password'
-  end
 
   def self.strategies
     @@strategies ||= []
