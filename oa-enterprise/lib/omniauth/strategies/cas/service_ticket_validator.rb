@@ -68,7 +68,7 @@ module OmniAuth
         # retrieves the `<cas:serviceResponse>` XML from the CAS server
         def get_service_response_body
           result = ''
-          http = Net::HTTP.new(@uri.host, @uri.port)
+          http = ::Net::HTTP.new(@uri.host, @uri.port)
           http.use_ssl = @uri.port == 443 || @uri.instance_of?(URI::HTTPS)
           http.verify_mode = OpenSSL::SSL::VERIFY_NONE if http.use_ssl? && @configuration.disable_ssl_verification?
           http.start do |c|
