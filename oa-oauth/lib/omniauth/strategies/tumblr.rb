@@ -24,7 +24,8 @@ module OmniAuth
       end
 
       def auth_hash
-        user = user_hash['tumblr']['tumblelog'][0]
+        user = user_hash['tumblr']['tumblelog']
+        user = user[0] if user.is_a?(Array)
         OmniAuth::Utils.deep_merge(super, {
           'uid' => user['name'],
           'user_info' => user_info,
@@ -33,7 +34,8 @@ module OmniAuth
       end
 
       def user_info
-        user = user_hash['tumblr']['tumblelog'][0]
+        user = user_hash['tumblr']['tumblelog']
+        user = user[0] if user.is_a?(Array)
         {
           'nickname' => user['name'],
           'name' => user['title'],
