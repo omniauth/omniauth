@@ -24,7 +24,6 @@ module OmniAuth
       end
 
       def auth_hash
-        user = user_hash['tumblr']['tumblelog'][0]
         OmniAuth::Utils.deep_merge(super, {
           'uid' => user['name'],
           'user_info' => user_info,
@@ -33,7 +32,6 @@ module OmniAuth
       end
 
       def user_info
-        user = user_hash['tumblr']['tumblelog'][0]
         {
           'nickname' => user['name'],
           'name' => user['title'],
@@ -42,6 +40,15 @@ module OmniAuth
             'website' => user['url'],
           }
         }
+      end
+
+      def user
+        tumblelogs = user_hash['tumblr']['tumblelog']
+        if tumblelogs.kind_of?(Array)
+          @user ||= tumblelogs[0]
+        else
+          @user ||= tumblelogs
+        end
       end
 
       def user_hash
