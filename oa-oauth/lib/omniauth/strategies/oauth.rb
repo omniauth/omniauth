@@ -60,7 +60,7 @@ module OmniAuth
         fail!(:service_unavailable, e)
       rescue ::OAuth::Unauthorized => e
         fail!(:invalid_credentials, e)
-      rescue ::MultiJson::DecodeError => e
+      rescue ::NoMethodError, ::MultiJson::DecodeError => e
         fail!(:invalid_response, e)
       end
 
