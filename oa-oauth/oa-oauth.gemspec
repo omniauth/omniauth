@@ -17,7 +17,8 @@ Gem::Specification.new do |gem|
   gem.add_dependency  'multi_json', '~> 0.0.2'
   gem.add_dependency  'nokogiri',   '~> 1.4.2'
   gem.add_dependency  'oauth',      '~> 0.4.0'
-  gem.add_dependency  'oauth2',     '~> 0.2.0'
+  gem.add_dependency  'faraday',    '~> 0.6.1'
+  gem.add_dependency  'oauth2',     '~> 0.3.0'
   
   eval File.read(File.join(File.dirname(__FILE__), '../development_dependencies.rb'))
 end
