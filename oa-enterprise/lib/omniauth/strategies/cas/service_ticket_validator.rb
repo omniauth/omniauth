@@ -1,3 +1,5 @@
+require 'net/http'
+require 'net/https'
 require 'nokogiri'
 
 module OmniAuth
