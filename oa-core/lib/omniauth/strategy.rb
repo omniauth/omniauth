@@ -17,7 +17,11 @@ module OmniAuth
       
       yield self if block_given?
     end
-    
+   
+    def inspect
+      "#<#{self.class.to_s}>"
+    end
+
     def call(env)
       dup.call!(env)
     end
