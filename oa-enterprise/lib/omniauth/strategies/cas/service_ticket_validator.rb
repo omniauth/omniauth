@@ -1,11 +1,12 @@
-require 'net/http'
-require 'net/https'
 require 'nokogiri'
 
 module OmniAuth
   module Strategies
     class CAS
       class ServiceTicketValidator        
+
+        VALIDATION_REQUEST_HEADERS = { 'Accept' => '*/*' }
+
         # Build a validator from a +configuration+, a
         # +return_to+ URL, and a +ticket+.
         #
@@ -69,7 +70,7 @@ module OmniAuth
           http.use_ssl = @uri.port == 443 || @uri.instance_of?(URI::HTTPS)
           http.verify_mode = OpenSSL::SSL::VERIFY_NONE if http.use_ssl? && @configuration.disable_ssl_verification?
           http.start do |c|
-            response = c.get "#{@uri.path}?#{@uri.query}", { 'Accept' => '*/*' }
+            response = c.get "#{@uri.path}?#{@uri.query}", VALIDATION_REQUEST_HEADERS.dup
             result = response.body
           end
           result
