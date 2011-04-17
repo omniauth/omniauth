@@ -34,6 +34,10 @@ module OmniAuth
       
       return mock_call!(env) if OmniAuth.config.test_mode
       
+      puts '------------'
+      puts request.path
+      puts request.path_info
+      
       if match_request_path && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
         setup_phase                  
         if response = call_through_to_app
@@ -117,6 +121,7 @@ module OmniAuth
     end
     
     def callback_path
+      return options[:callback_path] || "#{path_prefix}/#{name}/callback"
       if options[:path_prefix]
         options[:callback_path] || "#{path_prefix}/#{name}/callback"
       else
