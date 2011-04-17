@@ -34,7 +34,7 @@ module OmniAuth
       
       return mock_call!(env) if OmniAuth.config.test_mode
       
-      if current_path == request_path && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
+      if match_request_path && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
         setup_phase                  
         if response = call_through_to_app
           response
@@ -46,7 +46,7 @@ module OmniAuth
           end
           request_phase
         end
-      elsif current_path == callback_path
+      elsif match_callback_path
         setup_phase                  
         @env['omniauth.origin'] = session.delete('omniauth.origin')
         @env['omniauth.origin'] = nil if env['omniauth.origin'] == ''
@@ -62,7 +62,7 @@ module OmniAuth
     end
 
     def mock_call!(env)
-      if current_path == request_path 
+      if match_request_path 
         setup_phase
         if response = call_through_to_app
           response
@@ -74,7 +74,7 @@ module OmniAuth
           end
           redirect(callback_path)
         end
-      elsif current_path == callback_path
+      elsif match_callback_path
         setup_phase
         mocked_auth = OmniAuth.mock_auth_for(name.to_sym)
         if mocked_auth.is_a?(Symbol)
@@ -117,7 +117,11 @@ module OmniAuth
     end
     
     def callback_path
-      options[:callback_path] || "#{path_prefix}/#{name}/callback"
+      if options[:path_prefix]
+        options[:callback_path] || "#{path_prefix}/#{name}/callback"
+      else
+        options[:callback_path] || "#{current_path}/callback"
+      end
     end
 
     def setup_path
@@ -168,6 +172,18 @@ module OmniAuth
       full_host + script_name + callback_path + query_string
     end
 
+    def match_request_path
+      current_path =~ /^#{request_path}.*/ && !(current_path =~ /.*\/callback$/)
+    end
+    
+    def match_callback_path
+      if options[:callback_path]
+        current_path == options[:callback_path]
+      else
+        current_path =~ /^#{path_prefix}\/#{name}.*\/callback$/
+      end
+    end
+    
     def script_name
       @env['SCRIPT_NAME'] || ''
     end
