@@ -124,7 +124,6 @@ module OmniAuth
     end
     
     def callback_path
-      return options[:callback_path] || "#{path_prefix}/#{name}/callback"
       if options[:path_prefix]
         options[:callback_path] || "#{path_prefix}/#{name}/callback"
       else
