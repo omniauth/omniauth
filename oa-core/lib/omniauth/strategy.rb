@@ -36,12 +36,6 @@ module OmniAuth
       
       
       if match_request_path && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
-
-        puts '------------ request --------------'
-        puts "current_path: #{current_path}"
-        puts "callback_path: #{callback_path}"
-        puts "request.path_info: #{request.path_info}"
-
         setup_phase                  
         if response = call_through_to_app
           response
@@ -54,11 +48,6 @@ module OmniAuth
           request_phase
         end
       elsif match_callback_path
-        puts '------------ callback --------------'
-        puts "current_path: #{current_path}"
-        puts "callback_path: #{callback_path}"
-        puts "request.path_info: #{request.path_info}"
-
         setup_phase                  
         @env['omniauth.origin'] = session.delete('omniauth.origin')
         @env['omniauth.origin'] = nil if env['omniauth.origin'] == ''
@@ -132,7 +121,6 @@ module OmniAuth
       if options[:path_prefix]
         options[:callback_path] || "#{path_prefix}/#{name}/callback"
       else
-        puts "constructing callback_path from: #{current_path}"
         options[:callback_path] || "#{current_path.sub(/\/callback$/,'')}/callback"
       end
     end
