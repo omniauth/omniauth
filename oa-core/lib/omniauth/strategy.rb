@@ -34,11 +34,14 @@ module OmniAuth
       
       return mock_call!(env) if OmniAuth.config.test_mode
       
-      puts '------------'
-      puts request.path
-      puts request.path_info
       
       if match_request_path && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
+
+        puts '------------'
+        puts "current_path: #{current_path}"
+        puts "callback_path: #{callback_path}"
+        puts "request.path_info: #{request.path_info}"
+
         setup_phase                  
         if response = call_through_to_app
           response
