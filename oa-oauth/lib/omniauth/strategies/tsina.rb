@@ -48,6 +48,24 @@ module OmniAuth
           }
         }
       end
+      
+      # MonkeyPatch session['oauth']['tsina']['callback_confirmed'] to true
+      def request_phase
+        request_token = consumer.get_request_token(:oauth_callback => callback_url)
+        session['oauth'] ||= {}
+        session['oauth'][name.to_s] = {'callback_confirmed' => true, 'request_token' => request_token.token, 'request_secret' => request_token.secret}
+        r = Rack::Response.new
+
+        if request_token.callback_confirmed?
+          r.redirect(request_token.authorize_url)
+        else
+          r.redirect(request_token.authorize_url(:oauth_callback => callback_url))
+        end
+
+        r.finish
+      rescue ::Timeout::Error => e
+        fail!(:timeout, e)
+      end
 
       def user_hash
         # http://api.t.sina.com.cn/users/show/:id.json?source=appkey
