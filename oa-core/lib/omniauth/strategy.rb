@@ -126,7 +126,7 @@ module OmniAuth
     end
 
     def setup_path
-      options[:setup_path] || "#{path_prefix}/#{name}/setup"
+      options[:setup_path] || "#{current_path}/setup"
     end
 
     def current_path
