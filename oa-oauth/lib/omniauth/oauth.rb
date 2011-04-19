@@ -39,5 +39,10 @@ module OmniAuth
     autoload :TradeMe,            'omniauth/strategies/trade_me'
     autoload :Teambox,            'omniauth/strategies/teambox'
     autoload :Tumblr,             'omniauth/strategies/tumblr'
+    autoload :Tsina,              'omniauth/strategies/tsina'
+    autoload :T163,               'omniauth/strategies/t163'
+    autoload :Renren,             'omniauth/strategies/renren'
+    autoload :Tqq,                'omniauth/strategies/tqq'
+    autoload :Tsohu,             'omniauth/strategies/tsohu'
   end
 end
