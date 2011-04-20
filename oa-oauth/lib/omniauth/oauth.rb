@@ -42,7 +42,8 @@ module OmniAuth
     autoload :Tsina,              'omniauth/strategies/tsina'
     autoload :T163,               'omniauth/strategies/t163'
     autoload :Renren,             'omniauth/strategies/renren'
+    autoload :Douban,             'omniauth/strategies/douban'
     autoload :Tqq,                'omniauth/strategies/tqq'
-    autoload :Tsohu,             'omniauth/strategies/tsohu'
+    autoload :Tsohu,              'omniauth/strategies/tsohu'
   end
 end
