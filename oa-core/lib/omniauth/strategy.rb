@@ -121,7 +121,7 @@ module OmniAuth
       if options[:path_prefix]
         options[:callback_path] || "#{path_prefix}/#{name}/callback"
       else
-        options[:callback_path] || "#{current_path.sub(/\/callback$/,'')}/callback"
+        options[:callback_path] || "#{current_base_path}/callback"
       end
     end
 
@@ -132,7 +132,19 @@ module OmniAuth
     def current_path
       request.path_info.downcase.sub(/\/$/,'')
     end
-
+    
+    def current_base_path
+      current_path.sub(/\/callback$/,'')
+    end
+    
+    def failure_path
+      if options[:path_prefix]
+        "#{path_prefix}/failure"
+      else
+        "#{current_base_path}/failure"
+      end
+    end
+    
     def query_string
       request.query_string.empty? ? "" : "?#{request.query_string}"
     end
@@ -174,7 +186,8 @@ module OmniAuth
     end
 
     def match_request_path
-      current_path =~ /^#{request_path}.*/ && !(current_path =~ /.*\/callback$/)
+      return false if current_path =~ /.*\/(callback|failure)$/
+      current_path =~ /^#{request_path}.*/
     end
     
     def match_callback_path
