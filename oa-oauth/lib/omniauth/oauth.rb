@@ -39,5 +39,6 @@ module OmniAuth
     autoload :TradeMe,            'omniauth/strategies/trade_me'
     autoload :Teambox,            'omniauth/strategies/teambox'
     autoload :Tumblr,             'omniauth/strategies/tumblr'
+    autoload :Vkontakte,          'omniauth/strategies/vkontakte'
   end
 end
