@@ -45,6 +45,7 @@ module OmniAuth
           elsif env['HTTP_REFERER'] && !env['HTTP_REFERER'].match(/#{request_path}$/)
             @env['rack.session']['omniauth.origin'] = env['HTTP_REFERER']
           end
+
           request_phase
         end
       elsif match_callback_path
@@ -118,31 +119,31 @@ module OmniAuth
     end
     
     def callback_path
-      if options[:path_prefix]
-        options[:callback_path] || "#{path_prefix}/#{name}/callback"
-      else
-        options[:callback_path] || "#{current_base_path}/callback"
-      end
+      options[:callback_path] || "#{current_base_path}/callback"
     end
 
     def setup_path
-      options[:setup_path] || "#{current_path}/setup"
+      options[:setup_path] || "#{current_base_path}/setup"
     end
 
+    def failure_path
+      if dynamic_path?
+        "#{current_base_path}/failure"
+      else
+        "#{path_prefix}/failure"
+      end
+    end
+    
+    def dynamic_path?
+      current_base_path != "#{path_prefix}/#{name}"
+    end
+    
     def current_path
       request.path_info.downcase.sub(/\/$/,'')
     end
     
     def current_base_path
-      current_path.sub(/\/callback$/,'')
-    end
-    
-    def failure_path
-      if options[:path_prefix]
-        "#{path_prefix}/failure"
-      else
-        "#{current_base_path}/failure"
-      end
+      current_path.sub(/\/(setup|callback|failure)$/,'')
     end
     
     def query_string
@@ -186,7 +187,7 @@ module OmniAuth
     end
 
     def match_request_path
-      return false if current_path =~ /.*\/(callback|failure)$/
+      return false if current_path =~ /.*\/(setup|callback|failure)$/
       current_path =~ /^#{request_path}.*/
     end
     

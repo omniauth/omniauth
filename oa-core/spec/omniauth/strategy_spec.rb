@@ -210,7 +210,7 @@ describe OmniAuth::Strategy do
         it 'preserves the query parameters' do
           strategy.stub(:full_host).and_return('http://example.com')
           begin
-            strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'id=5'))
+            strategy.call(make_env('/wowzers/test', 'QUERY_STRING' => 'id=5'))
           rescue RuntimeError; end
           strategy.callback_url.should == 'http://example.com/wowzers/test/callback?id=5'
         end
