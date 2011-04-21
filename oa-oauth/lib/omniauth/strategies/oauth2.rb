@@ -61,8 +61,7 @@ module OmniAuth
       def callback_phase
         if request.params['error'] || request.params['error_reason']
           raise CallbackError.new(request.params['error'], request.params['error_description'] || request.params['error_reason'], request.params['error_uri'])
-        end
-        
+        end        
         @access_token = build_access_token
         
         if @access_token.expires? && @access_token.expires_in <= 0
@@ -88,11 +87,9 @@ module OmniAuth
       end
       
       def auth_hash
-        OmniAuth::Utils.deep_merge(super, {
-          'credentials' => {
-            'token' => @access_token.token
-          }
-        })
+        credentials = {'token' => @access_token.token}
+        credentials.merge('refresh_token' => @access_token.refresh_token) if @access_token.expires?
+        OmniAuth::Utils.deep_merge(super, {'credentials' => credentials})
       end
     end
   end
