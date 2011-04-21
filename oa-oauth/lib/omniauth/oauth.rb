@@ -45,5 +45,6 @@ module OmniAuth
     autoload :Douban,             'omniauth/strategies/douban'
     autoload :Tqq,                'omniauth/strategies/tqq'
     autoload :Tsohu,              'omniauth/strategies/tsohu'
+    autoload :Qzone,              'omniauth/strategies/qzone'
   end
 end
