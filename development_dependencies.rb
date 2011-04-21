@@ -5,6 +5,7 @@
 # two blocks parallel.
 if Object.const_defined?(:Bundler) && Bundler.const_defined?(:Dsl) && self.kind_of?(Bundler::Dsl)
   group :development do
+    gem 'addressable', '2.2.4'  
     gem 'rack'
     gem 'rake'
     gem 'mg',        '~> 0.0.8'
@@ -16,6 +17,7 @@ if Object.const_defined?(:Bundler) && Bundler.const_defined?(:Dsl) && self.kind_
     gem 'jruby-openssl', '~> 0.7.2' if RUBY_PLATFORM == 'java'
   end
 else #gemspec
+  gem.add_development_dependency  'addressable', '0.2.4'
   gem.add_development_dependency  'rake'
   gem.add_development_dependency  'mg',         '~> 0.0.8'
   gem.add_development_dependency  'rspec',      '~> 1.3.0'
