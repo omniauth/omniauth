@@ -57,7 +57,7 @@ module OmniAuth
       def facebook_session
         session_cookie = request.cookies["fbs_#{client.id}"]
         if session_cookie
-          @facebook_session ||= Rack::Utils.parse_query(request.cookies["fbs_#{client.id}"].gsub('"', ''))
+          @facebook_session ||= Rack::Utils.parse_query(session_cookie.gsub('"', ''))
         else
           nil
         end
@@ -78,12 +78,23 @@ module OmniAuth
         }
       end
       
+      def user_exists?
+        options[:fetch_user].try(:call, @name, facebook_session['uid']).present?
+      end
+      
       def auth_hash
-        OmniAuth::Utils.deep_merge(super, {
-          'uid' => user_data['id'],
-          'user_info' => user_info,
-          'extra' => {'user_hash' => user_data}
-        })
+        # if options.key?[:fetch_user] && options[:fetch_user]
+        if facebook_session.present? && user_exists?
+          OmniAuth::Utils.deep_merge(super, {
+            'uid' => facebook_session['uid']
+          })
+        else
+          OmniAuth::Utils.deep_merge(super, {
+            'uid' => user_data['id'],
+            'user_info' => user_info,
+            'extra' => {'user_hash' => user_data}
+          })
+        end
       end
       
       def facebook_session
