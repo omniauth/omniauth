@@ -83,18 +83,14 @@ module OmniAuth
       end
       
       def auth_hash
-        # if options.key?[:fetch_user] && options[:fetch_user]
-        if facebook_session.present? && user_exists?
-          OmniAuth::Utils.deep_merge(super, {
-            'uid' => facebook_session['uid']
-          })
-        else
-          OmniAuth::Utils.deep_merge(super, {
-            'uid' => user_data['id'],
+        user_info = {'uid' => facebook_session['uid']}
+        unless facebook_session.present? && user_exists?
+          user_info.merge!({
             'user_info' => user_info,
             'extra' => {'user_hash' => user_data}
           })
         end
+        OmniAuth::Utils.deep_merge(super, user_info)
       end
       
       def facebook_session
