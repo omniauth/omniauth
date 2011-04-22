@@ -5,7 +5,7 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency 'addressable', '2.2.4'
   gem.add_runtime_dependency 'oa-core', Omniauth::VERSION.dup
   gem.add_runtime_dependency 'nokogiri', '~> 1.4.2'
-  gem.add_runtime_dependency 'net-ldap', '~> 0.1.1'
+  gem.add_runtime_dependency 'net-ldap', '~> 0.2.2'
   gem.add_runtime_dependency 'rubyntlm', '~> 0.1.1'
   gem.add_runtime_dependency 'pyu-ruby-sasl', '~> 0.0.3.1'
   gem.add_development_dependency 'simplecov', '~> 0.4'
