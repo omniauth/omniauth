@@ -1,4 +1,4 @@
-require 'nokogiri'
+require 'multi_xml'
 require 'omniauth/oauth'
 
 module OmniAuth
@@ -29,7 +29,7 @@ module OmniAuth
       end
       
       def user_hash(access_token)
-        person = Nokogiri::XML::Document.parse(@access_token.get('/v1/people/~:(id,first-name,last-name,headline,member-url-resources,picture-url,location,public-profile-url)').body).xpath('person')
+        person = MulitXml.parse(@access_token.get('/v1/people/~:(id,first-name,last-name,headline,member-url-resources,picture-url,location,public-profile-url)').body).xpath('person')
         
         hash = {
           'id' => person.xpath('id').text,

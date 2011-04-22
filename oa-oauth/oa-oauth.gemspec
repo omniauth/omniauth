@@ -4,7 +4,7 @@ version = File.read("VERSION").strip
 Gem::Specification.new do |gem|
   gem.add_runtime_dependency 'oa-core', version
   gem.add_runtime_dependency 'multi_json', '>= 0.0.5'
-  gem.add_runtime_dependency 'nokogiri', '~> 1.4.2'
+  gem.add_runtime_dependency 'multi_xml', '~> 0.2.2'
   gem.add_runtime_dependency 'oauth', '~> 0.4.0'
   gem.add_runtime_dependency 'faraday', '~> 0.6.1'
   gem.add_runtime_dependency 'oauth2', '~> 0.4.1'
