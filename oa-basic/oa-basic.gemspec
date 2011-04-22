@@ -11,6 +11,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'rspec', '~> 2.5'
   gem.add_development_dependency 'webmock', '~> 1.6'
   gem.add_development_dependency 'yard', '~> 0.6'
+  gem.add_development_dependency 'ZenTest', '~> 4.5'
   gem.name = 'oa-basic'
   gem.version = version
   gem.summary = %q{HTTP Basic strategies for OmniAuth.}

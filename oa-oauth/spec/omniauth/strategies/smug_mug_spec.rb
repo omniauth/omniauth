@@ -1,5 +1,5 @@
-require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
+require File.expand_path('../../../spec_helper', __FILE__)
 
 describe OmniAuth::Strategies::SmugMug do
- it_should_behave_like 'an oauth strategy'
+  it_should_behave_like 'an oauth strategy'
 end

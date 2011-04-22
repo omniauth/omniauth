@@ -12,6 +12,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'simplecov', '~> 0.4'
   gem.add_development_dependency 'webmock', '~> 1.6'
   gem.add_development_dependency 'yard', '~> 0.6'
+  gem.add_development_dependency 'ZenTest', '~> 4.5'
   gem.name = 'oa-openid'
   gem.version = version
   gem.summary = %q{OpenID strategies for OmniAuth.}
