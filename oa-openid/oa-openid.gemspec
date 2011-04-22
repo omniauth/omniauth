@@ -3,7 +3,7 @@ require File.expand_path('../../omniauth/lib/omniauth/version', __FILE__)
 
 Gem::Specification.new do |gem|
   gem.add_dependency 'oa-core', Omniauth::VERSION.dup
-  gem.add_dependency 'rack-openid', '~> 1.2.0'
+  gem.add_dependency 'rack-openid', '~> 1.3.1'
   gem.add_dependency 'ruby-openid-apps-discovery'
   gem.add_development_dependency 'rack-test', '~> 0.5'
   gem.add_development_dependency 'rake', '~> 0.8'
