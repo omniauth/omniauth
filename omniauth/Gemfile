@@ -1,14 +1,3 @@
-source "http://rubygems.org"
+source 'http://rubygems.org'
 
-gem 'oa-core',      :path => File.expand_path('../../oa-core/', __FILE__)
-gem 'oa-basic',     :path => File.expand_path('../../oa-basic/', __FILE__)
-gem 'oa-enterprise', :path => File.expand_path('../../oa-enterprise/', __FILE__)
-gem 'oa-oauth',     :path => File.expand_path('../../oa-oauth/', __FILE__)
-gem 'oa-openid',    :path => File.expand_path('../../oa-openid/', __FILE__)
-gem 'oa-more',      :path => File.expand_path('../../oa-more/', __FILE__)
-
-# Will automatically pull in this gem and all its
-# dependencies specified in the gemspec
-gem 'omniauth', :path => File.expand_path("..", __FILE__)
-
-eval File.read(File.join(File.dirname(__FILE__), '../development_dependencies.rb'))
+gemspec

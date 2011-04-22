@@ -1,6 +1,5 @@
-require 'rubygems'
-require 'bundler'
-Bundler.setup
+require 'simplecov'
+SimpleCov.start
 require 'rspec'
 require 'rspec/autorun'
 require 'webmock/rspec'
