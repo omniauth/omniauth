@@ -1,4 +1,5 @@
 require 'rake'
+require File.expand_path('../omniauth/lib/omniauth/version', __FILE__)
 
 begin
   require 'term/ansicolor'
@@ -30,7 +31,7 @@ task :spec do
       error_gems << gem
     end
   end
-  
+
   puts
   if error_gems.any?
     puts "#{red}#{error_gems.size} gems with failing specs: #{error_gems.join(', ')}#{clear}"
@@ -40,32 +41,32 @@ task :spec do
   end
 end
 
-task :release => ['release:tag', 'gems:publish', 'doc:pages:publish']
+desc "Release all gems to gemcutter and create a tag"
+task :release => ['tag', 'clean', 'build', 'publish']
 
-desc 'Push all gems to Gemcutter'
-task :push do
-  each_gem('is releasing to Gemcutter...') do
-    system('rake release')
+task :tag do
+  system("git tag v#{Omniauth::VERSION}")
+  system('git push origin --tags')
+end
+
+task :publish do
+  each_gem('is releasing to Rubygems...') do
+    system('gem push pkg/*.gem')
   end
 end
 
-desc 'Build all gems'
+desc "Build gem files for all projects"
 task :build do
   each_gem('is building gems...') do
     system('rake build')
   end
 end
 
-desc 'Install all gems'
+desc "Install gems for all projects"
 task :install do
   each_gem('is installing gems...') do
     system('rake install')
   end
-end
-
-desc "Uninstall gems"
-task :uninstall do
-  sh "sudo gem uninstall #{OMNIAUTH_GEMS.join(" ")} -a"
 end
 
 desc "Clean pkg and other stuff"
@@ -86,12 +87,12 @@ begin
   YARD::Rake::YardocTask.new(:doc) do |t|
     t.files = OMNIAUTH_GEMS.inject([]){|a,g| a = a + ["#{g}/lib/**/*.rb"]; a} + ['README.markdown']
   end
-  
+
   namespace :doc do
     YARD::Rake::YardocTask.new(:pages) do |t|
       t.files = OMNIAUTH_GEMS.inject([]){|a,g| a = a + ["#{g}/lib/**/*.rb"]; a} + ['README.markdown']
     end
-    
+
     namespace :pages do
       desc 'Generate and publish YARD docs to GitHub pages.'
       task :publish => ['doc:pages'] do
