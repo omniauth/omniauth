@@ -25,12 +25,19 @@ module OmniAuth
         super(app, :twitter, consumer_key, consumer_secret, client_options, options)
       end
       
+      def user_exists?
+        options[:fetch_user].try(:call, @name, @access_token.params[:user_id]).present?
+      end
+      
       def auth_hash
-        OmniAuth::Utils.deep_merge(super, {
-          'uid' => @access_token.params[:user_id],
-          'user_info' => user_info,
-          'extra' => {'user_hash' => user_hash}
-        })
+        user_info = {'uid' => @access_token.params[:user_id]}
+        unless user_exists?
+          user_info.merge!({
+            'user_info' => user_info,
+            'extra' => {'user_hash' => user_hash}
+          })
+        end
+        OmniAuth::Utils.deep_merge(super, user_info)
       end
       
       def user_info
