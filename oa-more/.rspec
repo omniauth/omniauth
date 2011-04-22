@@ -1,2 +1,3 @@
---colour
---format=specdoc
+--color
+--format=nested
+--backtrace
