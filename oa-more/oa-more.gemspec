@@ -1,11 +1,12 @@
 # -*- encoding: utf-8 -*-
-require File.expand_path('../../omniauth/lib/omniauth/version', __FILE__)
+version = File.read("VERSION").strip
 
 Gem::Specification.new do |gem|
-  gem.add_dependency  'oa-core', Omniauth::VERSION.dup
+  gem.add_dependency  'oa-core', version
   gem.add_dependency  'rest-client',  '~> 1.6.0'
   gem.add_dependency  'multi_json',   '~> 0.0.2'
   gem.add_development_dependency 'json_pure', '~> 1.5'
+  gem.add_development_dependency 'maruku', '~> 0.6'
   gem.add_development_dependency 'rake', '~> 0.8'
   gem.add_development_dependency 'rack-test', '~> 0.5'
   gem.add_development_dependency 'rspec', '~> 2.5'
@@ -13,7 +14,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'webmock', '~> 1.6'
   gem.add_development_dependency 'yard', '~> 0.6'
   gem.name = 'oa-more'
-  gem.version = Omniauth::VERSION.dup
+  gem.version = version
   gem.summary = %q{Additional strategies for OmniAuth.}
   gem.description = %q{Additional strategies for OmniAuth.}
   gem.email = 'michael@intridea.com'

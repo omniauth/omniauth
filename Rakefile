@@ -1,29 +1,72 @@
-require 'rake'
-require File.expand_path('../omniauth/lib/omniauth/version', __FILE__)
-
-begin
-  require 'term/ansicolor'
-  include Term::ANSIColor
-rescue LoadError
-  def cyan; '' end
-  def blue; '' end
-  def clear; '' end
-  def green; '' end
-  def red; '' end
-end
-
-OMNIAUTH_GEMS = %w(oa-basic oa-core oa-oauth oa-openid oa-enterprise oa-more omniauth)
+OMNIAUTH_GEMS = %w(oa-basic oa-core oa-oauth oa-openid oa-enterprise oa-more)
 
 def each_gem(action, &block)
-  OMNIAUTH_GEMS.each_with_index do |dir, i|
-    print blue, "\n\n== ", cyan, dir, blue, " ", action, clear, "\n\n"
-    Dir.chdir(dir) do
-      block.call(dir)
+  OMNIAUTH_GEMS.each do |gem|
+    puts "#{gem} #{action}"
+    Dir.chdir(gem) do
+      yield
     end
   end
 end
 
-desc 'Run specs for all of the gems.'
+def version
+  File.read("VERSION").strip
+end
+
+def bump_version(position)
+  v = version.split('.').map{|s| s.to_i}
+  v[position] += 1
+  write_version(*v)
+end
+
+def write_version(major, minor, patch)
+  v = version.split('.').map{|s| s.to_i}
+  v[0] = major unless major.nil?
+  v[1] = minor unless minor.nil?
+  v[2] = patch unless patch.nil?
+  File.open("VERSION", 'w') do |f|
+    f.write v.join('.')
+  end
+  each_gem('is writing version file...') do
+    File.open("VERSION", 'w') do |f|
+      f.write v.join('.')
+    end
+  end
+  display_version
+end
+
+def display_version
+  puts "Version is now #{version}"
+end
+
+desc "Display the current version"
+task :version do
+  display_version
+end
+
+namespace :version do
+  desc "Write version with MAJOR, MINOR, and PATCH level env variables."
+  task :write do
+    write_version(ENV['MAJOR'], ENV['MINOR'], ENV['PATCH'])
+  end
+
+  namespace :bump do
+    desc "Increment the major version"
+    task :major do
+      bump_version(0)
+    end
+    desc "Increment the minor version"
+    task :minor do
+      bump_version(1)
+    end
+    desc "Increment the patch version"
+    task :patch do
+      bump_version(2)
+    end
+  end
+end
+
+desc "Run specs for all of the gems"
 task :spec do
   error_gems = []
   each_gem('specs are running...') do |gem|
@@ -34,10 +77,10 @@ task :spec do
 
   puts
   if error_gems.any?
-    puts "#{red}#{error_gems.size} gems with failing specs: #{error_gems.join(', ')}#{clear}"
+    puts "#{error_gems.size} gems with failing specs: #{error_gems.join(', ')}"
     exit(1)
   else
-    puts "#{green}All gems passed specs.#{clear}"
+    puts "All gems passed specs."
   end
 end
 
@@ -45,63 +88,71 @@ desc "Release all gems to gemcutter and create a tag"
 task :release => ['tag', 'clean', 'build', 'publish']
 
 task :tag do
-  system("git tag v#{Omniauth::VERSION}")
+  system("git tag v#{version.join}")
   system('git push origin --tags')
 end
 
 task :publish do
   each_gem('is releasing to Rubygems...') do
-    system('gem push pkg/*.gem')
+    system("gem push pkg/#{gem}-#{version.join}.gem")
   end
+  system("gem push pkg/omniauth-#{version.join}.gem")
+end
+
+def build_gem
+  system('gem build omniauth.gemspec')
+  FileUtils.mkdir_p('pkg')
+  FileUtils.mv("omniauth-#{version}.gem", 'pkg')
+end
+
+def install_gem
+  system("gem install pkg/omniauth-#{version}.gem")
 end
 
 desc "Build gem files for all projects"
 task :build do
-  each_gem('is building gems...') do
+  each_gem('is building...') do
     system('rake build')
   end
+  build_gem
 end
 
 desc "Install gems for all projects"
 task :install do
-  each_gem('is installing gems...') do
+  each_gem('is installing...') do
     system('rake install')
   end
+  build_gem
+  install_gem
 end
 
 desc "Clean pkg and other stuff"
 task :clean do
-  OMNIAUTH_GEMS.each do |dir|
-    Dir.chdir(dir) do
-      %w(tmp pkg coverage dist).each{|d| FileUtils.rm_rf d}
+  OMNIAUTH_GEMS.each do |gem|
+    Dir.chdir(gem) do
+      %w(tmp pkg coverage dist).each do |directory|
+        FileUtils.rm_rf directory
+      end
+    end
+    %w(tmp pkg coverage dist).each do |directory|
+      FileUtils.rm_rf directory
     end
   end
-  Dir["**/*.gem"].each { |gem| FileUtils.rm_rf gem }
+  Dir["**/*.gem"].each do |gem|
+    FileUtils.rm_rf gem
+  end
 end
 
 task :default => :spec
 task :test => :spec
 
-begin
+namespace :doc do
   require 'yard'
-  YARD::Rake::YardocTask.new(:doc) do |t|
-    t.files = OMNIAUTH_GEMS.inject([]){|a,g| a = a + ["#{g}/lib/**/*.rb"]; a} + ['README.markdown']
-  end
-
-  namespace :doc do
-    YARD::Rake::YardocTask.new(:pages) do |t|
-      t.files = OMNIAUTH_GEMS.inject([]){|a,g| a = a + ["#{g}/lib/**/*.rb"]; a} + ['README.markdown']
-    end
-
-    namespace :pages do
-      desc 'Generate and publish YARD docs to GitHub pages.'
-      task :publish => ['doc:pages'] do
-        Dir.chdir(File.dirname(__FILE__) + '/../omniauth.doc') do
-          system("git add .")
-          system("git add -u")
-          system("git push origin gh-pages")
-        end
-      end
-    end
+  YARD::Rake::YardocTask.new do |task|
+    task.files = OMNIAUTH_GEMS.map{|gem| ["#{gem}/lib/**/*.rb"]} + ['README.markdown', 'LICENSE']
+    task.options = [
+      '--markup', 'markdown',
+      '--markup-provider', 'maruku',
+    ]
   end
 end

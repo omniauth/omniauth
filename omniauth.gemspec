@@ -1,12 +1,12 @@
 # -*- encoding: utf-8 -*-
-require File.expand_path('../../omniauth/lib/omniauth/version', __FILE__)
+version = File.read("VERSION").strip
 
 Gem::Specification.new do |gem|
   %w(oa-core oa-oauth oa-basic oa-openid oa-enterprise oa-more).each do |subgem|
-    gem.add_runtime_dependency subgem, Omniauth::VERSION.dup
+    gem.add_runtime_dependency subgem, version
   end
   gem.name = 'omniauth'
-  gem.version = Omniauth::VERSION.dup
+  gem.version = version
   gem.summary = %q{Rack middleware for standardized multi-provider authentication.}
   gem.description = %q{OmniAuth is an authentication framework that that separates the concept of authentiation from the concept of identity, providing simple hooks for any application to have one or multiple authentication providers for a user.}
   gem.email = ['michael@intridea.com', 'sferik@gmail.com']

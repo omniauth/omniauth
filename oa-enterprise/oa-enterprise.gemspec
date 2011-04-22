@@ -1,13 +1,14 @@
 # -*- encoding: utf-8 -*-
-require File.expand_path('../../omniauth/lib/omniauth/version', __FILE__)
+version = File.read("VERSION").strip
 
 Gem::Specification.new do |gem|
   gem.add_runtime_dependency 'addressable', '2.2.4'
-  gem.add_runtime_dependency 'oa-core', Omniauth::VERSION.dup
+  gem.add_runtime_dependency 'oa-core', version
   gem.add_runtime_dependency 'nokogiri', '~> 1.4.2'
   gem.add_runtime_dependency 'net-ldap', '~> 0.2.2'
   gem.add_runtime_dependency 'rubyntlm', '~> 0.1.1'
   gem.add_runtime_dependency 'pyu-ruby-sasl', '~> 0.0.3.1'
+  gem.add_development_dependency 'maruku', '~> 0.6'
   gem.add_development_dependency 'simplecov', '~> 0.4'
   gem.add_development_dependency 'rack-test', '~> 0.5'
   gem.add_development_dependency 'rake', '~> 0.8'
@@ -15,7 +16,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'webmock', '~> 1.6'
   gem.add_development_dependency 'yard', '~> 0.6'
   gem.name = 'oa-enterprise'
-  gem.version = Omniauth::VERSION.dup
+  gem.version = version
   gem.summary = %q{Enterprise strategies for OmniAuth.}
   gem.description = %q{Enterprise strategies for OmniAuth.}
   gem.email = ['james.a.rosen@gmail.com', 'ping@intridea.com', 'michael@intridea.com', 'sferik@gmail.com']
