@@ -97,7 +97,8 @@ module OmniAuth
       'soundcloud' => 'SoundCloud',
       'smugmug' => 'SmugMug',
       'cas' => 'CAS',
-      'trademe' => 'TradeMe'
+      'trademe' => 'TradeMe',
+      'ldap'  => 'LDAP'
     }
 
     module_function
