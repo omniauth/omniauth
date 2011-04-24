@@ -10,31 +10,31 @@ module OmniAuth
     #   use OmniAuth::Strategies::Instagram, 'client_id', 'client_secret'
     class Instagram < OAuth2
       # @option options [String] :scope separate the scopes by a space
-      def initialize(app, client_id = nil, client_secret = nil, options = {}, &block)        
+      def initialize(app, client_id = nil, client_secret = nil, options = {}, &block)
         client_options = {
           :site => "https://api.instagram.com/",
           :authorize_url      => "/oauth/authorize",
           :access_token_url   => "/oauth/access_token"
         }
-        
+
         super(app, :instagram, client_id, client_secret, client_options, options, &block)
       end
-      
+
       def request_phase
         options[:scope] ||= "basic"
         options[:response_type] ||= 'code'
         super
       end
-      
+
       def callback_phase
         options[:grant_type] ||= 'authorization_code'
         super
       end
-      
+
       def user_data
         @data ||= MultiJson.decode(@access_token.get("/v1/users/self"))
       end
-      
+
       def user_info
         {
           'nickname' => user_data['data']['username'],
@@ -43,7 +43,7 @@ module OmniAuth
           'urls' => {}
         }
       end
-      
+
       def auth_hash
         OmniAuth::Utils.deep_merge(super, {
           'uid' => user_data['data']['id'],

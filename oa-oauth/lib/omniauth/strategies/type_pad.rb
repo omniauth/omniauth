@@ -3,7 +3,7 @@ require 'multi_json'
 
 module OmniAuth
   module Strategies
-    # 
+    #
     # Authenticate to Typepad via OAuth and retrieve basic
     # user information.
     #
@@ -33,7 +33,7 @@ module OmniAuth
 
         super(app, :type_pad, consumer_key, consumer_secret, client_options, options)
       end
-      
+
       def auth_hash
         ui = user_info
         OmniAuth::Utils.deep_merge(super, {
@@ -42,10 +42,10 @@ module OmniAuth
           'extra' => {'user_hash' => user_hash}
         })
       end
-      
+
       def user_info
         user_hash = self.user_hash
-        
+
         {
           'uid' => user_hash['urlId'],
           'nickname' => user_hash['preferredUsername'],
@@ -55,12 +55,12 @@ module OmniAuth
           'urls' => {'Profile' => user_hash['profilePageUrl']}
         }
       end
-      
+
       def user_hash
         # For authenticated requests, you have to use header as your scheme.
         # Failure to do so gives a unique response body - 'Auth is required'.
         # 'Unauthorized' is the response body of a truly unauthorized request.
-        
+
         # Also note that API requests hit a different site than the OAuth dance.
         r = self.consumer.request(
               :get,

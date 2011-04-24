@@ -3,7 +3,7 @@ require 'multi_json'
 
 module OmniAuth
   module Strategies
-    # 
+    #
     # Authenticate to Twitter via OAuth and retrieve basic
     # user information.
     #
@@ -19,16 +19,16 @@ module OmniAuth
         client_options = {
           :site => 'https://api.twitter.com'
         }
-        
+
         options[:authorize_params] = {:force_login => 'true'} if options.delete(:force_login) == true
         client_options[:authorize_path] = '/oauth/authenticate' unless options[:sign_in] == false
         super(app, :twitter, consumer_key, consumer_secret, client_options, options)
       end
-      
+
       def user_exists?
         options[:fetch_user].try(:call, @name, @access_token.params[:user_id]).present?
       end
-      
+
       def auth_hash
         user_info = {'uid' => @access_token.params[:user_id]}
         unless user_exists?
@@ -39,10 +39,10 @@ module OmniAuth
         end
         OmniAuth::Utils.deep_merge(super, user_info)
       end
-      
+
       def user_info
         user_hash = self.user_hash
-        
+
         {
           'nickname' => user_hash['screen_name'],
           'name' => user_hash['name'],
@@ -55,7 +55,7 @@ module OmniAuth
           }
         }
       end
-      
+
       def user_hash
         @user_hash ||= MultiJson.decode(@access_token.get('/1/account/verify_credentials.json').body)
       end

@@ -9,15 +9,15 @@ module OmniAuth
           :site => 'https://launchpad.37signals.com/',
           :authorize_path => '/authorization/new',
           :access_token_path => '/authorization/token'
-        } 
-        
+        }
+
         super(app, :thirty_seven_signals, client_id, client_secret, client_options, options, &block)
       end
-      
+
       def user_data
         @data ||= MultiJson.decode(@access_token.get('/authorization.json'))
       end
-      
+
       def user_info
         {
           'email' => user_data['identity']['email_address'],
@@ -26,7 +26,7 @@ module OmniAuth
           'name' => [user_data['identity']['first_name'], user_data['identity']['last_name']].join(' ').strip
         }
       end
-      
+
       def auth_hash
         OmniAuth::Utils.deep_merge(super, {
           'uid' => user_data['identity']['id'],

@@ -3,7 +3,7 @@ require 'multi_json'
 
 module OmniAuth
   module Strategies
-    # 
+    #
     # Authenticate to Yahoo via OAuth and retrieve basic
     # user information.
     #
@@ -22,7 +22,7 @@ module OmniAuth
 
         super(app, :yahoo, consumer_key, consumer_secret, client_options, options)
       end
-      
+
       def auth_hash
         ui = user_info
         OmniAuth::Utils.deep_merge(super, {
@@ -31,7 +31,7 @@ module OmniAuth
           'extra' => {'user_hash' => user_hash}
         })
       end
-      
+
       def user_info
         user_hash = self.user_hash
         profile = user_hash['profile']
@@ -45,7 +45,7 @@ module OmniAuth
           'urls' => {'Profile' => profile['profileUrl'] }
         }
       end
-      
+
       def user_hash
         uid = @access_token.params['xoauth_yahoo_guid']
         @user_hash ||= MultiJson.decode(@access_token.get("http://social.yahooapis.com/v1/user/#{uid}/profile?format=json").body)
