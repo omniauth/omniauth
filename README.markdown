@@ -21,6 +21,7 @@ OmniAuth currently supports the following external providers:
   * DailyMile (credit: [cdmwebs](https://github.com/cdmwebs))
   * Doit.im (credit: [chouti](https://github.com/chouti))
   * Dopplr (credit: [flextrip](https://github.com/flextrip))
+  * Douban (credit: [quake](https://github.com/quake))
   * Evernote (credit: [szimek](https://github.com/szimek))
   * Facebook
   * Foursquare
@@ -36,13 +37,19 @@ OmniAuth currently supports the following external providers:
   * Miso (credit: [rickenharp](https://github.com/rickenharp))
   * Mixi (credit: [kiyoshi](https://github.com/kiyoshi))
   * Netflix (credit: [caged](https://github.com/caged))
+  * Qzone (credit: [quake](https://github.com/quake))
   * Rdio (via [brandonweiss](http://github.com/brandonweiss))
+  * Renren (credit: [quake](https://github.com/quake))
   * Salesforce (via [CloudSpokes](http://www.cloudspokes.com))
   * SmugMug (credit: [pchilton](https://github.com/pchilton))
   * SoundCloud (credit: [leemartin](https://github.com/leemartin))
+  * T163 (credit: [quake](https://github.com/quake))
   * TeamBox (credit [jrom](https://github.com/jrom))
+  * Tqq (credit: [quake](https://github.com/quake))
   * TradeMe (credit: [pchilton](https://github.com/pchilton))
   * TripIt (credit: [flextrip](https://github.com/flextrip))
+  * Tsina (credit: [quake](https://github.com/quake))
+  * Tsohu (credit: [quake](https://github.com/quake))
   * Tumblr (credit: [jamiew](https://github.com/jamiew))
   * Twitter
   * Vimeo (credit: [jamiew](https://github.com/jamiew))
