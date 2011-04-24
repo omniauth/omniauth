@@ -35,7 +35,7 @@ module OmniAuth
       return mock_call!(env) if OmniAuth.config.test_mode
 
       if current_path.casecmp(request_path) == 0 && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
-        setup_phase                  
+        setup_phase
         if response = call_through_to_app
           response
         else
@@ -47,7 +47,7 @@ module OmniAuth
           request_phase
         end
       elsif current_path.casecmp(callback_path) == 0
-        setup_phase                  
+        setup_phase
         @env['omniauth.origin'] = session.delete('omniauth.origin')
         @env['omniauth.origin'] = nil if env['omniauth.origin'] == ''
 
