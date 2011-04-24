@@ -1,9 +1,9 @@
 #######################################################################
-# FILE:        windowslivelogin.rb                                     
-#                                                                      
-# DESCRIPTION: Sample implementation of Web Authentication and 
-#              Delegated Authentication protocol in Ruby. Also 
-#              includes trusted sign-in and application verification 
+# FILE:        windowslivelogin.rb
+#
+# DESCRIPTION: Sample implementation of Web Authentication and
+#              Delegated Authentication protocol in Ruby. Also
+#              includes trusted sign-in and application verification
 #              sample implementations.
 #
 # VERSION:     1.1
@@ -26,7 +26,7 @@ module OmniAuth; module Strategies; class WindowsLive; class WindowsLiveLogin
   # By default, debug information will be printed to the standard
   # error output and should be visible in the web server logs.
   #####################################################################
-  def setDebug(flag) 
+  def setDebug(flag)
     @debug = flag
   end
 
@@ -39,7 +39,7 @@ module OmniAuth; module Strategies; class WindowsLive; class WindowsLiveLogin
     return unless @debug
     return if error.nil? or error.empty?
     warn("Windows Live ID Authentication SDK #{error}")
-    nil 
+    nil
   end
 
   #####################################################################
@@ -52,7 +52,7 @@ module OmniAuth; module Strategies; class WindowsLive; class WindowsLiveLogin
 
   #####################################################################
   # Initialize the WindowsLiveLogin module with the application ID,
-  # secret key, and security algorithm.  
+  # secret key, and security algorithm.
   #
   # We recommend that you employ strong measures to protect the
   # secret key. The secret key should never be exposed to the Web
@@ -65,16 +65,16 @@ module OmniAuth; module Strategies; class WindowsLive; class WindowsLiveLogin
   # For Delegated Authentication, you may optionally specify the
   # privacy policy URL and return URL. If you do not specify these
   # values here, the default values that you specified when you
-  # registered your application will be used.  
+  # registered your application will be used.
   #
   # The 'force_delauth_nonprovisioned' flag also indicates whether
-  # your application is registered for Delegated Authentication 
-  # (that is, whether it uses an application ID and secret key). We 
-  # recommend that your Delegated Authentication application always 
+  # your application is registered for Delegated Authentication
+  # (that is, whether it uses an application ID and secret key). We
+  # recommend that your Delegated Authentication application always
   # be registered for enhanced security and functionality.
   #####################################################################
-  def initialize(appid=nil, secret=nil, securityalgorithm=nil, 
-                 force_delauth_nonprovisioned=nil, 
+  def initialize(appid=nil, secret=nil, securityalgorithm=nil,
+                 force_delauth_nonprovisioned=nil,
                  policyurl=nil, returnurl=nil)
     self.force_delauth_nonprovisioned = force_delauth_nonprovisioned
     self.appid = appid if appid
@@ -85,7 +85,7 @@ module OmniAuth; module Strategies; class WindowsLive; class WindowsLiveLogin
   end
 
   #####################################################################
-  # Initialize the WindowsLiveLogin module from a settings file. 
+  # Initialize the WindowsLiveLogin module from a settings file.
   #
   # 'settingsFile' specifies the location of the XML settings file
   # that contains the application ID, secret key, and security
@@ -102,7 +102,7 @@ module OmniAuth; module Strategies; class WindowsLive; class WindowsLiveLogin
   # Delegated Authentication samples.
   #
   # We recommend that you store the WindowsLiveLogin settings file
-  # in an area on your server that cannot be accessed through the 
+  # in an area on your server that cannot be accessed through the
   # Internet. This file contains important confidential information.
   #####################################################################
   def self.initFromXml(settingsFile)
@@ -110,7 +110,7 @@ module OmniAuth; module Strategies; class WindowsLive; class WindowsLiveLogin
     settings = o.parseSettings(settingsFile)
 
     o.setDebug(settings['debug'] == 'true')
-    o.force_delauth_nonprovisioned = 
+    o.force_delauth_nonprovisioned =
       (settings['force_delauth_nonprovisioned'] == 'true')
 
     o.appid = settings['appid']
@@ -133,7 +133,7 @@ module OmniAuth; module Strategies; class WindowsLive; class WindowsLiveLogin
   def appid=(appid)
     if (appid.nil? or appid.empty?)
       return if force_delauth_nonprovisioned
-      fatal("Error: appid: Null application ID.") 
+      fatal("Error: appid: Null application ID.")
     end
     if (not appid =~ /^\w+$/)
       fatal("Error: appid: Application ID must be alpha-numeric: " + appid)
@@ -142,7 +142,7 @@ module OmniAuth; module Strategies; class WindowsLive; class WindowsLiveLogin
   end
 
   #####################################################################
-  # Returns the application ID. 
+  # Returns the application ID.
   #####################################################################
   def appid
     if (@appid.nil? or @appid.empty?)
@@ -158,10 +158,10 @@ module OmniAuth; module Strategies; class WindowsLive; class WindowsLiveLogin
   def secret=(secret)
     if (secret.nil? or secret.empty?)
       return if force_delauth_nonprovisioned
-      fatal("Error: secret=: Secret must be non-null.") 
+      fatal("Error: secret=: Secret must be non-null.")
     end
     if (secret.size < 16)
-      fatal("Error: secret=: Secret must be at least 16 characters.")       
+      fatal("Error: secret=: Secret must be at least 16 characters.")
     end
     @signkey = derive(secret, "SIGNATURE")
     @cryptkey = derive(secret, "ENCRYPTION")
@@ -171,20 +171,20 @@ module OmniAuth; module Strategies; class WindowsLive; class WindowsLiveLogin
   # Sets your old secret key.
   #
   # Use this property to set your old secret key if you are in the
-  # process of transitioning to a new secret key. You may need this 
-  # property because the Windows Live ID servers can take up to 
-  # 24 hours to propagate a new secret key after you have updated 
+  # process of transitioning to a new secret key. You may need this
+  # property because the Windows Live ID servers can take up to
+  # 24 hours to propagate a new secret key after you have updated
   # your application settings.
   #
   # If an old secret key is specified here and has not expired
   # (as determined by the oldsecretexpiry setting), it will be used
-  # as a fallback if token decryption fails with the new secret 
+  # as a fallback if token decryption fails with the new secret
   # key.
   #####################################################################
   def oldsecret=(secret)
     return if (secret.nil? or secret.empty?)
     if (secret.size < 16)
-      fatal("Error: oldsecret=: Secret must be at least 16 characters.")       
+      fatal("Error: oldsecret=: Secret must be at least 16 characters.")
     end
     @oldsignkey = derive(secret, "SIGNATURE")
     @oldcryptkey = derive(secret, "ENCRYPTION")
@@ -197,7 +197,7 @@ module OmniAuth; module Strategies; class WindowsLive; class WindowsLiveLogin
   # used even if token decryption fails with the new secret key.
   #
   # The old secret expiry time is represented as the number of seconds
-  # elapsed since January 1, 1970. 
+  # elapsed since January 1, 1970.
   #####################################################################
   def oldsecretexpiry=(timestamp)
     return if (timestamp.nil? or timestamp.empty?)
@@ -255,10 +255,10 @@ module OmniAuth; module Strategies; class WindowsLive; class WindowsLiveLogin
   end
 
   #####################################################################
-  # Sets the return URL--the URL on your site to which the consent 
-  # service redirects users (along with the action, consent token, 
-  # and application context) after they have successfully provided 
-  # consent information for Delegated Authentication. This value will 
+  # Sets the return URL--the URL on your site to which the consent
+  # service redirects users (along with the action, consent token,
+  # and application context) after they have successfully provided
+  # consent information for Delegated Authentication. This value will
   # override the return URL specified during registration.
   #####################################################################
   def returnurl=(returnurl)
@@ -281,7 +281,7 @@ module OmniAuth; module Strategies; class WindowsLive; class WindowsLiveLogin
 
   #####################################################################
   # Sets or gets the base URL to use for the Windows Live Login server. You
-  # should not have to change this property. Furthermore, we recommend 
+  # should not have to change this property. Furthermore, we recommend
   # that you use the Sign In control instead of the URL methods
   # provided here.
   #####################################################################
@@ -296,7 +296,7 @@ module OmniAuth; module Strategies; class WindowsLive; class WindowsLiveLogin
   end
 
   #####################################################################
-  # Sets or gets the secure (HTTPS) URL to use for the Windows Live Login 
+  # Sets or gets the secure (HTTPS) URL to use for the Windows Live Login
   # server. You should not have to change this property.
   #####################################################################
   attr_accessor :secureurl
@@ -310,7 +310,7 @@ module OmniAuth; module Strategies; class WindowsLive; class WindowsLiveLogin
   end
 
   #####################################################################
-  # Sets or gets the Consent Base URL to use for the Windows Live Consent 
+  # Sets or gets the Consent Base URL to use for the Windows Live Consent
   # server. You should not have to use or change this property directly.
   #####################################################################
   attr_accessor :consenturl
@@ -329,9 +329,9 @@ end
 #######################################################################
 class WindowsLiveLogin
   #####################################################################
-  # Returns the sign-in URL to use for the Windows Live Login server. 
+  # Returns the sign-in URL to use for the Windows Live Login server.
   # We recommend that you use the Sign In control instead.
-  # 
+  #
   # If you specify it, 'context' will be returned as-is in the sign-in
   # response for site-specific use.
   #####################################################################
@@ -344,7 +344,7 @@ class WindowsLiveLogin
   end
 
   #####################################################################
-  # Returns the sign-out URL to use for the Windows Live Login server. 
+  # Returns the sign-out URL to use for the Windows Live Login server.
   # We recommend that you use the Sign In control instead.
   #####################################################################
   def getLogoutUrl(market=nil)
@@ -360,8 +360,8 @@ class WindowsLiveLogin
   # 'id' is the pairwise unique ID for the user.
   # 'context' is the application context that was originally passed to
   # the sign-in request, if any.
-  # 'token' is the encrypted Web Authentication token that contains the 
-  # UID. This can be cached in a cookie and the UID can be retrieved by 
+  # 'token' is the encrypted Web Authentication token that contains the
+  # UID. This can be cached in a cookie and the UID can be retrieved by
   # calling the processToken method.
   # 'usePersistentCookie?' indicates whether the application is
   # expected to store the user token in a session or persistent
@@ -373,8 +373,8 @@ class WindowsLiveLogin
     def usePersistentCookie?
       @usePersistentCookie
     end
-    
-    
+
+
   #####################################################################
   # Initialize the User with time stamp, userid, flags, context and token.
   #####################################################################
@@ -426,7 +426,7 @@ class WindowsLiveLogin
   # returned by CGI.params or Rails. (The unprocessed POST string
   # could also be used here but we do not recommend it).
   #
-  # This method returns a User object on successful sign-in; otherwise 
+  # This method returns a User object on successful sign-in; otherwise
   # it returns nil.
   #####################################################################
   def processLogin(query)
@@ -446,8 +446,8 @@ class WindowsLiveLogin
   end
 
   #####################################################################
-  # Decodes and validates a Web Authentication token. Returns a User 
-  # object on success. If a context is passed in, it will be returned 
+  # Decodes and validates a Web Authentication token. Returns a User
+  # object on success. If a context is passed in, it will be returned
   # as the context field in the User object.
   #####################################################################
   def processToken(token, context=nil)
@@ -467,7 +467,7 @@ class WindowsLiveLogin
       return
     end
     begin
-      user = User.new(stoken['ts'], stoken['uid'], stoken['flags'], 
+      user = User.new(stoken['ts'], stoken['uid'], stoken['flags'],
                       context, token)
       return user
     rescue Exception => e
@@ -477,10 +477,10 @@ class WindowsLiveLogin
   end
 
   #####################################################################
-  # Returns an appropriate content type and body response that the 
-  # application handler can return to signify a successful sign-out 
+  # Returns an appropriate content type and body response that the
+  # application handler can return to signify a successful sign-out
   # from the application.
-  # 
+  #
   # When a user signs out of Windows Live or a Windows Live
   # application, a best-effort attempt is made at signing the user out
   # from all other Windows Live applications the user might be signed
@@ -511,7 +511,7 @@ class WindowsLiveLogin
   # If you specify it, 'context' will be returned as-is in the consent
   # response for site-specific use.
   #
-  # The registered/configured return URL can also be overridden by 
+  # The registered/configured return URL can also be overridden by
   # specifying 'ru' here.
   #
   # You can change the language in which the consent page is displayed
@@ -534,9 +534,9 @@ class WindowsLiveLogin
   end
 
   #####################################################################
-  # Returns the URL to use to download a new consent token, given the 
+  # Returns the URL to use to download a new consent token, given the
   # offers and refresh token.
-  # The registered/configured return URL can also be overridden by 
+  # The registered/configured return URL can also be overridden by
   # specifying 'ru' here.
   #####################################################################
   def getRefreshConsentTokenUrl(offers, refreshtoken, ru)
@@ -546,7 +546,7 @@ class WindowsLiveLogin
     if (refreshtoken.nil? or refreshtoken.empty?)
       fatal("Error: getRefreshConsentTokenUrl: Invalid refresh token.")
     end
-    url = consenturl + "RefreshToken.aspx?ps=#{CGI.escape(offers)}"    
+    url = consenturl + "RefreshToken.aspx?ps=#{CGI.escape(offers)}"
     url += "&reft=#{refreshtoken}"
     ru = returnurl if (ru.nil? or ru.empty?)
     url += "&ru=#{CGI.escape(ru)}" if ru
@@ -578,9 +578,9 @@ class WindowsLiveLogin
       return false unless delegationtoken
       return ((Time.now.to_i-300) < expiry.to_i)
     end
-    
+
     #####################################################################
-    # Refreshes the current token and replace it. If operation succeeds 
+    # Refreshes the current token and replace it. If operation succeeds
     # true is returned to signify success.
     #####################################################################
     def refresh
@@ -591,9 +591,9 @@ class WindowsLiveLogin
     end
 
     #####################################################################
-    # Initialize the ConsentToken module with the WindowsLiveLogin, 
-    # delegation token, refresh token, session key, expiry, offers, 
-    # location ID, context, decoded token, and raw token.  
+    # Initialize the ConsentToken module with the WindowsLiveLogin,
+    # delegation token, refresh token, session key, expiry, offers,
+    # location ID, context, decoded token, and raw token.
     #####################################################################
     def initialize(wll, delegationtoken, refreshtoken, sessionkey, expiry,
                    offers, locationid, context, decodedtoken, token)
@@ -608,7 +608,7 @@ class WindowsLiveLogin
       self.decodedtoken = decodedtoken
       self.token = token
     end
-    
+
     private
     attr_writer :delegationtoken, :refreshtoken, :sessionkey, :expiry
     attr_writer :offers, :offers_string, :locationid, :context
@@ -619,7 +619,7 @@ class WindowsLiveLogin
     #####################################################################
     def delegationtoken=(delegationtoken)
       if (delegationtoken.nil? or delegationtoken.empty?)
-        raise("Error: ConsentToken: Null delegation token.") 
+        raise("Error: ConsentToken: Null delegation token.")
       end
       @delegationtoken = delegationtoken
     end
@@ -694,10 +694,10 @@ class WindowsLiveLogin
   end
 
   #####################################################################
-  # Processes the POST response from the Delegated Authentication 
+  # Processes the POST response from the Delegated Authentication
   # service after a user has granted consent. The processConsent
-  # function extracts the consent token string and returns the result 
-  # of invoking the processConsentToken method. 
+  # function extracts the consent token string and returns the result
+  # of invoking the processConsentToken method.
   #####################################################################
   def processConsent(query)
     query = parse query
@@ -721,8 +721,8 @@ class WindowsLiveLogin
   end
 
   #####################################################################
-  # Processes the consent token string that is returned in the POST 
-  # response by the Delegated Authentication service after a 
+  # Processes the consent token string that is returned in the POST
+  # response by the Delegated Authentication service after a
   # user has granted consent.
   #####################################################################
   def processConsentToken(token, context=nil)
@@ -747,7 +747,7 @@ class WindowsLiveLogin
       decodedtoken = CGI.escape(decodedtoken)
     end
     begin
-      consenttoken = ConsentToken.new(self, 
+      consenttoken = ConsentToken.new(self,
                                       parsedtoken['delt'],
                                       parsedtoken['reft'],
                                       parsedtoken['skey'],
@@ -763,7 +763,7 @@ class WindowsLiveLogin
   end
 
   #####################################################################
-  # Attempts to obtain a new, refreshed token and return it. The 
+  # Attempts to obtain a new, refreshed token and return it. The
   # original token is not modified.
   #####################################################################
   def refreshConsentToken(consenttoken, ru=nil)
@@ -853,7 +853,7 @@ class WindowsLiveLogin
   end
 
   #####################################################################
-  # Creates a signature for the given string by using the signature 
+  # Creates a signature for the given string by using the signature
   # key.
   #####################################################################
   def signToken(token, signkey=@signkey)
@@ -890,12 +890,12 @@ class WindowsLiveLogin
 end
 
 #######################################################################
-# Implementation of the methods needed to perform Windows Live 
+# Implementation of the methods needed to perform Windows Live
 # application verification as well as trusted sign-in.
 #######################################################################
 class WindowsLiveLogin
   #####################################################################
-  # Generates an application verifier token. An IP address can 
+  # Generates an application verifier token. An IP address can
   # optionally be included in the token.
   #####################################################################
   def getAppVerifier(ip=nil)
@@ -906,16 +906,16 @@ class WindowsLiveLogin
   end
 
   #####################################################################
-  # Returns the URL that is required to retrieve the application 
+  # Returns the URL that is required to retrieve the application
   # security token.
   #
-  # By default, the application security token is generated for 
-  # the Windows Live site; a specific Site ID can optionally be 
-  # specified in 'siteid'. The IP address can also optionally be 
+  # By default, the application security token is generated for
+  # the Windows Live site; a specific Site ID can optionally be
+  # specified in 'siteid'. The IP address can also optionally be
   # included in 'ip'.
   #
-  # If 'js' is nil, a JavaScript Output Notation (JSON) response is 
-  # returned in the following format: 
+  # If 'js' is nil, a JavaScript Output Notation (JSON) response is
+  # returned in the following format:
   #
   # {"token":"<value>"}
   #
@@ -935,7 +935,7 @@ class WindowsLiveLogin
 
   #####################################################################
   # Retrieves the application security token for application
-  # verification from the application sign-in URL.  
+  # verification from the application sign-in URL.
   #
   # By default, the application security token will be generated for
   # the Windows Live site; a specific Site ID can optionally be
@@ -962,7 +962,7 @@ class WindowsLiveLogin
       debug("Error: getAppSecurityToken: Failed to extract token: #{body}")
     rescue Exception => e
       debug("Error: getAppSecurityToken: Failed to get token: #{e}")
-    end    
+    end
     return
   end
 
@@ -983,13 +983,13 @@ class WindowsLiveLogin
   # may have to be escaped if you are inserting them in code such as
   # an HTML form.
   #
-  # The user to be trusted on the local site is passed in as string 
+  # The user to be trusted on the local site is passed in as string
   # 'user'.
   #
   # Optionally, 'retcode' specifies the resource to which successful
   # sign-in is redirected, such as Windows Live Mail, and is typically
   # a string in the format 'id=2000'. If you pass in the value from
-  # getAppRetCode instead, sign-in will be redirected to the 
+  # getAppRetCode instead, sign-in will be redirected to the
   # application. Otherwise, an HTTP 200 response is returned.
   #####################################################################
   def getTrustedParams(user, retcode=nil)
@@ -1022,7 +1022,7 @@ class WindowsLiveLogin
 
   #####################################################################
   # Returns the trusted sign-in URL to use for the Windows Live Login
-  # server. 
+  # server.
   #####################################################################
   def getTrustedLoginUrl
     secureurl + "wlogin.srf"
@@ -1041,10 +1041,10 @@ end
 # Helper methods.
 #######################################################################
 class WindowsLiveLogin
-  
+
   #######################################################################
   # Function to parse the settings file.
-  #######################################################################  
+  #######################################################################
   def parseSettings(settingsFile)
     settings = {}
     begin
@@ -1077,12 +1077,12 @@ class WindowsLiveLogin
   end
 
   #####################################################################
-  # Parses query string and return a table 
+  # Parses query string and return a table
   # {String=>String}
   #
   # If a table is passed in from CGI.params, we convert it from
   # {String=>[]} to {String=>String}. I believe Rails uses symbols
-  # instead of strings in general, so we convert from symbols to 
+  # instead of strings in general, so we convert from symbols to
   # strings here also.
   #####################################################################
   def parse(input)

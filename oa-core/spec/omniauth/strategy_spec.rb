@@ -6,14 +6,14 @@ class ExampleStrategy
   attr_reader :last_env
   def request_phase
     @fail = fail!(options[:failure]) if options[:failure]
-    @last_env = env    
-    return @fail if @fail    
+    @last_env = env
+    return @fail if @fail
     raise "Request Phase"
   end
   def callback_phase
     @fail = fail!(options[:failure]) if options[:failure]
     @last_env = env
-    return @fail if @fail    
+    return @fail if @fail
     raise "Callback Phase"
   end
 end
@@ -34,7 +34,7 @@ describe OmniAuth::Strategy do
       it 'should be the last argument if the last argument is a Hash' do
         ExampleStrategy.new(app, 'test', :abc => 123).options[:abc].should == 123
       end
-    
+
       it 'should be a blank hash if none are provided' do
         ExampleStrategy.new(app, 'test').options.should == {}
       end
@@ -48,10 +48,10 @@ describe OmniAuth::Strategy do
       lambda{ strategy.full_host }.should_not raise_error
     end
   end
-  
+
   describe '#call' do
     let(:strategy){ ExampleStrategy.new(app, 'test', @options) }
-    
+
     context 'omniauth.origin' do
       it 'should be set on the request phase' do
         lambda{ strategy.call(make_env('/auth/test', 'HTTP_REFERER' => 'http://example.com/origin')) }.should raise_error("Request Phase")
@@ -98,13 +98,13 @@ describe OmniAuth::Strategy do
       it 'should use the default request path' do
         lambda{ strategy.call(make_env) }.should raise_error("Request Phase")
       end
-      
+
       it 'should use the default callback path' do
         lambda{ strategy.call(make_env('/auth/test/callback')) }.should raise_error("Callback Phase")
       end
 
       it 'should strip trailing spaces on request' do
-        lambda{ strategy.call(make_env('/auth/test/')) }.should raise_error("Request Phase")        
+        lambda{ strategy.call(make_env('/auth/test/')) }.should raise_error("Request Phase")
       end
 
       it 'should strip trailing spaces on callback' do
@@ -137,11 +137,11 @@ describe OmniAuth::Strategy do
         end
       end
     end
-    
-    context 'pre-request call through' do  
+
+    context 'pre-request call through' do
       subject { ExampleStrategy.new(app, 'test') }
       let(:app){ lambda{|env| env['omniauth.boom'] = true; [env['test.status'] || 404, {}, ['Whatev']] } }
-      it 'should be able to modify the env on the fly before the request_phase' do 
+      it 'should be able to modify the env on the fly before the request_phase' do
         lambda{ subject.call(make_env) }.should raise_error("Request Phase")
         subject.response.status.should == 404
         subject.last_env.should be_key('omniauth.boom')
@@ -152,13 +152,13 @@ describe OmniAuth::Strategy do
         subject.response.body.should == ['Whatev']
       end
     end
-    
+
     context 'custom paths' do
       it 'should use a custom request_path if one is provided' do
         @options = {:request_path => '/awesome'}
         lambda{ strategy.call(make_env('/awesome')) }.should raise_error("Request Phase")
       end
-    
+
       it 'should use a custom callback_path if one is provided' do
         @options = {:callback_path => '/radical'}
         lambda{ strategy.call(make_env('/radical')) }.should raise_error("Callback Phase")
@@ -184,16 +184,16 @@ describe OmniAuth::Strategy do
         end
       end
     end
-    
+
     context 'custom prefix' do
       before do
         @options = {:path_prefix => '/wowzers'}
       end
-      
+
       it 'should use a custom prefix for request' do
         lambda{ strategy.call(make_env('/wowzers/test')) }.should raise_error("Request Phase")
       end
-      
+
       it 'should use a custom prefix for callback' do
         lambda{ strategy.call(make_env('/wowzers/test/callback')) }.should raise_error("Callback Phase")
       end
@@ -216,22 +216,22 @@ describe OmniAuth::Strategy do
         end
       end
     end
-    
+
     context 'request method restriction' do
       before do
         OmniAuth.config.allowed_request_methods = [:post]
       end
-      
+
       it 'should not allow a request method of the wrong type' do
         lambda{ strategy.call(make_env)}.should_not raise_error
       end
-      
+
       it 'should allow a request method of the correct type' do
         lambda{ strategy.call(make_env('/auth/test', 'REQUEST_METHOD' => 'POST'))}.should raise_error("Request Phase")
       end
-      
+
       after do
-        OmniAuth.config.allowed_request_methods = [:get, :post]        
+        OmniAuth.config.allowed_request_methods = [:get, :post]
       end
     end
 
@@ -270,12 +270,12 @@ describe OmniAuth::Strategy do
         strategy.call make_env('/auth/test/callback')
         strategy.env['omniauth.error.type'].should == :invalid_credentials
       end
-      
+
       it 'should set omniauth.origin on the request phase' do
         strategy.call(make_env('/auth/test', 'HTTP_REFERER' => 'http://example.com/origin'))
         strategy.env['rack.session']['omniauth.origin'].should == 'http://example.com/origin'
       end
-      
+
       it 'should set omniauth.origin from the params if provided' do
         strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'origin=/foo'))
         strategy.env['rack.session']['omniauth.origin'].should == '/foo'
@@ -283,7 +283,7 @@ describe OmniAuth::Strategy do
 
       it 'should turn omniauth.origin into an env variable on the callback phase' do
         OmniAuth.config.mock_auth[:test] = {}
-        
+
         strategy.call(make_env('/auth/test/callback', 'rack.session' => {'omniauth.origin' => 'http://example.com/origin'}))
         strategy.env['omniauth.origin'].should == 'http://example.com/origin'
       end
@@ -305,7 +305,7 @@ describe OmniAuth::Strategy do
 
   context 'setup phase' do
     context 'when options[:setup] = true' do
-      let(:strategy){ ExampleStrategy.new(app, 'test', :setup => true) }      
+      let(:strategy){ ExampleStrategy.new(app, 'test', :setup => true) }
       let(:app){lambda{|env| env['omniauth.strategy'].options[:awesome] = 'sauce' if env['PATH_INFO'] == '/auth/test/setup'; [404, {}, 'Awesome'] }}
 
       it 'should call through to /auth/:provider/setup' do
@@ -327,7 +327,7 @@ describe OmniAuth::Strategy do
       end
 
       let(:strategy){ ExampleStrategy.new(app, 'test', :setup => setup_proc) }
-      
+
       it 'should not call the app on a non-omniauth endpoint' do
         strategy.call(make_env('/somehwere/else'))
         strategy.options[:awesome].should_not == 'sauce'
@@ -335,7 +335,7 @@ describe OmniAuth::Strategy do
 
       it 'should call the rack app' do
         strategy.call(make_env('/auth/test'))
-        strategy.options[:awesome].should == 'sauce'  
+        strategy.options[:awesome].should == 'sauce'
       end
     end
   end
