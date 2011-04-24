@@ -34,7 +34,7 @@ module OmniAuth
       
       return mock_call!(env) if OmniAuth.config.test_mode
       
-      if current_path == request_path && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
+      if current_path.casecmp(request_path) == 0 && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
         setup_phase                  
         if response = call_through_to_app
           response
@@ -46,7 +46,7 @@ module OmniAuth
           end
           request_phase
         end
-      elsif current_path == callback_path
+      elsif current_path.casecmp(callback_path) == 0
         setup_phase                  
         @env['omniauth.origin'] = session.delete('omniauth.origin')
         @env['omniauth.origin'] = nil if env['omniauth.origin'] == ''
@@ -62,7 +62,7 @@ module OmniAuth
     end
 
     def mock_call!(env)
-      if current_path == request_path 
+      if current_path.casecmp(request_path) == 0
         setup_phase
         if response = call_through_to_app
           response
@@ -74,7 +74,7 @@ module OmniAuth
           end
           redirect(callback_path)
         end
-      elsif current_path == callback_path
+      elsif current_path.casecmp(callback_path) == 0
         setup_phase
         mocked_auth = OmniAuth.mock_auth_for(name.to_sym)
         if mocked_auth.is_a?(Symbol)

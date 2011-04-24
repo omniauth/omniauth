@@ -98,6 +98,14 @@ describe OmniAuth::Strategy do
       it 'should use the default request path' do
         lambda{ strategy.call(make_env) }.should raise_error("Request Phase")
       end
+
+      it 'should be case insensitive on request path' do
+        lambda{ strategy.call(make_env('/AUTH/Test'))}.should raise_error("Request Phase")
+      end
+
+      it 'should be case insensitive on callback path' do
+        lambda{ strategy.call(make_env('/AUTH/TeSt/CaLlBAck'))}.should raise_error("Callback Phase")  
+      end
       
       it 'should use the default callback path' do
         lambda{ strategy.call(make_env('/auth/test/callback')) }.should raise_error("Callback Phase")
@@ -244,6 +252,14 @@ describe OmniAuth::Strategy do
         response = strategy.call(make_env)
         response[0].should == 302
         response[1]['Location'].should == '/auth/test/callback'
+      end
+
+      it 'should be case insensitive on request path' do
+        strategy.call(make_env('/AUTH/Test'))[0].should == 302
+      end
+
+      it 'should be case insensitive on callback path' do 
+        strategy.call(make_env('/AUTH/TeSt/CaLlBAck')).should == strategy.call(make_env('/auth/test/callback'))
       end
 
       it 'should not short circuit requests outside of authentication' do
