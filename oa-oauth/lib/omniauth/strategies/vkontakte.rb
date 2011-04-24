@@ -6,7 +6,7 @@ module OmniAuth
     #
     # Authenticate to Vkontakte utilizing OAuth 2.0 and retrieve
     # basic user information.
-    # documentation available here: 
+    # documentation available here:
     # http://vkontakte.ru/developers.php?o=-17680044&p=Authorization&s=0
     #
     # @example Basic Usage

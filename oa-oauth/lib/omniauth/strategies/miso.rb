@@ -3,7 +3,7 @@ require 'multi_json'
 
 module OmniAuth
   module Strategies
-    # 
+    #
     # Authenticate to Miso via OAuth and retrieve basic
     # user information.
     #
@@ -15,7 +15,7 @@ module OmniAuth
       def initialize(app, consumer_key = nil, consumer_secret = nil, options = {}, &block)
         super(app, :miso, consumer_key, consumer_secret, {:site => 'https://gomiso.com'}, options)
       end
-      
+
       def auth_hash
         OmniAuth::Utils.deep_merge(super, {
           'uid' => user_hash['id'],
@@ -23,8 +23,8 @@ module OmniAuth
           'extra' => {'user_hash' => user_hash}
         })
       end
-      
-      def user_info 
+
+      def user_info
         {
           'nickname' => user_hash['username'],
           'name' => user_hash['full_name'],
@@ -32,7 +32,7 @@ module OmniAuth
           'description' => user_hash['tagline'],
         }
       end
-      
+
       def user_hash
         @user_hash ||= MultiJson.decode(@access_token.get('/api/oauth/v1/users/show.json').body)['user']
       end

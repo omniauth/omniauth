@@ -1,23 +1,23 @@
 require 'omniauth/core'
 
 module OmniAuth
-  class NoSessionError < StandardError; end 
-  module Strategy 
+  class NoSessionError < StandardError; end
+  module Strategy
     def self.included(base)
       OmniAuth.strategies << base
       base.class_eval do
         attr_reader :app, :name, :env, :options, :response
       end
     end
-     
+
     def initialize(app, name, *args, &block)
       @app = app
       @name = name.to_sym
       @options = args.last.is_a?(Hash) ? args.pop : {}
-      
+
       yield self if block_given?
     end
-   
+
     def inspect
       "#<#{self.class.to_s}>"
     end
@@ -30,17 +30,17 @@ module OmniAuth
       raise OmniAuth::NoSessionError.new("You must provide a session to use OmniAuth.") unless env['rack.session']
 
       @env = env
-      @env['omniauth.strategy'] = self      
-      
+      @env['omniauth.strategy'] = self
+
       return mock_call!(env) if OmniAuth.config.test_mode
-      
+
       if current_path.casecmp(request_path) == 0 && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
         setup_phase                  
         if response = call_through_to_app
           response
         else
           if request.params['origin']
-            @env['rack.session']['omniauth.origin'] = request.params['origin']            
+            @env['rack.session']['omniauth.origin'] = request.params['origin']
           elsif env['HTTP_REFERER'] && !env['HTTP_REFERER'].match(/#{request_path}$/)
             @env['rack.session']['omniauth.origin'] = env['HTTP_REFERER']
           end
@@ -89,10 +89,10 @@ module OmniAuth
         call_app!
       end
     end
-    
+
     def setup_phase
       if options[:setup].respond_to?(:call)
-        options[:setup].call(env) 
+        options[:setup].call(env)
       elsif options[:setup]
         setup_env = env.merge('PATH_INFO' => setup_path, 'REQUEST_METHOD' => 'GET')
         call_app!(setup_env)
@@ -102,20 +102,20 @@ module OmniAuth
     def request_phase
       raise NotImplementedError
     end
-    
+
     def callback_phase
       @env['omniauth.auth'] = auth_hash
-      call_app! 
+      call_app!
     end
-    
+
     def path_prefix
       options[:path_prefix] || OmniAuth.config.path_prefix
     end
-    
+
     def request_path
       options[:request_path] || "#{path_prefix}/#{name}"
     end
-    
+
     def callback_path
       options[:callback_path] || "#{path_prefix}/#{name}/callback"
     end
@@ -131,25 +131,25 @@ module OmniAuth
     def query_string
       request.query_string.empty? ? "" : "?#{request.query_string}"
     end
-    
+
     def call_through_to_app
       status, headers, body = *call_app!
       @response = Rack::Response.new(body, status, headers)
-      
+
       status == 404 ? nil : @response.finish
     end
 
     def call_app!(env = @env)
       @app.call(env)
     end
-    
+
     def auth_hash
       {
         'provider' => name.to_s,
         'uid' => nil
       }
     end
-    
+
     def full_host
       case OmniAuth.config.full_host
         when String
@@ -179,7 +179,7 @@ module OmniAuth
     def request
       @request ||= Rack::Request.new(@env)
     end
-    
+
     def redirect(uri)
       r = Rack::Response.new
 
@@ -189,12 +189,12 @@ module OmniAuth
         r.write("Redirecting to #{uri}...")
         r.redirect(uri)
       end
-      
+
       r.finish
     end
-    
+
     def user_info; {} end
-    
+
     def fail!(message_key, exception = nil)
       self.env['omniauth.error'] = exception
       self.env['omniauth.error.type'] = message_key.to_sym

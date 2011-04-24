@@ -22,16 +22,16 @@ module OmniAuth
 
         super(app, :bitly, api_key, secret_key, client_options, options, &block)
       end
-      
+
       protected
-      
+
       def user_data
         {
           'login' => @access_token['login'],
           'api_key' => @access_token['apiKey']
         }
       end
-      
+
       def auth_hash
         OmniAuth::Utils.deep_merge(super, {
           'uid' => @access_token['login'],

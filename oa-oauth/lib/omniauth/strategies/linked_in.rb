@@ -1,4 +1,4 @@
-require 'nokogiri'
+require 'multi_xml'
 require 'omniauth/oauth'
 
 module OmniAuth
@@ -18,19 +18,19 @@ module OmniAuth
         '/uas/oauth/authorize'
         super(app, :linked_in, consumer_key, consumer_secret, client_options, options, &block)
       end
-      
+
       def auth_hash
         hash = user_hash(@access_token)
-        
+
         OmniAuth::Utils.deep_merge(super, {
           'uid' => hash.delete('id'),
           'user_info' => hash
         })
       end
-      
+
       def user_hash(access_token)
-        person = Nokogiri::XML::Document.parse(@access_token.get('/v1/people/~:(id,first-name,last-name,headline,member-url-resources,picture-url,location,public-profile-url)').body).xpath('person')
-        
+        person = MulitXml.parse(@access_token.get('/v1/people/~:(id,first-name,last-name,headline,member-url-resources,picture-url,location,public-profile-url)').body).xpath('person')
+
         hash = {
           'id' => person.xpath('id').text,
           'first_name' => person.xpath('first-name').text,
@@ -44,10 +44,10 @@ module OmniAuth
             h
           end
         }
-        
+
         hash['urls']['LinkedIn'] = person.xpath('public-profile-url').text
         hash['name'] = "#{hash['first_name']} #{hash['last_name']}"
-        
+
         hash
       end
     end

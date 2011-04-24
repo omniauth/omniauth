@@ -73,7 +73,7 @@ module OmniAuth
     attr_writer :on_failure
     attr_accessor :path_prefix, :allowed_request_methods, :form_css, :test_mode, :mock_auth, :full_host
   end
-  
+
   def self.config
     Configuration.instance
   end
@@ -97,7 +97,8 @@ module OmniAuth
       'soundcloud' => 'SoundCloud',
       'smugmug' => 'SmugMug',
       'cas' => 'CAS',
-      'trademe' => 'TradeMe'
+      'trademe' => 'TradeMe',
+      'ldap'  => 'LDAP'
     }
 
     module_function

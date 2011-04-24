@@ -14,7 +14,7 @@ module OmniAuth
     class Flickr
       include OmniAuth::Strategy
       attr_accessor :api_key, :secret_key, :options
-      
+
       # error catching, based on OAuth2 callback
       class CallbackError < StandardError
         attr_accessor :error, :error_reason
@@ -36,30 +36,30 @@ module OmniAuth
       end
 
       protected
-      
+
       def request_phase
         params = { :api_key => api_key, :perms => options[:scope] }
         params[:api_sig] = flickr_sign(params)
         query_string = params.collect{ |key,value| "#{key}=#{Rack::Utils.escape(value)}" }.join('&')
         redirect "http://flickr.com/services/auth/?#{query_string}"
       end
-      
+
       def callback_phase
         params = { :api_key => api_key, :method => 'flickr.auth.getToken', :frob => request.params['frob'], :format => 'json', :nojsoncallback => '1' }
         params[:api_sig] = flickr_sign(params)
-        
+
         response = RestClient.get('http://api.flickr.com/services/rest/', { :params => params })
         auth = MultiJson.decode(response.to_s)
         raise CallbackError.new(auth['code'],auth['message']) if auth['stat'] == 'fail'
-        
+
         @user = auth['auth']['user']
         @access_token = auth['auth']['token']['_content']
-        
+
         super
       rescue CallbackError => e
         fail!(:invalid_response, e)
       end
-      
+
       def auth_hash
         OmniAuth::Utils.deep_merge(super, {
           'uid' => @user['nsid'],
@@ -68,7 +68,7 @@ module OmniAuth
           'extra' => { 'user_hash' => @user }
         })
       end
-      
+
       def user_info
         name = @user['fullname']
         name = @user['username'] if name.nil? || name.empty?
@@ -77,7 +77,7 @@ module OmniAuth
           'name' => name,
         }
       end
-      
+
       def flickr_sign(params)
         Digest::MD5.hexdigest(secret_key + params.sort{|a,b| a[0].to_s <=> b[0].to_s }.flatten.join)
       end

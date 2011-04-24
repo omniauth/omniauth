@@ -1,17 +1,20 @@
 # -*- encoding: utf-8 -*-
-require File.expand_path('../../omniauth/lib/omniauth/version', __FILE__)
+version = File.read("VERSION").strip
 
 Gem::Specification.new do |gem|
-  gem.add_dependency 'oa-core', Omniauth::VERSION.dup
+  gem.add_dependency 'oa-core', version
   gem.add_dependency 'rack-openid', '~> 1.3.1'
-  gem.add_dependency 'ruby-openid-apps-discovery'
+  gem.add_dependency 'ruby-openid-apps-discovery', '~> 1.2.0' 
+  gem.add_development_dependency 'maruku', '~> 0.6'
   gem.add_development_dependency 'rack-test', '~> 0.5'
   gem.add_development_dependency 'rake', '~> 0.8'
   gem.add_development_dependency 'rspec', '~> 2.5'
+  gem.add_development_dependency 'simplecov', '~> 0.4'
   gem.add_development_dependency 'webmock', '~> 1.6'
   gem.add_development_dependency 'yard', '~> 0.6'
+  gem.add_development_dependency 'ZenTest', '~> 4.5'
   gem.name = 'oa-openid'
-  gem.version = Omniauth::VERSION.dup
+  gem.version = version
   gem.summary = %q{OpenID strategies for OmniAuth.}
   gem.description = %q{OpenID strategies for OmniAuth.}
   gem.email = ['michael@intridea.com', 'sferik@gmail.com']

@@ -20,21 +20,21 @@ module OmniAuth
           :authorize_url => 'https://gowalla.com/api/oauth/new',
           :access_token_url => 'https://api.gowalla.com/api/oauth/token'
         }
-        
+
         super(app, :gowalla, api_key, secret_key, client_options, options, &block)
       end
-      
+
       protected
-      
+
       def user_data
         @data ||= MultiJson.decode(@access_token.get("/users/me.json"))
       end
-      
+
       def request_phase
         options[:scope] ||= "read"
         super
       end
-      
+
       def user_info
         {
           'name' => "#{user_data['first_name']} #{user_data['last_name']}",
@@ -51,7 +51,7 @@ module OmniAuth
           }
         }
       end
-      
+
       def auth_hash
         OmniAuth::Utils.deep_merge(super, {
           'uid' => user_data["url"].split('/').last,

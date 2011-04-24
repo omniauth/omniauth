@@ -5,7 +5,7 @@ require 'nokogiri'
 module OmniAuth
   module Strategies
     class CAS
-      class ServiceTicketValidator        
+      class ServiceTicketValidator
 
         VALIDATION_REQUEST_HEADERS = { 'Accept' => '*/*' }
 
@@ -47,7 +47,7 @@ module OmniAuth
             hash
           end
         end
-        
+
         # finds an `<cas:authenticationSuccess>` node in
         # a `<cas:serviceResponse>` body if present; returns nil
         # if the passed body is nil or if there is no such node.
@@ -64,11 +64,11 @@ module OmniAuth
             nil
           end
         end
-        
+
         # retrieves the `<cas:serviceResponse>` XML from the CAS server
         def get_service_response_body
           result = ''
-          http = Net::HTTP.new(@uri.host, @uri.port)
+          http = ::Net::HTTP.new(@uri.host, @uri.port)
           http.use_ssl = @uri.port == 443 || @uri.instance_of?(URI::HTTPS)
           http.verify_mode = OpenSSL::SSL::VERIFY_NONE if http.use_ssl? && @configuration.disable_ssl_verification?
           http.start do |c|
@@ -77,7 +77,7 @@ module OmniAuth
           end
           result
         end
-        
+
       end
     end
   end

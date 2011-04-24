@@ -15,21 +15,21 @@ module OmniAuth
           :access_token_url   => "https://foursquare.com/oauth2/access_token"
         }, options, &block)
       end
-      
+
       def user_data
         @data ||= MultiJson.decode(@access_token.get(client.site+'/users/self', {'oauth_token' => @access_token.token}))
       end
-      
+
       def request_phase
         options[:response_type] ||= 'code'
         super
       end
-      
+
       def callback_phase
         options[:grant_type] ||= 'authorization_code'
         super
       end
-      
+
       def user_info
         {
           'nickname' => user_data['response']['user']['contact']['twitter'],
@@ -44,7 +44,7 @@ module OmniAuth
           'urls' => {}
         }
       end
-      
+
       def auth_hash
         OmniAuth::Utils.deep_merge(super, {
           'uid' => user_data['response']['user']['id'],

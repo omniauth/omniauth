@@ -3,7 +3,7 @@ require 'multi_json'
 
 module OmniAuth
   module Strategies
-    # OAuth 2.0 based authentication with GitHub. In order to 
+    # OAuth 2.0 based authentication with GitHub. In order to
     # sign up for an application, you need to [register an application](http://github.com/account/applications/new)
     # and provide the proper credentials to this middleware.
     class GitHub < OAuth2
@@ -16,16 +16,16 @@ module OmniAuth
           :authorize_path => '/login/oauth/authorize',
           :access_token_path => '/login/oauth/access_token'
         }
-        
+
         super(app, :github, client_id, client_secret, client_options, options, &block)
       end
-      
+
       protected
-      
+
       def user_data
         @data ||= MultiJson.decode(@access_token.get('/api/v2/json/user/show'))['user']
       end
-      
+
       def user_info
         {
           'nickname' => user_data["login"],
@@ -37,7 +37,7 @@ module OmniAuth
           }
         }
       end
-      
+
       def auth_hash
         OmniAuth::Utils.deep_merge(super, {
           'uid' => user_data['id'],
