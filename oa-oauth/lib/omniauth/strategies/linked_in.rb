@@ -15,7 +15,6 @@ module OmniAuth
 
         client_options[:authorize_path] = '/uas/oauth/authenticate' unless options[:sign_in] == false
 
-        '/uas/oauth/authorize'
         super(app, :linked_in, consumer_key, consumer_secret, client_options, options, &block)
       end
 
