@@ -45,7 +45,7 @@ module OmniAuth
 
         {
           'nickname' => user_hash['screen_name'],
-          'name' => user_hash['name'],
+          'name' => user_hash['name'] || user_hash['screen_name'],
           'location' => user_hash['location'],
           'image' => user_hash['profile_image_url'],
           'description' => user_hash['description'],
