@@ -56,6 +56,7 @@ OmniAuth currently supports the following external providers:
   * Vkontakte (credit: [german](https://github.com/german))
   * Yammer (credit: [kltcalamay](https://github.com/kltcalamay))
   * YouTube (credit: [jamiew](https://github.com/jamiew))
+  * Yuppo (credit: [chouti](https://github.com/chouti))
 * OpenID (credit: [mbleigh](https://github.com/mbleigh))
 * Google Apps (via OpenID) (credit: [mbleigh](https://github.com/mbleigh))
 * CAS (Central Authentication Service) (credit: [jamesarosen](https://github.com/jamesarosen))
