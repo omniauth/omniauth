@@ -2,6 +2,10 @@ require 'omniauth/core'
 
 module OmniAuth
   class NoSessionError < StandardError; end
+  # The Strategy is the base unit of OmniAuth's ability to
+  # wrangle multiple providers. Each strategy provided by 
+  # OmniAuth includes this mixin to gain the default functionality
+  # necessary to be compatible with the OmniAuth library.
   module Strategy
     def self.included(base)
       OmniAuth.strategies << base
@@ -30,62 +34,79 @@ module OmniAuth
       raise OmniAuth::NoSessionError.new("You must provide a session to use OmniAuth.") unless env['rack.session']
 
       @env = env
-      @env['omniauth.strategy'] = self
+      @env['omniauth.strategy'] = self if on_auth_path?
 
       return mock_call!(env) if OmniAuth.config.test_mode
 
-      if current_path.casecmp(request_path) == 0 && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
-        setup_phase
-        if response = call_through_to_app
-          response
-        else
-          if request.params['origin']
-            @env['rack.session']['omniauth.origin'] = request.params['origin']
-          elsif env['HTTP_REFERER'] && !env['HTTP_REFERER'].match(/#{request_path}$/)
-            @env['rack.session']['omniauth.origin'] = env['HTTP_REFERER']
-          end
-          request_phase
-        end
-      elsif current_path.casecmp(callback_path) == 0
-        setup_phase
-        @env['omniauth.origin'] = session.delete('omniauth.origin')
-        @env['omniauth.origin'] = nil if env['omniauth.origin'] == ''
-
-        callback_phase
+      return request_call if on_request_path? && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
+      return callback_call if on_callback_path?
+      return other_phase if respond_to?(:other_phase)
+      @app.call(env)  
+    end
+    
+    # Performs the steps necessary to run the request phase of a strategy.
+    def request_call
+      setup_phase
+      if response = call_through_to_app
+        response
       else
-        if respond_to?(:other_phase)
-          other_phase
-        else
-          @app.call(env)
+        if request.params['origin']
+          @env['rack.session']['omniauth.origin'] = request.params['origin']
+        elsif env['HTTP_REFERER'] && !env['HTTP_REFERER'].match(/#{request_path}$/)
+          @env['rack.session']['omniauth.origin'] = env['HTTP_REFERER']
         end
+        request_phase
       end
     end
 
+    # Performs the steps necessary to run the callback phase of a strategy.
+    def callback_call
+      setup_phase
+      @env['omniauth.origin'] = session.delete('omniauth.origin')
+      @env['omniauth.origin'] = nil if env['omniauth.origin'] == ''
+
+      callback_phase
+    end
+
+    def on_auth_path?
+      on_request_path? || on_callback_path?
+    end
+
+    def on_request_path?
+      current_path.casecmp(request_path) == 0
+    end
+
+    def on_callback_path?
+      current_path.casecmp(callback_path) == 0
+    end
+
     def mock_call!(env)
-      if current_path.casecmp(request_path) == 0
-        setup_phase
-        if response = call_through_to_app
-          response
-        else
-          if request.params['origin']
-            @env['rack.session']['omniauth.origin'] = request.params['origin']
-          elsif env['HTTP_REFERER'] && !env['HTTP_REFERER'].match(/#{request_path}$/)
-            @env['rack.session']['omniauth.origin'] = env['HTTP_REFERER']
-          end
-          redirect(callback_path)
-        end
-      elsif current_path.casecmp(callback_path) == 0
-        setup_phase
-        mocked_auth = OmniAuth.mock_auth_for(name.to_sym)
-        if mocked_auth.is_a?(Symbol)
-          fail!(mocked_auth)
-        else
-          @env['omniauth.auth'] = mocked_auth
-          @env['omniauth.origin'] = session.delete('omniauth.origin')
-          @env['omniauth.origin'] = nil if env['omniauth.origin'] == ''
-          call_app!
-        end
+      return mock_request_call if on_request_path? 
+      return mock_callback_call if on_callback_path?
+      call_app!
+    end
+
+    def mock_request_call
+      setup_phase
+      return response if response = call_through_to_app
+
+      if request.params['origin']
+        @env['rack.session']['omniauth.origin'] = request.params['origin']
+      elsif env['HTTP_REFERER'] && !env['HTTP_REFERER'].match(/#{request_path}$/)
+        @env['rack.session']['omniauth.origin'] = env['HTTP_REFERER']
+      end
+      redirect(callback_path)
+    end
+
+    def mock_callback_call
+      setup_phase
+      mocked_auth = OmniAuth.mock_auth_for(name.to_sym)
+      if mocked_auth.is_a?(Symbol)
+        fail!(mocked_auth)
       else
+        @env['omniauth.auth'] = mocked_auth
+        @env['omniauth.origin'] = session.delete('omniauth.origin')
+        @env['omniauth.origin'] = nil if env['omniauth.origin'] == ''
         call_app!
       end
     end
