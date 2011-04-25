@@ -16,23 +16,23 @@ To install OmniAuth, simply install the gem:
 OmniAuth currently supports the following external providers:
 
 * via OAuth (OAuth 1.0, OAuth 2, and xAuth)
-  * 37signals ID
+  * 37signals ID (credit: [mbleigh](https://github.com/mbleigh))
   * Bit.ly (credit: [philnash](https://github.com/philnash))
   * DailyMile (credit: [cdmwebs](https://github.com/cdmwebs))
   * Doit.im (credit: [chouti](https://github.com/chouti))
   * Dopplr (credit: [flextrip](https://github.com/flextrip))
   * Douban (credit: [quake](https://github.com/quake))
   * Evernote (credit: [szimek](https://github.com/szimek))
-  * Facebook
-  * Foursquare
-  * GitHub
+  * Facebook (credit: [mbleigh](https://github.com/mbleigh))
+  * Foursquare (credit: [mbleigh](https://github.com/mbleigh))
+  * GitHub (credit: [mbleigh](https://github.com/mbleigh))
   * GoodReads (credit: [cristoffer](https://github.com/christoffer))
   * Gowalla (credit: [kvnsmth](https://github.com/kvnsmth))
   * Hyves (credit: [mrdg](https://github.com/mrdg))
   * Identi.ca (credit: [dcu](https://github.com/dcu))
   * Instagram (credit: [kiyoshi](https://github.com/kiyoshi))
   * Instapaper (credit: [micpringle](https://github.com/micpringle))
-  * LinkedIn
+  * LinkedIn (credit: [mbleigh](https://github.com/mbleigh))
   * Meetup (credit [coderoshi](https://github.com/coderoshi))
   * Miso (credit: [rickenharp](https://github.com/rickenharp))
   * Mixi (credit: [kiyoshi](https://github.com/kiyoshi))
@@ -51,12 +51,13 @@ OmniAuth currently supports the following external providers:
   * Tsina (credit: [quake](https://github.com/quake))
   * Tsohu (credit: [quake](https://github.com/quake))
   * Tumblr (credit: [jamiew](https://github.com/jamiew))
-  * Twitter
+  * Twitter (credit: [mbleigh](https://github.com/mbleigh))
   * Vimeo (credit: [jamiew](https://github.com/jamiew))
   * Vkontakte (credit: [german](https://github.com/german))
+  * Yammer (credit: [kltcalamay](https://github.com/kltcalamay))
   * YouTube (credit: [jamiew](https://github.com/jamiew))
-* OpenID
-* Google Apps (via OpenID)
+* OpenID (credit: [mbleigh](https://github.com/mbleigh))
+* Google Apps (via OpenID) (credit: [mbleigh](https://github.com/mbleigh))
 * CAS (Central Authentication Service) (credit: [jamesarosen](https://github.com/jamesarosen))
 * LDAP (credit: [pyu10055](https://github.com/pyu10055))
 * Flickr (credit: [pchilton](https://github.com/pchilton))
@@ -108,6 +109,11 @@ The best place to find more information is the [OmniAuth Wiki](http://github.com
 * [Changelog](http://github.com/intridea/omniauth/wiki/Changelog)
 * [Report Issues](http://github.com/intridea/omniauth/issues)
 * [Mailing List](http://groups.google.com/group/omniauth)
+
+## OmniAuth Core
+
+* **Michael Bleigh** ([mbleigh](https://github.com/mbleigh))
+* **Erik Michaels-Ober** ([sferik](https://github.com/sferik))
 
 ## License
 
