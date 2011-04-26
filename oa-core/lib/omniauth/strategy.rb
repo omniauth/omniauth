@@ -30,12 +30,14 @@ module OmniAuth
       raise OmniAuth::NoSessionError.new("You must provide a session to use OmniAuth.") unless env['rack.session']
 
       @env = env
-      @env['omniauth.strategy'] = self      
+      if match_path
+        @env['omniauth.strategy'] = self       
+      end
       
       return mock_call!(env) if OmniAuth.config.test_mode
       
-      
       if match_request_path && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
+        
         setup_phase                  
         if response = call_through_to_app
           response
@@ -185,7 +187,11 @@ module OmniAuth
     def callback_url
       full_host + script_name + callback_path + query_string
     end
-
+    
+    def match_path
+      current_path =~ /^#{request_path}.*/
+    end
+    
     def match_request_path
       return false if current_path =~ /.*\/(setup|callback|failure)$/
       current_path =~ /^#{request_path}.*/
