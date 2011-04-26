@@ -55,7 +55,7 @@ module OmniAuth
 
           config = {
             :host => host,
-            :eport => port,
+            :port => port,
           }
 
           config[:encryption] = {:method => method} if method
