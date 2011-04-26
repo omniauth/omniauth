@@ -70,7 +70,7 @@ desc "Run specs for all of the gems"
 task :spec do
   error_gems = []
   each_gem('specs are running...') do |gem|
-    unless system('rake spec')
+    unless system('bundle exec rake spec')
       error_gems << gem
     end
   end
