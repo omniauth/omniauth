@@ -53,7 +53,8 @@ module OmniAuth
 
       def callback_phase
       	begin
-        creds = session.delete 'omniauth.ldap'
+        creds = session['omniauth.ldap']
+        session.delete 'omniauth.ldap'
 				@ldap_user_info = {}
         begin
         	(@adaptor.bind(:allow_anonymous => true) unless @adaptor.bound?)
