@@ -1,4 +1,4 @@
-unless RUBY_PLATFORM == 'java' 
+unless defined?(JRUBY_VERSION)
   require File.expand_path('../../../spec_helper', __FILE__)
 
   describe OmniAuth::Strategies::Evernote do

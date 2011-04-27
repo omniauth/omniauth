@@ -8,7 +8,7 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency 'oauth', '~> 0.4.0'
   gem.add_runtime_dependency 'faraday', '~> 0.6.1'
   gem.add_runtime_dependency 'oauth2', '~> 0.4.1'
-  gem.add_development_dependency 'evernote', '~> 0.9' unless RUBY_PLATFORM == 'java'
+  gem.add_development_dependency 'evernote', '~> 0.9'
   gem.add_development_dependency 'maruku', '~> 0.6'
   gem.add_development_dependency 'rack-test', '~> 0.5'
   gem.add_development_dependency 'rake', '~> 0.8'
