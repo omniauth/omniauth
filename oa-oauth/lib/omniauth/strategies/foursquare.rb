@@ -40,7 +40,7 @@ module OmniAuth
           'nickname' => user_data['response']['user']['contact']['twitter'],
           'first_name' => user_data['response']['user']['firstName'],
           'last_name' => user_data['response']['user']['lastName'],
-          'email' => user_data['response']['user']['contact']['twitter'],
+          'email' => user_data['response']['user']['contact']['email'],
           'name' => "#{user_data['response']['user']['firstName']} #{user_data['response']['user']['lastName']}".strip,
         # 'location' => user_data['response']['user']['location'],
           'image' => user_data['response']['user']['photo'],
