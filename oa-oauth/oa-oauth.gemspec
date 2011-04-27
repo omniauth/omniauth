@@ -2,11 +2,12 @@
 version = File.read("VERSION").strip
 
 Gem::Specification.new do |gem|
-  gem.add_runtime_dependency 'oa-core', version
-  gem.add_runtime_dependency 'multi_json', '>= 0.0.5'
-  gem.add_runtime_dependency 'multi_xml', '~> 0.2.2'
-  gem.add_runtime_dependency 'oauth', '~> 0.4.0'
   gem.add_runtime_dependency 'faraday', '~> 0.6.1'
+  gem.add_runtime_dependency 'jruby-openssl', '~> 0.7.3' if RUBY_PLATFORM == 'java'
+  gem.add_runtime_dependency 'multi_json', '~> 1.0.0'
+  gem.add_runtime_dependency 'multi_xml', '~> 0.2.2'
+  gem.add_runtime_dependency 'oa-core', version
+  gem.add_runtime_dependency 'oauth', '~> 0.4.0'
   gem.add_runtime_dependency 'oauth2', '~> 0.4.1'
   gem.add_development_dependency 'evernote', '~> 0.9'
   gem.add_development_dependency 'maruku', '~> 0.6'

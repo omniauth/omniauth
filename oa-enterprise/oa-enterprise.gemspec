@@ -3,11 +3,12 @@ version = File.read("VERSION").strip
 
 Gem::Specification.new do |gem|
   gem.add_runtime_dependency 'addressable', '2.2.4'
-  gem.add_runtime_dependency 'oa-core', version
+  gem.add_runtime_dependency 'jruby-openssl', '~> 0.7.3' if RUBY_PLATFORM == 'java'
   gem.add_runtime_dependency 'nokogiri', '~> 1.4.2'
   gem.add_runtime_dependency 'net-ldap', '~> 0.2.2'
-  gem.add_runtime_dependency 'rubyntlm', '~> 0.1.1'
+  gem.add_runtime_dependency 'oa-core', version
   gem.add_runtime_dependency 'pyu-ruby-sasl', '~> 0.0.3.1'
+  gem.add_runtime_dependency 'rubyntlm', '~> 0.1.1'
   gem.add_development_dependency 'maruku', '~> 0.6'
   gem.add_development_dependency 'simplecov', '~> 0.4'
   gem.add_development_dependency 'rack-test', '~> 0.5'

@@ -3,6 +3,7 @@ version = File.read("VERSION").strip
 
 Gem::Specification.new do |gem|
   gem.add_runtime_dependency 'oa-core', version
+  gem.add_runtime_dependency 'jruby-openssl', '~> 0.7.3' if RUBY_PLATFORM == 'java'
   gem.add_runtime_dependency 'rest-client', '~> 1.6.0'
   gem.add_development_dependency 'maruku', '~> 0.6'
   gem.add_development_dependency 'simplecov', '~> 0.4'
