@@ -8,5 +8,5 @@ gemspec :path => 'oa-oauth'
 gemspec :path => 'oa-openid'
 
 group :development do
-  gem "thrift_client", "0.6.1", :git => "git://github.com/sferik/thrift_client.git", :branch => "update_thrift_dependency"
+  gem "thrift_client", "0.6.1", :git => "git://github.com/sferik/thrift_client.git", :branch => "bump_version"
 end
