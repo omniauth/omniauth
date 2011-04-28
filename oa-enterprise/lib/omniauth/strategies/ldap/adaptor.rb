@@ -247,6 +247,7 @@ module OmniAuth
             :password => (options[:password]||@password).to_s,
           }
           begin
+            raise AuthenticationError if args[:password] == ""
             execute(:bind, args)
             true
           rescue Exception
