@@ -83,8 +83,8 @@ module OmniAuth
       #}
 
       def user_info
-        {
-          puts user_data.to_json
+        puts user_data.to_json
+        {          
           'nickname' => user_data['nick'],
           'email' =>  user_data['email'],
           'first_name' => user_data["first_name"],
