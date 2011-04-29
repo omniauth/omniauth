@@ -36,6 +36,8 @@ task :tag do
   sh "git push --tags"
 end
 
+task :push => 'all:push'
+
 desc 'Build, tag, and push gems for all projects to Rubygems'
 task :release => [:build, :tag, :push]
 
