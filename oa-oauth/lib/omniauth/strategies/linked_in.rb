@@ -28,7 +28,7 @@ module OmniAuth
       end
 
       def user_hash(access_token)
-        person = MulitXml.parse(@access_token.get('/v1/people/~:(id,first-name,last-name,headline,member-url-resources,picture-url,location,public-profile-url)').body).xpath('person')
+        person = MultiXml.parse(@access_token.get('/v1/people/~:(id,first-name,last-name,headline,member-url-resources,picture-url,location,public-profile-url)').body).xpath('person')
 
         hash = {
           'id' => person.xpath('id').text,
