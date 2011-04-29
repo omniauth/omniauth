@@ -22,7 +22,7 @@ module OmniAuth
           :access_token_path => '/oauth/token'
         }
         
-        options[:scope] ||= "widget"
+        #options[:scope] ||= "widget"
 
         super(app, :mailru, api_key, secret_key, client_options, options, &block)
       end
@@ -30,7 +30,8 @@ module OmniAuth
       protected
 
       def user_data
-        @data ||= MultiJson.decode(@access_token.get("http://www.appsmail.ru/platform/api?method=users.getInfo&app_id=#{api_key}&session_key=#{@access_token['access_token']}&sig=#{secret_key}"))[0]
+        #@data ||= MultiJson.decode(@access_token.get("http://www.appsmail.ru/platform/api?method=users.getInfo&app_id=#{api_key}&session_key=#{@access_token['access_token']}&sig=#{secret_key}"))[0]
+        @data ||= MultiJson.decode(@access_token.get("http://www.appsmail.ru/platform/api?method=users.getInfo"))[0]        
       end
 
 
