@@ -49,6 +49,6 @@ module OmniAuth
     autoload :Yahoo,              'omniauth/strategies/yahoo'
     autoload :Yammer,             'omniauth/strategies/yammer'
     autoload :YouTube,            'omniauth/strategies/you_tube'
-    autoload :Mailru,             'omniauth/strategies/mail.ru'    
+    autoload :Mailru,             'omniauth/strategies/mailru'    
   end
 end
