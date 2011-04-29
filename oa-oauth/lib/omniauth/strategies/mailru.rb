@@ -36,7 +36,8 @@ module OmniAuth
 
       def user_data
         puts @access_token.to_json
-        @data ||= MultiJson.decode(@access_token.get("http://www.appsmail.ru/platform/api?method=users.getInfo&app_id=#{client_id}&session_key=#{@access_token['token']}"))[0]     
+        @data ||= MultiJson.decode(@access_token.get("http://www.appsmail.ru/platform/api?method=users.getInfo&app_id=#{client_id}"))[0]     
+        puts @data
       end
 
 
