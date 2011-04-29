@@ -22,7 +22,7 @@ module OmniAuth
           :access_token_path => '/oauth/token'
         }
         
-        #options[:scope] ||= "widget"
+        options[:scope] ||= "widget"
 
         super(app, :mailru, api_key, secret_key, client_options, options, &block)
       end
