@@ -20,7 +20,7 @@ PROJECTS.each do |project|
   namespace project.to_sym do
     dir           = root + (project == 'omniauth' ? '' : "/#{project}")
     package_dir   = "#{dir}/pkg"
-    coverage_dir  = "#{dir}/converage"
+    coverage_dir  = "#{dir}/coverage"
     temp_dir      = "#{dir}/tmp"
     gem           = "#{project}-#{version}.gem"
     gemspec       = "#{project}.gemspec"
