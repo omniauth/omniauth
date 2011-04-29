@@ -47,4 +47,3 @@ namespace :doc do
     task.files = PROJECTS.map{|project| "#{root}/#{project}/lib/**/*.rb"} + ['README.markdown', 'LICENSE']
   end
 end
-
