@@ -83,19 +83,17 @@ module OmniAuth
       #}
 
       def user_info
-        puts user_data.to_json
         {          
           'nickname' => user_data['nick'],
           'email' =>  user_data['email'],
           'first_name' => user_data["first_name"],
           'last_name' => user_data["last_name"],
           'name' => "#{user_data['first_name']} #{user_data['last_name']}",
-          'location' => "#{@data['location']['country']['name']}, #{@data['location']['region']['name']}, #{@data['location']['city']['name']}",
           'image' => @data['pic'],
           'urls' => {
             'Mailru' => user_data["link"]
           }          
-        }
+        }                
       end
 
       def auth_hash
