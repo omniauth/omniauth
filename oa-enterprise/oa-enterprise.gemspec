@@ -1,12 +1,12 @@
 # -*- encoding: utf-8 -*-
-version = File.read("VERSION").strip
+require File.expand_path('../lib/omniauth/version', __FILE__)
 
 Gem::Specification.new do |gem|
   gem.add_runtime_dependency 'addressable', '2.2.4'
   gem.add_runtime_dependency 'jruby-openssl', '~> 0.7.3' if RUBY_PLATFORM == 'java'
   gem.add_runtime_dependency 'nokogiri', '~> 1.4.2'
   gem.add_runtime_dependency 'net-ldap', '~> 0.2.2'
-  gem.add_runtime_dependency 'oa-core', version
+  gem.add_runtime_dependency 'oa-core', OmniAuth::Version::STRING
   gem.add_runtime_dependency 'pyu-ruby-sasl', '~> 0.0.3.1'
   gem.add_runtime_dependency 'rubyntlm', '~> 0.1.1'
   gem.add_development_dependency 'maruku', '~> 0.6'
@@ -18,9 +18,9 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'yard', '~> 0.6'
   gem.add_development_dependency 'ZenTest', '~> 4.5'
   gem.name = 'oa-enterprise'
-  gem.version = version
-  gem.summary = %q{Enterprise strategies for OmniAuth.}
+  gem.version = OmniAuth::Version::STRING
   gem.description = %q{Enterprise strategies for OmniAuth.}
+  gem.summary = gem.description
   gem.email = ['james.a.rosen@gmail.com', 'ping@intridea.com', 'michael@intridea.com', 'sferik@gmail.com']
   gem.homepage = 'http://github.com/intridea/omniauth'
   gem.authors = ['James A. Rosen', 'Ping Yu', 'Michael Bleigh', 'Erik Michaels-Ober']

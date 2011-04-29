@@ -1,11 +1,6 @@
 require 'omniauth/oauth'
 require 'multi_json'
-
-begin
-  require 'evernote'
-rescue LoadError => e
-  raise "Omniauth Evernote strategy requires 'evernote' gem. Add it to your Gemfile: gem 'evernote'"
-end
+require 'evernote'
 
 module OmniAuth
   module Strategies

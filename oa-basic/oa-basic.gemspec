@@ -1,8 +1,8 @@
 # -*- encoding: utf-8 -*-
-version = File.read("VERSION").strip
+require File.expand_path('../lib/omniauth/version', __FILE__)
 
 Gem::Specification.new do |gem|
-  gem.add_runtime_dependency 'oa-core', version
+  gem.add_runtime_dependency 'oa-core', OmniAuth::Version::STRING
   gem.add_runtime_dependency 'jruby-openssl', '~> 0.7.3' if RUBY_PLATFORM == 'java'
   gem.add_runtime_dependency 'rest-client', '~> 1.6.0'
   gem.add_development_dependency 'maruku', '~> 0.6'
@@ -14,9 +14,9 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'yard', '~> 0.6'
   gem.add_development_dependency 'ZenTest', '~> 4.5'
   gem.name = 'oa-basic'
-  gem.version = version
-  gem.summary = %q{HTTP Basic strategies for OmniAuth.}
+  gem.version = OmniAuth::Version::STRING
   gem.description = %q{HTTP Basic strategies for OmniAuth.}
+  gem.summary = gem.description
   gem.email = ['michael@intridea.com', 'sferik@gmail.com']
   gem.homepage = 'http://github.com/intridea/omniauth'
   gem.authors = ['Michael Bleigh', 'Erik Michaels-Ober']
