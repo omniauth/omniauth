@@ -28,16 +28,21 @@ module OmniAuth
       end
 
       protected
+      
+      def request_phase
+        options[:response_type] ||= 'code'
+        super
+      end      
 
       def user_data
         #@data ||= MultiJson.decode(@access_token.get("http://www.appsmail.ru/platform/api?method=users.getInfo&app_id=#{api_key}&session_key=#{@access_token['access_token']}&sig=#{secret_key}"))[0]
-        @data ||= MultiJson.decode(@access_token.get("http://www.appsmail.ru/platform/api?method=users.getInfo"))[0]        
+        #@data ||= MultiJson.decode(@access_token.get("http://www.appsmail.ru/platform/api?method=users.getInfo"))[0]        
       end
 
 
       def user_info
         {
-          'email' => user_data['email']
+          #'email' => user_data['email']
         }
       end
 
