@@ -15,12 +15,15 @@ module OmniAuth
       # @param [Rack Application] app standard middleware application parameter
       # @param [String] api_key the application id as [registered in Mailru]
       # @param [String] secret_key the application secret as [registered in Mailru]
-      def initialize(app, api_key = nil, secret_key = nil, options = {}, &block)
+           
+      def initialize(app, api_key = nil, secret_key = nil, private_key = nil, options = {}, &block)
         client_options = {
           :site => 'https://connect.mail.ru',
           :authorize_path => '/oauth/authorize',
           :access_token_path => '/oauth/token'
         }
+        
+        @private_key  = private_key
         
         #options[:scope] ||= "widget"
 
@@ -32,12 +35,23 @@ module OmniAuth
       def request_phase
         options[:response_type] ||= 'code'
         super
-      end      
+      end   
+      
+      def calculate_signature(params)
+        str = params['uids'] + (params.sort.collect { |c| "#{c[0]}=#{c[1]}" }).join('') + @private_key
+        Digest::MD5.hexdigest(str)
+      end   
 
       def user_data
-        puts @access_token.to_json
-        @data ||= MultiJson.decode(@access_token.get("http://www.appsmail.ru/platform/api?method=users.getInfo&app_id=#{client_id}"))[0]     
-        puts @data
+        request_params = {
+          'method' => 'users.getInfo',
+          'app_id' => client_id,
+          'session_key' => @access_token.token,
+          'uids' => @access_token['x_mailru_vid']
+        }
+        
+        request_params.merge!('sig' => calculate_signature(request_params))
+        @data ||= MultiJson.decode(client.request(:get, 'http://www.appsmail.ru/platform/api', request_params))[0]
       end
 
 
@@ -54,6 +68,6 @@ module OmniAuth
           'extra' => {'user_hash' => user_data}
         })
       end
+    end    
   end
-end
 end
