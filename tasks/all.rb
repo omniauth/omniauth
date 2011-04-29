@@ -1,3 +1,5 @@
+require 'fileutils'
+
 PROJECTS = %w(oa-core oa-basic oa-enterprise oa-more oa-oauth oa-openid omniauth)
 
 def root
