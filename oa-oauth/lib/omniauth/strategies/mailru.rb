@@ -10,20 +10,19 @@ module OmniAuth
     # http://api.mail.ru/docs/guides/oauth/sites/
     #
     # @example Basic Usage
-    #     use OmniAuth::Strategies::Mailru, 'API Key', 'Secret Key'
+    #     use OmniAuth::Strategies::Mailru, 'API Key', 'Secret Key', :private_key => 'Private Key'
     class Mailru < OAuth2
       # @param [Rack Application] app standard middleware application parameter
       # @param [String] api_key the application id as [registered in Mailru]
-      # @param [String] secret_key the application secret as [registered in Mailru]
-      # @param [String] private_key the application secret as [registered in Mailru]         
-      def initialize(app, api_key = nil, secret_key = nil, private_key = nil, options = {}, &block)
+      # @param [String] secret_key the application secret as [registered in Mailru]       
+      def initialize(app, api_key = nil, secret_key = nil, options = {}, &block)
         client_options = {
           :site => 'https://connect.mail.ru',
           :authorize_path => '/oauth/authorize',
           :access_token_path => '/oauth/token'
         }
         
-        @private_key  = private_key        
+        @private_key  = options[:private_key]       
 
         super(app, :mailru, api_key, secret_key, client_options, options, &block)
       end
