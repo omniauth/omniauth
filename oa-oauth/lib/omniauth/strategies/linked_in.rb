@@ -28,26 +28,24 @@ module OmniAuth
       end
 
       def user_hash(access_token)
-        person = MultiXml.parse(@access_token.get('/v1/people/~:(id,first-name,last-name,headline,member-url-resources,picture-url,location,public-profile-url)').body).xpath('person')
+       person = MultiXml.parse(@access_token.get('/v1/people/~:(id,first-name,last-name,headline,member-url-resources,picture-url,location,public-profile-url)').body)['person']
 
         hash = {
-          'id' => person.xpath('id').text,
-          'first_name' => person.xpath('first-name').text,
-          'last_name' => person.xpath('last-name').text,
-          'nickname' => person.xpath('public-profile-url').text.split('/').last,
-          'location' => person.xpath('location/name').text,
-          'image' => person.xpath('picture-url').text,
-          'description' => person.xpath('headline').text,
-          'public_profile_url' => person.xpath('public-profile-url').text,
-          'urls' => person.css('member-url-resources member-url').inject({}) do |h,element|
-            h[element.xpath('name').text] = element.xpath('url').text
-            h
-          end
+          'id' => person['id'],
+          'first_name' => person['first_name'],
+          'last_name' => person['last_name'],
+          'nickname' => person['public_profile_url'].split('/').last,
+          'location' => person['location']['name'],
+          'image' => person['picture_url'],
+          'description' => person['headline'],
+          'public_profile_url' => person['public_profile_url']
         }
-
-        hash['urls']['LinkedIn'] = person.xpath('public-profile-url').text
+        hash['urls']={}
+        person['member_url_resources']['member_url'].each do |url|
+          hash['urls']["#{url['name']}"]=url['url']
+        end
+        hash['urls']['LinkedIn'] = person['public_profile_url']
         hash['name'] = "#{hash['first_name']} #{hash['last_name']}"
-
         hash
       end
     end
