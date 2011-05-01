@@ -25,7 +25,7 @@ module OmniAuth
       protected
       
       def request_phase
-        OmniAuth::Page.build(:title => 'IGN Authentication', :hostname=>@hostname) do
+        OmniAuth::Form.build(:title => 'IGN Authentication', :header_info=>js) do
           label_field('Identifying you with the IGN server', IDENTIFIER_URL_PARAMETER)
         end.to_response
       end
@@ -54,6 +54,40 @@ module OmniAuth
           'nickname' => request.params["username"],
         }
       end
+      
+    def js
+      @js = <<-JS
+     $(document).ready(function() {
+      $.ajax({
+        url: "http://#{@hostname}/users/current.json?callback=z33k",
+        type: "get",
+        dataType:"jsonp",
+        success: function(data) {
+          if(typeof data.error == 'undefined'){
+            // There is a current My IGN user
+            var username  = data.my_ign_username;
+            var signature   = data.signature;
+            var timestamp   = data.timestamp;
+            window.location = "/auth/ign/callback?username=" +username+"&signature="+signature+"&timestamp=" + timestamp;
+          }
+          else{
+            nouser();
+          }
+        }
+      });
+      return false;
+    });
+    function nouser() {
+      var url = "http://my.ign.com/login?r="+window.location;
+      top.location = url;
+      window.location = url;
+    }
+    JS
+      "\n<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js' type='text/javascript'></script>" +
+      "\n<script type='text/javascript'>#{@js}</script>" +
+      "\n<style type='text/css'>button {visibility:hidden;}</style>"
+    end
+      
     end
   end
 end
