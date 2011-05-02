@@ -15,27 +15,23 @@ as a Rack middleware. The basic setup would look something like this:
       provider :identity
     end
 
-Next, you need to create a model that will be able to persist the
-information provided by the user. By default, this model should be a
-class called `Identity` and should respond to the following API:
+Next, you need to create a model (called `Identity by default`) that will 
+be able to persist the information provided by the user. Luckily for you, 
+there are pre-built models for popular ORMs that make this dead simple. You 
+just need to subclass the relevant class:
 
-    Identity.create(
-      :name => 'x', 
-      :password => 'y', 
-      :confirm_password => 'y'
-    )
-
-    identity = Identity.authenticate('key', 'password')
-      # => Identity instance if correct
-      # => false if incorrect
-
-    identity.user_info # => {'name' => '...', 'nickname' => '...'}
-    identity.uid       # => must be unique to the application
-
-To make things easier, you can inherit your model from the ones provided
-for popular ORMs which will automatically provide the default setup
-necessary. For example:
-
-    class Identity < OmniAuth::Identity::Model::ActiveRecord
-      login_key :nickname
+    class Identity < OmniAuth::Identity::Models::ActiveRecord
+      # Add whatever you like!
     end
+
+Adapters are provided for `ActiveRecord` and `MongoMapper` and are
+autoloaded on request (but not loaded by default so no dependencies are
+injected).
+
+Once you've got an Identity persistence model and the strategy up and
+running, you can point users to `/auth/identity` and it will request
+that they log in or give them the opportunity to sign up for an account.
+Once they have authenticated with their identity, OmniAuth will call
+through to `/auth/identity/callback` with the same kinds of information
+it would had the user authenticated through an external provider.
+Simple!
