@@ -31,15 +31,13 @@ module OmniAuth
         request_token = consumer.get_request_token(:oauth_callback => callback_url)
         session['oauth'] ||= {}
         session['oauth'][name.to_s] = {'callback_confirmed' => request_token.callback_confirmed?, 'request_token' => request_token.token, 'request_secret' => request_token.secret}
-        r = Rack::Response.new
 
         if request_token.callback_confirmed?
-          r.redirect(request_token.authorize_url(options[:authorize_params]))
+          redirect request_token.authorize_url(options[:authorize_params])
         else
-          r.redirect(request_token.authorize_url(options[:authorize_params].merge(:oauth_callback => callback_url)))
+          redirect request_token.authorize_url(options[:authorize_params].merge(:oauth_callback => callback_url))
         end
 
-        r.finish
       rescue ::Timeout::Error => e
         fail!(:timeout, e)
       end
