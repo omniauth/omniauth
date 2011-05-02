@@ -26,7 +26,9 @@ module OmniAuth
         # @param [String] password The presumed password for the identity. 
         # @return [Model] An instance of the identity model class.
         def authenticate(key, password)
-          locate(key).authenticate(password)
+          instance = locate(key)
+          return false unless instance
+          instance.authenticate(password)
         end
         
         # Used to set or retrieve the method that will be used to get
@@ -73,12 +75,13 @@ module OmniAuth
       end
 
       # An identifying string that must be globally unique to the
-      # application.
+      # application. Defaults to stringifying the `id` method.
       #
       # @return [String] An identifier string unique to this identity.
       def uid
         if respond_to?('id')
-          self.id
+          return nil if self.id.nil?
+          self.id.to_s
         else
           raise NotImplementedError 
         end

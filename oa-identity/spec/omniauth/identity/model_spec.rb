@@ -18,6 +18,11 @@ describe OmniAuth::Identity::Model do
         subject.should_receive(:locate).with('example').and_return(mocked_instance)
         subject.authenticate('example','pass').should == 'abbadoo'
       end
+
+      it 'should recover gracefully if locate is nil' do
+        subject.stub!(:locate).and_return(nil)
+        subject.authenticate('blah','foo').should be_false
+      end
     end
   end
 
@@ -33,6 +38,11 @@ describe OmniAuth::Identity::Model do
         subject.should_receive(:respond_to?).with('id').and_return(true)
         subject.stub!(:id).and_return 'wakka-do'
         subject.uid.should == 'wakka-do'
+      end
+
+      it 'should stringify it' do
+        subject.stub!(:id).and_return 123
+        subject.uid.should == '123'
       end
 
       it 'should raise NotImplementedError if #id is not defined' do
