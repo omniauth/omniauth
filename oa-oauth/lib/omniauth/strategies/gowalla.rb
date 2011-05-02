@@ -30,6 +30,14 @@ module OmniAuth
         @data ||= MultiJson.decode(@access_token.get("/users/me.json"))
       end
 
+      def refresh_token
+        @refresh_token ||= @access_token.refresh_token
+      end
+
+      def token_expires_at
+        @expires_at ||= @access_token.expires_at
+      end
+
       def request_phase
         options[:scope] ||= "read"
         super
@@ -56,7 +64,7 @@ module OmniAuth
         OmniAuth::Utils.deep_merge(super, {
           'uid' => user_data["url"].split('/').last,
           'user_info' => user_info,
-          'extra' => {'user_hash' => user_data}
+          'extra' => {'user_hash' => user_data, 'refresh_token' => refresh_token, 'token_expires_at' => token_expires_at}
         })
       end
     end
