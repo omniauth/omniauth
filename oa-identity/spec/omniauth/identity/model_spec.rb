@@ -46,6 +46,7 @@ describe OmniAuth::Identity::Model do
       end
 
       it 'should raise NotImplementedError if #id is not defined' do
+        subject.should_receive(:respond_to?).with('id').and_return(false)
         lambda{ subject.uid }.should raise_error(NotImplementedError)
       end
     end
