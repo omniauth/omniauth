@@ -28,6 +28,16 @@ module OmniAuth
         def authenticate(key, password)
           locate(key).authenticate(password)
         end
+        
+        # Used to set or retrieve the method that will be used to get
+        # and set the user-supplied authentication key.
+        # @return [String] The method name.
+        def auth_key(method = false)
+          @auth_key = method.to_s unless method == false
+          @auth_key = nil if @auth_key == ''
+
+          @auth_key || 'email'
+        end
       end
 
       # Returns self if the provided password is correct, false
@@ -60,6 +70,46 @@ module OmniAuth
         info['name'] ||= info['nickname']
 
         info
+      end
+
+      # An identifying string that must be globally unique to the
+      # application.
+      #
+      # @return [String] An identifier string unique to this identity.
+      def uid
+        if respond_to?('id')
+          self.id
+        else
+          raise NotImplementedError 
+        end
+      end
+
+      # Used to retrieve the user-supplied authentication key (e.g. a
+      # username or email). Determined using the class method of the same name,
+      # defaults to `:email`. 
+      #
+      # @return [String] An identifying string that will be entered by
+      #   users upon sign in.
+      def auth_key
+        if respond_to?(self.class.auth_key)
+          send(self.class.auth_key)
+        else
+          raise NotImplementedError
+        end
+      end
+
+      # Used to set the user-supplied authentication key (e.g. a
+      # username or email. Determined using the `.auth_key` class
+      # method.
+      #
+      # @param [String] value The value to which the auth key should be
+      #   set.
+      def auth_key=(value)
+        if respond_to?(self.class.auth_key + '=')
+          send(self.class.auth_key + '=', value)
+        else
+          raise NotImplementedError
+        end
       end
     end
   end
