@@ -36,10 +36,12 @@ module OmniAuth
 
         # we need these 2 additional requests since vkontakte returns only ids of the City and Country
         # http://vkontakte.ru/developers.php?o=-17680044&p=getCities
-        @city ||= MultiJson.decode(@access_token.get("https://api.vkontakte.ru/method/getCities?cids=#{@data['city']}&access_token=#{@access_token.token}"))['response'].try(:[], 0).try(:[], 'name')
+        cities = MultiJson.decode(@access_token.get("https://api.vkontakte.ru/method/getCities?cids=#{@data['city']}&access_token=#{@access_token.token}"))['response']
+        @city ||= cities.first['name'] if cities && cities.first
 
         # http://vkontakte.ru/developers.php?o=-17680044&p=getCountries
-        @country ||= MultiJson.decode(@access_token.get("https://api.vkontakte.ru/method/getCountries?cids=#{@data['country']}&access_token=#{@access_token}"))['response'].try(:[], 0).try(:[], 'name')
+        countries = MultiJson.decode(@access_token.get("https://api.vkontakte.ru/method/getCountries?cids=#{@data['country']}&access_token=#{@access_token}"))['response']
+        @country ||= countries.first['name'] if countries && countries.first
       end
 
     def request_phase
