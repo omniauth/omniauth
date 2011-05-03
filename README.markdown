@@ -11,6 +11,10 @@ To install OmniAuth, simply install the gem:
 
     gem install omniauth
 
+
+## Continuous Integration
+[![Build Status](http://travis-ci.org/intridea/omniauth.png)](http://travis-ci.org/intridea/omniauth)
+
 ## Providers
 
 OmniAuth currently supports the following external providers:
@@ -33,7 +37,7 @@ OmniAuth currently supports the following external providers:
   * Instagram (credit: [kiyoshi](https://github.com/kiyoshi))
   * Instapaper (credit: [micpringle](https://github.com/micpringle))
   * LinkedIn (credit: [mbleigh](https://github.com/mbleigh))
-  * Mailru (credit: [lexer](https://github.com/lexer))    
+  * Mailru (credit: [lexer](https://github.com/lexer))
   * Meetup (credit [coderoshi](https://github.com/coderoshi))
   * Miso (credit: [rickenharp](https://github.com/rickenharp))
   * Mixi (credit: [kiyoshi](https://github.com/kiyoshi))
