@@ -4,6 +4,7 @@ Bundler.setup :default, :test
 
 require 'simplecov'
 SimpleCov.start
+
 require 'rack/test'
 require 'omniauth/identity'
 
