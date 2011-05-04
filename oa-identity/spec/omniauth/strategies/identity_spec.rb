@@ -3,6 +3,8 @@ require 'spec_helper'
 class MockIdentity; end
 
 describe OmniAuth::Strategies::Identity do 
+  let(:auth_hash){ last_response.headers['env']['omniauth.auth'] }
+  
   def app
     Rack::Builder.app do
       use Rack::Session::Cookie
@@ -20,7 +22,6 @@ describe OmniAuth::Strategies::Identity do
 
   describe '#callback_phase' do
     let(:user){ mock(:uid => 'user1', :user_info => {'name' => 'Rockefeller'})}
-    let(:auth_hash){ last_response.headers['env']['omniauth.auth'] }
 
     context 'with valid credentials' do
       before do
@@ -54,10 +55,30 @@ describe OmniAuth::Strategies::Identity do
     end
   end
 
-  describe '#registration_phase' do
+  describe '#registration_form' do
     it 'should trigger from /auth/identity/register by default' do
       get '/auth/identity/register'
       last_response.body.should be_include("Register Identity")
+    end
+  end
+
+  describe '#registration_phase' do
+    context 'with successful creation' do
+      let(:properties){ {
+        :name => 'Awesome Dude', 
+        :email => 'awesome@example.com',
+        :password => 'face',
+        :password_confirmation => 'face'
+      } }
+
+      before do
+        MockIdentity.should_receive(:create).with(properties).and_return(mock(:uid => 'abc', :name => 'Awesome Dude', :email => 'awesome@example.com', :user_info => {:name => 'DUUUUDE!'}))
+      end
+
+      it 'should set the auth hash' do
+        post '/auth/identity/register', properties
+        auth_hash['uid'].should == 'abc'
+      end
     end
   end
 end

@@ -7,6 +7,7 @@ module OmniAuth
         include OmniAuth::Identity::Model
         include OmniAuth::Identity::SecurePassword
 
+        self.abstract_class = true
         has_secure_password
 
         def self.locate(key)

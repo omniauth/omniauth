@@ -18,9 +18,10 @@ module OmniAuth
         OmniAuth::Form.build(
           :title => (options[:title] || "Identity Verification"),
           :url => callback_path
-        ) do
-          text_field 'Login', 'auth_key'
-          password_field 'Password', 'password'
+        ) do |f|
+          f.text_field 'Login', 'auth_key'
+          f.password_field 'Password', 'password'
+          f.html "<p align='center'><a href='#{registration_path}'>Create an Identity</a></p>"
         end.to_response 
       end
 
@@ -49,6 +50,15 @@ module OmniAuth
           f.password_field 'Password', 'password'
           f.password_field 'Confirm Password', 'password_confirmation'
         end.to_response
+      end
+
+      def registration_phase
+        attributes = (options[:fields] + [:password, :password_confirmation]).inject({}){|h,k| h[k] = request[k.to_s]; h}
+        if @identity = model.create(attributes)
+          callback_phase
+        else
+          registration_form
+        end
       end
 
       def auth_hash 

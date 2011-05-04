@@ -103,6 +103,7 @@ module OmniAuth
       else
         form.instance_eval(&block)
       end
+      form
     end
 
     def label_field(text, target)
