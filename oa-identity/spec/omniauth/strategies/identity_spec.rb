@@ -53,4 +53,11 @@ describe OmniAuth::Strategies::Identity do
       end
     end
   end
+
+  describe '#registration_phase' do
+    it 'should trigger from /auth/identity/register by default' do
+      get '/auth/identity/register'
+      last_response.body.should be_include("Register Identity")
+    end
+  end
 end

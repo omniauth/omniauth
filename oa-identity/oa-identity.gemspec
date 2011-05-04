@@ -10,6 +10,8 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'rspec', '~> 2.5'
   gem.add_development_dependency 'yard', '~> 0.6'
   gem.add_development_dependency 'ZenTest', '~> 4.5'
+  gem.add_development_dependency 'bcrypt-ruby', '~> 2.1.4'
+  gem.add_development_dependency 'activerecord', '~> 3.0'
   gem.name = 'oa-identity'
   gem.version = OmniAuth::Version::STRING
   gem.description = %q{Internal authentication handlers for OmniAuth.}

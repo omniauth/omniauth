@@ -5,6 +5,8 @@ module OmniAuth
     module Models
       class ActiveRecord < ::ActiveRecord::Base
         include OmniAuth::Identity::Model
+        include OmniAuth::Identity::SecurePassword
+
         has_secure_password
 
         def self.locate(key)

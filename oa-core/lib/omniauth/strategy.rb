@@ -73,11 +73,15 @@ module OmniAuth
     end
 
     def on_request_path?
-      current_path.casecmp(request_path) == 0
+      on_path?(request_path)
     end
 
     def on_callback_path?
-      current_path.casecmp(callback_path) == 0
+      on_path?(callback_path)
+    end
+
+    def on_path?(path)
+      current_path.casecmp(path) == 0
     end
 
     def mock_call!(env)

@@ -98,7 +98,11 @@ module OmniAuth
 
     def self.build(title=nil, &block)
       form = OmniAuth::Form.new(title)
-      form.instance_eval(&block)
+      if block.arity > 0
+        yield self
+      else
+        form.instance_eval(&block)
+      end
     end
 
     def label_field(text, target)
