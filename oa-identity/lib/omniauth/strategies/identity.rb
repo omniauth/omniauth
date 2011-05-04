@@ -42,12 +42,12 @@ module OmniAuth
       end
 
       def registration_form
-        OmniAuth::Form.new(:title => 'Register Identity') do |f|
-          fields.each do |field|
-            text_field field.to_s.capitalize, field.to_s
+        OmniAuth::Form.build(:title => 'Register Identity') do |f|
+          options[:fields].each do |field|
+            f.text_field field.to_s.capitalize, field.to_s
           end
-          password_field 'Password', 'password'
-          password_field 'Confirm Password', 'password_confirmation'
+          f.password_field 'Password', 'password'
+          f.password_field 'Confirm Password', 'password_confirmation'
         end.to_response
       end
 

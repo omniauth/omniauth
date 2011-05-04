@@ -2,7 +2,7 @@
 require File.expand_path('../lib/omniauth/version', __FILE__)
 
 Gem::Specification.new do |gem|
-  %w(oa-core oa-oauth oa-basic oa-openid oa-enterprise oa-more).each do |subgem|
+  %w(oa-core oa-oauth oa-identity oa-basic oa-openid oa-enterprise oa-more).each do |subgem|
     gem.add_runtime_dependency subgem, OmniAuth::Version::STRING
   end
   gem.name = 'omniauth'
