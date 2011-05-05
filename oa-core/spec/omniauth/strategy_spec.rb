@@ -258,6 +258,11 @@ describe OmniAuth::Strategy do
         strategy.call(make_env('/AUTH/Test'))[0].should == 302
       end
 
+      it 'should respect SCRIPT_NAME (a.k.a. BaseURI)' do
+        response = strategy.call(make_env('/auth/test', 'SCRIPT_NAME' => '/sub_uri'))
+        response[1]['Location'].should == '/sub_uri/auth/test/callback'
+      end
+
       it 'should be case insensitive on callback path' do
         strategy.call(make_env('/AUTH/TeSt/CaLlBAck')).should == strategy.call(make_env('/auth/test/callback'))
       end
