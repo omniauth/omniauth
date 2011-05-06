@@ -91,7 +91,7 @@ module OmniAuth
 
       def auth_hash
         credentials = {'token' => @access_token.token}
-        credentials.merge('refresh_token' => @access_token.refresh_token) if @access_token.expires?
+        credentials.merge!('refresh_token' => @access_token.refresh_token) if @access_token.expires?
 
         OmniAuth::Utils.deep_merge(super, {'credentials' => credentials})
       end
