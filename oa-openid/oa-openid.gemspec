@@ -2,7 +2,6 @@
 require File.expand_path('../lib/omniauth/version', __FILE__)
 
 Gem::Specification.new do |gem|
-  gem.add_runtime_dependency 'jruby-openssl', '~> 0.7.3' if RUBY_PLATFORM == 'java'
   gem.add_runtime_dependency 'oa-core', OmniAuth::Version::STRING
   gem.add_runtime_dependency 'rack-openid', '~> 1.3.1'
   gem.add_runtime_dependency 'ruby-openid-apps-discovery', '~> 1.2.0'

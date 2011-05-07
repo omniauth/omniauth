@@ -3,7 +3,6 @@ require File.expand_path('../lib/omniauth/version', __FILE__)
 
 Gem::Specification.new do |gem|
   gem.add_runtime_dependency 'faraday', '~> 0.6.1'
-  gem.add_runtime_dependency 'jruby-openssl', '~> 0.7.3' if RUBY_PLATFORM == 'java'
   gem.add_runtime_dependency 'multi_json', '~> 1.0.0'
   gem.add_runtime_dependency 'multi_xml', '~> 0.2.2'
   gem.add_runtime_dependency 'oa-core', OmniAuth::Version::STRING
