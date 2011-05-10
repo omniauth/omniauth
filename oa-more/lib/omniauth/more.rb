@@ -5,5 +5,6 @@ module OmniAuth
     autoload :WindowsLive, 'omniauth/strategies/windows_live'
     autoload :Flickr, 'omniauth/strategies/flickr'
     autoload :Yupoo, 'omniauth/strategies/yupoo'
+    autoload :Ign, 'omniauth/strategies/ign'
   end
 end
