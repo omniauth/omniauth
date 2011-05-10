@@ -1,3 +1,7 @@
 source 'http://rubygems.org'
 
+group :development do
+  gem 'yard', :git => 'https://github.com/lsegal/yard.git'
+end
+
 gemspec

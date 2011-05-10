@@ -4,6 +4,10 @@ platforms :jruby do
   gem 'jruby-openssl', '~> 0.7'
 end
 
+group :development do
+  gem 'yard', :git => 'https://github.com/lsegal/yard.git'
+end
+
 gemspec :path => 'oa-basic'
 gemspec :path => 'oa-core'
 gemspec :path => 'oa-enterprise'
