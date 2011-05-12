@@ -55,7 +55,7 @@ module OmniAuth
         'last_name' => @data['last_name'],
         'name' => "#{@data['first_name']} #{@data['last_name']}",
         'nickname' => @data['nickname'],
-        'birth_date' => (@data['bdate'].to_date if @data['bdate']),
+        'birth_date' => @data['bdate'],
         'image' => @data['photo'],
         'location' => "#{@country}, #{@city}",
         'urls' => {
