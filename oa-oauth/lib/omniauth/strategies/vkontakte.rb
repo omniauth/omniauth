@@ -51,7 +51,7 @@ module OmniAuth
 
     def user_info
       {
-        'firstname' => @data['first_name'],
+        'first_name' => @data['first_name'],
         'last_name' => @data['last_name'],
         'name' => "#{@data['first_name']} #{@data['last_name']}",
         'nickname' => @data['nickname'],
