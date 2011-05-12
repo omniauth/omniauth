@@ -45,10 +45,10 @@ module OmniAuth
                    e.name == 'proxies'
               # There are no child elements
               if e.element_children.count == 0
-                hash[e.name] = e.content
+                hash[e.name.sub(/^cas:/, '')] = e.content
               elsif e.element_children.count				
-                hash[e.name] = [] if hash[e.name].nil?
-                hash[e.name].push parse_user_info e
+                hash[e.name.sub(/^cas:/, '')] = [] if hash[e.name.sub(/^cas:/, '')].nil?
+                hash[e.name.sub(/^cas:/, '')].push parse_user_info e
               end
             end
           end
