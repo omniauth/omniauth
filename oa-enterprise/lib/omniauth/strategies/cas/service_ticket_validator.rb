@@ -38,14 +38,6 @@ module OmniAuth
         # returns nil if given nil
         def parse_user_info(node)
           return nil if node.nil?
-#          node.children.inject({}) do |hash, child|
-#            unless child.kind_of?(Nokogiri::XML::Text) ||
-#                   child.name == 'cas:proxies' ||
-#                   child.name == 'proxies'
-#              hash[child.name.sub(/^cas:/, '')] = child.content
-#            end
-#            hash
-#          end
           hash = {}
           node.children.each do |e| 
             unless e.kind_of?(Nokogiri::XML::Text) ||
