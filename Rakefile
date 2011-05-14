@@ -1,3 +1,5 @@
+#!/usr/bin/env rake
+
 $:.unshift File.expand_path('..', __FILE__)
 require 'tasks/all'
 

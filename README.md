@@ -11,7 +11,6 @@ To install OmniAuth, simply install the gem:
 
     gem install omniauth
 
-
 ## Continuous Integration
 [![Build Status](http://travis-ci.org/intridea/omniauth.png)](http://travis-ci.org/intridea/omniauth)
 
