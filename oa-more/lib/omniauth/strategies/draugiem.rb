@@ -5,6 +5,12 @@ require 'multi_json'
 
 module OmniAuth
   module Strategies
+    #
+    # Authenticate to draugiem.lv and frype.com and others.
+    #
+    # @example Basic Usage
+    #
+    #     use OmniAuth::Strategies::Draugiem, 'API Key', 'App id'
     class Draugiem
       include OmniAuth::Strategy
       attr_accessor :api_key, :app_id, :options
