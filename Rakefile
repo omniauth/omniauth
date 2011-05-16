@@ -1,3 +1,5 @@
+#!/usr/bin/env rake
+
 $:.unshift File.expand_path('..', __FILE__)
 require 'tasks/all'
 
@@ -47,4 +49,3 @@ namespace :doc do
     task.files = PROJECTS.map{|project| "#{root}/#{project}/lib/**/*.rb"} + ['README.markdown', 'LICENSE']
   end
 end
-

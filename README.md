@@ -11,7 +11,6 @@ To install OmniAuth, simply install the gem:
 
     gem install omniauth
 
-
 ## Continuous Integration
 [![Build Status](http://travis-ci.org/intridea/omniauth.png)](http://travis-ci.org/intridea/omniauth)
 
@@ -43,7 +42,7 @@ OmniAuth currently supports the following external providers:
   * Mixi (credit: [kiyoshi](https://github.com/kiyoshi))
   * Netflix (credit: [caged](https://github.com/caged))
   * Qzone (credit: [quake](https://github.com/quake))
-  * Rdio (via [brandonweiss](http://github.com/brandonweiss))
+  * Rdio (via [brandonweiss](https://github.com/brandonweiss))
   * Renren (credit: [quake](https://github.com/quake))
   * Salesforce (via [CloudSpokes](http://www.cloudspokes.com))
   * SmugMug (credit: [pchilton](https://github.com/pchilton))
@@ -108,12 +107,12 @@ The `user_info` hash will automatically be populated with as much information ab
 
 ## Resources
 
-The best place to find more information is the [OmniAuth Wiki](http://github.com/intridea/omniauth/wiki). Some specific information you might be interested in:
+The best place to find more information is the [OmniAuth Wiki](https://github.com/intridea/omniauth/wiki). Some specific information you might be interested in:
 
 * [CI Build Status](http://travis-ci.org/#!/intridea/omniauth)
-* [Roadmap](http://github.com/intridea/omniauth/wiki/Roadmap)
-* [Changelog](http://github.com/intridea/omniauth/wiki/Changelog)
-* [Report Issues](http://github.com/intridea/omniauth/issues)
+* [Roadmap](https://github.com/intridea/omniauth/wiki/Roadmap)
+* [Changelog](https://github.com/intridea/omniauth/wiki/Changelog)
+* [Report Issues](https://github.com/intridea/omniauth/issues)
 * [Mailing List](http://groups.google.com/group/omniauth)
 
 ## OmniAuth Core

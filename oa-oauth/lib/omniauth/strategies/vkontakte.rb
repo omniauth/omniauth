@@ -29,17 +29,19 @@ module OmniAuth
 
       def user_data
         # http://vkontakte.ru/developers.php?o=-17680044&p=Description+of+Fields+of+the+fields+Parameter
-        @fields ||= ['uid', 'first_name', 'last_name', 'nickname', 'domain', 'sex', 'city', 'country', 'timezone', 'photo', 'photo_big']
+        @fields ||= ['uid', 'first_name', 'last_name', 'nickname', 'domain', 'sex', 'bdate', 'city', 'country', 'timezone', 'photo', 'photo_big']
 
         # http://vkontakte.ru/developers.php?o=-1&p=getProfiles
         @data ||= MultiJson.decode(@access_token.get("https://api.vkontakte.ru/method/getProfiles?uid=#{@access_token['user_id']}&fields=#{@fields.join(',')}&access_token=#{@access_token.token}"))['response'][0]
 
         # we need these 2 additional requests since vkontakte returns only ids of the City and Country
         # http://vkontakte.ru/developers.php?o=-17680044&p=getCities
-        @city ||= MultiJson.decode(@access_token.get("https://api.vkontakte.ru/method/getCities?cids=#{@data['city']}&access_token=#{@access_token.token}"))['response'].try(:[], 0).try(:[], 'name')
+        cities = MultiJson.decode(@access_token.get("https://api.vkontakte.ru/method/getCities?cids=#{@data['city']}&access_token=#{@access_token.token}"))['response']
+        @city ||= cities.first['name'] if cities && cities.first
 
         # http://vkontakte.ru/developers.php?o=-17680044&p=getCountries
-        @country ||= MultiJson.decode(@access_token.get("https://api.vkontakte.ru/method/getCountries?cids=#{@data['country']}&access_token=#{@access_token}"))['response'].try(:[], 0).try(:[], 'name')
+        countries = MultiJson.decode(@access_token.get("https://api.vkontakte.ru/method/getCountries?cids=#{@data['country']}&access_token=#{@access_token}"))['response']
+        @country ||= countries.first['name'] if countries && countries.first
       end
 
     def request_phase
@@ -49,10 +51,11 @@ module OmniAuth
 
     def user_info
       {
-        'firstname' => @data['first_name'],
+        'first_name' => @data['first_name'],
         'last_name' => @data['last_name'],
         'name' => "#{@data['first_name']} #{@data['last_name']}",
         'nickname' => @data['nickname'],
+        'birth_date' => @data['bdate'],
         'image' => @data['photo'],
         'location' => "#{@country}, #{@city}",
         'urls' => {

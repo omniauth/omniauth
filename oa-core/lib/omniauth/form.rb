@@ -90,13 +90,14 @@ module OmniAuth
 
     def initialize(options = {})
       options[:title] ||= "Authentication Info Required"
+      options[:header_info] ||= ""
       self.options = options
 
       @html = ""
-      header(options[:title])
+      header(options[:title],options[:header_info])
     end
 
-    def self.build(title=nil, &block)
+    def self.build(title=nil,&block)
       form = OmniAuth::Form.new(title)
       if block.arity > 0
         yield form 
@@ -143,13 +144,14 @@ module OmniAuth
       self
     end
 
-    def header(title)
+    def header(title,header_info)
       @html << <<-HTML
       <!DOCTYPE html>
       <html>
       <head>
         <title>#{title}</title>
         #{css}
+        #{header_info}
       </head>
       <body>
       <h1>#{title}</h1>
