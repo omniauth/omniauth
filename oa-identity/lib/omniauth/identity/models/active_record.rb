@@ -9,6 +9,11 @@ module OmniAuth
 
         self.abstract_class = true
         has_secure_password
+       
+        def self.auth_key=(key)
+          super
+          validates_uniqueness_of key, :case_sensitive => false
+        end
 
         def self.locate(key)
           where(auth_key => key).first
