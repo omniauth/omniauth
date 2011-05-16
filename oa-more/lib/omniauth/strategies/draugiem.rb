@@ -51,7 +51,20 @@ module OmniAuth
       end
       
       def auth_hash
-        user_info = if @auth_data['users'][@auth_data['uid']]
+        OmniAuth::Utils.deep_merge(super, {
+          'uid' => @auth_data['uid'],
+          'user_info' => get_user_info,
+          'credentials' => {
+            'apikey' => @auth_data['apikey']
+          },
+          'extra' => { 'user_hash' => @auth_data }
+        })
+      end
+      
+      private 
+
+      def get_user_info
+        if @auth_data['users'] && @auth_data['users'][@auth_data['uid']]
           user = @auth_data['users'][@auth_data['uid']]
           {
             'name' => "#{user['name']} #{user['surname']}",
@@ -67,17 +80,7 @@ module OmniAuth
         else
           {}
         end
-        OmniAuth::Utils.deep_merge(super, {
-          'uid' => @auth_data['uid'],
-          'user_info' => user_info,
-          'credentials' => {
-            'apikey' => @auth_data['apikey']
-          },
-          'extra' => { 'user_hash' => @auth_data }
-        })
       end
-      
-      private 
 
       def draugiem_authorize_params code
         {
