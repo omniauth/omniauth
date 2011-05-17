@@ -5,11 +5,11 @@ describe 'OmniAuth::Strategies::Draugiem', :type => :strategy do
   include OmniAuth::Test::StrategyTestCase
 
   def strategy
-   [OmniAuth::Strategies::Draugiem, "abc",123]
+   [OmniAuth::Strategies::Draugiem, '123', "abc"]
   end
 
   it 'should initialize with api key and app id' do
-    lambda{OmniAuth::Strategies::Draugiem.new({},'abc','123')}.should_not raise_error
+    lambda{OmniAuth::Strategies::Draugiem.new({},'123','abc')}.should_not raise_error
   end
 
   describe '/auth/draugiem' do
@@ -41,7 +41,6 @@ describe 'OmniAuth::Strategies::Draugiem', :type => :strategy do
           }
         }))
         get '/auth/draugiem/callback?dr_auth_status=ok&dr_auth_code=123456'
-        debugger
 
         last_request.env['omniauth.auth']['credentials']['apikey'].should == "123456789"
         last_request.env['omniauth.auth']['user_info']['location'].should == "Durbe"

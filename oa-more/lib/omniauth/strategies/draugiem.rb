@@ -8,17 +8,27 @@ module OmniAuth
     #
     # Authenticate to draugiem.lv and frype.com and others.
     #
-    # @example Basic Usage
+    # @example Basic Rails Usage
+    # 
+    #  Add this to config/initializers/omniauth.rb
+    #  
+    #    Rails.application.config.middleware.use OmniAuth::Builder do  
+    #      provider :draugiem, 'App id', 'API Key'
+    #    end
     #
-    #     use OmniAuth::Strategies::Draugiem, 'API Key', 'App id'
+    # @example Basic Rack example
+    #
+    #  use Rack::Session::Cookie
+    #  use OmniAuth::Strategies::Draugiem, 'App id', 'API Key'
+    #
     class Draugiem
       include OmniAuth::Strategy
-      attr_accessor :api_key, :app_id, :options
+      attr_accessor :app_id, :api_key
 
-      def initialize(app, api_key, app_id)
+      def initialize(app, app_id, api_key)
         super(app, :draugiem)
-        @api_key  = api_key
         @app_id   = app_id
+        @api_key  = api_key
       end
 
       protected
