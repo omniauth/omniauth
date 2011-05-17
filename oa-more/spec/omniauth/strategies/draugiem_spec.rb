@@ -44,6 +44,8 @@ describe 'OmniAuth::Strategies::Draugiem', :type => :strategy do
 
         last_request.env['omniauth.auth']['credentials']['apikey'].should == "123456789"
         last_request.env['omniauth.auth']['user_info']['location'].should == "Durbe"
+        last_request.env['omniauth.auth']['user_info']['age'].should be_nil
+        last_request.env['omniauth.auth']['user_info']['adult'].should be_true
     end
   end
 end

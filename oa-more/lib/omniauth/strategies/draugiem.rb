@@ -47,8 +47,8 @@ module OmniAuth
         if request.params['dr_auth_status'] == 'ok' && request.params['dr_auth_code']
           response = RestClient.get('http://api.draugiem.lv/json/', { :params => draugiem_authorize_params(request.params['dr_auth_code']) })
           auth = MultiJson.decode(response.to_s)
-          unless auth['error']      
-            @auth_data = auth          
+          unless auth['error']
+            @auth_data = auth
             super
           else
             fail!(auth['error']['code'].to_s,auth["error"]["description"].to_s)
@@ -82,8 +82,8 @@ module OmniAuth
             'first_name' => user['name'],
             'last_name' => user['surname'],
             'location' => user['place'],
-            'age' => user['age'],
-            'adult' => user['adult'],
+            'age' => user['age'] =~ /^0-9$/ ? user['age'] : nil,
+            'adult' => user['adult'] == '1' ? true : false,
             'image' => user['img'],
             'sex' => user['sex']
           }
