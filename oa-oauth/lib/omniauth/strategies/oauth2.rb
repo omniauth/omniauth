@@ -82,8 +82,11 @@ module OmniAuth
         fail!(:invalid_response, e)
       end
 
+      def verifier
+        request.params['code']
+      end
+
       def build_access_token
-        verifier = request.params['code']
         client.web_server.get_access_token(verifier, {:redirect_uri => callback_url}.merge(options))
       end
 
