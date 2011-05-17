@@ -29,7 +29,7 @@ module OmniAuth
 
       def user_data
         # http://vkontakte.ru/developers.php?o=-17680044&p=Description+of+Fields+of+the+fields+Parameter
-        @fields ||= ['uid', 'first_name', 'last_name', 'nickname', 'domain', 'sex', 'city', 'country', 'timezone', 'photo', 'photo_big']
+        @fields ||= ['uid', 'first_name', 'last_name', 'nickname', 'domain', 'sex', 'bdate', 'city', 'country', 'timezone', 'photo', 'photo_big']
 
         # http://vkontakte.ru/developers.php?o=-1&p=getProfiles
         @data ||= MultiJson.decode(@access_token.get("https://api.vkontakte.ru/method/getProfiles?uid=#{@access_token['user_id']}&fields=#{@fields.join(',')}&access_token=#{@access_token.token}"))['response'][0]
@@ -51,10 +51,11 @@ module OmniAuth
 
     def user_info
       {
-        'firstname' => @data['first_name'],
+        'first_name' => @data['first_name'],
         'last_name' => @data['last_name'],
         'name' => "#{@data['first_name']} #{@data['last_name']}",
         'nickname' => @data['nickname'],
+        'birth_date' => @data['bdate'],
         'image' => @data['photo'],
         'location' => "#{@country}, #{@city}",
         'urls' => {

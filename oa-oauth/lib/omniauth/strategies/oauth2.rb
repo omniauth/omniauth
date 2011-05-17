@@ -49,7 +49,7 @@ module OmniAuth
       end
 
       def callback_url
-        full_host + callback_path
+        full_host + script_name + callback_path
       end
 
       protected
@@ -80,6 +80,8 @@ module OmniAuth
         fail!(:invalid_credentials, e)
       rescue ::MultiJson::DecodeError => e
         fail!(:invalid_response, e)
+      rescue ::Timeout::Error, ::Errno::ETIMEDOUT => e
+        fail!(:timeout, e)
       end
 
       def verifier
@@ -92,7 +94,7 @@ module OmniAuth
 
       def auth_hash
         credentials = {'token' => @access_token.token}
-        credentials.merge('refresh_token' => @access_token.refresh_token) if @access_token.expires?
+        credentials.merge!('refresh_token' => @access_token.refresh_token) if @access_token.expires?
 
         OmniAuth::Utils.deep_merge(super, {'credentials' => credentials})
       end
