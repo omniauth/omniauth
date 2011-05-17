@@ -169,10 +169,7 @@ module OmniAuth
     end
 
     def auth_hash
-      {
-        'provider' => name.to_s,
-        'uid' => nil
-      }
+      AuthHash.new(:provider => name.to_s) 
     end
 
     def full_host
