@@ -2,6 +2,9 @@
 require File.expand_path('../lib/omniauth/version', __FILE__)
 
 Gem::Specification.new do |gem|
+  gem.add_runtime_dependency 'rack'
+  gem.add_runtime_dependency 'hashie'
+
   gem.add_development_dependency 'maruku', '~> 0.6'
   gem.add_development_dependency 'simplecov', '~> 0.4'
   gem.add_development_dependency 'rack-test', '~> 0.5'
