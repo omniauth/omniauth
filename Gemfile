@@ -14,3 +14,5 @@ gemspec :path => 'oa-enterprise'
 gemspec :path => 'oa-more'
 gemspec :path => 'oa-oauth'
 gemspec :path => 'oa-openid'
+
+gem 'activerecord', '3.1.0.beta', :git => 'git://github.com/rails/rails.git'
