@@ -55,7 +55,7 @@ module OmniAuth
       protected
 
       def request_phase
-        redirect client.web_server.authorize_url({:redirect_uri => callback_url}.merge(options))
+        redirect client.auth_code.authorize_url({:redirect_uri => callback_url}.merge(options))
       end
 
       def callback_phase
@@ -64,7 +64,7 @@ module OmniAuth
         end
 
         @access_token = build_access_token
-        @access_token = client.web_server.refresh_access_token(@access_token.refresh_token) if @access_token.expired?
+        @access_token = client.auth_code.refresh_access_token(@access_token.refresh_token) if @access_token.expired?
 
         super
       rescue ::OAuth2::HTTPError, ::OAuth2::AccessDenied, CallbackError => e
@@ -77,7 +77,7 @@ module OmniAuth
 
       def build_access_token
         verifier = request.params['code']
-        client.web_server.get_access_token(verifier, {:redirect_uri => callback_url}.merge(options))
+        client.auth_code.get_access_token(verifier, {:redirect_uri => callback_url}.merge(options))
       end
 
       def auth_hash
