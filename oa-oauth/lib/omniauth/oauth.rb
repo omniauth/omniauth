@@ -28,6 +28,7 @@ module OmniAuth
     autoload :Mixi,               'omniauth/strategies/mixi'
     autoload :Netflix,            'omniauth/strategies/netflix'
     autoload :Qzone,              'omniauth/strategies/qzone'
+    autoload :Plurk,              'omniauth/strategies/plurk'
     autoload :Rdio,               'omniauth/strategies/rdio'
     autoload :Renren,             'omniauth/strategies/renren'
     autoload :Salesforce,         'omniauth/strategies/salesforce'
