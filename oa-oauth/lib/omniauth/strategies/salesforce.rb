@@ -32,7 +32,7 @@ module OmniAuth
 
       def user_data
         @data ||= MultiJson.decode(@access_token.get(@access_token['id']))
-      rescue ::OAuth2::HTTPError => e
+      rescue ::OAuth2::Error => e
         if e.response.status == 302
           @data ||= MultiJson.decode(@access_token.get(e.response.headers['location']))
         else
