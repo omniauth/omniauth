@@ -13,8 +13,8 @@ module OmniAuth
       def initialize(app, client_id = nil, client_secret = nil, options = {}, &block)
         client_options = {
           :site => 'https://github.com/',
-          :authorize_path => '/login/oauth/authorize',
-          :access_token_path => '/login/oauth/access_token'
+          :authorize_url => '/login/oauth/authorize',
+          :access_token_url => '/login/oauth/access_token'
         }
 
         super(app, :github, client_id, client_secret, client_options, options, &block)
