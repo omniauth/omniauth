@@ -14,7 +14,7 @@ module OmniAuth
         client_options = {
           :site => 'https://github.com/',
           :authorize_url => '/login/oauth/authorize',
-          :access_token_url => '/login/oauth/access_token'
+          :token_url => '/login/oauth/access_token'
         }
 
         super(app, :github, client_id, client_secret, client_options, options, &block)
