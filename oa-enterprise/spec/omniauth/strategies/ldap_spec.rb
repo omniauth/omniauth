@@ -27,4 +27,15 @@ describe OmniAuth::Strategies::LDAP, :type => :strategy do
       last_response.status.should == 200
     end
   end
+
+  describe 'POST /auth/ldap' do
+    before do
+      post '/auth/ldap', {:username => 'jeremy', :password => 'valid_password' }
+    end
+
+    it 'should redirect us to /auth/ldap/callback' do
+      last_response.should be_redirect
+      last_response.location.should == '/auth/ldap/callback'
+    end
+  end
 end
