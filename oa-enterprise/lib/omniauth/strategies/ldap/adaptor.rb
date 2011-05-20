@@ -128,13 +128,11 @@ module OmniAuth
 
         def search(options={}, &block)
           base = options[:base]
-          filter = options[:filter]
-          limit = options[:limit]
+          filter = Net::LDAP::Filter.eq('objectClass','*') & options[:filter]
 
           args = {
             :base => @base,
-            :filter => filter,
-            :size => limit
+            :filter => filter
           }
 
           attributes = {}
