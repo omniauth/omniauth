@@ -35,6 +35,7 @@ module OmniAuth
     autoload :SmugMug,            'omniauth/strategies/smug_mug'
     autoload :SoundCloud,         'omniauth/strategies/sound_cloud'
     autoload :T163,               'omniauth/strategies/t163'
+    autoload :TB,               'omniauth/strategies/taobao'
     autoload :Teambox,            'omniauth/strategies/teambox'
     autoload :ThirtySevenSignals, 'omniauth/strategies/thirty_seven_signals'
     autoload :Tqq,                'omniauth/strategies/tqq'
