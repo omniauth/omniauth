@@ -16,7 +16,7 @@ module OmniAuth
           :access_token_path => '/o/oauth2/token'
         }
 
-        super(app, :google2, client_id, client_secret, client_options, options, &block)
+        super(app, :google_oauth2, client_id, client_secret, client_options, options, &block)
       end
 
       def request_phase
