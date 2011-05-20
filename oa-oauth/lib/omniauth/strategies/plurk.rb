@@ -6,7 +6,7 @@ module OmniAuth
     #
     # Authenticate to Plurk via OAuth and retrieve basic user info.
     #
-    # Please note that this strategy relies on Plurk API 2.0, 
+    # Please note that this strategy relies on Plurk API 2.0,
     # which is still in Beta.
     #
     # Usage:
@@ -45,7 +45,7 @@ module OmniAuth
                       else
                         "http://www.plurk.com/static/default_medium.gif"
                       end,
-          'urls' => { 'Plurk' => 'http://plurk.com/' + user['nick_name']}                        
+          'urls' => { 'Plurk' => 'http://plurk.com/' + user['nick_name']}
         }
       end
 

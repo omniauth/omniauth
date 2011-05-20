@@ -5,10 +5,10 @@ module OmniAuth
       def initialize(app, store = nil, api_key = nil, options = {}, &block)
         options[:identifier] ||= "http://steamcommunity.com/openid"
         options[:name] ||= 'steam'
-        @api_key = api_key        
+        @api_key = api_key
         super(app, store, options, &block)
       end
-      
+
       def user_info(response=nil)
         player = user_hash['response']['players']['player'].first
         nickname = player["personaname"]
@@ -25,7 +25,7 @@ module OmniAuth
           'location' => "#{city}, #{state}, #{country}"
         }
       end
-      
+
       def user_hash
         # Steam provides no information back on a openid response other than a 64bit user id
         # Need to use this information and make a API call to get user information from steam.

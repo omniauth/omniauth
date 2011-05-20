@@ -12,9 +12,9 @@ module OmniAuth
     # use OmniAuth::Strategies::TB, 'client_id', 'client_secret'
     class TB < OAuth2
       # @param [Rack Application] app standard middleware application parameter
-      # @param [String] client_id the app key at taobao open platform 
+      # @param [String] client_id the app key at taobao open platform
       # @param [String] client_secret  the app secret at taobao open platform
-      # @option options [String] 
+      # @option options [String]
 
       def initialize(app, client_id = nil, client_secret = nil, options = {}, &block)
         client_options = {

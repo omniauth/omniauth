@@ -9,10 +9,10 @@ module OmniAuth
     # Authenticate to draugiem.lv and frype.com and others.
     #
     # @example Basic Rails Usage
-    # 
+    #
     #  Add this to config/initializers/omniauth.rb
-    #  
-    #    Rails.application.config.middleware.use OmniAuth::Builder do  
+    #
+    #    Rails.application.config.middleware.use OmniAuth::Builder do
     #      provider :draugiem, 'App id', 'API Key'
     #    end
     #
@@ -32,7 +32,7 @@ module OmniAuth
       end
 
       protected
-      
+
       def request_phase
         params = {
           :app => @app_id,
@@ -42,7 +42,7 @@ module OmniAuth
         query_string = params.collect{ |key,value| "#{key}=#{Rack::Utils.escape(value)}" }.join('&')
         redirect "http://api.draugiem.lv/authorize/?#{query_string}"
       end
-      
+
       def callback_phase
         if request.params['dr_auth_status'] == 'ok' && request.params['dr_auth_code']
           response = RestClient.get('http://api.draugiem.lv/json/', { :params => draugiem_authorize_params(request.params['dr_auth_code']) })
@@ -59,7 +59,7 @@ module OmniAuth
       rescue Exception => e
         fail!(:invalid_response, e)
       end
-      
+
       def auth_hash
         OmniAuth::Utils.deep_merge(super, {
           'uid' => @auth_data['uid'],
@@ -70,8 +70,8 @@ module OmniAuth
           'extra' => { 'user_hash' => @auth_data }
         })
       end
-      
-      private 
+
+      private
 
       def get_user_info
         if @auth_data['users'] && @auth_data['users'][@auth_data['uid']]

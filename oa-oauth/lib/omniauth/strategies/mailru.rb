@@ -14,30 +14,30 @@ module OmniAuth
     class Mailru < OAuth2
       # @param [Rack Application] app standard middleware application parameter
       # @param [String] api_key the application id as [registered in Mailru]
-      # @param [String] secret_key the application secret as [registered in Mailru]       
+      # @param [String] secret_key the application secret as [registered in Mailru]
       def initialize(app, api_key = nil, secret_key = nil, options = {}, &block)
         client_options = {
           :site => 'https://connect.mail.ru',
           :authorize_path => '/oauth/authorize',
           :access_token_path => '/oauth/token'
         }
-        
-        @private_key  = options[:private_key]       
+
+        @private_key  = options[:private_key]
 
         super(app, :mailru, api_key, secret_key, client_options, options, &block)
       end
 
       protected
-      
+
       def request_phase
         options[:response_type] ||= 'code'
         super
-      end   
-      
+      end
+
       def calculate_signature(params)
         str = params['uids'] + (params.sort.collect { |c| "#{c[0]}=#{c[1]}" }).join('') + @private_key
         Digest::MD5.hexdigest(str)
-      end   
+      end
 
       def user_data
         request_params = {
@@ -46,7 +46,7 @@ module OmniAuth
           'session_key' => @access_token.token,
           'uids' => @access_token['x_mailru_vid']
         }
-        
+
         request_params.merge!('sig' => calculate_signature(request_params))
         @data ||= MultiJson.decode(client.request(:get, 'http://www.appsmail.ru/platform/api', request_params))[0]
       end
@@ -82,7 +82,7 @@ module OmniAuth
       #}
 
       def user_info
-        {          
+        {
           'nickname' => user_data['nick'],
           'email' =>  user_data['email'],
           'first_name' => user_data["first_name"],
@@ -91,8 +91,8 @@ module OmniAuth
           'image' => @data['pic'],
           'urls' => {
             'Mailru' => user_data["link"]
-          }          
-        }                
+          }
+        }
       end
 
       def auth_hash
@@ -102,6 +102,6 @@ module OmniAuth
           'extra' => {'user_hash' => user_data}
         })
       end
-    end    
+    end
   end
 end
