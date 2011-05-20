@@ -49,6 +49,7 @@ OmniAuth currently supports the following external providers:
   * SmugMug (credit: [pchilton](https://github.com/pchilton))
   * SoundCloud (credit: [leemartin](https://github.com/leemartin))
   * T163 (credit: [quake](https://github.com/quake))
+  * Taobao (credit: [l4u](https://github.com/l4u))
   * TeamBox (credit [jrom](https://github.com/jrom))
   * Tqq (credit: [quake](https://github.com/quake))
   * TradeMe (credit: [pchilton](https://github.com/pchilton))
