@@ -9,8 +9,8 @@ module OmniAuth
     # basic user information.
     #
     # @example Basic Usage
-    # use OmniAuth::Strategies::Taobao, 'client_id', 'client_secret'
-    class Taobao < OAuth2
+    # use OmniAuth::Strategies::TB, 'client_id', 'client_secret'
+    class TB < OAuth2
       # @param [Rack Application] app standard middleware application parameter
       # @param [String] client_id the app key at taobao open platform 
       # @param [String] client_secret  the app secret at taobao open platform
@@ -23,7 +23,7 @@ module OmniAuth
           :access_token_url => "/token"
         }
 
-        super(app, :taobao, client_id, client_secret, client_options, options, &block)
+        super(app, :tb, client_id, client_secret, client_options, options, &block)
       end
 
       def user_data
