@@ -67,7 +67,7 @@ module OmniAuth
         @access_token = client.web_server.refresh_access_token(@access_token.refresh_token) if @access_token.expired?
 
         super
-      rescue ::OAuth2::HTTPError, ::OAuth2::AccessDenied, CallbackError => e
+      rescue ::OAuth2::Error, CallbackError => e
         fail!(:invalid_credentials, e)
       rescue ::MultiJson::DecodeError => e
         fail!(:invalid_response, e)
