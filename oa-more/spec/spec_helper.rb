@@ -3,10 +3,9 @@ SimpleCov.start
 require 'rspec'
 require 'rack/test'
 require 'webmock/rspec'
-$:<<File.join(File.dirname(__FILE__),'../lib/')
 require 'omniauth/more'
 
-Rspec.configure do |config|
+RSpec.configure do |config|
   config.include Rack::Test::Methods
   config.include WebMock::API
 end
