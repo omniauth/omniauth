@@ -29,7 +29,7 @@ module OmniAuth
         OmniAuth::Utils.deep_merge(super, {
           'uid' => user_info['uid'],
           'user_info' => user_info,
-          'credentials' = {'expires_at' => @access_token.expires_at},
+          'credentials' => {'expires_at' => @access_token.expires_at},
           'extra' => {'user_hash' => user_data}
         })
       end
