@@ -126,6 +126,8 @@ module OmniAuth
 
     def callback_phase
       @env['omniauth.auth'] = auth_hash
+      @env['omniauth.params'] = session['query_params'] || {}
+      session['query_params'] = nil if session['query_params']
       call_app!
     end
 
@@ -155,6 +157,7 @@ module OmniAuth
 
     def call_through_to_app
       status, headers, body = *call_app!
+      session['query_params'] = Rack::Request.new(env).params
       @response = Rack::Response.new(body, status, headers)
 
       status == 404 ? nil : @response.finish
