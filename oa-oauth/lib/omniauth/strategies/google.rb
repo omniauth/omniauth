@@ -19,12 +19,8 @@ module OmniAuth
           :access_token_path => '/accounts/OAuthGetAccessToken',
           :authorize_path => '/accounts/OAuthAuthorizeToken'
         }
-
-        google_contacts_auth = "www.google.com/m8/feeds"
-        options[:scope] ||= google_contacts_auth
-        options[:scope] << " http://#{google_contacts_auth}" unless options[:scope] =~ %r[http[s]?:\/\/#{google_contacts_auth}]
-
-        super(app, :google, consumer_key, consumer_secret, client_options, options)
+				
+        super(app, get_name, consumer_key, consumer_secret, client_options, options)
       end
 
       def auth_hash
@@ -62,6 +58,7 @@ module OmniAuth
 
       # Monkeypatch OmniAuth to pass the scope in the consumer.get_request_token call
       def request_phase
+				create_base_scope
         request_token = consumer.get_request_token({:oauth_callback => callback_url}, {:scope => options[:scope]})
         session['oauth'] ||= {}
         session['oauth'][name.to_s] = {'callback_confirmed' => request_token.callback_confirmed?, 'request_token' => request_token.token, 'request_secret' => request_token.secret}
@@ -75,6 +72,18 @@ module OmniAuth
 
         r.finish
       end
+
+			protected
+
+			def get_name
+				(self.class.name.split('::').last.gsub(/(.)([A-Z])/,'\1_\2').downcase! || '').to_sym
+			end
+
+			def create_base_scope
+        google_contacts_auth = "www.google.com/m8/feeds"
+        options[:scope] ||= google_contacts_auth
+        options[:scope] << " http://#{google_contacts_auth}" unless options[:scope] =~ %r[http[s]?:\/\/#{google_contacts_auth}]
+			end
     end
   end
 end
