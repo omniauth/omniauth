@@ -1,26 +1,36 @@
-# OmniAuth: Standardized Multi-Provider Authentication
+OmniAuth: Standardized Multi-Provider Authentication
+====================================================
+OmniAuth is a new Rack-based authentication system for multi-provider external
+authentcation. OmniAuth is built from the ground up on the philosophy that
+**authentication is not the same as identity**, and is based on two
+observations:
 
-OmniAuth is a new Rack-based authentication system for multi-provider external authentcation. OmniAuth is built from the ground up on the philosophy that **authentication is not the same as identity**, and is based on two observations:
+1. The traditional 'sign up using a login and password' model is becoming the
+   exception, not the rule. Modern web applications offer external
+   authentication via OpenID, Facebook, and/or OAuth.
+2. The interconnectable web is no longer a dream, it is a necessity. It is not
+   unreasonable to expect that one application may need to be able to connect
+   to one, three, or twelve other services. Modern authentication systems
+   should allow a user's identity to be associated with many authentications.
 
-1. The traditional 'sign up using a login and password' model is becoming the exception, not the rule. Modern web applications offer external authentication via OpenID, Facebook, and/or OAuth.
-2. The interconnectable web is no longer a dream, it is a necessity. It is not unreasonable to expect that one application may need to be able to connect to one, three, or twelve other services. Modern authentication systems should allow a user's identity to be associated with many authentications.
-
-## Installation
-
+Installation
+------------
 To install OmniAuth, simply install the gem:
 
     gem install omniauth
 
-## Continuous Integration
+Continuous Integration
+----------------------
 [![Build Status](http://travis-ci.org/intridea/omniauth.png)](http://travis-ci.org/intridea/omniauth)
 
-## Providers
-
+Providers
+---------
 OmniAuth currently supports the following external providers:
 
 * via OAuth (OAuth 1.0, OAuth 2, and xAuth)
   * 37signals ID (credit: [mbleigh](https://github.com/mbleigh))
   * Bit.ly (credit: [philnash](https://github.com/philnash))
+  * Blogger (credit: [dsueiro-backing](https://github.com/dsueiro-backing))
   * DailyMile (credit: [cdmwebs](https://github.com/cdmwebs))
   * Doit.im (credit: [chouti](https://github.com/chouti))
   * Dopplr (credit: [flextrip](https://github.com/flextrip))
@@ -69,19 +79,19 @@ OmniAuth currently supports the following external providers:
 * OpenID (credit: [mbleigh](https://github.com/mbleigh))
 * Yupoo (credit: [chouti](https://github.com/chouti))
 
-## Compatibility
-
+Compatibility
+-------------
 OmniAuth is tested against the following Ruby versions:
 
 * 1.8.7
 * 1.9.1
 * 1.9.2
-* jRuby (note, the Evernote strategy is not available for jRuby)
+* JRuby (note, the Evernote strategy is not available for JRuby)
 * Rubinius
 * REE
 
-## Usage
-
+Usage
+-----
 OmniAuth is a collection of Rack middleware. To use a single strategy, you simply need to add the middleware:
 
     require 'oa-oauth'
@@ -107,8 +117,8 @@ The hash in question will look something like this:
 
 The `user_info` hash will automatically be populated with as much information about the user as OmniAuth was able to pull from the given API or authentication provider.
 
-## Resources
-
+Resources
+---------
 The best place to find more information is the [OmniAuth Wiki](https://github.com/intridea/omniauth/wiki). Some specific information you might be interested in:
 
 * [CI Build Status](http://travis-ci.org/#!/intridea/omniauth)
@@ -117,11 +127,11 @@ The best place to find more information is the [OmniAuth Wiki](https://github.co
 * [Report Issues](https://github.com/intridea/omniauth/issues)
 * [Mailing List](http://groups.google.com/group/omniauth)
 
-## OmniAuth Core
-
+OmniAuth Core
+-------------
 * **Michael Bleigh** ([mbleigh](https://github.com/mbleigh))
 * **Erik Michaels-Ober** ([sferik](https://github.com/sferik))
 
-## License
-
+License
+-------
 OmniAuth is licensed under the MIT License.

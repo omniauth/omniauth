@@ -7,6 +7,7 @@ module OmniAuth
     autoload :XAuth,              'omniauth/strategies/xauth'
 
     autoload :Bitly,              'omniauth/strategies/bitly'
+    autoload :Blogger,            'omniauth/strategies/blogger'
     autoload :Dailymile,          'omniauth/strategies/dailymile'
     autoload :Doit,               'omniauth/strategies/doit'
     autoload :Dopplr,             'omniauth/strategies/dopplr'
@@ -23,6 +24,7 @@ module OmniAuth
     autoload :Instagram,          'omniauth/strategies/instagram'
     autoload :Instapaper,         'omniauth/strategies/instapaper'
     autoload :LinkedIn,           'omniauth/strategies/linked_in'
+    autoload :Mailru,             'omniauth/strategies/mailru'
     autoload :Meetup,             'omniauth/strategies/meetup'
     autoload :Miso,               'omniauth/strategies/miso'
     autoload :Mixi,               'omniauth/strategies/mixi'
@@ -35,7 +37,7 @@ module OmniAuth
     autoload :SmugMug,            'omniauth/strategies/smug_mug'
     autoload :SoundCloud,         'omniauth/strategies/sound_cloud'
     autoload :T163,               'omniauth/strategies/t163'
-    autoload :TB,               'omniauth/strategies/taobao'
+    autoload :TB,                 'omniauth/strategies/taobao'
     autoload :Teambox,            'omniauth/strategies/teambox'
     autoload :ThirtySevenSignals, 'omniauth/strategies/thirty_seven_signals'
     autoload :Tqq,                'omniauth/strategies/tqq'
@@ -51,6 +53,5 @@ module OmniAuth
     autoload :Yahoo,              'omniauth/strategies/yahoo'
     autoload :Yammer,             'omniauth/strategies/yammer'
     autoload :YouTube,            'omniauth/strategies/you_tube'
-    autoload :Mailru,             'omniauth/strategies/mailru'
   end
 end
