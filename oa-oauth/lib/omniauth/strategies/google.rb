@@ -73,17 +73,17 @@ module OmniAuth
         r.finish
       end
 
-			protected
+      protected
 
-			def get_name
-				(self.class.name.split('::').last.gsub(/(.)([A-Z])/,'\1_\2').downcase! || '').to_sym
-			end
+      def get_name
+        (self.class.name.split('::').last.gsub(/(.)([A-Z])/,'\1_\2').downcase! || '').to_sym
+      end
 
-			def create_base_scope
+      def create_base_scope
         google_contacts_auth = "www.google.com/m8/feeds"
         options[:scope] ||= google_contacts_auth
         options[:scope] << " http://#{google_contacts_auth}" unless options[:scope] =~ %r[http[s]?:\/\/#{google_contacts_auth}]
-			end
+      end
     end
   end
 end

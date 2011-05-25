@@ -13,9 +13,9 @@ module OmniAuth
     #    use OmniAuth::Strategies::YouTube, 'consumerkey', 'consumersecret'
     #
     class YouTube < OmniAuth::Strategies::Google
-			def create_base_scope
-				options[:scope] = 'http://gdata.youtube.com'
-			end			
+      def create_base_scope
+        options[:scope] = 'http://gdata.youtube.com'
+      end			
 
       def user_info
         entry = user_hash['entry']
