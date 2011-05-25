@@ -43,7 +43,7 @@ module OmniAuth
         {
           'nickname' => user_data['entry']['displayName'],
           'image' => user_data['entry']['thumbnailUrl'],
-          'urls' => {:profile => user_data['entry']['profileUrl']}
+          'urls' => {:profile => user_data['entry']['profileUrl']},
         }
       end
 
@@ -51,7 +51,8 @@ module OmniAuth
         OmniAuth::Utils.deep_merge(super, {
           'uid' => user_data['entry']['id'],
           'user_info' => user_info,
-          'extra' => {'user_hash' => user_data['entry']}
+          'credentials' => {'refresh_token' => @access_token.refresh_token},
+          'extra' => {'user_hash' => user_data['entry']},
         })
       end
     end

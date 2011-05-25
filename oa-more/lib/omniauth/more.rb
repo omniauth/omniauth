@@ -6,5 +6,6 @@ module OmniAuth
     autoload :Flickr, 'omniauth/strategies/flickr'
     autoload :Yupoo, 'omniauth/strategies/yupoo'
     autoload :Ign, 'omniauth/strategies/ign'
+    autoload :Draugiem, 'omniauth/strategies/draugiem'
   end
 end

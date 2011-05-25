@@ -66,6 +66,13 @@ module OmniAuth
       rescue ::Timeout::Error => e
         fail!(:timeout, e)
       end
+      
+      # MonkeyPath to symbolize tina parameters
+      def callback_phase
+        session[:oauth].symbolize_keys!
+        session[:oauth][name.to_sym].symbolize_keys! if session[:oauth][name.to_sym]
+        super
+      end
 
       def user_hash
         # http://api.t.sina.com.cn/users/show/:id.json?source=appkey

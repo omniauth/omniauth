@@ -40,13 +40,13 @@ module OmniAuth
           'description' => person['headline'],
           'public_profile_url' => person['public_profile_url']
         }
-        hash['urls']={}                
+        hash['urls']={}
         member_urls = person['member_url_resources']['member_url']
         if (!member_urls.nil?) and (!member_urls.empty?)
           [member_urls].flatten.each do |url|
             hash['urls']["#{url['name']}"]=url['url']
           end
-        end    
+        end
         hash['urls']['LinkedIn'] = person['public_profile_url']
         hash['name'] = "#{hash['first_name']} #{hash['last_name']}"
         hash
