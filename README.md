@@ -40,6 +40,7 @@ OmniAuth currently supports the following external providers:
   * Foursquare (credit: [mbleigh](https://github.com/mbleigh))
   * GitHub (credit: [mbleigh](https://github.com/mbleigh))
   * GoodReads (credit: [cristoffer](https://github.com/christoffer))
+  * Google Health (credit: [jaigouk](https://github.com/jaigouk))
   * Gowalla (credit: [kvnsmth](https://github.com/kvnsmth))
   * Hyves (credit: [mrdg](https://github.com/mrdg))
   * Identi.ca (credit: [dcu](https://github.com/dcu))
