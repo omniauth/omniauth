@@ -18,6 +18,8 @@ module OmniAuth
     autoload :GitHub,             'omniauth/strategies/github'
     autoload :Goodreads,          'omniauth/strategies/goodreads'
     autoload :Google,             'omniauth/strategies/google'
+    autoload :GoogleHealth,       'omniauth/strategies/google_health'
+    autoload :GoogleHealthSandbox,'omniauth/strategies/google_health_sandbox'
     autoload :Gowalla,            'omniauth/strategies/gowalla'
     autoload :Hyves,              'omniauth/strategies/hyves'
     autoload :Identica,           'omniauth/strategies/identica'
