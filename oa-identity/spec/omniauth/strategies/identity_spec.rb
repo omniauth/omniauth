@@ -72,7 +72,8 @@ describe OmniAuth::Strategies::Identity do
       } }
 
       before do
-        MockIdentity.should_receive(:create).with(properties).and_return(mock(:id => 1, :uid => 'abc', :name => 'Awesome Dude', :email => 'awesome@example.com', :user_info => {:name => 'DUUUUDE!'}))
+        m = mock(:uid => 'abc', :name => 'Awesome Dude', :email => 'awesome@example.com', :user_info => {:name => 'DUUUUDE!'}, :persisted? => true)
+        MockIdentity.should_receive(:create).with(properties).and_return(m)
       end
 
       it 'should set the auth hash' do
@@ -90,7 +91,7 @@ describe OmniAuth::Strategies::Identity do
       } }
 
       before do
-        MockIdentity.should_receive(:create).with(properties).and_return(mock(:id => nil))
+        MockIdentity.should_receive(:create).with(properties).and_return(mock(:persisted? => false))
       end
 
       it 'should show registration form' do
