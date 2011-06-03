@@ -72,12 +72,31 @@ describe OmniAuth::Strategies::Identity do
       } }
 
       before do
-        MockIdentity.should_receive(:create).with(properties).and_return(mock(:uid => 'abc', :name => 'Awesome Dude', :email => 'awesome@example.com', :user_info => {:name => 'DUUUUDE!'}))
+        m = mock(:uid => 'abc', :name => 'Awesome Dude', :email => 'awesome@example.com', :user_info => {:name => 'DUUUUDE!'}, :persisted? => true)
+        MockIdentity.should_receive(:create).with(properties).and_return(m)
       end
 
       it 'should set the auth hash' do
         post '/auth/identity/register', properties
         auth_hash['uid'].should == 'abc'
+      end
+    end
+
+    context 'with invalid identity' do
+      let(:properties) { {
+        :name => 'Awesome Dude', 
+        :email => 'awesome@example.com',
+        :password => 'NOT',
+        :password_confirmation => 'MATCHING'
+      } }
+
+      before do
+        MockIdentity.should_receive(:create).with(properties).and_return(mock(:persisted? => false))
+      end
+
+      it 'should show registration form' do
+        post '/auth/identity/register', properties
+        last_response.body.should be_include("Register Identity")
       end
     end
   end

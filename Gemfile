@@ -12,3 +12,4 @@ gemspec :path => 'oa-oauth'
 gemspec :path => 'oa-openid'
 
 gem 'activerecord', '3.1.0.rc1'
+
