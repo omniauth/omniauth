@@ -71,6 +71,7 @@ OmniAuth currently supports the following external providers:
   * Twitter (credit: [mbleigh](https://github.com/mbleigh))
   * Vimeo (credit: [jamiew](https://github.com/jamiew))
   * Vkontakte (credit: [german](https://github.com/german))
+  * WePay (credit: [ryanwood](https://github.com/ryanwood))
   * Yammer (credit: [kltcalamay](https://github.com/kltcalamay))
   * YouTube (credit: [jamiew](https://github.com/jamiew))
 * CAS (Central Authentication Service) (credit: [jamesarosen](https://github.com/jamesarosen))
