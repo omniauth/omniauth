@@ -1,9 +1,7 @@
-source "http://rubygems.org"
+source 'http://rubygems.org'
 
-gem 'oa-core',  :path => File.expand_path('../../oa-core/', __FILE__)
+platforms :jruby do
+  gem 'jruby-openssl', '~> 0.7'
+end
 
-# Will automatically pull in this gem and all its
-# dependencies specified in the gemspec
-gem 'oa-enterprise', :path => File.expand_path("..", __FILE__)
-
-eval File.read(File.join(File.dirname(__FILE__), '../development_dependencies.rb'))
+gemspec

@@ -1,4 +1,4 @@
-require 'nokogiri'
+require 'multi_xml'
 require 'omniauth/oauth'
 
 module OmniAuth
@@ -23,9 +23,9 @@ module OmniAuth
       end
 
       def user_hash(access_token)
-        authenticated_user = Nokogiri::XML::Document.parse(@access_token.get('/api/auth_user').body)
+        authenticated_user = MultiXml.parse(@access_token.get('/api/auth_user').body)
         id = authenticated_user.xpath('GoodreadsResponse/user').attribute('id').value.to_i
-        response_doc = Nokogiri::XML::Document.parse(open("http://www.goodreads.com/user/show/#{id}.xml?key=#{@consumer_key}").read)
+        response_doc = MultiXml.parse(open("http://www.goodreads.com/user/show/#{id}.xml?key=#{@consumer_key}").read)
         user = response_doc.xpath('GoodreadsResponse/user')
 
         hash = {

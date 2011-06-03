@@ -4,7 +4,7 @@ module OmniAuth
   module Strategies
     class CAS
       class Configuration
-        
+
         DEFAULT_LOGIN_URL = "%s/login"
 
         DEFAULT_SERVICE_VALIDATE_URL = "%s/serviceValidate"
@@ -27,7 +27,7 @@ module OmniAuth
         # Build a CAS login URL from +service+.
         #
         # @param [String] service the service (a.k.a. return-to) URL
-        # 
+        #
         # @return [String] a URL like `http://cas.mycompany.com/login?service=...`
         def login_url(service)
           append_service @login_url, service
@@ -91,7 +91,7 @@ module OmniAuth
           result << 'service='
           result << Rack::Utils.escape(service)
         end
-        
+
       end
     end
   end

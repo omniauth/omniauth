@@ -1,12 +1,11 @@
-require 'rubygems'
+require 'simplecov'
+SimpleCov.start
 require 'rspec'
-require 'rspec/autorun'
 require 'rack/test'
 require 'webmock/rspec'
-
-include Rack::Test::Methods
-include WebMock::API
-
 require 'omniauth/basic'
 
-WebMock.disable_net_connect!
+RSpec.configure do |config|
+  config.include Rack::Test::Methods
+  config.include WebMock::API
+end

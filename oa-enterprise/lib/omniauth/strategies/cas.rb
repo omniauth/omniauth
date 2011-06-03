@@ -4,19 +4,19 @@ module OmniAuth
   module Strategies
     class CAS
       include OmniAuth::Strategy
-      
+
       autoload :Configuration, 'omniauth/strategies/cas/configuration'
       autoload :ServiceTicketValidator, 'omniauth/strategies/cas/service_ticket_validator'
-      
+
       def initialize(app, options = {}, &block)
         super(app, options[:name] || :cas, options.dup, &block)
         @configuration = OmniAuth::Strategies::CAS::Configuration.new(options)
       end
-      
+
       protected
-      
+
       def request_phase
-        [ 
+        [
           302,
           {
             'Location' => @configuration.login_url(callback_url),
@@ -34,7 +34,7 @@ module OmniAuth
         return fail!(:invalid_ticket, 'Invalid CAS Ticket') if @user_info.nil? || @user_info.empty?
         super
       end
-      
+
       def auth_hash
         OmniAuth::Utils.deep_merge(super, {
           'uid' => @user_info.delete('user'),

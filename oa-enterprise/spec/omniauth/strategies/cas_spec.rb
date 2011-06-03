@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../../spec_helper'
+require File.expand_path('../../../spec_helper', __FILE__)
 require 'cgi'
 
 describe OmniAuth::Strategies::CAS, :type => :strategy do
@@ -86,8 +86,8 @@ describe OmniAuth::Strategies::CAS, :type => :strategy do
         get '/auth/cas/callback?ticket=593af'
       end
 
-      it 'should call through to the master app when response is gzipped' do     
-          last_response.body.should == 'true' 
+      it 'should call through to the master app when response is gzipped' do
+          last_response.body.should == 'true'
       end
     end
   end

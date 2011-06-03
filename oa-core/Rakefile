@@ -1,14 +1,6 @@
-require 'rubygems'
 require 'bundler'
-Bundler.setup
-require 'rake'
-
-require 'mg'
-MG.new('oa-core.gemspec')
-
+Bundler::GemHelper.install_tasks
 require 'rspec/core/rake_task'
-RSpec::Core::RakeTask.new(:spec) do |s|
-  s.rspec_opts = "--format=#{ENV['RSPEC_FORMAT'] || 'nested'} --colour"
-end
-
+RSpec::Core::RakeTask.new(:spec)
 task :default => :spec
+task :test => :spec

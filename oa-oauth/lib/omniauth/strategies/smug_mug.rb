@@ -16,7 +16,7 @@ module OmniAuth
                 :access_token_path  => "/services/oauth/getAccessToken.mg",
                 :authorize_path     => "/services/oauth/authorize.mg"}, options, &block)
       end
-      
+
       def auth_hash
         OmniAuth::Utils.deep_merge(super, {
           'uid' => user_hash['id'],
@@ -24,15 +24,15 @@ module OmniAuth
           'extra' => { 'user_hash' => user_hash }
         })
       end
-      
+
       # user info according to schema
       def user_info
-        { 
+        {
           'nickname' => user_hash['NickName'],
           'name' => user_hash['NickName']
         }
       end
-      
+
       # info as supplied by SmugMug
       def user_hash
         @user_hash ||= MultiJson.decode(@access_token.get('/services/api/json/1.2.2/?method=smugmug.auth.checkAccessToken').body)['Auth']['User']
