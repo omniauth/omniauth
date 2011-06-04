@@ -135,7 +135,16 @@ module OmniAuth
       session['query_params'] = nil if session['query_params']
       call_app!
     end
-
+        
+    def dynamic_path
+      if current_path =~ /\/(setup|callback|failure)$/i
+        current_path =~ /^#{request_path}(\/.*)?\/(setup|callback|failure)$/i
+      else
+        current_path =~ /^#{request_path}(\/.*)$/i
+      end
+      $1.to_s.sub(/\/?\s*$/,'') if $1
+    end
+    
     def path_prefix
       options[:path_prefix] || OmniAuth.config.path_prefix
     end
@@ -145,11 +154,19 @@ module OmniAuth
     end
 
     def callback_path
-      options[:callback_path] || "#{current_base_path}/callback"
+      if options[:callback_path]
+        "#{options[:callback_path]}#{dynamic_path}"
+      else
+        "#{path_prefix}/#{name}#{dynamic_path}/callback"
+      end
     end
 
     def setup_path
-      options[:setup_path] || "#{current_base_path}/setup"
+      if options[:setup_path]
+        "#{options[:setup_path]}#{dynamic_path}"
+      else
+        "#{path_prefix}/#{name}#{dynamic_path}/setup"
+      end
     end
 
     def failure_path
