@@ -195,6 +195,9 @@ describe OmniAuth::Strategy do
         strategy.callback_url.should == 'http://example.com/auth/test/fresh/78/callback'
       end
 
+
+
+
       it 'should use dynamic request_path to construct the failure_path' do
         @options = {:failure => :forced_fail}
         strategy.stub(:full_host).and_return('http://example.com')
@@ -402,6 +405,43 @@ describe OmniAuth::Strategy do
       it 'should call the rack app' do
         strategy.call(make_env('/auth/test'))
         strategy.options[:awesome].should == 'sauce'
+      end
+    end
+
+    context 'when using a dynamic path' do
+      context 'when options[:setup] = true' do
+        let(:strategy){ ExampleStrategy.new(app, 'test', :setup => true) }
+        let(:app){lambda{|env| env['omniauth.strategy'].options[:awesome] = 'sauce' if env['PATH_INFO'] == '/auth/test/shiny/23/setup'; [404, {}, 'Awesome'] }}
+
+        it 'should call through to /auth/:provider/dynamic/path/setup' do
+          strategy.call(make_env('/auth/test/shiny/23'))
+          strategy.options[:awesome].should == 'sauce'
+        end
+
+        it 'should not call through on a non-omniauth endpoint' do
+          strategy.call(make_env('/somewhere/else'))
+          strategy.options[:awesome].should_not == 'sauce'
+        end
+      end
+
+      context 'when options[:setup] is an app' do
+        let(:setup_proc) do
+          Proc.new do |env|
+            env['omniauth.strategy'].options[:awesome] = 'sauce'
+          end
+        end
+
+        let(:strategy){ ExampleStrategy.new(app, 'test', :setup => setup_proc) }
+
+        it 'should not call the app on a non-omniauth endpoint' do
+          strategy.call(make_env('/somehwere/else'))
+          strategy.options[:awesome].should_not == 'sauce'
+        end
+
+        it 'should call the rack app' do
+          strategy.call(make_env('/auth/test/shiny/23'))
+          strategy.options[:awesome].should == 'sauce'
+        end
       end
     end
   end
