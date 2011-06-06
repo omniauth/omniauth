@@ -7,5 +7,6 @@ module OmniAuth
     autoload :Yupoo, 'omniauth/strategies/yupoo'
     autoload :Ign, 'omniauth/strategies/ign'
     autoload :Draugiem, 'omniauth/strategies/draugiem'
+    autoload :HttpBasic, 'omniauth/strategies/http_basic'
   end
 end
