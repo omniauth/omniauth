@@ -1,5 +1,5 @@
 require 'rest-client'
-require 'omniauth/basic'
+require 'omniauth/more'
 
 module OmniAuth
   module Strategies
