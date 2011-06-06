@@ -1,6 +1,6 @@
 require 'fileutils'
 
-PROJECTS = %w(oa-core oa-basic oa-enterprise oa-identity oa-more oa-oauth oa-openid omniauth)
+PROJECTS = %w(oa-core oa-enterprise oa-identity oa-more oa-oauth oa-openid omniauth)
 
 def root
   File.expand_path('../../', __FILE__)
