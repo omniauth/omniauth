@@ -33,7 +33,7 @@ module OmniAuth
   # If OpenID is one of several authentication strategies, use the OmniAuth Builder:
   #
   #     require 'omniauth/openid'
-  #     require 'omniauth/basic'  # for Campfire
+  #     require 'omniauth/oauth'  # for Campfire
   #     require 'openid/store/filesystem'
   #
   #     use OmniAuth::Builder do
