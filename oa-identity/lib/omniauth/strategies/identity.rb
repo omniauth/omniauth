@@ -59,7 +59,12 @@ module OmniAuth
           env['PATH_INFO'] = callback_path
           callback_phase
         else
-          registration_form
+          if options[:on_failed_registration]
+            self.env['omniauth.identity'] = @identity
+            options[:on_failed_registration].call(self.env)
+          else
+            registration_form
+          end
         end
       end
 
