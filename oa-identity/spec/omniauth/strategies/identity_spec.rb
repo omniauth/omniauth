@@ -2,15 +2,31 @@ require 'spec_helper'
 
 class MockIdentity; end
 
-describe OmniAuth::Strategies::Identity do 
+describe OmniAuth::Strategies::Identity do
+  attr_accessor :app
+
   let(:auth_hash){ last_response.headers['env']['omniauth.auth'] }
-  
-  def app
-    Rack::Builder.app do
+  let(:identity_hash){ last_response.headers['env']['omniauth.identity'] }
+
+  # customize rack app for testing, if block is given, reverts to default
+  # rack app after testing is done
+  def set_app!(identity_options = {})
+    identity_options.reverse_merge!({:model => MockIdentity})
+    old_app = self.app
+    self.app = Rack::Builder.app do
       use Rack::Session::Cookie
-      use OmniAuth::Strategies::Identity, :model => MockIdentity
+      use OmniAuth::Strategies::Identity, identity_options
       run lambda{|env| [404, {'env' => env}, ["HELLO!"]]}
     end
+    if block_given?
+      yield
+      self.app = old_app
+    end
+    self.app
+  end
+
+  before(:all) do
+    set_app!
   end
 
   describe '#request_phase' do
@@ -94,9 +110,20 @@ describe OmniAuth::Strategies::Identity do
         MockIdentity.should_receive(:create).with(properties).and_return(mock(:persisted? => false))
       end
 
-      it 'should show registration form' do
-        post '/auth/identity/register', properties
-        last_response.body.should be_include("Register Identity")
+      context 'default' do
+        it 'should show registration form' do
+          post '/auth/identity/register', properties
+          last_response.body.should be_include("Register Identity")
+        end
+      end
+
+      context 'custom on_failed_registration endpoint' do
+        it 'should set the identity hash' do
+          set_app!(:on_failed_registration => lambda{|env| [404, {'env' => env}, ["HELLO!"]]}) do
+            post '/auth/identity/register', properties
+            identity_hash.should_not be_nil
+          end
+        end
       end
     end
   end
