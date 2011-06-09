@@ -95,7 +95,7 @@ module OmniAuth
       elsif env['HTTP_REFERER'] && !env['HTTP_REFERER'].match(/#{request_path}$/)
         @env['rack.session']['omniauth.origin'] = env['HTTP_REFERER']
       end
-      redirect(script_name + callback_url)
+      redirect(callback_url)
     end
 
     def mock_callback_call
