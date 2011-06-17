@@ -70,7 +70,7 @@ module OmniAuth
 
       def auth_hash 
         {
-          'provider' => name,
+          'provider' => name.to_s,
           'uid' => identity.uid,
           'user_info' => identity.user_info
         }
