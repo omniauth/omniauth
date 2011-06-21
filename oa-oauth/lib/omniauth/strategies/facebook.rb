@@ -23,6 +23,8 @@ module OmniAuth
 
       def request_phase
         options[:scope] ||= "email,offline_access"
+        options.delete(:scope) if options[:scope] == "basic"
+        
         super
       end
 
