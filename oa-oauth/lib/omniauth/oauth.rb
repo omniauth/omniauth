@@ -8,6 +8,7 @@ module OmniAuth
 
     autoload :Bitly,              'omniauth/strategies/bitly'
     autoload :Blogger,            'omniauth/strategies/blogger'
+    autoload :ConstantContact,    'omniauth/strategies/constant_contact'
     autoload :Dailymile,          'omniauth/strategies/dailymile'
     autoload :Doit,               'omniauth/strategies/doit'
     autoload :Dopplr,             'omniauth/strategies/dopplr'
