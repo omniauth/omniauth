@@ -29,7 +29,7 @@ module OmniAuth
 
       def user_data
         # http://vkontakte.ru/developers.php?o=-17680044&p=Description+of+Fields+of+the+fields+Parameter
-        @fields ||= ['uid', 'first_name', 'last_name', 'nickname', 'domain', 'sex', 'bdate', 'city', 'country', 'timezone', 'photo', 'photo_big']
+        @fields ||= ['uid', 'first_name', 'last_name', 'nickname', 'domain', 'sex', 'bdate', 'city', 'country', 'timezone', 'photo', 'photo_big', 'education']
 
         # http://vkontakte.ru/developers.php?o=-1&p=getProfiles
         @data ||= MultiJson.decode(@access_token.get("https://api.vkontakte.ru/method/getProfiles?uid=#{@access_token['user_id']}&fields=#{@fields.join(',')}&access_token=#{@access_token.token}"))['response'][0]
@@ -69,7 +69,15 @@ module OmniAuth
         "user_hash" => {
           "gender" => @data["sex"],
           "timezone" => @data["timezone"],
-          "photo_big" => @data["photo_big"] # 200px maximum resolution of the avatar (http://vkontakte.ru/developers.php?o=-17680044&p=Description+of+Fields+of+the+fields+Parameter)
+          "photo_big" => @data["photo_big"], # 200px maximum resolution of the avatar (http://vkontakte.ru/developers.php?o=-17680044&p=Description+of+Fields+of+the+fields+Parameter)
+          
+          # according to http://vkontakte.ru/developers.php?o=-17680044&p=Description+of+Fields+of+the+fields+Parameter
+          # it returns only: university_id, university_name, faculty_id, faculty_name, graduation
+          "university_id" => @data["university"],
+          "university_name" => @data["university_name"],
+          "faculty_id" => @data["faculty"],
+          "faculty_name" => @data["faculty_name"],
+          "graduation" => @data["graduation"]
         }
       }
     end
