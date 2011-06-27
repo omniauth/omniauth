@@ -37,7 +37,7 @@ module OmniAuth
       # @param [String] client_id the client/application ID of this provider
       # @param [String] client_secret the client/application secret of this provider
       # @param [Hash] options that will be passed through to the OAuth2::Client (see [oauth2 docs](http://rubydoc.info/gems/oauth2))
-      def initialize(app, name, client_id = nil, client_secret = nil, client_options = {}, options = {}, &block)
+      def initialize(app, name, client_id=nil, client_secret=nil, client_options={}, options={}, &block)
         self.client_id = client_id
         self.client_secret = client_secret
         self.client_options = client_options
@@ -55,7 +55,7 @@ module OmniAuth
       protected
 
       def request_phase
-        redirect client.web_server.authorize_url({:redirect_uri => callback_url}.merge(options))
+        redirect client.auth_code.authorize_url({:redirect_uri => callback_url}.merge(options))
       end
 
       def callback_phase
@@ -64,10 +64,10 @@ module OmniAuth
         end
 
         @access_token = build_access_token
-        @access_token = client.web_server.refresh_access_token(@access_token.refresh_token) if @access_token.expired?
+        @access_token = client.auth_code.refresh_token(@access_token.refresh_token) if @access_token.expired?
 
         super
-      rescue ::OAuth2::HTTPError, ::OAuth2::AccessDenied, CallbackError => e
+      rescue ::OAuth2::Error, CallbackError => e
         fail!(:invalid_credentials, e)
       rescue ::MultiJson::DecodeError => e
         fail!(:invalid_response, e)
@@ -77,7 +77,7 @@ module OmniAuth
 
       def build_access_token
         verifier = request.params['code']
-        client.web_server.get_access_token(verifier, {:redirect_uri => callback_url}.merge(options))
+        client.auth_code.get_token(verifier, {:redirect_uri => callback_url, :parse => :url}.merge(options))
       end
 
       def auth_hash
