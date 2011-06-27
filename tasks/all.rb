@@ -107,20 +107,20 @@ end
 def write_version(destination, major=nil, minor=nil, patch=nil, pre=nil)
   source = "#{root}/lib/omniauth/version.rb"
   v = version.split('.')
-  v[0] = major if major
-  v[1] = minor if minor
-  v[2] = patch if patch
-  v[3] = pre   if pre
-  v[3] = v[3] ? v[3].to_s : "nil"
+  major ||= v[0]
+  minor ||= v[1]
+  patch ||= v[2]
+  pre ||= v[3]
+  pre = pre ? pre.inspect : "nil"
 
   ruby = File.read(source)
-  ruby.gsub! /^(\s*)MAJOR = .*?$/, "\\1MAJOR = #{v[0]}"
+  ruby.gsub! /^(\s*)MAJOR = .*?$/, "\\1MAJOR = #{major}"
   fail "Could not insert MAJOR in #{source}" unless $1
-  ruby.gsub! /^(\s*)MINOR = .*?$/, "\\1MINOR = #{v[1]}"
+  ruby.gsub! /^(\s*)MINOR = .*?$/, "\\1MINOR = #{minor}"
   fail "Could not insert MINOR in #{source}" unless $1
-  ruby.gsub! /^(\s*)PATCH = .*?$/, "\\1PATCH = #{v[2]}"
+  ruby.gsub! /^(\s*)PATCH = .*?$/, "\\1PATCH = #{patch}"
   fail "Could not insert PATCH in #{source}" unless $1
-  ruby.gsub! /^(\s*)PRE   = .*?$/, "\\1PRE   = #{v[3]}"
+  ruby.gsub! /^(\s*)PRE   = .*?$/, "\\1PRE   = #{pre}"
   fail "Could not insert PRE in #{source}" unless $1
   File.open(destination, 'w') do |file|
     file.write ruby
