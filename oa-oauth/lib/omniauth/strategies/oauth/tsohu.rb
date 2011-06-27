@@ -3,14 +3,11 @@ require 'multi_json'
 
 module OmniAuth
   module Strategies
-    #
     # Authenticate to Tsohu via OAuth and retrieve basic
     # user information.
     #
     # Usage:
-    #
     #    use OmniAuth::Strategies::Tsohu, 'APIKey', 'APIKeySecret'
-    #
     class Tsohu < OmniAuth::Strategies::OAuth
 
       def initialize(app, consumer_key=nil, consumer_secret=nil, options={}, &block)

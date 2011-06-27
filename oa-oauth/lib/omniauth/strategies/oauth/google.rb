@@ -14,8 +14,8 @@ module OmniAuth
     class Google < OmniAuth::Strategies::OAuth
       def initialize(app, consumer_key=nil, consumer_secret=nil, options={}, &block)
         client_options = {
-          :token_url => 'https://www.google.com/accounts/OAuthGetAccessToken',
           :authorize_url => 'https://www.google.com/accounts/OAuthAuthorizeToken',
+          :token_url => 'https://www.google.com/accounts/OAuthGetAccessToken',
         }
         google_contacts_auth = "www.google.com/m8/feeds"
         options[:scope] ||= "http://#{google_contacts_auth}"

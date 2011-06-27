@@ -9,7 +9,6 @@ module OmniAuth
           :authorize_url => 'https://www.yammer.com/oauth/authorize',
           :token_url => 'https://www.yammer.com/oauth/access_token',
         }
-
         super(app, :yammer, consumer_key, consumer_secret, client_options, options)
       end
 

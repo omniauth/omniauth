@@ -3,14 +3,11 @@ require 'multi_json'
 
 module OmniAuth
   module Strategies
-    #
     # Authenticate to TSina via OAuth and retrieve basic
     # user information.
     #
     # Usage:
-    #
     #    use OmniAuth::Strategies::TSina, 'APIKey', 'APIKeySecret'
-    #
     class Tsina < OmniAuth::Strategies::OAuth
 
       def initialize(app, consumer_key=nil, consumer_secret=nil, options={}, &block)

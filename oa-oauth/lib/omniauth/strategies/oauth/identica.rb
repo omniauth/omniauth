@@ -13,11 +13,11 @@ module OmniAuth
     #
     class Identica < OmniAuth::Strategies::OAuth
       def initialize(app, consumer_key=nil, consumer_secret=nil, options={}, &block)
-        super(app, :identica, consumer_key, consumer_secret,
-          {
-            :token_url => 'http://identi.ca/api/oauth/access_token',
-            :authorize_url => 'http://identi.ca/api/oauth/authorize',
-          }, options, &block)
+        client_options = {
+          :authorize_url => 'http://identi.ca/api/oauth/authorize',
+          :token_url => 'http://identi.ca/api/oauth/access_token',
+        }
+        super(app, :identica, consumer_key, consumer_secret, client_options, options, &block)
       end
 
       def auth_hash

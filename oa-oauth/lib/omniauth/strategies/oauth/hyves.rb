@@ -10,7 +10,7 @@ module OmniAuth
           :authorize_url => 'http://www.hyves.nl/api/authorize',
           :token_url => token_url,
           :http_method => :get,
-          :scheme => :header
+          :scheme => :header,
         }
         super(app, :hyves, consumer_key, consumer_secret, client_options, options, &block)
       end

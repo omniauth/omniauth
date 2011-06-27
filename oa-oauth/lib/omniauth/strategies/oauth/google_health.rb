@@ -14,8 +14,8 @@ module OmniAuth
     class GoogleHealth < OmniAuth::Strategies::OAuth
       def initialize(app, consumer_key=nil, consumer_secret=nil, options={}, &block)
         client_options = {
-          :token_url => 'https://www.google.com/accounts/OAuthGetAccessToken',
           :authorize_url => 'https://www.google.com/accounts/OAuthAuthorizeToken',
+          :token_url => 'https://www.google.com/accounts/OAuthGetAccessToken',
         }
 
         super(app, :google_health, consumer_key, consumer_secret, client_options, options)

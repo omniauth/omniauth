@@ -10,11 +10,11 @@ module OmniAuth
     #
     class Netflix < OmniAuth::Strategies::OAuth
       def initialize(app, consumer_key=nil, consumer_secret=nil, options={}, &block)
-        opts = {
-          :token_url => 'http://api.netflix.com/oauth/access_token',
+        client_options = {
           :authorize_url => 'https://api-user.netflix.com/oauth/login',
+          :token_url => 'http://api.netflix.com/oauth/access_token',
         }
-        super(app, :netflix, consumer_key, consumer_secret, opts, options, &block)
+        super(app, :netflix, consumer_key, consumer_secret, client_options, options, &block)
       end
 
       def request_phase

@@ -15,7 +15,6 @@ module OmniAuth
           :authorize_url => 'https://mixi.jp/connect_authorize.pl',
           :token_url => 'https://secure.mixi-platform.com/2/token',
         }
-
         super(app, :mixi, client_id, client_secret, client_options, options, &block)
       end
 

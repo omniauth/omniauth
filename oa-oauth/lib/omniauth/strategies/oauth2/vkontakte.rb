@@ -3,7 +3,6 @@ require 'multi_json'
 
 module OmniAuth
   module Strategies
-    #
     # Authenticate to Vkontakte utilizing OAuth 2.0 and retrieve
     # basic user information.
     # documentation available here:

@@ -3,7 +3,6 @@ require 'multi_json'
 
 module OmniAuth
   module Strategies
-    #
     # Authenticate to Vkontakte utilizing OAuth 2.0 and retrieve
     # basic user information.
     # documentation available here:
@@ -20,9 +19,7 @@ module OmniAuth
           :authorize_url => 'https://connect.mail.ru/oauth/authorize',
           :token_url => 'https://connect.mail.ru/oauth/token',
         }
-
         @private_key  = options[:private_key]
-
         super(app, :mailru, client_id, client_secret, client_options, options, &block)
       end
 

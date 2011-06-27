@@ -3,13 +3,10 @@ require 'multi_json'
 
 module OmniAuth
   module Strategies
-    #
     # Authenticate to Vimeo via OAuth and retrieve basic user information.
     #
     # Usage:
-    #
     #    use OmniAuth::Strategies::Vimeo, 'consumerkey', 'consumersecret'
-    #
     class Vimeo < OmniAuth::Strategies::OAuth
       def initialize(app, consumer_key=nil, consumer_secret=nil, options={}, &block)
         client_options = {

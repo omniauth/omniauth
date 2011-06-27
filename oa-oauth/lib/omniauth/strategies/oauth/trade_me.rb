@@ -3,11 +3,9 @@ require 'multi_json'
 
 module OmniAuth
   module Strategies
-    #
     # Authenticate to TradeMe via OAuth and retrieve basic user information.
     # Usage:
     #    use OmniAuth::Strategies::TradeMe, 'consumerkey', 'consumersecret'
-    #
     class TradeMe < OmniAuth::Strategies::OAuth
       def initialize(app, consumer_key=nil, consumer_secret=nil, options={}, &block)
         client_options = {

@@ -3,16 +3,12 @@ require 'multi_json'
 
 module OmniAuth
   module Strategies
-    #
     # Authenticate to Typepad via OAuth and retrieve basic
     # user information.
     #
     # Usage:
-    #
     #    use OmniAuth::Strategies::Typepad, 'consumerkey', 'consumersecret', :application_id => 'my_type_pad_application_id'
-    #
     #    application_id is required.
-    #
     class TypePad < OmniAuth::Strategies::OAuth
       def initialize(app, consumer_key=nil, consumer_secret=nil, options={}, &block)
         # TypePad uses the application ID for one of the OAuth paths.

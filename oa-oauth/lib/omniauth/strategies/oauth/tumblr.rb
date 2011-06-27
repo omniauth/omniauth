@@ -2,14 +2,12 @@ require 'omniauth/oauth'
 
 module OmniAuth
   module Strategies
-    #
     # Authenticate to Tumblr via OAuth and retrieve basic
     # user information.
     #
     # Usage:
     #
     #    use OmniAuth::Strategies::Tumblr, 'consumerkey', 'consumersecret'
-    #
     class Tumblr < OmniAuth::Strategies::OAuth
       # Initialize the middleware
       #

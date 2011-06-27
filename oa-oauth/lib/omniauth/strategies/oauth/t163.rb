@@ -3,16 +3,12 @@ require 'multi_json'
 
 module OmniAuth
   module Strategies
-    #
     # Authenticate to T163 via OAuth and retrieve basic
     # user information.
     #
     # Usage:
-    #
     #    use OmniAuth::Strategies::T163, 'APIKey', 'APIKeySecret'
-    #
     class T163 < OmniAuth::Strategies::OAuth
-
       def initialize(app, consumer_key=nil, consumer_secret=nil, options={}, &block)
         @api_key = consumer_key
         client_options = {

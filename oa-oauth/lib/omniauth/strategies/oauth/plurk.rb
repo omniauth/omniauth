@@ -18,8 +18,8 @@ module OmniAuth
       # @param [String] consumer_secret App secret registered on plurk
       def initialize(app, consumer_key=nil, consumer_secret=nil, options = {}, &block)
         client_options = {
-          :token_url => 'http://www.plurk.com/OAuth/access_token',
           :authorize_url => 'http://www.plurk.com/OAuth/authorize',
+          :token_url => 'http://www.plurk.com/OAuth/access_token',
         }
         super(app, :plurk, consumer_key, consumer_secret, client_options, options)
       end

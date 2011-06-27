@@ -5,8 +5,8 @@ module OmniAuth
     class Salesforce < OmniAuth::Strategies::OAuth2
       def initialize(app, client_id=nil, client_secret=nil, options={}, &block)
         client_options = {
-          :token_url => 'https://login.salesforce.com/services/oauth2/token',
           :authorize_url => 'https://login.salesforce.com/services/oauth2/authorize',
+          :token_url => 'https://login.salesforce.com/services/oauth2/token',
         }
         options.merge!(:response_type => 'code', :grant_type => 'authorization_code')
         super(app, :salesforce, client_id, client_secret, client_options, options, &block)

@@ -12,7 +12,7 @@ module OmniAuth
         options[:sign_in] ||= true
         client_options = {
           :authorize_url => authorize_url(options),
-          :token_url => 'https://foursquare.com/oauth2/access_token'
+          :token_url => 'https://foursquare.com/oauth2/access_token',
         }
         super(app, :foursquare, client_id, client_secret, client_options, options, &block)
       end

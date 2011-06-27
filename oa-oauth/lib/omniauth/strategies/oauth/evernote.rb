@@ -40,7 +40,7 @@ module OmniAuth
 
       def user_data
         @user_data ||= begin
-          user_store_url = consumer.site + '/edam/user'
+          user_store_url = 'https://www.evernote.com/edam/user'
           client = ::Evernote::Client.new(::Evernote::EDAM::UserStore::UserStore::Client, user_store_url, {})
           client.getUser(@access_token.token)
         end

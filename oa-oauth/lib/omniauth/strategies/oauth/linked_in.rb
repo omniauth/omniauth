@@ -9,9 +9,7 @@ module OmniAuth
           :authorize_url => 'https://api.linkedin.com/uas/oauth/authorize',
           :token_url => 'https://api.linkedin.com/uas/oauth/accessToken',
         }
-
         client_options[:authorize_url] = '/uas/oauth/authenticate' unless options[:sign_in] == false
-
         super(app, :linked_in, consumer_key, consumer_secret, client_options, options, &block)
       end
 

@@ -3,16 +3,12 @@ require 'multi_json'
 
 module OmniAuth
   module Strategies
-    #
     # Authenticate to Tqq via OAuth and retrieve basic
     # user information.
     #
     # Usage:
-    #
     #    use OmniAuth::Strategies::Tqq, 'APIKey', 'APIKeySecret'
-    #
     class Tqq < OmniAuth::Strategies::OAuth
-
       def initialize(app, consumer_key=nil, consumer_secret=nil, options={}, &block)
         @api_key = consumer_key
         client_options = {

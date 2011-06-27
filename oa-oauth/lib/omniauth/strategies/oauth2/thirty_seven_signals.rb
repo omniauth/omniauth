@@ -7,7 +7,7 @@ module OmniAuth
       def initialize(app, client_id=nil, client_secret=nil, options={}, &block)
         client_options = {
           :authorize_url => 'https://launchpad.37signals.com/authorization/new',
-          :token_url => 'https://launchpad.37signals.com/authorization/token'
+          :token_url => 'https://launchpad.37signals.com/authorization/token',
         }
         super(app, :thirty_seven_signals, client_id, client_secret, client_options, options, &block)
       end

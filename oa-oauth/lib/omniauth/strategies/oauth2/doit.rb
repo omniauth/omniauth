@@ -15,7 +15,7 @@ module OmniAuth
       protected
 
       def user_data
-        @data ||= MultiJson.decode(@access_token.get(client.site+"/v1/settings"),{'Authorization'=> 'OAuth'+@access_token.token})
+        @data ||= MultiJson.decode(@access_token.get('https://openapi.doit.im/v1/settings'), {'Authorization' => 'OAuth' + @access_token.token})
       end
 
       def request_phase

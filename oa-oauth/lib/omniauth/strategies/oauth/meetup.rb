@@ -17,13 +17,12 @@ module OmniAuth
       # @param [String] consumer_secret the application consumer secret
       # @option options [Boolean, true] :sign_in When true, use a sign-in flow instead of the authorization flow.
       def initialize(app, consumer_key=nil, consumer_secret=nil, options={}, &block)
-        auth_path = (options[:sign_in] == false) ? 'http://www.meetup.com/authorize' : 'http://www.meetup.com/authenticate'
-
-        super(app, :meetup, consumer_key, consumer_secret,
-          {
-            :token_url => 'https://api.meetup.com/oauth/access',
-            :authorize_url => auth_path,
-          }, options)
+        authorize_url = (options[:sign_in] == false) ? 'http://www.meetup.com/authorize' : 'http://www.meetup.com/authenticate'
+        client_options = {
+          :authorize_url => authorize_url,
+          :token_url => 'https://api.meetup.com/oauth/access',
+        }
+        super(app, :meetup, consumer_key, consumer_secret, client_options, options)
       end
 
       def auth_hash

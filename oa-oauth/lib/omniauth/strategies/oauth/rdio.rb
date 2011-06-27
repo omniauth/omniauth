@@ -10,11 +10,11 @@ module OmniAuth
     #
     class Rdio < OmniAuth::Strategies::OAuth
       def initialize(app, consumer_key=nil, consumer_secret=nil, options={}, &block)
-        opts = {
+        client_options = {
           :token_url => 'http://api.rdio.com/oauth/access_token',
           :authorize_url => 'https://www.rdio.com/oauth/authorize',
         }
-        super(app, :rdio, consumer_key, consumer_secret, opts, options, &block)
+        super(app, :rdio, consumer_key, consumer_secret, client_options, options, &block)
       end
 
       def auth_hash

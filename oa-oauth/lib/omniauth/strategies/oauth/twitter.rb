@@ -3,14 +3,12 @@ require 'multi_json'
 
 module OmniAuth
   module Strategies
-    #
     # Authenticate to Twitter via OAuth and retrieve basic
     # user information.
     #
     # Usage:
     #
     #    use OmniAuth::Strategies::Twitter, 'consumerkey', 'consumersecret'
-    #
     class Twitter < OmniAuth::Strategies::OAuth
       # Initialize the middleware
       #
@@ -19,7 +17,6 @@ module OmniAuth
         client_options = {
           :site => 'https://api.twitter.com',
         }
-
         options[:authorize_params] = {:force_login => 'true'} if options.delete(:force_login) == true
         client_options[:authorize_path] = '/oauth/authenticate' unless options[:sign_in] == false
         super(app, :twitter, consumer_key, consumer_secret, client_options, options)

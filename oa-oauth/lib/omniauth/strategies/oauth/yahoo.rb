@@ -3,14 +3,11 @@ require 'multi_json'
 
 module OmniAuth
   module Strategies
-    #
     # Authenticate to Yahoo via OAuth and retrieve basic
     # user information.
     #
     # Usage:
-    #
     #    use OmniAuth::Strategies::Yahoo, 'consumerkey', 'consumersecret'
-    #
     class Yahoo < OmniAuth::Strategies::OAuth
       def initialize(app, consumer_key=nil, consumer_secret=nil, options={}, &block)
         client_options = {
