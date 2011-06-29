@@ -14,14 +14,13 @@ module OmniAuth
         class AuthenticationError < StandardError; end
         class ConnectionError < StandardError; end
 
-        VALID_ADAPTER_CONFIGURATION_KEYS = [:host, :port, :method, :bind_dn, :password,
-	                                        :try_sasl, :sasl_mechanisms, :uid, :base, :allow_anonymous]
+        VALID_ADAPTER_CONFIGURATION_KEYS = [:host, :port, :method, :bind_dn, :password, :try_sasl, :sasl_mechanisms, :uid, :base, :allow_anonymous]
 
         MUST_HAVE_KEYS = [:host, :port, :method, :uid, :base]
 
         METHOD = {
-	        :ssl => :simple_tls,
-	        :tls => :start_tls,
+          :ssl => :simple_tls,
+          :tls => :start_tls,
           :plain => nil,
         }
 
