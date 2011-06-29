@@ -48,6 +48,8 @@ module OmniAuth
 
       def user_hash
         @user_hash ||= MultiJson.decode(@access_token.get('/1/account/verify_credentials.json').body)
+      rescue ::Errno::ETIMEDOUT
+        raise ::Timeout::Error
       end
     end
   end
