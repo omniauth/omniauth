@@ -23,31 +23,46 @@ describe "OmniAuth::Strategies::OAuth" do
   end
 
   describe '/auth/{name}' do
-    before do
-      get '/auth/example.org'
-    end
-    it 'should redirect to authorize_url' do
-      last_response.should be_redirect
-      last_response.headers['Location'].should == 'https://api.example.org/oauth/authorize?oauth_token=yourtoken'
+    context 'successful' do
+      before do
+        get '/auth/example.org'
+      end
+      it 'should redirect to authorize_url' do
+        last_response.should be_redirect
+        last_response.headers['Location'].should == 'https://api.example.org/oauth/authorize?oauth_token=yourtoken'
+      end
+
+      it 'should redirect to authorize_url with authorize_params when set' do
+        get '/auth/example.org_with_authorize_params'
+        last_response.should be_redirect
+        [
+          'https://api.example.org/oauth/authorize?abc=def&oauth_token=yourtoken',
+          'https://api.example.org/oauth/authorize?oauth_token=yourtoken&abc=def'
+        ].should be_include(last_response.headers['Location'])
+      end
+
+      it 'should set appropriate session variables' do
+        session['oauth'].should == {"example.org" => {'callback_confirmed' => true, 'request_token' => 'yourtoken', 'request_secret' => 'yoursecret'}}
+      end
     end
 
-    it 'should redirect to authorize_url with authorize_params when set' do
-      get '/auth/example.org_with_authorize_params'
-      last_response.should be_redirect
-      [
-        'https://api.example.org/oauth/authorize?abc=def&oauth_token=yourtoken',
-        'https://api.example.org/oauth/authorize?oauth_token=yourtoken&abc=def'
-      ].should be_include(last_response.headers['Location'])
-    end
+    context 'unsuccessful' do
+      before do
+        stub_request(:post, 'https://api.example.org/oauth/request_token').
+           to_raise(::Net::HTTPFatalError.new(%Q{502 "Bad Gateway"}, nil))
+        get '/auth/example.org'
+      end
 
-    it 'should set appropriate session variables' do
-      session['oauth'].should == {"example.org" => {'callback_confirmed' => true, 'request_token' => 'yourtoken', 'request_secret' => 'yoursecret'}}
+      it 'should call fail! with :service_unavailable' do
+        last_request.env['omniauth.error'].should be_kind_of(::Net::HTTPFatalError)
+        last_request.env['omniauth.error.type'] = :service_unavailable
+      end
     end
   end
 
-  describe '/auth/{name}/callback' do
-    before do
-      stub_request(:post, 'https://api.example.org/oauth/access_token').
+    describe '/auth/{name}/callback' do
+      before do
+        stub_request(:post, 'https://api.example.org/oauth/access_token').
          to_return(:body => "oauth_token=yourtoken&oauth_token_secret=yoursecret")
       get '/auth/example.org/callback', {:oauth_verifier => 'dudeman'}, {'rack.session' => {'oauth' => {"example.org" => {'callback_confirmed' => true, 'request_token' => 'yourtoken', 'request_secret' => 'yoursecret'}}}}
     end

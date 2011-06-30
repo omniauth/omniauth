@@ -40,6 +40,8 @@ module OmniAuth
 
       rescue ::Timeout::Error => e
         fail!(:timeout, e)
+      rescue ::Net::HTTPFatalError => e
+        fail!(:service_unavailable, e)
       end
 
       def callback_phase
