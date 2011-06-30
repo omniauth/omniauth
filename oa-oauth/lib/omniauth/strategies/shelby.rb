@@ -11,7 +11,7 @@ module OmniAuth
     class Shelby < OmniAuth::Strategies::OAuth
       def initialize(app, consumer_key = nil, consumer_secret = nil, options = {}, &block)
         super(app, :shelby, consumer_key, consumer_secret,
-                {:site               => 'http://alpha.shelby.tv',
+                {:site               => 'http://localhost:3000',
                 :request_token_path => "/oauth/request_token",
                 :access_token_path  => "/oauth/access_token",
                 :authorize_path     => "/oauth/authorize"}, options, &block)
@@ -19,12 +19,12 @@ module OmniAuth
       
       # user info as supplied by Shelby
       def user_hash
-        @user_hash ||= MultiJson.decode(@access_token.get('/user/show').body)['Auth']['User']
+        @user_hash ||= MultiJson.decode(@access_token.get('/get_user_info').body)  #['Auth']['User']
       end
 
       def auth_hash
         OmniAuth::Utils.deep_merge(super, {
-          'uid' => user_hash['id'],
+          'uid' => user_hash['_id'],
           'user_info' => user_info,
           'extra' => { 'user_hash' => user_hash }
         })

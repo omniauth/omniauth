@@ -15,7 +15,7 @@ Gem::Specification.new do |gem|
   
   gem.add_dependency  'oa-core', version
   gem.add_dependency  'rest-client',  '~> 1.6.0'
-  gem.add_dependency  'multi_json',   '~> 0.0.2'
+  gem.add_dependency  'multi_json',   '~> 1.0.3'
   
   eval File.read(File.join(File.dirname(__FILE__), '../development_dependencies.rb'))
 end
