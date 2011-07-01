@@ -56,5 +56,6 @@ module OmniAuth
     autoload :OpenID, 'omniauth/strategies/open_id'
     autoload :GoogleApps, 'omniauth/strategies/google_apps'
     autoload :Steam, 'omniauth/strategies/steam'
+    autoload :Medpass, 'omniauth/strategies/medpass.rb'
   end
 end
