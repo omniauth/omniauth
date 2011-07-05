@@ -45,6 +45,7 @@ OmniAuth currently supports the following external providers:
   * Gowalla (credit: [kvnsmth](https://github.com/kvnsmth))
   * Hyves (credit: [mrdg](https://github.com/mrdg))
   * Identi.ca (credit: [dcu](https://github.com/dcu))
+  * Flattr (credit: [dcu](https://github.com/dcu))
   * Instagram (credit: [kiyoshi](https://github.com/kiyoshi))
   * Instapaper (credit: [micpringle](https://github.com/micpringle))
   * LinkedIn (credit: [mbleigh](https://github.com/mbleigh))
