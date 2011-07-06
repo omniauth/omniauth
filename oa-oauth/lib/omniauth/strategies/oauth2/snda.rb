@@ -34,7 +34,7 @@ module OmniAuth
       def user_data
         request_params = {
           'method' => 'sdo.accountdisplay_outer.displayacc_outer.DisplayAccount',
-          'sdid'=>@access_token.params['sdid'],
+          'sdid'=>@access_token['sdid'],
           'oauth_consumer_key'=>self.client_id,
           'oauth_token' => @access_token.token,
           'oauth_nonce'=>rand(0),
@@ -45,7 +45,7 @@ module OmniAuth
 
         request_params.merge!('oauth_signature' => calculate_signature(request_params,self.client_secret))
         @data ||= MultiJson.decode(client.request(:get, 'http://api.snda.com/', request_params))['data']
-        @data['id']=@access_token.params['sdid']
+        @data['id']=@access_token['sdid']
         return @data
       end
 
