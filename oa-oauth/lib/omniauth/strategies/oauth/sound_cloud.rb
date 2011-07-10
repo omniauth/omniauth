@@ -13,27 +13,32 @@ module OmniAuth
         client_options = {
           :site => 'https://api.soundcloud.com',
         }
-        super(app, :soundcloud, consumer_key, consumer_secret, client_options, options)
+        super(app, :soundcloud, consumer_key, consumer_secret, client_options, options, &block)
       end
 
       def auth_hash
-        OmniAuth::Utils.deep_merge(super, {
-          'uid' => user_hash['id'],
-          'user_info' => user_info,
-          'extra' => {'user_hash' => user_hash}
-        })
+        OmniAuth::Utils.deep_merge(
+          super, {
+            'uid' => user_hash['id'],
+            'user_info' => user_info,
+            'extra' => {
+              'user_hash' => user_hash,
+            }
+          }
+        )
       end
 
       def user_info
         user_hash = self.user_hash
-
         {
           'name' => user_hash['full_name'],
           'nickname' => user_hash['username'],
           'location' => user_hash['city'],
           'description' => user_hash['description'],
           'image' => user_hash['avatar_url'],
-          'urls' => {'Website' => user_hash['website']}
+          'urls' => {
+            'Website' => user_hash['website'],
+          },
         }
       end
 

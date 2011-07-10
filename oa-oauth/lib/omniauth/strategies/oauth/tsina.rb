@@ -13,18 +13,25 @@ module OmniAuth
       def initialize(app, consumer_key=nil, consumer_secret=nil, options={}, &block)
         @api_key = consumer_key
         client_options = {
-          :authorize_url => 'http://api.t.sina.com.cn/oauth/authorize',
-          :token_url => 'http://api.t.sina.com.cn/oauth/access_token',
+          :access_token_path => '/oauth/access_token',
+          :authorize_path => '/oauth/authorize',
+          :realm => 'OmniAuth',
+          :request_token_path => '/oauth/request_token',
+          :site => 'http://api.t.sina.com.cn',
         }
         super(app, :tsina, consumer_key, consumer_secret, client_options, options, &block)
       end
 
       def auth_hash
-        OmniAuth::Utils.deep_merge(super, {
-          'uid' => @access_token.params[:user_id],
-          'user_info' => user_info,
-          'extra' => {'user_hash' => user_hash}
-        })
+        OmniAuth::Utils.deep_merge(
+          super, {
+            'uid' => @access_token.params[:user_id],
+            'user_info' => user_info,
+            'extra' => {
+              'user_hash' => user_hash,
+            },
+          }
+        )
       end
 
       def user_info
@@ -39,6 +46,24 @@ module OmniAuth
             'Tsina' => user_hash['url']
           }
         }
+      end
+
+      # MonkeyPatch session['oauth']['tsina']['callback_confirmed'] to true
+      def request_phase
+        request_token = consumer.get_request_token(:oauth_callback => callback_url)
+        session['oauth'] ||= {}
+        session['oauth'][name.to_s] = {'callback_confirmed' => true, 'request_token' => request_token.token, 'request_secret' => request_token.secret}
+        r = Rack::Response.new
+
+        if request_token.callback_confirmed?
+          r.redirect(request_token.authorize_url)
+        else
+          r.redirect(request_token.authorize_url(:oauth_callback => callback_url))
+        end
+
+        r.finish
+      rescue ::Timeout::Error => e
+        fail!(:timeout, e)
       end
 
       # MonkeyPath to symbolize tina parameters

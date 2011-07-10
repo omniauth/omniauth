@@ -20,15 +20,17 @@ module OmniAuth
       def user_info
         {
           'nickname' => user_data['username'],
-          'name' => user_data['username']
+          'name' => user_data['username'],
         }
       end
 
       def auth_hash
-        OmniAuth::Utils.deep_merge(super, {
-          'uid' => user_data['user_id'],
-          'user_info' => user_info
-        })
+        OmniAuth::Utils.deep_merge(super,
+          {
+            'uid' => user_data['user_id'],
+            'user_info' => user_info,
+          }
+        )
       end
 
     end

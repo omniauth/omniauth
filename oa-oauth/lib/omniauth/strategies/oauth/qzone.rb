@@ -15,16 +15,20 @@ module OmniAuth
       # Initialize the middleware
       def initialize(app, consumer_key=nil, consumer_secret=nil, options={}, &block)
         client_options = {
-          :authorize_url => 'http://openapi.qzone.qq.com/oauth/qzoneoauth_authorize',
-          :token_url => 'http://openapi.qzone.qq.com/oauth/qzoneoauth_access_token',
+          :access_token_path => '/oauth/qzoneoauth_access_token',
+          :authorize_path => '/oauth/qzoneoauth_authorize',
+          :http_method => :get,
+          :request_token_path => '/oauth/qzoneoauth_request_token',
+          :scheme => :query_string,
+          :site => 'http://openapi.qzone.qq.com',
         }
         options[:authorize_params] = {:oauth_consumer_key => consumer_key}
-        super(app, :qzone, consumer_key, consumer_secret, client_options, options)
+        super(app, :qzone, consumer_key, consumer_secret, client_options, options, &block)
       end
 
       #HACK qzone is using a none-standard parameter oauth_overicode
       def consumer_options
-        @consumer_options[:token_url] = '/oauth/qzoneoauth_access_token?oauth_vericode=' + request['oauth_vericode'] if request['oauth_vericode']
+        @consumer_options[:access_token_path] = '/oauth/qzoneoauth_access_token?oauth_vericode=' + request['oauth_vericode'] if request['oauth_vericode']
         @consumer_options
       end
 
@@ -35,11 +39,15 @@ module OmniAuth
 
       def auth_hash
         ui = user_info
-        OmniAuth::Utils.deep_merge(super, {
+        OmniAuth::Utils.deep_merge(super,
+          {
             'uid' => ui['uid'],
             'user_info' => ui,
-            'extra' => {'user_hash' => user_hash}
-          })
+            'extra' => {
+              'user_hash' => user_hash,
+            },
+          }
+        )
       end
 
       def user_info
@@ -52,7 +60,7 @@ module OmniAuth
           'urls' => {
             'figureurl_1' => user_hash['figureurl_1'],
             'figureurl_2' => user_hash['figureurl_2'],
-          }
+          },
         }
       end
 

@@ -6,34 +6,40 @@ module OmniAuth
     #
     # Authenticate to Douban via OAuth and retrieve basic
     # user information.
-    #
     # Usage:
-    #
     #    use OmniAuth::Strategies::Douban, 'APIKey', 'APIKeySecret'
-    #
     class Douban < OmniAuth::Strategies::OAuth
       def initialize(app, consumer_key=nil, consumer_secret=nil, options={}, &block)
+        # Although in OAuth spec the :realm parameter is optional,
+        # it is required for Douban.
         client_options = {
-          :authorize_url => 'http://www.douban.com/service/auth/authorize',
-          :token_url => 'http://www.douban.com/service/auth/access_token',
+          :access_token_path => '/service/auth/access_token',
+          :authorize_path => '/service/auth/authorize',
+          :realm => 'OmniAuth',
+          :request_token_path => '/service/auth/request_token',
+          :site => 'http://www.douban.com',
         }
+
         super(app, :douban, consumer_key, consumer_secret, client_options, options, &block)
       end
 
       def auth_hash
-        OmniAuth::Utils.deep_merge(super, {
-          'uid' => @access_token.params[:douban_user_id],
-          'user_info' => user_info,
-          'extra' => {'user_hash' => user_hash}
-        })
+        OmniAuth::Utils.deep_merge(
+          super, {
+            'uid' => @access_token.params[:douban_user_id],
+            'user_info' => user_info,
+            'extra' => {
+              'user_hash' => user_hash,
+            },
+          }
+        )
       end
 
       def user_info
         user_hash = self.user_hash
-
         location = user_hash['location'] ? user_hash['location']['$t'] : nil
-        image = user_hash['link'].find {|l| l['@rel'] == 'icon' }['@href']
-        douban_url = user_hash['link'].find {|l| l['@rel'] == 'alternate' }['@href']
+        image = user_hash['link'].find{|l| l['@rel'] == 'icon'}['@href']
+        douban_url = user_hash['link'].find{|l| l['@rel'] == 'alternate'}['@href']
         {
           'username' => user_hash['db:uid']['$t'],
           'name' => user_hash['title']['$t'],
@@ -41,8 +47,8 @@ module OmniAuth
           'image' => image,
           'description' => user_hash['content']['$t'],
           'urls' => {
-            'Douban' => douban_url
-          }
+            'Douban' => douban_url,
+          },
         }
       end
 

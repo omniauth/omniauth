@@ -7,7 +7,6 @@ module OmniAuth
     # user information.
     #
     # Usage:
-    #
     #    use OmniAuth::Strategies::Twitter, 'consumerkey', 'consumersecret'
     class Twitter < OmniAuth::Strategies::OAuth
       # Initialize the middleware
@@ -19,20 +18,23 @@ module OmniAuth
         }
         options[:authorize_params] = {:force_login => 'true'} if options.delete(:force_login) == true
         client_options[:authorize_path] = '/oauth/authenticate' unless options[:sign_in] == false
-        super(app, :twitter, consumer_key, consumer_secret, client_options, options)
+        super(app, :twitter, consumer_key, consumer_secret, client_options, options, &block)
       end
 
       def auth_hash
-        OmniAuth::Utils.deep_merge(super, {
-          'uid' => @access_token.params[:user_id],
-          'user_info' => user_info,
-          'extra' => {'user_hash' => user_hash}
-        })
+        OmniAuth::Utils.deep_merge(
+          super, {
+            'uid' => @access_token.params[:user_id],
+            'user_info' => user_info,
+            'extra' => {
+              'user_hash' => user_hash,
+            },
+          }
+        )
       end
 
       def user_info
         user_hash = self.user_hash
-
         {
           'nickname' => user_hash['screen_name'],
           'name' => user_hash['name'] || user_hash['screen_name'],
@@ -41,8 +43,8 @@ module OmniAuth
           'description' => user_hash['description'],
           'urls' => {
             'Website' => user_hash['url'],
-            'Twitter' => 'http://twitter.com/' + user_hash['screen_name']
-          }
+            'Twitter' => 'http://twitter.com/' + user_hash['screen_name'],
+          },
         }
       end
 

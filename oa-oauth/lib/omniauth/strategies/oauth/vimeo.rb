@@ -3,26 +3,35 @@ require 'multi_json'
 
 module OmniAuth
   module Strategies
+    #
     # Authenticate to Vimeo via OAuth and retrieve basic user information.
     #
     # Usage:
+    #
     #    use OmniAuth::Strategies::Vimeo, 'consumerkey', 'consumersecret'
+    #
     class Vimeo < OmniAuth::Strategies::OAuth
       def initialize(app, consumer_key=nil, consumer_secret=nil, options={}, &block)
         client_options = {
-          :authorize_url => 'http://vimeo.com/oauth/authorize',
-          :token_url => 'http://vimeo.com/oauth/access_token',
+          :access_token_path => '/oauth/access_token',
+          :authorize_path => '/oauth/authorize',
+          :request_token_path => '/oauth/request_token',
+          :site => 'http://vimeo.com',
         }
         super(app, :vimeo, consumer_key, consumer_secret, client_options, options, &block)
       end
 
       def auth_hash
         user = user_hash['person']
-        OmniAuth::Utils.deep_merge(super, {
-          'uid' => user['id'],
-          'user_info' => user_info,
-          'extra' => { 'user_hash' => user }
-        })
+        OmniAuth::Utils.deep_merge(
+          super, {
+            'uid' => user['id'],
+            'user_info' => user_info,
+            'extra' => {
+              'user_hash' => user,
+            },
+          }
+        )
       end
 
       def user_info
@@ -35,13 +44,13 @@ module OmniAuth
           'image' => user['portraits']['portrait'].select{|h| h['height'] == '300'}.first['_content'],
           'urls' => {
             'website' => user['url'],
-            'vimeo' => user['profileurl']
-          }
+            'vimeo' => user['profileurl'],
+          },
         }
       end
 
       def user_hash
-        url = "http://vimeo.com/api/rest/v2?method=vimeo.people.getInfo&format=json"
+        url = 'http://vimeo.com/api/rest/v2?method=vimeo.people.getInfo&format=json'
         @user_hash ||= MultiJson.decode(@access_token.get(url).body)
       end
     end

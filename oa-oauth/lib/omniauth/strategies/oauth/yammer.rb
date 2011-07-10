@@ -6,18 +6,24 @@ module OmniAuth
     class Yammer < OmniAuth::Strategies::OAuth
       def initialize(app, consumer_key=nil, consumer_secret=nil, options={}, &block)
         client_options = {
-          :authorize_url => 'https://www.yammer.com/oauth/authorize',
-          :token_url => 'https://www.yammer.com/oauth/access_token',
+          :access_token_path => '/oauth/access_token',
+          :authorize_path => '/oauth/authorize',
+          :request_token_path => '/oauth/request_token',
+          :site => 'https://www.yammer.com',
         }
-        super(app, :yammer, consumer_key, consumer_secret, client_options, options)
+        super(app, :yammer, consumer_key, consumer_secret, client_options, options, &block)
       end
 
       def auth_hash
-        OmniAuth::Utils.deep_merge(super, {
-          'uid' => user_hash['id'],
-          'user_info' => user_info,
-          'extra' => {'user_hash' => user_hash}
-        })
+        OmniAuth::Utils.deep_merge(
+          super, {
+            'uid' => user_hash['id'],
+            'user_info' => user_info,
+            'extra' => {
+              'user_hash' => user_hash,
+            },
+          }
+        )
       end
 
       def user_info
@@ -28,7 +34,9 @@ module OmniAuth
           'location' => user_hash['location'],
           'image' => user_hash['mugshot-url'],
           'description' => user_hash['job-title'],
-          'urls' => {'Yammer' => user_hash['web-url']}
+          'urls' => {
+            'Yammer' => user_hash['web-url'],
+          },
         }
       end
 

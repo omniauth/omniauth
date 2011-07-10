@@ -7,23 +7,31 @@ module OmniAuth
     # user information.
     #
     # Usage:
+    #
     #    use OmniAuth::Strategies::T163, 'APIKey', 'APIKeySecret'
     class T163 < OmniAuth::Strategies::OAuth
       def initialize(app, consumer_key=nil, consumer_secret=nil, options={}, &block)
         @api_key = consumer_key
         client_options = {
-          :authorize_url => 'http://api.t.163.com/oauth/authenticate',
-          :token_url => 'http://api.t.163.com/oauth/access_token',
+          :access_token_path => '/oauth/access_token',
+          :authorize_path => '/oauth/authenticate',
+          :realm => 'OmniAuth',
+          :request_token_path => '/oauth/request_token',
+          :site => 'http://api.t.163.com',
         }
         super(app, :t163, consumer_key, consumer_secret, client_options, options, &block)
       end
 
       def auth_hash
-        OmniAuth::Utils.deep_merge(super, {
-          'uid' => user_hash['screen_name'],
-          'user_info' => user_info,
-          'extra' => {'user_hash' => user_hash}
-        })
+        OmniAuth::Utils.deep_merge(
+          super, {
+            'uid' => user_hash['screen_name'],
+            'user_info' => user_info,
+            'extra' => {
+              'user_hash' => user_hash,
+            },
+          }
+        )
       end
 
       def user_info
@@ -35,8 +43,8 @@ module OmniAuth
           'image' => user_hash['profile_image_url'],
           'description' => user_hash['description'],
           'urls' => {
-            'T163' => 'http://t.163.com'
-          }
+            'T163' => 'http://t.163.com',
+          },
         }
       end
 

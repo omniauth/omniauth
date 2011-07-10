@@ -3,26 +3,31 @@ require 'multi_json'
 
 module OmniAuth
   module Strategies
-    #
     # Authenticate to SmugMug via OAuth and retrieve basic user information.
-    # Usage:
-    #    use OmniAuth::Strategies::SmugMug, 'consumerkey', 'consumersecret'
     #
+    # Usage:
+    #   use OmniAuth::Strategies::SmugMug, 'consumerkey', 'consumersecret'
     class SmugMug < OmniAuth::Strategies::OAuth
       def initialize(app, consumer_key=nil, consumer_secret=nil, options={}, &block)
         client_options = {
-          :authorize_url => 'http://api.smugmug.com/services/oauth/authorize.mg',
-          :token_url  => 'http://api.smugmug.com/services/oauth/getAccessToken.mg',
+          :access_token_path => '/services/oauth/getAccessToken.mg',
+          :authorize_path => '/services/oauth/authorize.mg',
+          :site => 'http://api.smugmug.com',
+          :request_token_path => '/services/oauth/getRequestToken.mg',
         }
         super(app, :smugmug, consumer_key, consumer_secret, client_options, options, &block)
       end
 
       def auth_hash
-        OmniAuth::Utils.deep_merge(super, {
-          'uid' => user_hash['id'],
-          'user_info' => user_info,
-          'extra' => { 'user_hash' => user_hash }
-        })
+        OmniAuth::Utils.deep_merge(
+          super, {
+            'uid' => user_hash['id'],
+            'user_info' => user_info,
+            'extra' => {
+              'user_hash' => user_hash,
+            },
+          }
+        )
       end
 
       # user info according to schema

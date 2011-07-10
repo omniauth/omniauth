@@ -6,20 +6,25 @@ module OmniAuth
     class LinkedIn < OmniAuth::Strategies::OAuth
       def initialize(app, consumer_key=nil, consumer_secret=nil, options={}, &block)
         client_options = {
-          :authorize_url => 'https://api.linkedin.com/uas/oauth/authorize',
-          :token_url => 'https://api.linkedin.com/uas/oauth/accessToken',
+          :access_token_path => '/uas/oauth/accessToken',
+          :authorize_path => '/uas/oauth/authorize',
+          :request_token_path => '/uas/oauth/requestToken',
+          :scheme => :header,
+          :site => 'https://api.linkedin.com',
         }
-        client_options[:authorize_url] = '/uas/oauth/authenticate' unless options[:sign_in] == false
+        client_options[:authorize_path] = '/uas/oauth/authenticate' unless options[:sign_in] == false
         super(app, :linked_in, consumer_key, consumer_secret, client_options, options, &block)
       end
 
       def auth_hash
         hash = user_hash(@access_token)
 
-        OmniAuth::Utils.deep_merge(super, {
-          'uid' => hash.delete('id'),
-          'user_info' => hash
-        })
+        OmniAuth::Utils.deep_merge(super,
+          {
+            'uid' => hash.delete('id'),
+            'user_info' => hash,
+          }
+        )
       end
 
       def user_hash(access_token)
@@ -33,13 +38,13 @@ module OmniAuth
           'location' => person['location']['name'],
           'image' => person['picture_url'],
           'description' => person['headline'],
-          'public_profile_url' => person['public_profile_url']
+          'public_profile_url' => person['public_profile_url'],
         }
-        hash['urls']={}
+        hash['urls'] = {}
         member_urls = person['member_url_resources']['member_url']
         if (!member_urls.nil?) and (!member_urls.empty?)
           [member_urls].flatten.each do |url|
-            hash['urls']["#{url['name']}"]=url['url']
+            hash['urls']["#{url['name']}"] = url['url']
           end
         end
         hash['urls']['LinkedIn'] = person['public_profile_url']

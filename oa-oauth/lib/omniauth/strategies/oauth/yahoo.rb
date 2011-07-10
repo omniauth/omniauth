@@ -3,27 +3,36 @@ require 'multi_json'
 
 module OmniAuth
   module Strategies
+    #
     # Authenticate to Yahoo via OAuth and retrieve basic
     # user information.
     #
     # Usage:
+    #
     #    use OmniAuth::Strategies::Yahoo, 'consumerkey', 'consumersecret'
+    #
     class Yahoo < OmniAuth::Strategies::OAuth
       def initialize(app, consumer_key=nil, consumer_secret=nil, options={}, &block)
         client_options = {
-          :authorize_url => 'https://api.login.yahoo.com/oauth/v2/request_auth',
-          :token_url => 'https://api.login.yahoo.com/oauth/v2/get_token',
+          :access_token_path => '/oauth/v2/get_token',
+          :authorize_path => '/oauth/v2/request_auth',
+          :request_token_path => '/oauth/v2/get_request_token',
+          :site => 'https://api.login.yahoo.com',
         }
-        super(app, :yahoo, consumer_key, consumer_secret, client_options, options)
+        super(app, :yahoo, consumer_key, consumer_secret, client_options, options, &block)
       end
 
       def auth_hash
         ui = user_info
-        OmniAuth::Utils.deep_merge(super, {
-          'uid' => ui['uid'],
-          'user_info' => ui,
-          'extra' => {'user_hash' => user_hash}
-        })
+        OmniAuth::Utils.deep_merge(
+          super, {
+            'uid' => ui['uid'],
+            'user_info' => ui,
+            'extra' => {
+              'user_hash' => user_hash,
+            },
+          }
+        )
       end
 
       def user_info
@@ -36,7 +45,9 @@ module OmniAuth
           'name' => profile['givenName'] || nickname,
           'image' => profile['image']['imageUrl'],
           'description' => profile['message'],
-          'urls' => {'Profile' => profile['profileUrl'] }
+          'urls' => {
+            'Profile' => profile['profileUrl'],
+          },
         }
       end
 

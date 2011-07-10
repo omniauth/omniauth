@@ -11,8 +11,10 @@ module OmniAuth
     class Netflix < OmniAuth::Strategies::OAuth
       def initialize(app, consumer_key=nil, consumer_secret=nil, options={}, &block)
         client_options = {
+          :access_token_path => '/oauth/access_token',
           :authorize_url => 'https://api-user.netflix.com/oauth/login',
-          :token_url => 'http://api.netflix.com/oauth/access_token',
+          :request_token_path => '/oauth/request_token',
+          :site => 'http://api.netflix.com',
         }
         super(app, :netflix, consumer_key, consumer_secret, client_options, options, &block)
       end
@@ -22,7 +24,6 @@ module OmniAuth
         session['oauth'] ||= {}
         session['oauth'][name.to_s] = {'callback_confirmed' => request_token.callback_confirmed?, 'request_token' => request_token.token, 'request_secret' => request_token.secret}
         r = Rack::Response.new
-
         if request_token.callback_confirmed?
           r.redirect(request_token.authorize_url(
             :oauth_consumer_key => consumer.key
@@ -33,16 +34,19 @@ module OmniAuth
             :oauth_consumer_key => consumer.key
           ))
         end
-
         r.finish
       end
 
       def auth_hash
-        OmniAuth::Utils.deep_merge(super, {
-          'uid' => user_hash['user']['user_id'],
-          'user_info' => user_info,
-          'extra' => { 'user_hash' => user_hash['user'] }
-        })
+        OmniAuth::Utils.deep_merge(super,
+          {
+            'uid' => user_hash['user']['user_id'],
+            'user_info' => user_info,
+            'extra' => {
+              'user_hash' => user_hash['user'],
+            },
+          }
+        )
       end
 
       def user_info

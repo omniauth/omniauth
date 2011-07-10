@@ -14,31 +14,42 @@ module OmniAuth
         # TypePad uses the application ID for one of the OAuth paths.
         app_id = options[:application_id]
         client_options = {
-          :authorize_url => "https://www.typepad.com/secure/services/api/#{app_id}/oauth-approve",
-          :token_url => 'https://www.typepad.com/secure/services/oauth/access_token',
+          :access_token_path => '/secure/services/oauth/access_token',
+          :authorize_path => "/secure/services/api/#{app_id}/oauth-approve",
+          :http_method => :get,
+          # You *must* use query_string for the token dance.
+          :scheme => :query_string,
+          :site => 'https://www.typepad.com',
+          :request_token_path => '/secure/services/oauth/request_token',
         }
-        super(app, :type_pad, consumer_key, consumer_secret, client_options, options)
+        options.merge! :scheme => :query_string, :http_method => :get
+        super(app, :type_pad, consumer_key, consumer_secret, client_options, options, &block)
       end
 
       def auth_hash
         ui = user_info
-        OmniAuth::Utils.deep_merge(super, {
-          'uid' => ui['uid'],
-          'user_info' => ui,
-          'extra' => {'user_hash' => user_hash}
-        })
+        OmniAuth::Utils.deep_merge(
+          super, {
+            'uid' => ui['uid'],
+            'user_info' => ui,
+            'extra' => {
+              'user_hash' => user_hash,
+            },
+          }
+        )
       end
 
       def user_info
         user_hash = self.user_hash
-
         {
           'uid' => user_hash['urlId'],
           'nickname' => user_hash['preferredUsername'],
           'name' => user_hash['displayName'],
           'image' => user_hash['avatarLink']['url'],
           'description' => user_hash['aboutMe'],
-          'urls' => {'Profile' => user_hash['profilePageUrl']}
+          'urls' => {
+            'Profile' => user_hash['profilePageUrl'],
+          },
         }
       end
 
@@ -48,13 +59,7 @@ module OmniAuth
         # 'Unauthorized' is the response body of a truly unauthorized request.
 
         # Also note that API requests hit a different site than the OAuth dance.
-        r = self.consumer.request(
-              :get,
-              "https://api.typepad.com/users/@self.json",
-              @access_token,
-              :scheme => 'header'
-            )
-
+        r = self.consumer.request(:get, 'https://api.typepad.com/users/@self.json', @access_token, :scheme => 'header')
         @user_hash ||= MultiJson.decode(r.body)
       end
     end
