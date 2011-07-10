@@ -38,6 +38,7 @@ module OmniAuth
     autoload :Yahoo,              'omniauth/strategies/oauth/yahoo'
     autoload :Yammer,             'omniauth/strategies/oauth/yammer'
     autoload :YouTube,            'omniauth/strategies/oauth/you_tube'
+    autoload :Flattr,              'omniauth/strategies/oauth/flattr'
 
     autoload :OAuth2,             'omniauth/strategies/oauth2'
 
