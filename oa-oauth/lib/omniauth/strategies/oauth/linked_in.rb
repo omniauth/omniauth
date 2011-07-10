@@ -29,7 +29,7 @@ module OmniAuth
           'id' => person['id'],
           'first_name' => person['first_name'],
           'last_name' => person['last_name'],
-          'nickname' => person['public_profile_url'].split('/').last,
+          'nickname' => person['public_profile_url'].to_s.split('/').last,
           'location' => person['location']['name'],
           'image' => person['picture_url'],
           'description' => person['headline'],
