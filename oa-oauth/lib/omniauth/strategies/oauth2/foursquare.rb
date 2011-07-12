@@ -17,6 +17,18 @@ module OmniAuth
         super(app, :foursquare, client_id, client_secret, client_options, options, &block)
       end
 
+      def auth_hash
+        OmniAuth::Utils.deep_merge(
+          super, {
+            'uid' => user_data['response']['user']['id'],
+            'user_info' => user_info,
+            'extra' => {
+              'user_hash' => user_data['response']['user'],
+            },
+          }
+        )
+      end
+
       def authorize_url(options)
         "https://foursquare.com/#{'mobile/' if options[:mobile]}oauth2/#{options[:sign_in] ? 'authenticate' : 'authorize'}"
       end
@@ -42,20 +54,9 @@ module OmniAuth
           'last_name' => user_data['response']['user']['lastName'],
           'email' => user_data['response']['user']['contact']['email'],
           'name' => "#{user_data['response']['user']['firstName']} #{user_data['response']['user']['lastName']}".strip,
-        # 'location' => user_data['response']['user']['location'],
           'image' => user_data['response']['user']['photo'],
-        # 'description' => user_data['response']['user']['description'],
           'phone' => user_data['response']['user']['contact']['phone'],
-          'urls' => {}
         }
-      end
-
-      def auth_hash
-        OmniAuth::Utils.deep_merge(super, {
-          'uid' => user_data['response']['user']['id'],
-          'user_info' => user_info,
-          'extra' => {'user_hash' => user_data['response']['user']}
-        })
       end
     end
   end

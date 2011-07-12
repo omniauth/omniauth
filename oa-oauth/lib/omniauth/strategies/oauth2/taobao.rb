@@ -24,6 +24,18 @@ module OmniAuth
         super(app, :taobao, client_id, client_secret, client_options, options, &block)
       end
 
+      def auth_hash
+        OmniAuth::Utils.deep_merge(
+          super, {
+            'uid' => user_data['uid'],
+            'user_info' => user_info,
+            'extra' => {
+              'user_hash' => user_data,
+            },
+          }
+        )
+      end
+
       def user_data
         # TODO to be moved in options
         url = 'http://gw.api.taobao.com/router/rest'
@@ -38,12 +50,12 @@ module OmniAuth
           :method => 'taobao.user.get',
           :session => @access_token.token,
           :sign_method => 'md5',
-          :timestamp   => Time.now.strftime("%Y-%m-%d %H:%M:%S"),
+          :timestamp   => Time.now.strftime('%Y-%m-%d %H:%M:%S'),
           :v => '2.0'
         }
         query_param = generate_sign(query_param)
         res = Net::HTTP.post_form(URI.parse(url), query_param)
-        @data ||= MultiJson.decode(res.body)["user_get_response"]["user"]
+        @data ||= MultiJson.decode(res.body)['user_get_response']['user']
       end
 
       def request_phase
@@ -53,25 +65,16 @@ module OmniAuth
 
       def user_info
         {
-          'name' => user_data["nick"],
-          'email' => (user_data["email"] if user_data["email"]),
+          'name' => user_data['nick'],
+          'email' => (user_data['email'] if user_data['email']),
         }
-      end
-
-      def auth_hash
-        OmniAuth::Utils.deep_merge(super, {
-          'uid' => user_data['uid'],
-          'user_info' => user_info,
-          'extra' => {'user_hash' => user_data}
-        })
       end
 
       def generate_sign(params)
         str = client_secret + (params.sort.collect { |k, v| "#{k}#{v}" }).join + client_secret
-        params["sign"] = Digest::MD5.hexdigest(str).upcase!
+        params['sign'] = Digest::MD5.hexdigest(str).upcase!
         params
       end
-
     end
   end
 end

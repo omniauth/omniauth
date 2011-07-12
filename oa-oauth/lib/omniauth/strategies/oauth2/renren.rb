@@ -23,6 +23,18 @@ module OmniAuth
         super(app, :renren, client_id, client_secret, client_options, options, &block)
       end
 
+      def auth_hash
+        OmniAuth::Utils.deep_merge(
+          super, {
+            'uid' => user_data['uid'],
+            'user_info' => user_info,
+            'extra' => {
+              'user_hash' => user_data,
+            },
+          }
+        )
+      end
+
       def user_data
         @data ||= MultiJson.decode(Net::HTTP.post_form(URI.parse('http://api.renren.com/restserver.do'), signed_params).body)[0]
       end
@@ -30,13 +42,13 @@ module OmniAuth
       def signed_params
         params = {}
         params[:api_key] = client.id
-        params[:method] = "users.getInfo"
+        params[:method] = 'users.getInfo'
         params[:call_id] = Time.now.to_i
-        params[:format] = "json"
-        params[:v] = "1.0"
-        params[:uids] = session_key["user"]["id"]
-        params[:session_key] = session_key["renren_token"]["session_key"]
-        params[:sig] = Digest::MD5.hexdigest(params.map {|k,v| "#{k}=#{v}"}.sort.join("") + client.secret)
+        params[:format] = 'json'
+        params[:v] = '1.0'
+        params[:uids] = session_key['user']['id']
+        params[:session_key] = session_key['renren_token']['session_key']
+        params[:sig] = Digest::MD5.hexdigest(params.map{|k,v| "#{k}=#{v}"}.sort.join + client.secret)
         params
       end
 
@@ -45,7 +57,7 @@ module OmniAuth
       end
 
       def request_phase
-        options[:scope] ||= "publish_feed"
+        options[:scope] ||= 'publish_feed'
         super
       end
 
@@ -68,17 +80,9 @@ module OmniAuth
 
       def user_info
         {
-          'name' => user_data["name"],
-          'image' => user_data["tinyurl"]
+          'name' => user_data['name'],
+          'image' => user_data['tinyurl'],
         }
-      end
-
-      def auth_hash
-        OmniAuth::Utils.deep_merge(super, {
-          'uid' => user_data['uid'],
-          'user_info' => user_info,
-          'extra' => {'user_hash' => user_data}
-        })
       end
     end
   end

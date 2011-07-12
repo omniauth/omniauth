@@ -11,8 +11,21 @@ module OmniAuth
         }
         super(app, :teambox, client_id, client_secret, client_options, options, &block)
       end
+
+      def auth_hash
+        OmniAuth::Utils.deep_merge(
+          super, {
+            'uid' => user_data['id'],
+            'user_info' => user_info,
+            'extra' => {
+              'user_hash' => user_data
+            },
+          }
+        )
+      end
+
       def request_phase
-        options[:scope] ||= "offline_access"
+        options[:scope] ||= 'offline_access'
         options[:response_type] ||= 'code'
         super
       end
@@ -23,7 +36,7 @@ module OmniAuth
       end
 
       def user_data
-        @data ||= MultiJson.decode(@access_token.get("/api/1/account"))
+        @data ||= MultiJson.decode(@access_token.get('/api/1/account'))
       end
 
       def user_info
@@ -31,18 +44,8 @@ module OmniAuth
           'nickname' => user_data['username'],
           'name' => user_data['first_name'],
           'image' => user_data['avatar_url'],
-          'urls' => {}
         }
-      end
-
-      def auth_hash
-        OmniAuth::Utils.deep_merge(super, {
-          'uid' => user_data['id'],
-          'user_info' => user_info,
-          'extra' => {'user_hash' => user_data}
-        })
       end
     end
   end
 end
-

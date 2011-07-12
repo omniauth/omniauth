@@ -18,16 +18,29 @@ module OmniAuth
         super(app, :mixi, client_id, client_secret, client_options, options, &block)
       end
 
+      def auth_hash
+        OmniAuth::Utils.deep_merge(
+          super, {
+            'uid' => user_data['entry']['id'],
+            'user_info' => user_info,
+            'credentials' => {'refresh_token' => @access_token.refresh_token},
+            'extra' => {
+              'user_hash' => user_data['entry'],
+            },
+          }
+        )
+      end
+
       def user_data
         @data ||= MultiJson.decode(@access_token.get(
-          "http://api.mixi-platform.com/2/people/@me/@self",
+          'http://api.mixi-platform.com/2/people/@me/@self',
           {'oauth_token' => @access_token.token}
         ))
       end
 
       def request_phase
-        options[:scope] ||= "r_profile"
-        options[:display] ||= "pc"
+        options[:scope] ||= 'r_profile'
+        options[:display] ||= 'pc'
         options[:response_type] ||= 'code'
         super
       end
@@ -41,17 +54,10 @@ module OmniAuth
         {
           'nickname' => user_data['entry']['displayName'],
           'image' => user_data['entry']['thumbnailUrl'],
-          'urls' => {:profile => user_data['entry']['profileUrl']},
+          'urls' => {
+            :profile => user_data['entry']['profileUrl'],
+          },
         }
-      end
-
-      def auth_hash
-        OmniAuth::Utils.deep_merge(super, {
-          'uid' => user_data['entry']['id'],
-          'user_info' => user_info,
-          'credentials' => {'refresh_token' => @access_token.refresh_token},
-          'extra' => {'user_hash' => user_data['entry']},
-        })
       end
     end
   end

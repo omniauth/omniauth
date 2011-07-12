@@ -3,7 +3,6 @@ require 'omniauth/core'
 module OmniAuth
   module Strategies
     autoload :OAuth,              'omniauth/strategies/oauth'
-
     autoload :Blogger,            'omniauth/strategies/oauth/blogger'
     autoload :Dopplr,             'omniauth/strategies/oauth/dopplr'
     autoload :Douban,             'omniauth/strategies/oauth/douban'
@@ -15,7 +14,6 @@ module OmniAuth
     autoload :GoogleHealthSandbox,'omniauth/strategies/oauth/google_health_sandbox'
     autoload :Hyves,              'omniauth/strategies/oauth/hyves'
     autoload :Identica,           'omniauth/strategies/oauth/identica'
-    autoload :Instapaper,         'omniauth/strategies/oauth/instapaper'
     autoload :LinkedIn,           'omniauth/strategies/oauth/linked_in'
     autoload :Meetup,             'omniauth/strategies/oauth/meetup'
     autoload :Miso,               'omniauth/strategies/oauth/miso'
@@ -41,7 +39,6 @@ module OmniAuth
     autoload :Flattr,              'omniauth/strategies/oauth/flattr'
 
     autoload :OAuth2,             'omniauth/strategies/oauth2'
-
     autoload :Bitly,              'omniauth/strategies/oauth2/bitly'
     autoload :Dailymile,          'omniauth/strategies/oauth2/dailymile'
     autoload :Doit,               'omniauth/strategies/oauth2/doit'
@@ -62,5 +59,6 @@ module OmniAuth
     autoload :WePay,              'omniauth/strategies/oauth2/we_pay'
 
     autoload :XAuth,              'omniauth/strategies/xauth'
+    autoload :Instapaper,         'omniauth/strategies/xauth/instapaper'
   end
 end

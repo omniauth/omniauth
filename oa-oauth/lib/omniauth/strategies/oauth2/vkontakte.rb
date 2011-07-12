@@ -22,7 +22,17 @@ module OmniAuth
         super(app, :vkontakte, client_id, client_secret, client_options, options, &block)
       end
 
-      protected
+      def auth_hash
+        # process user's info
+        user_data
+        OmniAuth::Utils.deep_merge(
+          super, {
+            'uid' => @data['uid'],
+            'user_info' => user_info,
+            'extra' => user_hash,
+          }
+        )
+      end
 
       def user_data
         # http://vkontakte.ru/developers.php?o=-17680044&p=Description+of+Fields+of+the+fields+Parameter
@@ -41,44 +51,36 @@ module OmniAuth
         @country ||= countries.first['name'] if countries && countries.first
       end
 
-    def request_phase
-      options[:response_type] ||= 'code'
-      super
-    end
+      def request_phase
+        options[:response_type] ||= 'code'
+        super
+      end
 
-    def user_info
-      {
-        'first_name' => @data['first_name'],
-        'last_name' => @data['last_name'],
-        'name' => "#{@data['first_name']} #{@data['last_name']}",
-        'nickname' => @data['nickname'],
-        'birth_date' => @data['bdate'],
-        'image' => @data['photo'],
-        'location' => "#{@country}, #{@city}",
-        'urls' => {
-          'Vkontakte' => "http://vkontakte.ru/#{@data['domain']}"
+      def user_info
+        {
+          'first_name' => @data['first_name'],
+          'last_name' => @data['last_name'],
+          'name' => "#{@data['first_name']} #{@data['last_name']}".strip,
+          'nickname' => @data['nickname'],
+          'birth_date' => @data['bdate'],
+          'image' => @data['photo'],
+          'location' => "#{@country}, #{@city}",
+          'urls' => {
+            'Vkontakte' => "http://vkontakte.ru/#{@data['domain']}",
+          },
         }
-      }
-    end
+      end
 
-    def user_hash
-      {
-        "user_hash" => {
-          "gender" => @data["sex"],
-          "timezone" => @data["timezone"],
-          "photo_big" => @data["photo_big"] # 200px maximum resolution of the avatar (http://vkontakte.ru/developers.php?o=-17680044&p=Description+of+Fields+of+the+fields+Parameter)
+      def user_hash
+        {
+          'user_hash' => {
+            'gender' => @data['sex'],
+            'timezone' => @data['timezone'],
+            # 200px maximum resolution of the avatar (http://vkontakte.ru/developers.php?o=-17680044&p=Description+of+Fields+of+the+fields+Parameter)
+            'photo_big' => @data['photo_big'],
+          }
         }
-      }
-    end
-
-    def auth_hash
-      user_data # process user's info
-      OmniAuth::Utils.deep_merge(super, {
-        'uid' => @data['uid'],
-        'user_info' => user_info,
-        'extra' => user_hash
-      })
+      end
     end
   end
-end
 end

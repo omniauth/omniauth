@@ -12,14 +12,24 @@ module OmniAuth
         super(app, :doit, client_id, client_secret, client_options, options, &block)
       end
 
-      protected
+      def auth_hash
+        OmniAuth::Utils.deep_merge(
+          super, {
+            'uid' => user_data['id'],
+            'user_info' => user_info,
+            'extra' => {
+              'user_hash' => user_data,
+            },
+          }
+        )
+      end
 
       def user_data
         @data ||= MultiJson.decode(@access_token.get('https://openapi.doit.im/v1/settings'), {'Authorization' => 'OAuth' + @access_token.token})
       end
 
       def request_phase
-        options[:response_type] ||= "code"
+        options[:response_type] ||= 'code'
         super
       end
 
@@ -42,16 +52,8 @@ module OmniAuth
           'user_timezone'=> user_data['user_timezone'],
           'remind_email'=> user_data['remind_email'],
           'created'=> user_data['created'],
-          'updated'=> user_data['updated']
+          'updated'=> user_data['updated'],
         }
-      end
-
-      def auth_hash
-        OmniAuth::Utils.deep_merge(super, {
-          'uid' => user_data['id'],
-          'user_info' => user_info,
-          'extra' => {'user_hash' => user_data}
-        })
       end
     end
   end

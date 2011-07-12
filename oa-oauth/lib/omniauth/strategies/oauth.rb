@@ -46,7 +46,7 @@ module OmniAuth
 
       def callback_phase
         raise OmniAuth::NoSessionError.new("Session Expired") if session['oauth'].nil?
-        
+
         request_token = ::OAuth::RequestToken.new(consumer, session['oauth'][name.to_s].delete('request_token'), session['oauth'][name.to_s].delete('request_secret'))
 
         opts = {}

@@ -14,17 +14,21 @@ module OmniAuth
 
       def auth_hash
         data = user_data
-        OmniAuth::Utils.deep_merge(super, {
-          'uid' => @access_token['id'],
-          'credentials' => {
-            'instance_url' => @access_token['instance_url']
-           },
-          'extra' => {'user_hash' => data},
-          'user_info' => {
-            'email' => data['email'],
-            'name' => data['display_name']
+        OmniAuth::Utils.deep_merge(
+          super, {
+            'uid' => @access_token['id'],
+            'credentials' => {
+              'instance_url' => @access_token['instance_url'],
+            },
+            'extra' => {
+              'user_hash' => data,
+            },
+            'user_info' => {
+              'email' => data['email'],
+              'name' => data['display_name'],
+            },
           }
-        })
+        )
       end
 
       def user_data

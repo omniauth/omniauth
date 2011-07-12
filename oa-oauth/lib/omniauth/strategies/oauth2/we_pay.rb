@@ -18,7 +18,17 @@ module OmniAuth
         super(app, :we_pay, client_id, client_secret, client_options, options, &block)
       end
 
-      protected
+      def auth_hash
+        OmniAuth::Utils.deep_merge(
+          super, {
+            'uid' => user_data['user_id'],
+            'user_info' => user_info,
+            'extra' => {
+              'user_hash' => user_data,
+            },
+          }
+        )
+      end
 
       def user_data
         @data ||= MultiJson.decode(@access_token.get('/v1/user'))['result']
@@ -27,19 +37,11 @@ module OmniAuth
       def user_info
         {
           'email' => user_data['email'],
-          'name' => "#{user_data['firstName']} #{user_data['lastName']}",
+          'name' => "#{user_data['firstName']} #{user_data['lastName']}".strip,
           'first_name' => user_data['firstName'],
           'last_name' => user_data['lastName'],
-          'image' => user_data['picture']
+          'image' => user_data['picture'],
         }
-      end
-
-      def auth_hash
-        OmniAuth::Utils.deep_merge(super, {
-          'uid' => user_data['user_id'],
-          'user_info' => user_info,
-          'extra' => {'user_hash' => user_data}
-        })
       end
     end
   end

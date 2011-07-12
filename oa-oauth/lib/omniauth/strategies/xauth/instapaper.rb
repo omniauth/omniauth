@@ -11,8 +11,6 @@ module OmniAuth
         super(app, :instapaper, consumer_key, consumer_secret, client_options, options, &block)
       end
 
-      protected
-
       def user_data
         @data ||= MultiJson.decode(@access_token.get('/api/1/account/verify_credentials').body)[0]
       end

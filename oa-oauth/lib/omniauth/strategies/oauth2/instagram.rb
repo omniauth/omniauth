@@ -18,8 +18,20 @@ module OmniAuth
         super(app, :instagram, client_id, client_secret, client_options, options, &block)
       end
 
+      def auth_hash
+        OmniAuth::Utils.deep_merge(
+          super, {
+            'uid' => user_data['data']['id'],
+            'user_info' => user_info,
+            'extra' => {
+              'user_hash' => user_data['data'],
+            }
+          }
+        )
+      end
+
       def request_phase
-        options[:scope] ||= "basic"
+        options[:scope] ||= 'basic'
         options[:response_type] ||= 'code'
         super
       end
@@ -30,7 +42,7 @@ module OmniAuth
       end
 
       def user_data
-        @data ||= MultiJson.decode(@access_token.get("/v1/users/self"))
+        @data ||= MultiJson.decode(@access_token.get('/v1/users/self'))
       end
 
       def user_info
@@ -38,16 +50,7 @@ module OmniAuth
           'nickname' => user_data['data']['username'],
           'name' => user_data['data']['full_name'],
           'image' => user_data['data']['profile_picture'],
-          'urls' => {}
         }
-      end
-
-      def auth_hash
-        OmniAuth::Utils.deep_merge(super, {
-          'uid' => user_data['data']['id'],
-          'user_info' => user_info,
-          'extra' => {'user_hash' => user_data['data']}
-        })
       end
     end
   end

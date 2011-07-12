@@ -20,7 +20,17 @@ module OmniAuth
         super(app, :dailymile, client_id, client_secret, client_options, options, &block)
       end
 
-      protected
+      def auth_hash
+        OmniAuth::Utils.deep_merge(
+          super, {
+            'uid' => user_data['url'].split('/').last,
+            'user_info' => user_info,
+            'extra' => {
+              'user_hash' => user_data,
+            },
+          }
+        )
+      end
 
       def user_data
         @data ||= MultiJson.decode(@access_token.get('/people/me.json'))
@@ -44,17 +54,9 @@ module OmniAuth
           'image' => user_data['photo_url'],
           'description' => user_data['goal'],
           'urls' => {
-            'dailymile' => user_data['url']
-          }
+            'dailymile' => user_data['url'],
+          },
         }
-      end
-
-      def auth_hash
-        OmniAuth::Utils.deep_merge(super, {
-          'uid' => user_data["url"].split('/').last,
-          'user_info' => user_info,
-          'extra' => {'user_hash' => user_data}
-        })
       end
     end
   end

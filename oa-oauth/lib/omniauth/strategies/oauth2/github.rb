@@ -18,7 +18,17 @@ module OmniAuth
         super(app, :github, client_id, client_secret, client_options, options, &block)
       end
 
-      protected
+      def auth_hash
+        OmniAuth::Utils.deep_merge(
+          super, {
+            'uid' => user_data['id'],
+            'user_info' => user_info,
+            'extra' => {
+              'user_hash' => user_data,
+            },
+          }
+        )
+      end
 
       def user_data
         @data ||= MultiJson.decode(@access_token.get('/api/v2/json/user/show'))['user']
@@ -26,22 +36,14 @@ module OmniAuth
 
       def user_info
         {
-          'nickname' => user_data["login"],
+          'nickname' => user_data['login'],
           'email' => user_data['email'],
           'name' => user_data['name'],
           'urls' => {
             'GitHub' => "http://github.com/#{user_data['login']}",
-            'Blog' => user_data["blog"],
-          }
+            'Blog' => user_data['blog'],
+          },
         }
-      end
-
-      def auth_hash
-        OmniAuth::Utils.deep_merge(super, {
-          'uid' => user_data['id'],
-          'user_info' => user_info,
-          'extra' => {'user_hash' => user_data}
-        })
       end
     end
   end
