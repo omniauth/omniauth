@@ -13,9 +13,9 @@ describe OmniAuth::Strategies::Twitter do
     }.to_app
   end
 
-  it 'should use the authenticate (sign in) path by default' do
+  it 'should use the authorize path by default' do
     s = strategy_class.new(app, 'abc', 'def')
-    s.consumer.options[:authorize_path].should == '/oauth/authenticate'
+    s.consumer.options[:authorize_path].should == '/oauth/authorize'
   end
 
   it 'should set options[:authorize_params] to { :force_login => "true" } if :force_login is true' do
