@@ -4,8 +4,8 @@ require 'oauth'
 
 module OmniAuth
   module Strategies
-    # OmniAuth strategy for connecting via OpenID. This allows for connection
-    # to a wide variety of sites, some of which are listed [on the OpenID website](http://openid.net/get-an-openid/).
+    # OmniAuth strategy for connecting to Google via the OpenID+OAuth Hybrid Protocol.
+    # For help, check the example implementation on https://github.com/boyvanamstel/Google-Hybrid-Omniauth-implementation
     class GoogleHybrid < OmniAuth::Strategies::OpenID
 
       protected
@@ -23,6 +23,7 @@ module OmniAuth
       end
 
       def auth_hash
+        # Based on https://gist.github.com/569650 by nov
         oauth_response = ::OpenID::OAuth::Response.from_success_response(@openid_response)
 
         consumer = ::OAuth::Consumer.new(
