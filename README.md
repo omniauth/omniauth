@@ -77,6 +77,7 @@ OmniAuth currently supports the following external providers:
   * Yahoo (credit: [mpd](https://github.com/mpd))
   * Yammer (credit: [kltcalamay](https://github.com/kltcalamay))
   * YouTube (credit: [jamiew](https://github.com/jamiew))
+  * Orkut (credit: [andersonleite](https://github.com/andersonleite))
 * CAS (Central Authentication Service) (credit: [jamesarosen](https://github.com/jamesarosen))
 * Flickr (credit: [pchilton](https://github.com/pchilton))
 * Google Apps (via OpenID) (credit: [mbleigh](https://github.com/mbleigh))
