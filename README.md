@@ -54,6 +54,7 @@ OmniAuth currently supports the following external providers:
   * Miso (credit: [rickenharp](https://github.com/rickenharp))
   * Mixi (credit: [kiyoshi](https://github.com/kiyoshi))
   * Netflix (credit: [caged](https://github.com/caged))
+  * Orkut (credit: [andersonleite](https://github.com/andersonleite))
   * Plurk (credit: [albb0920](http://github.com/albb0920))
   * Qzone (credit: [quake](https://github.com/quake))
   * Rdio (via [brandonweiss](https://github.com/brandonweiss))
