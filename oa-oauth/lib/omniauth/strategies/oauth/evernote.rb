@@ -1,6 +1,5 @@
 require 'omniauth/oauth'
 require 'multi_json'
-require 'evernote'
 
 module OmniAuth
   module Strategies
