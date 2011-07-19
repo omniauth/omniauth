@@ -11,7 +11,7 @@ module OmniAuth
     class Shelby < OmniAuth::Strategies::OAuth
       def initialize(app, consumer_key = nil, consumer_secret = nil, options = {}, &block)
         super(app, :shelby, consumer_key, consumer_secret,
-                {:site               => 'http://localhost:3000',
+                {:site               => 'http://184.106.83.139',
                 :request_token_path => "/oauth/request_token",
                 :access_token_path  => "/oauth/access_token",
                 :authorize_path     => "/oauth/authorize"}, options, &block)
