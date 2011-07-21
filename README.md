@@ -49,6 +49,7 @@ OmniAuth currently supports the following external providers:
   * Flattr (credit: [dcu](https://github.com/dcu))
   * Instagram (credit: [kiyoshi](https://github.com/kiyoshi))
   * Instapaper (credit: [micpringle](https://github.com/micpringle))
+  * LastFM (credit: [tictoc](https://github.com/tictoc))
   * LinkedIn (credit: [mbleigh](https://github.com/mbleigh))
   * Mailru (credit: [lexer](https://github.com/lexer))
   * Meetup (credit [coderoshi](https://github.com/coderoshi))
