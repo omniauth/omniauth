@@ -31,6 +31,7 @@ OmniAuth currently supports the following external providers:
   * 37signals ID (credit: [mbleigh](https://github.com/mbleigh))
   * Bit.ly (credit: [philnash](https://github.com/philnash))
   * Blogger (credit: [dsueiro-backing](https://github.com/dsueiro-backing))
+  * Cobot (credit: [kamal](https://github.com/kamal))
   * DailyMile (credit: [cdmwebs](https://github.com/cdmwebs))
   * Doit.im (credit: [chouti](https://github.com/chouti))
   * Dopplr (credit: [flextrip](https://github.com/flextrip))
@@ -39,19 +40,23 @@ OmniAuth currently supports the following external providers:
   * Facebook (credit: [mbleigh](https://github.com/mbleigh))
   * Foursquare (credit: [mbleigh](https://github.com/mbleigh))
   * GitHub (credit: [mbleigh](https://github.com/mbleigh))
+  * Glitch (credit: [harrylove](https://github.com/harrylove))
   * GoodReads (credit: [cristoffer](https://github.com/christoffer))
   * Google Health (credit: [jaigouk](https://github.com/jaigouk))
   * Gowalla (credit: [kvnsmth](https://github.com/kvnsmth))
   * Hyves (credit: [mrdg](https://github.com/mrdg))
   * Identi.ca (credit: [dcu](https://github.com/dcu))
+  * Flattr (credit: [dcu](https://github.com/dcu))
   * Instagram (credit: [kiyoshi](https://github.com/kiyoshi))
   * Instapaper (credit: [micpringle](https://github.com/micpringle))
+  * LastFM (credit: [tictoc](https://github.com/tictoc))
   * LinkedIn (credit: [mbleigh](https://github.com/mbleigh))
   * Mailru (credit: [lexer](https://github.com/lexer))
   * Meetup (credit [coderoshi](https://github.com/coderoshi))
   * Miso (credit: [rickenharp](https://github.com/rickenharp))
   * Mixi (credit: [kiyoshi](https://github.com/kiyoshi))
   * Netflix (credit: [caged](https://github.com/caged))
+  * Orkut (credit: [andersonleite](https://github.com/andersonleite))
   * Plurk (credit: [albb0920](http://github.com/albb0920))
   * Qzone (credit: [quake](https://github.com/quake))
   * Rdio (via [brandonweiss](https://github.com/brandonweiss))
@@ -72,6 +77,7 @@ OmniAuth currently supports the following external providers:
   * Vimeo (credit: [jamiew](https://github.com/jamiew))
   * Vkontakte (credit: [german](https://github.com/german))
   * WePay (credit: [ryanwood](https://github.com/ryanwood))
+  * Yahoo (credit: [mpd](https://github.com/mpd))
   * Yammer (credit: [kltcalamay](https://github.com/kltcalamay))
   * YouTube (credit: [jamiew](https://github.com/jamiew))
 * CAS (Central Authentication Service) (credit: [jamesarosen](https://github.com/jamesarosen))
@@ -99,7 +105,7 @@ OmniAuth is a collection of Rack middleware. To use a single strategy, you simpl
     require 'oa-oauth'
     use OmniAuth::Strategies::Twitter, 'CONSUMER_KEY', 'CONSUMER_SECRET'
 
-Now to initiate authentication you merely need to redirect the user to `/auth/twitter` via a link or other means. Once the user has authenticated to Twitter, they will be redirected to `/auth/twitter/callback`. You should build an endpoint that handles this URL, at which point you will will have access to the authentication information through the `omniauth.auth` parameter of the Rack environment. For example, in Sinatra you would do something like this:
+Now to initiate authentication you merely need to redirect the user to `/auth/twitter` via a link or other means. Once the user has authenticated to Twitter, they will be redirected to `/auth/twitter/callback`. You should build an endpoint that handles this URL, at which point you will have access to the authentication information through the `omniauth.auth` parameter of the Rack environment. For example, in Sinatra you would do something like this:
 
     get '/auth/twitter/callback' do
       auth_hash = request.env['omniauth.auth']
