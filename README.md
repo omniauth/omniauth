@@ -83,6 +83,7 @@ OmniAuth currently supports the following external providers:
 * CAS (Central Authentication Service) (credit: [jamesarosen](https://github.com/jamesarosen))
 * Flickr (credit: [pchilton](https://github.com/pchilton))
 * Google Apps (via OpenID) (credit: [mbleigh](https://github.com/mbleigh))
+* Google OpenID+OAuth (via Hybrid Protocol) (credit: [boyvanamstel](https://github.com/boyvanamstel))
 * LDAP (credit: [pyu10055](https://github.com/pyu10055))
 * OpenID (credit: [mbleigh](https://github.com/mbleigh))
 * Yupoo (credit: [chouti](https://github.com/chouti))
