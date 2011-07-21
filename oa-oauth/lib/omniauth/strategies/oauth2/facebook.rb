@@ -45,7 +45,7 @@ module OmniAuth
         if facebook_session.nil? || facebook_session.empty?
           super
         else
-          @access_token = ::OAuth2::AccessToken.new(client, facebook_session['access_token'], { mode: :query, param_name: 'access_token'} )
+          @access_token = ::OAuth2::AccessToken.new(client, facebook_session['access_token'], {:mode => :query, :param_name => 'access_token'})
         end
       end
 
