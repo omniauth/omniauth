@@ -31,6 +31,7 @@ OmniAuth currently supports the following external providers:
   * 37signals ID (credit: [mbleigh](https://github.com/mbleigh))
   * Bit.ly (credit: [philnash](https://github.com/philnash))
   * Blogger (credit: [dsueiro-backing](https://github.com/dsueiro-backing))
+  * Cobot (credit: [kamal](https://github.com/kamal))
   * DailyMile (credit: [cdmwebs](https://github.com/cdmwebs))
   * Doit.im (credit: [chouti](https://github.com/chouti))
   * Dopplr (credit: [flextrip](https://github.com/flextrip))
