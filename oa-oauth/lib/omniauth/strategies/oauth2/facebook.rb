@@ -33,7 +33,7 @@ module OmniAuth
       end
 
       def user_data
-        @data ||= MultiJson.decode(@access_token.get('/me', {}, {'Accept-Language' => 'en-us,en;'}))
+        @data ||= MultiJson.decode(@access_token.get('/me').body)
       end
 
       def request_phase
@@ -45,7 +45,7 @@ module OmniAuth
         if facebook_session.nil? || facebook_session.empty?
           super
         else
-          @access_token = ::OAuth2::AccessToken.new(client, facebook_session['access_token'])
+          @access_token = ::OAuth2::AccessToken.new(client, facebook_session['access_token'], { mode: :query, param_name: 'access_token'} )
         end
       end
 
