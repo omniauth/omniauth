@@ -1,6 +1,5 @@
 require 'omniauth/oauth'
-require 'json'
-require 'json/pure'
+require 'multi_json'
 
 module OmniAuth
   module Strategies
@@ -42,7 +41,7 @@ module OmniAuth
       end
       
       def user_hash
-        @user_hash ||= JSON.parse(@access_token.get("http://www.orkut.com/social/rest/people/@me/@self").body)
+        @user_hash ||= MultiJson.decode(@access_token.get("http://www.orkut.com/social/rest/people/@me/@self").body)
       end
         
       def request_phase
