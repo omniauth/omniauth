@@ -41,6 +41,7 @@ module OmniAuth
 
     autoload :OAuth2,             'omniauth/strategies/oauth2'
     autoload :Bitly,              'omniauth/strategies/oauth2/bitly'
+    autoload :Cobot,              'omniauth/strategies/oauth2/cobot'
     autoload :Dailymile,          'omniauth/strategies/oauth2/dailymile'
     autoload :Doit,               'omniauth/strategies/oauth2/doit'
     autoload :Facebook,           'omniauth/strategies/oauth2/facebook'
