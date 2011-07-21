@@ -12,8 +12,9 @@ module OmniAuth
       # @param [String] client_secret the application secret
       def initialize(app, client_id=nil, client_secret=nil, options={}, &block)
         client_options = {
+          :site => 'https://github.com',
           :authorize_url => 'https://github.com/login/oauth/authorize',
-          :token_url => 'https://github.com/login/oauth/access_token',
+          :token_url => 'https://github.com/login/oauth/access_token'
         }
         super(app, :github, client_id, client_secret, client_options, options, &block)
       end
