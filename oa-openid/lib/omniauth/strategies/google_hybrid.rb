@@ -1,6 +1,6 @@
 require 'rack/openid'
 require 'omniauth/openid'
-require 'oauth'
+require File.expand_path('../../../../../oa-oauth/lib/omniauth/oauth', __FILE__)
 
 module OmniAuth
   module Strategies
