@@ -66,7 +66,9 @@ module OmniAuth
         token = super
         # indicates that `offline` permission was granted, no need to the token refresh
         if token.expires_in == 0
-          ::OAuth2::AccessToken.new(token.client, token.token)
+          ::OAuth2::AccessToken.new(token.client, token.token,
+            token.params.reject{|k,_| [:refresh_token, :expires_in, :expires_at, :expires].include? k.to_sym}
+          )
         else
           token
         end
