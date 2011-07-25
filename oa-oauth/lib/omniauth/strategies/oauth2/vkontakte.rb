@@ -56,6 +56,16 @@ module OmniAuth
         super
       end
 
+      def build_access_token
+        token = super
+        # indicates that `offline` permission was granted, no need to the token refresh
+        if token.expires_in == 0
+          ::OAuth2::AccessToken.new(token.client, token.token)
+        else
+          token
+        end
+      end
+
       def user_info
         {
           'first_name' => @data['first_name'],
