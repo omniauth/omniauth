@@ -17,8 +17,8 @@ module OmniAuth
           :site => 'https://www.google.com',
         }
         google_contacts_auth = 'www.google.com/m8/feeds'
-        options[:scope] ||= "http://#{google_contacts_auth}"
-        options[:scope] << " http://#{google_contacts_auth}" unless options[:scope] =~ %r[http[s]?:\/\/#{google_contacts_auth}]
+        options[:scope] ||= "https://#{google_contacts_auth}"
+        options[:scope] << " https://#{google_contacts_auth}" unless options[:scope] =~ %r[http[s]?:\/\/#{google_contacts_auth}]
         super(app, :google, consumer_key, consumer_secret, client_options, options, &block)
       end
 
@@ -56,7 +56,7 @@ module OmniAuth
         # however. It will fail in the extremely rare case of a user who has
         # a Google Account but has never even signed up for Gmail. This has
         # not been seen in the field.
-        @user_hash ||= MultiJson.decode(@access_token.get('http://www.google.com/m8/feeds/contacts/default/full?max-results=1&alt=json').body)
+        @user_hash ||= MultiJson.decode(@access_token.get('https://www.google.com/m8/feeds/contacts/default/full?max-results=1&alt=json').body)
       end
 
       # Monkeypatch OmniAuth to pass the scope in the consumer.get_request_token call
