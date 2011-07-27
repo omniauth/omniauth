@@ -62,7 +62,6 @@ module OmniAuth
           @connection, @uri, @with_start_tls = begin
             uri = construct_uri(host, port, method == :simple_tls)
             with_start_tls = method == :start_tls
-            puts ({:uri => uri, :with_start_tls => with_start_tls}).inspect
             [Net::LDAP::Connection.new(config), uri, with_start_tls]
           rescue Net::LDAP::LdapError
             raise ConnectionError, $!.message
@@ -90,9 +89,9 @@ module OmniAuth
           # Attempt 2: SIMPLE with credentials if password block
           # Attempt 3: SIMPLE ANONYMOUS if 1 and 2 fail and allow anonymous is set to true
           if try_sasl and sasl_bind(bind_dn, options)
-              puts "bound with sasl"
+            puts "bound with sasl"
           elsif simple_bind(bind_dn, options)
-              puts "bound with simple"
+            puts "bound with simple"
           elsif allow_anonymous and bind_as_anonymous(options)
             puts "bound as anonymous"
           else
@@ -225,7 +224,6 @@ module OmniAuth
         end
 
         def sasl_bind_setup_gss_spnego(bind_dn, options)
-          puts options.inspect
           user,psw = [bind_dn, options[:password]||@password]
           raise LdapError.new( "invalid binding information" ) unless (user && psw)
 
