@@ -15,8 +15,14 @@ module OmniAuth
       # @option options [String] :scope ('email,offline_access') comma-separated extended permissions such as `email` and `manage_pages`
       def initialize(app, client_id=nil, client_secret=nil, options = {}, &block)
         client_options = {
-          :site => 'https://graph.facebook.com/'
+          :site => 'https://graph.facebook.com/',
+          :token_url => '/oauth/access_token'
         }
+
+        options = {
+          :parse => :query
+        }.merge(options)
+
         super(app, :facebook, client_id, client_secret, client_options, options, &block)
       end
 
@@ -33,7 +39,11 @@ module OmniAuth
       end
 
       def user_data
-        @data ||= MultiJson.decode(@access_token.get('/me').body)
+        @access_token.options[:mode] = :query
+        @access_token.options[:param_name] = 'access_token'
+        @data ||= @access_token.get('/me').parsed
+      rescue ::OAuth2::Error => e
+        raise e.response.inspect
       end
 
       def request_phase

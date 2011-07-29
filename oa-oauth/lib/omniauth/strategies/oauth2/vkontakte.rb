@@ -39,21 +39,39 @@ module OmniAuth
         @fields ||= ['uid', 'first_name', 'last_name', 'nickname', 'domain', 'sex', 'bdate', 'city', 'country', 'timezone', 'photo', 'photo_big']
 
         # http://vkontakte.ru/developers.php?o=-1&p=getProfiles
-        @data ||= MultiJson.decode(@access_token.get("https://api.vkontakte.ru/method/getProfiles?uid=#{@access_token['user_id']}&fields=#{@fields.join(',')}&access_token=#{@access_token.token}"))['response'][0]
+        response = @access_token.get('https://api.vkontakte.ru/method/getProfiles',
+          :params => {:uid => @access_token['user_id'], :fields => @fields.join(',')}, :parse => :json)
+        @data ||= response.parsed['response'][0]
 
         # we need these 2 additional requests since vkontakte returns only ids of the City and Country
         # http://vkontakte.ru/developers.php?o=-17680044&p=getCities
-        cities = MultiJson.decode(@access_token.get("https://api.vkontakte.ru/method/getCities?cids=#{@data['city']}&access_token=#{@access_token.token}"))['response']
+        response = @access_token.get('https://api.vkontakte.ru/method/getCities',
+          :params => {:cids => @data['city']}, :parse => :json)
+        cities = response.parsed['response']
         @city ||= cities.first['name'] if cities && cities.first
 
         # http://vkontakte.ru/developers.php?o=-17680044&p=getCountries
-        countries = MultiJson.decode(@access_token.get("https://api.vkontakte.ru/method/getCountries?cids=#{@data['country']}&access_token=#{@access_token}"))['response']
+        response = @access_token.get('https://api.vkontakte.ru/method/getCountries',
+          :params => {:cids => @data['country']}, :parse => :json)
+        countries = response.parsed['response']
         @country ||= countries.first['name'] if countries && countries.first
       end
 
       def request_phase
         options[:response_type] ||= 'code'
         super
+      end
+
+      def build_access_token
+        token = super
+        # indicates that `offline` permission was granted, no need to the token refresh
+        if token.expires_in == 0
+          ::OAuth2::AccessToken.new(token.client, token.token,
+            token.params.reject{|k,_| [:refresh_token, :expires_in, :expires_at, :expires].include? k.to_sym}
+          )
+        else
+          token
+        end
       end
 
       def user_info
