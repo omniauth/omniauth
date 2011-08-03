@@ -3,15 +3,17 @@ require 'multi_json'
 
 module OmniAuth
   module Strategies
-    # Authenticate to SoundCloud via OAuth and retrieve basic
+    # Authenticate to SoundCloud via OAuth2 and retrieve basic
     # user information.
     #
     # Usage:
-    #    use OmniAuth::Strategies::SoundCloud, 'consumerkey', 'consumersecret'
-    class SoundCloud < OmniAuth::Strategies::OAuth
+    #    use OmniAuth::Strategies::SoundCloud2, 'consumerkey', 'consumersecret'
+    class SoundCloud < OmniAuth::Strategies::OAuth2
       def initialize(app, consumer_key=nil, consumer_secret=nil, options={}, &block)
         client_options = {
           :site => 'https://api.soundcloud.com',
+          :authorize_url => 'https://soundcloud.com/connect',
+          :token_url => 'https://api.soundcloud.com/oauth2/token'
         }
         super(app, :soundcloud, consumer_key, consumer_secret, client_options, options, &block)
       end
