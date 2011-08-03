@@ -47,6 +47,14 @@ module OmniAuth
       def user_hash
         @user_hash ||= MultiJson.decode(@access_token.get('/me.json').body)
       end
+
+      # OAuth2 by default uses 'Bearer %s' in the header
+      def build_access_token
+        access_token = super
+        access_token.options[:header_format] = "OAuth %s"
+        access_token
+      end
+
     end
   end
 end
