@@ -7,7 +7,7 @@ module OmniAuth
     # user information.
     #
     # Usage:
-    #    use OmniAuth::Strategies::SoundCloud2, 'consumerkey', 'consumersecret'
+    #    use OmniAuth::Strategies::SoundCloud, 'consumerkey', 'consumersecret'
     class SoundCloud < OmniAuth::Strategies::OAuth2
       def initialize(app, consumer_key=nil, consumer_secret=nil, options={}, &block)
         client_options = {
