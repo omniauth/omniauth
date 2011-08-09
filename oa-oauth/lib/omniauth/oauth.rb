@@ -11,6 +11,7 @@ module OmniAuth
     autoload :Doit,               'omniauth/strategies/doit'
     autoload :Dopplr,             'omniauth/strategies/dopplr'
     autoload :Douban,             'omniauth/strategies/douban'
+    autoload :Etsy,               'omniauth/strategies/etsy'
     autoload :Evernote,           'omniauth/strategies/evernote'
     autoload :Facebook,           'omniauth/strategies/facebook'
     autoload :Foursquare,         'omniauth/strategies/foursquare'
