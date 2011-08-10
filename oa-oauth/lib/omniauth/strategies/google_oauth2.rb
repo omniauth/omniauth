@@ -21,7 +21,7 @@ module OmniAuth
 
       def request_phase
         options[:scope] ||= "https://www.google.com/m8/feeds/"
-        redirect client.web_server.authorize_url(
+        redirect client.auth_code.authorize_url(
           {:redirect_uri => callback_url, :response_type => "code"}.merge(options))
       end
       
