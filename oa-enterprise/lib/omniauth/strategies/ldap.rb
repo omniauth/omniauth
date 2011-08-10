@@ -86,20 +86,31 @@ module OmniAuth
         })
       end
 
+      # Use only first value if the field is returned as an Array
+      def self.get_ldap_field(ldap_object, field)
+        value = ldap_object[field.to_sym]
+        case value
+        when Array
+          value.first.to_s
+        else
+          value.to_s
+        end
+      end
+
     def self.map_user(mapper, object)
       user = {}
       mapper.each do |key, value|
         case value
         when String
-          user[key] = object[value.downcase.to_sym].to_s if object[value.downcase.to_sym]
+          user[key] = get_ldap_field(object, value.downcase) if object[value.downcase.to_sym]
         when Array
-          value.each {|v| (user[key] = object[v.downcase.to_sym].to_s; break;) if object[v.downcase.to_sym]}
+          value.each {|v| (user[key] = get_ldap_field(object, v.downcase); break;) if object[v.downcase.to_sym]}
         when Hash
           value.map do |key1, value1|
             pattern = key1.dup
             value1.each_with_index do |v,i|
               part = '';
-              v.each {|v1| (part = object[v1.downcase.to_sym].to_s; break;) if object[v1.downcase.to_sym]}
+              v.each {|v1| (part = get_ldap_field(object, v1.downcase); break;) if object[v1.downcase.to_sym]}
               pattern.gsub!("%#{i}",part||'')
             end
             user[key] = pattern
