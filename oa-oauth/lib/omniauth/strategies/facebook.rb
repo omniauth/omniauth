@@ -8,21 +8,46 @@ module OmniAuth
     #
     # @example Basic Usage
     #   use OmniAuth::Strategies::Facebook, 'client_id', 'client_secret'
-    class Facebook < OAuth2
+    class Facebook < OmniAuth::Strategies::OAuth2
       # @param [Rack Application] app standard middleware application parameter
       # @param [String] client_id the application id as [registered on Facebook](http://www.facebook.com/developers/)
       # @param [String] client_secret the application secret as registered on Facebook
       # @option options [String] :scope ('email,offline_access') comma-separated extended permissions such as `email` and `manage_pages`
-      def initialize(app, client_id = nil, client_secret = nil, options = {}, &block)
-        super(app, :facebook, client_id, client_secret, {:site => 'https://graph.facebook.com/'}, options, &block)
+      def initialize(app, client_id=nil, client_secret=nil, options = {}, &block)
+        client_options = {
+          :site => 'https://graph.facebook.com/',
+          :token_url => '/oauth/access_token'
+        }
+
+        options = {
+          :parse => :query
+        }.merge(options)
+
+        super(app, :facebook, client_id, client_secret, client_options, options, &block)
+      end
+
+      def auth_hash
+        OmniAuth::Utils.deep_merge(
+          super, {
+            'uid' => user_data['id'],
+            'user_info' => user_info,
+            'extra' => {
+              'user_hash' => user_data,
+            },
+          }
+        )
       end
 
       def user_data
-        @data ||= MultiJson.decode(@access_token.get('/me', {}, { "Accept-Language" => "en-us,en;"}))
+        @access_token.options[:mode] = :query
+        @access_token.options[:param_name] = 'access_token'
+        @data ||= @access_token.get('/me').parsed
+      rescue ::OAuth2::Error => e
+        raise e.response.inspect
       end
 
       def request_phase
-        options[:scope] ||= "email,offline_access"
+        options[:scope] ||= 'email,offline_access'
         super
       end
 
@@ -30,7 +55,7 @@ module OmniAuth
         if facebook_session.nil? || facebook_session.empty?
           super
         else
-          @access_token = ::OAuth2::AccessToken.new(client, facebook_session['access_token'])
+          @access_token = ::OAuth2::AccessToken.new(client, facebook_session['access_token'], {:mode => :query, :param_name => 'access_token'})
         end
       end
 
@@ -45,25 +70,17 @@ module OmniAuth
 
       def user_info
         {
-          'nickname' => user_data["username"],
-          'email' => (user_data["email"] if user_data["email"]),
-          'first_name' => user_data["first_name"],
-          'last_name' => user_data["last_name"],
+          'nickname' => user_data['username'],
+          'email' => (user_data['email'] if user_data['email']),
+          'first_name' => user_data['first_name'],
+          'last_name' => user_data['last_name'],
           'name' => "#{user_data['first_name']} #{user_data['last_name']}",
           'image' => "http://graph.facebook.com/#{user_data['id']}/picture?type=square",
           'urls' => {
-            'Facebook' => user_data["link"],
-            'Website' => user_data["website"],
-          }
+            'Facebook' => user_data['link'],
+            'Website' => user_data['website'],
+          },
         }
-      end
-
-      def auth_hash
-        OmniAuth::Utils.deep_merge(super, {
-          'uid' => user_data['id'],
-          'user_info' => user_info,
-          'extra' => {'user_hash' => user_data}
-        })
       end
     end
   end

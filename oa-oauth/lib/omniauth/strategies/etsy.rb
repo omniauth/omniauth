@@ -97,6 +97,8 @@ module OmniAuth
         @user_hash ||= MultiJson.decode(@access_token.get('/v2/users/__SELF__').body)['results'][0]
       rescue ::Errno::ETIMEDOUT
         raise ::Timeout::Error
+      rescue ::OAuth::Error => e
+        raise e.response.inspect
       end
     end
   end

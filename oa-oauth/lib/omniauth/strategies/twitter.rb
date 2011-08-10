@@ -35,7 +35,6 @@ module OmniAuth
 
       def user_info
         user_hash = self.user_hash
-
         {
           'nickname' => user_hash['screen_name'],
           'name' => user_hash['name'] || user_hash['screen_name'],
@@ -51,6 +50,8 @@ module OmniAuth
 
       def user_hash
         @user_hash ||= MultiJson.decode(@access_token.get('/1/account/verify_credentials.json').body)
+      rescue ::OAuth::Error => e
+        raise e.response.inspect
       end
     end
   end
