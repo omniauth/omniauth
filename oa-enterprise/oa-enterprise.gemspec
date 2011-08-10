@@ -3,7 +3,7 @@ require File.expand_path('../lib/omniauth/version', __FILE__)
 
 Gem::Specification.new do |gem|
   gem.add_runtime_dependency 'addressable', '~> 2.2.6'
-  gem.add_runtime_dependency 'nokogiri', '~> 1.4.2'
+  gem.add_runtime_dependency 'nokogiri', '~> 1.5.0'
   gem.add_runtime_dependency 'net-ldap', '~> 0.2.2'
   gem.add_runtime_dependency 'oa-core', OmniAuth::Version::STRING
   gem.add_runtime_dependency 'pyu-ruby-sasl', '~> 0.0.3.1'

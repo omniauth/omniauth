@@ -2,13 +2,13 @@
 require File.expand_path('../lib/omniauth/version', __FILE__)
 
 Gem::Specification.new do |gem|
-  gem.add_runtime_dependency 'faraday', '~> 0.6.1'
+  gem.add_runtime_dependency 'faraday', '~> 0.7.3'
   gem.add_runtime_dependency 'multi_json', '~> 1.0.0'
   gem.add_runtime_dependency 'multi_xml', '~> 0.2.2'
   gem.add_runtime_dependency 'oa-core', OmniAuth::Version::STRING
   gem.add_runtime_dependency 'oauth', '~> 0.4.0'
-  gem.add_runtime_dependency 'oauth2', '~> 0.4.1'
-  gem.add_development_dependency 'evernote', '~> 0.9'
+  gem.add_runtime_dependency 'oauth2', '~> 0.5.0'
+  gem.add_development_dependency 'evernote', '~> 1.0'
   gem.add_development_dependency 'maruku', '~> 0.6'
   gem.add_development_dependency 'rack-test', '~> 0.5'
   gem.add_development_dependency 'rake', '~> 0.8'
@@ -16,6 +16,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'simplecov', '~> 0.4'
   gem.add_development_dependency 'webmock', '~> 1.6'
   gem.add_development_dependency 'yard', '~> 0.7'
+  gem.add_development_dependency 'vcr', '~> 1.10'
   gem.add_development_dependency 'ZenTest', '~> 4.5'
   gem.name = 'oa-oauth'
   gem.version = OmniAuth::Version::STRING

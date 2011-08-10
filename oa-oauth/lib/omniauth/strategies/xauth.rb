@@ -4,12 +4,12 @@ require 'multi_json'
 module OmniAuth
   module Strategies
     class XAuth
-      include OmniAuth::Strategy
-
       attr_reader :name
       attr_accessor :consumer_key, :consumer_secret, :consumer_options
 
-      def initialize(app, name, consumer_key = nil, consumer_secret = nil, consumer_options = {}, options = {}, &block)
+      include OmniAuth::Strategy
+
+      def initialize(app, name, consumer_key=nil, consumer_secret=nil, consumer_options={}, options={}, &block)
         self.consumer_key = consumer_key
         self.consumer_secret = consumer_secret
         self.consumer_options = consumer_options

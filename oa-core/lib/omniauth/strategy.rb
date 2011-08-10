@@ -3,7 +3,7 @@ require 'omniauth/core'
 module OmniAuth
   class NoSessionError < StandardError; end
   # The Strategy is the base unit of OmniAuth's ability to
-  # wrangle multiple providers. Each strategy provided by 
+  # wrangle multiple providers. Each strategy provided by
   # OmniAuth includes this mixin to gain the default functionality
   # necessary to be compatible with the OmniAuth library.
   module Strategy
@@ -41,9 +41,9 @@ module OmniAuth
       return request_call if on_request_path? && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
       return callback_call if on_callback_path?
       return other_phase if respond_to?(:other_phase)
-      @app.call(env)  
+      @app.call(env)
     end
-    
+
     # Performs the steps necessary to run the request phase of a strategy.
     def request_call
       setup_phase
@@ -81,7 +81,7 @@ module OmniAuth
     end
 
     def mock_call!(env)
-      return mock_request_call if on_request_path? 
+      return mock_request_call if on_request_path?
       return mock_callback_call if on_callback_path?
       call_app!
     end
@@ -126,6 +126,8 @@ module OmniAuth
 
     def callback_phase
       @env['omniauth.auth'] = auth_hash
+      @env['omniauth.params'] = session['query_params'] || {}
+      session['query_params'] = nil if session['query_params']
       call_app!
     end
 
@@ -155,6 +157,7 @@ module OmniAuth
 
     def call_through_to_app
       status, headers, body = *call_app!
+      session['query_params'] = Rack::Request.new(env).params
       @response = Rack::Response.new(body, status, headers)
 
       status == 404 ? nil : @response.finish
