@@ -48,6 +48,7 @@ module OmniAuth
     autoload :Foursquare,         'omniauth/strategies/oauth2/foursquare'
     autoload :GitHub,             'omniauth/strategies/oauth2/github'
     autoload :Glitch,             'omniauth/strategies/oauth2/glitch'
+    autoload :GoogleOAuth2,       'omniauth/strategies/google_oauth2'
     autoload :Gowalla,            'omniauth/strategies/oauth2/gowalla'
     autoload :Instagram,          'omniauth/strategies/oauth2/instagram'
     autoload :Mailru,             'omniauth/strategies/oauth2/mailru'
