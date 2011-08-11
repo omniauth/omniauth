@@ -8,7 +8,7 @@ module OmniAuth
       # @param [Rack Application] app standard middleware application argument
       # @param [String] client_id the application ID for your client
       # @param [String] client_secret the application secret
-      # @option options [String] :scope ('https://www.google.com/m8/feeds/') space-separated services that you need. It is required to include the m8 service in order to retrieve the user email
+      # @option options [String] :scope ('https://www.googleapis.com/auth/userinfo.email') space-separated services that you need.
       def initialize(app, client_id = nil, client_secret = nil, options = {}, &block)
         client_options = {
           :site => 'https://accounts.google.com',
@@ -20,11 +20,11 @@ module OmniAuth
       end
 
       def request_phase
-        options[:scope] ||= "https://www.google.com/m8/feeds/"
+        options[:scope] ||= "https://www.googleapis.com/auth/userinfo.email"
         redirect client.auth_code.authorize_url(
           {:redirect_uri => callback_url, :response_type => "code"}.merge(options))
       end
-      
+
       def auth_hash
         OmniAuth::Utils.deep_merge(super, {
           'uid' => user_info['uid'],
@@ -33,30 +33,23 @@ module OmniAuth
           'extra' => {'user_hash' => user_data}
         })
       end
-      
+
       def user_info
-        email = user_data['feed']['id']['$t']
-        name = user_data['feed']['author'].first['name']['$t']
-        name = email if name.strip == '(unknown)'
-      
+        if user_data['data']['isVerified']
+          email = user_data['data']['email']
+        else
+          email = nil
+        end
         {
           'email' => email,
           'uid' => email,
-          'name' => name
+          'name' => email
         }
       end
-      
+
       def user_data
-        # From original Google OAuth strategy
-        # Google is very strict about keeping authorization and
-        # authentication separated.
-        # They give no endpoint to get a user's profile directly that I can
-        # find. We *can* get their name and email out of the contacts feed,
-        # however. It will fail in the extremely rare case of a user who has
-        # a Google Account but has never even signed up for Gmail. This has
-        # not been seen in the field.
-        @data ||= 
-          @access_token.get("https://www.google.com/m8/feeds/contacts/default/full?max-results=1&alt=json").parsed
+        @data ||=
+          @access_token.get("https://www.googleapis.com/userinfo/email?alt=json").parsed
       end
 
     end
