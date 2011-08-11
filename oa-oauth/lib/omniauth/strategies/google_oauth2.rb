@@ -12,8 +12,8 @@ module OmniAuth
       def initialize(app, client_id = nil, client_secret = nil, options = {}, &block)
         client_options = {
           :site => 'https://accounts.google.com',
-          :authorize_path => '/o/oauth2/auth',
-          :access_token_path => '/o/oauth2/token'
+          :authorize_url => '/o/oauth2/auth',
+          :token_url => '/o/oauth2/token'
         }
 
         super(app, :google_oauth2, client_id, client_secret, client_options, options, &block)
@@ -21,7 +21,7 @@ module OmniAuth
 
       def request_phase
         options[:scope] ||= "https://www.google.com/m8/feeds/"
-        redirect client.web_server.authorize_url(
+        redirect client.auth_code.authorize_url(
           {:redirect_uri => callback_url, :response_type => "code"}.merge(options))
       end
       
@@ -55,8 +55,8 @@ module OmniAuth
         # however. It will fail in the extremely rare case of a user who has
         # a Google Account but has never even signed up for Gmail. This has
         # not been seen in the field.
-        @data ||= MultiJson.decode(
-          @access_token.get("https://www.google.com/m8/feeds/contacts/default/full?max-results=1&alt=json"))
+        @data ||= 
+          @access_token.get("https://www.google.com/m8/feeds/contacts/default/full?max-results=1&alt=json").parsed
       end
 
     end
