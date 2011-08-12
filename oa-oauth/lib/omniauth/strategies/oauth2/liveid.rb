@@ -45,10 +45,10 @@ module OmniAuth
         super
       end
 
-      def callback_phase
-        options[:grant_type] ||= 'authorization_code'
-        super
-      end
+      #def callback_phase
+      #  options[:grant_type] ||= 'authorization_code'
+      #  super
+      #end
 
       def user_data
         @data ||= MultiJson.decode(@access_token.get('/me'))
