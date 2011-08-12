@@ -18,7 +18,8 @@ module OmniAuth
     class Liveid < OmniAuth::Strategies::OAuth
       # @option options [String] :scope separate the scopes by a space
       def initialize(app, client_id=nil, client_secret=nil, options={}, &block)
-        client_options = {
+        client_options = {                    
+          :site => 'https://oauth.live.com',
           :authorize_url => 'https://oauth.live.com/authorize',
           :token_url => 'https://oauth.live.com/token',
           :display => 'page'
@@ -39,8 +40,9 @@ module OmniAuth
       end         
 
       def request_phase
-        options[:scope] ||= 'wl.basic'
+        options[:scope] ||= 'wl.signin wl.basic'
         options[:response_type] ||= 'code'
+        options[:display] ||= 'popup'
         super
       end
 
