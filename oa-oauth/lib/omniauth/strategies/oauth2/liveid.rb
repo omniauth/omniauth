@@ -53,7 +53,7 @@ module OmniAuth
         
         #client.request(:get, 'https://apis.live.net/v5.0/me', opts)
 #        @data ||= MultiJson.decode(@access_token.get('/me'))
-        @data ||= @access_token.get('https://apis.live.net/v5.0/me')
+        @data ||= MultiJson.decode(@access_token.get('https://apis.live.net/v5.0/me').body)
       end
 
       def user_info
