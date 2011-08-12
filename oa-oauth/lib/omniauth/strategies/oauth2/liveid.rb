@@ -28,16 +28,14 @@ module OmniAuth
       end
 
       def auth_hash                
-        #  OmniAuth::Utils.deep_merge(
-           # super, 
-          #  {
-          #    'provider' => name.to_s,
-          #    'uid' => nil,
-          #    'user_info' => user_data,
-          #    'user_info' => @data
-          #  }
-          #)        
-          user_data
+          OmniAuth::Utils.deep_merge(
+            super, 
+            {
+              'provider' => name.to_s,
+              'uid' => nil,
+              'user_info' => user_data
+            }
+          )                  
       end       
 
       def request_phase
