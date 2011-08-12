@@ -39,16 +39,16 @@ module OmniAuth
       end         
 
       def request_phase
-        options[:scope] ||= 'wl.signin wl.basic'
+        options[:scope] ||= 'wl.signin%20wl.basic'
         options[:response_type] ||= 'code'
         options[:display] ||= 'popup'
         super
       end
 
-      #def callback_phase
-       # options[:grant_type] ||= 'authorization_code'
-       # super
-      #end
+      def callback_phase
+        options[:grant_type] ||= 'authorization_code'
+        super
+      end
 
       def user_data
         @data ||= MultiJson.decode(@access_token.get('/me'))
