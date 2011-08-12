@@ -42,6 +42,7 @@ module OmniAuth
       end
 
       def user_data
+        @access_token.options.merge!({:param_name => 'access_token', :mode => :query})
         @data ||= MultiJson.decode(@access_token.get('/v1/users/self'))
       end
 
