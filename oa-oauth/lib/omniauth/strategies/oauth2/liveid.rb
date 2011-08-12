@@ -28,15 +28,16 @@ module OmniAuth
       end
 
       def auth_hash                
-          OmniAuth::Utils.deep_merge(
-            super, 
-            {
-              'provider' => name.to_s,
-              'uid' => nil,
-              'name' => user_data,
-              'id' => @data
-            }
-          )        
+        #  OmniAuth::Utils.deep_merge(
+           # super, 
+          #  {
+          #    'provider' => name.to_s,
+          #    'uid' => nil,
+          #    'user_info' => user_data,
+          #    'user_info' => @data
+          #  }
+          #)        
+          @data
       end       
 
       def request_phase
@@ -48,12 +49,7 @@ module OmniAuth
 
 
       def user_data
-        opts = {}
-        #opts[:params]['access_token'] = @access_token.token
-        
-        #client.request(:get, 'https://apis.live.net/v5.0/me', opts)
-#        @data ||= MultiJson.decode(@access_token.get('/me'))
-        @data ||= @access_token.get('https://apis.live.net/v5.0/me')
+        @data ||= MultiJson.decode(@access_token.get('https://apis.live.net/v5.0/me'))
       end
 
       def user_info
