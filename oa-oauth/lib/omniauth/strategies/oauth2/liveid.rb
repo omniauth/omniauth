@@ -46,7 +46,7 @@ module OmniAuth
       def user_info
         {
           'id' => user_data['id'],
-          'email' => user_data['name'],
+          'email' => '',
           'name' => user_data['name'],
           'first_name' => user_data['first_name'],
           'last_name' => user_data['last_name'],
