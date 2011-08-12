@@ -15,12 +15,13 @@ module OmniAuth
     # @example Basic Usage
     #
     #   use OmniAuth::Strategies::Liveid, 'client_id', 'client_secret'
-    class Liveid < OmniAuth::Strategies::OAuth2
+    class Liveid < OmniAuth::Strategies::OAuth
       # @option options [String] :scope separate the scopes by a space
       def initialize(app, client_id=nil, client_secret=nil, options={}, &block)
         client_options = {
           :authorize_url => 'https://oauth.live.com/authorize',
           :token_url => 'https://oauth.live.com/token',
+          :display => 'page'
         }
         super(app, :liveid, client_id, client_secret, client_options, options, &block)
       end
@@ -35,7 +36,7 @@ module OmniAuth
             }
           }
         )
-      end
+      end         
 
       def request_phase
         options[:scope] ||= 'wl.basic'
