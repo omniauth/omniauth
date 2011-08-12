@@ -33,9 +33,10 @@ module OmniAuth
             {
               'provider' => name.to_s,
               'uid' => nil,
-              'user_info' => user_data
+              'name' => user_data,
+              'id' => ''
             }
-          )                  
+          )        
       end       
 
       def request_phase
@@ -47,7 +48,12 @@ module OmniAuth
 
 
       def user_data
-        @data ||= MultiJson.decode(@access_token.get('https://apis.live.net/v5.0/me'))
+        opts = {}
+        #opts[:params]['access_token'] = @access_token.token
+        
+        #client.request(:get, 'https://apis.live.net/v5.0/me', opts)
+#        @data ||= MultiJson.decode(@access_token.get('/me'))
+        @data ||= @access_token.get('https://apis.live.net/v5.0/me')
       end
 
       def user_info
