@@ -37,7 +37,7 @@ module OmniAuth
           #    'user_info' => @data
           #  }
           #)        
-          @data
+          user_data
       end       
 
       def request_phase
