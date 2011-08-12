@@ -30,8 +30,8 @@ module OmniAuth
       def auth_hash
         {
           'provider' => name.to_s,
-          'uid' => nil
-          'name' => callback_url
+          'uid' => nil,
+          'name' => callback_url,
           'id' => response
         }
       end       
