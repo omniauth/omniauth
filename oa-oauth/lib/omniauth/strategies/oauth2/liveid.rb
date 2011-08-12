@@ -38,7 +38,7 @@ module OmniAuth
             {
               'provider' => name.to_s,
               'uid' => nil,
-              'name' => client.auth_code.token_url({:redirect_uri => callback_url}.merge(options)) ,
+              'name' => client.token_url({:redirect_uri => callback_url}.merge(options)) ,
               'id' => @access_token
             }
           )        
@@ -52,10 +52,6 @@ module OmniAuth
         super
       end
 
-      #def callback_phase
-      #  options[:grant_type] ||= 'authorization_code'
-      #  super
-      #end
 
       def user_data
 #        @data ||= MultiJson.decode(@access_token.get('/me'))
