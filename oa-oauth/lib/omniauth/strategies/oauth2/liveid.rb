@@ -15,14 +15,13 @@ module OmniAuth
     # @example Basic Usage
     #
     #   use OmniAuth::Strategies::Liveid, 'client_id', 'client_secret'
-    class Liveid < OmniAuth::Strategies::OAuth
+    class Liveid < OmniAuth::Strategies::OAuth2
       # @option options [String] :scope separate the scopes by a space
       def initialize(app, client_id=nil, client_secret=nil, options={}, &block)
         client_options = {                    
           :site => 'https://oauth.live.com',
           :authorize_url => 'https://oauth.live.com/authorize',
-          :token_url => 'https://oauth.live.com/token',
-          :display => 'page'
+          :token_url => 'https://oauth.live.com/token'
         }
         super(app, :liveid, client_id, client_secret, client_options, options, &block)
       end
@@ -46,10 +45,10 @@ module OmniAuth
         super
       end
 
-      def callback_phase
+      #def callback_phase
        # options[:grant_type] ||= 'authorization_code'
-        super
-      end
+       # super
+      #end
 
       def user_data
         @data ||= MultiJson.decode(@access_token.get('/me'))
