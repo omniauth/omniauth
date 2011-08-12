@@ -51,7 +51,6 @@ module OmniAuth
     autoload :GoogleOAuth2,       'omniauth/strategies/google_oauth2'
     autoload :Gowalla,            'omniauth/strategies/oauth2/gowalla'
     autoload :Instagram,          'omniauth/strategies/oauth2/instagram'
-    autoload :Liveid,             'omniauth/strategies/oauth2/liveid'
     autoload :Mailru,             'omniauth/strategies/oauth2/mailru'
     autoload :Mixi,               'omniauth/strategies/oauth2/mixi'
     autoload :Renren,             'omniauth/strategies/oauth2/renren'
@@ -65,5 +64,6 @@ module OmniAuth
 
     autoload :XAuth,              'omniauth/strategies/xauth'
     autoload :Instapaper,         'omniauth/strategies/xauth/instapaper'
+    autoload :Liveid,             'omniauth/strategies/oauth2/liveid'
   end
 end

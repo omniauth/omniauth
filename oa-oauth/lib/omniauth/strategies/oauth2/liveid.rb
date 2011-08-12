@@ -12,7 +12,7 @@ module OmniAuth
     # Sign-up for account:
     # http://go.microsoft.com/fwlink/?LinkId=213332
     # 
-    # @example Basic Usage
+    # @example Basic Usage of Liveid
     #
     #   use OmniAuth::Strategies::Liveid, 'client_id', 'client_secret'
     class Liveid < OmniAuth::Strategies::OAuth2
