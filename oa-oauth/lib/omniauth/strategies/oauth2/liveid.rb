@@ -31,10 +31,11 @@ module OmniAuth
           OmniAuth::Utils.deep_merge(
             super, 
             {
-              'provider' => name.to_s,
-              'uid' => nil,
-              'name' => user_data,
-              'id' => ''
+              'uid' => user_data['login'],
+              'user_info' => user_info,
+              'extra' => {
+                'user_hash' => user_data,
+              }
             }
           )        
       end       
@@ -48,26 +49,21 @@ module OmniAuth
 
 
       def user_data
-        opts = {}
-        #opts[:params]['access_token'] = @access_token.token
-        
-        #client.request(:get, 'https://apis.live.net/v5.0/me', opts)
-#        @data ||= MultiJson.decode(@access_token.get('/me'))
         @data ||= MultiJson.decode(@access_token.get('https://apis.live.net/v5.0/me').body)
       end
 
       def user_info
         {
-          'id' => user_data['data']['id'],
-          'name' => user_data['data']['name'],
-          'first_name' => user_data['data']['first_name'],
-          'last_name' => user_data['data']['last_name'],
-          'link' => user_data['data']['link'],
-          'gender' => user_data['data']['gender'],
-          'locale' => user_data['data']['locale']                    
+          'id' => user_data['id'],
+          'name' => user_data['name'],
+          'first_name' => user_data['first_name'],
+          'last_name' => user_data['last_name'],
+          'link' => user_data['link'],
+          'gender' => user_data['gender'],
+          'locale' => user_data['locale']                    
         }
       end
-      
+            
     end
   end
 end
