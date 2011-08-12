@@ -34,7 +34,7 @@ module OmniAuth
               'provider' => name.to_s,
               'uid' => nil,
               'name' => callback_url,
-              'id' => response
+              'id' => @access_token
             }
           )        
       end       
