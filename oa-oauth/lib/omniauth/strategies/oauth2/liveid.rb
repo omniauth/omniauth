@@ -38,14 +38,14 @@ module OmniAuth
             {
               'provider' => name.to_s,
               'uid' => nil,
-              'name' => client.auth_code.authorize_url({:redirect_uri => callback_url}.merge(options)) ,
+              'name' => client.auth_code.token_url({:redirect_uri => callback_url}.merge(options)) ,
               'id' => @access_token
             }
           )        
       end       
 
       def request_phase
-        options[:scope] ||= 'wl.signin,wl.basic'
+        options[:scope] ||= 'wl.signin wl.basic'
         options[:response_type] ||= 'code'
         options[:display] ||= 'popup'
 #        options[:ssl] ||= false
