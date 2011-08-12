@@ -21,7 +21,7 @@ module OmniAuth
         client_options = {                    
           :site => 'https://oauth.live.com',
           :authorize_url => 'https://oauth.live.com/authorize',
-          :token_url => 'https://oauth.live.com/token'
+          :token_url => 'https://apis.live.net/v5.0/me'
         }
         
         super(app, :liveid, client_id, client_secret, client_options, options, &block)
@@ -38,7 +38,7 @@ module OmniAuth
             {
               'provider' => name.to_s,
               'uid' => nil,
-              'name' => client.token_url({:redirect_uri => callback_url}.merge(options)) ,
+              'name' => client.auth_code.token_url({:redirect_uri => callback_url}.merge(options)) ,
               'id' => @access_token
             }
           )        
