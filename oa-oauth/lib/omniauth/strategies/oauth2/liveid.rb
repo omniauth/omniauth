@@ -28,16 +28,13 @@ module OmniAuth
       end
 
       def auth_hash
-        OmniAuth::Utils.deep_merge(
-          super, {
-            'uid' => user_data['data']['id'],
-            'user_info' => user_info,
-            'extra' => {
-              'user_hash' => user_data['data'],
-            }
-          }
-        )
-      end         
+        {
+          'provider' => name.to_s,
+          'uid' => nil
+          'name' => callback_url
+          'id' => response
+        }
+      end       
 
       def request_phase
         options[:scope] ||= 'wl.signin wl.basic'
