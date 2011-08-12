@@ -52,25 +52,22 @@ module OmniAuth
       #  super
       #end
 
-      def user_data
-        @data ||= MultiJson.decode(@access_token.get('/me'))
-      end
+      #def user_data
+      #  @data ||= MultiJson.decode(@access_token.get('/me'))
+      #end
 
-      def user_info
-        {
-          'id' => user_data['data']['id'],
-          'name' => user_data['data']['name'],
-          'first_name' => user_data['data']['first_name'],
-          'last_name' => user_data['data']['last_name'],
-          'link' => user_data['data']['link'],
-          'gender' => user_data['data']['gender'],
-          'locale' => user_data['data']['locale']                    
-        }
-      end
+      #def user_info
+      #  {
+      #    'id' => user_data['data']['id'],
+      #    'name' => user_data['data']['name'],
+      #    'first_name' => user_data['data']['first_name'],
+      #    'last_name' => user_data['data']['last_name'],
+      #    'link' => user_data['data']['link'],
+      #    'gender' => user_data['data']['gender'],
+      #    'locale' => user_data['data']['locale']                    
+      #  }
+      #end
       
-      def to_s        
-        "OAUTH: " + super
-      end
     end
   end
 end
