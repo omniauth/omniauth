@@ -42,6 +42,7 @@ module OmniAuth
         options[:scope] ||= 'wl.signin wl.basic'
         options[:response_type] ||= 'code'
         options[:display] ||= 'popup'
+        options[:ssl] ||= false
         super
       end
 
@@ -64,6 +65,10 @@ module OmniAuth
           'gender' => user_data['data']['gender'],
           'locale' => user_data['data']['locale']                    
         }
+      end
+      
+      def to_s        
+        "OAUTH: " + super
       end
     end
   end
