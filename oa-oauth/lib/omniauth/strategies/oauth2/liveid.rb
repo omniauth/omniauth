@@ -38,24 +38,28 @@ module OmniAuth
             {
               'provider' => name.to_s,
               'uid' => nil,
-              'name' => client.auth_code.token_url({:redirect_uri => callback_url}.merge(options)) ,
-              'id' => @access_token
+              'name' => user_data,
+              'id' => '' 
             }
           )        
+          #@access_token
       end       
 
       def request_phase
         options[:scope] ||= 'wl.signin wl.basic'
         options[:response_type] ||= 'code'
         options[:display] ||= 'popup'
-#        options[:ssl] ||= false
         super
       end
 
 
       def user_data
+        opts = {}
+        opts[:params]['access_token'] = @access_token.token
+        
+        client.request(:get, 'https://apis.live.net/v5.0/me', opts)
 #        @data ||= MultiJson.decode(@access_token.get('/me'))
-        @data ||= @access_token.get('/me')
+        #@data ||= @access_token.get('/me')
       end
 
       def user_info
