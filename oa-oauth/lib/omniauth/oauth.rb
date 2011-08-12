@@ -61,9 +61,10 @@ module OmniAuth
     autoload :ThirtySevenSignals, 'omniauth/strategies/oauth2/thirty_seven_signals'
     autoload :Vkontakte,          'omniauth/strategies/oauth2/vkontakte'
     autoload :WePay,              'omniauth/strategies/oauth2/we_pay'
+    autoload :Liveid,             'omniauth/strategies/oauth2/liveid'
 
     autoload :XAuth,              'omniauth/strategies/xauth'
     autoload :Instapaper,         'omniauth/strategies/xauth/instapaper'
-    autoload :Liveid,             'omniauth/strategies/oauth2/liveid'
+    
   end
 end
