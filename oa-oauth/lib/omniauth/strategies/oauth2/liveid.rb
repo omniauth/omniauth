@@ -18,8 +18,7 @@ module OmniAuth
     class Liveid < OmniAuth::Strategies::OAuth2
       # @option options [String] :scope separate the scopes by a space
       def initialize(app, client_id=nil, client_secret=nil, options={}, &block)
-        client_options = {                    
-          :site => 'https://oauth.live.com',
+        client_options = {
           :authorize_url => 'https://oauth.live.com/authorize',
           :token_url => 'https://oauth.live.com/token'
         }
@@ -43,10 +42,8 @@ module OmniAuth
       def request_phase
         options[:scope] ||= 'wl.signin wl.basic'
         options[:response_type] ||= 'code'
-        options[:display] ||= 'popup'
         super
       end
-
 
       def user_data
         @data ||= MultiJson.decode(@access_token.get('https://apis.live.net/v5.0/me').body)
@@ -56,6 +53,7 @@ module OmniAuth
         {
           'id' => user_data['id'],
           'name' => user_data['name'],
+          'email' => '',
           'first_name' => user_data['first_name'],
           'last_name' => user_data['last_name'],
           'link' => user_data['link'],
