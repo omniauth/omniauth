@@ -23,6 +23,7 @@ module OmniAuth
           :authorize_url => 'https://oauth.live.com/authorize',
           :token_url => 'https://oauth.live.com/token'
         }
+        
         super(app, :liveid, client_id, client_secret, client_options, options, &block)
       end
 
