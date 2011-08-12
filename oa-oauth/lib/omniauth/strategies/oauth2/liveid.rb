@@ -47,7 +47,7 @@ module OmniAuth
       end
 
       def callback_phase
-        options[:grant_type] ||= 'authorization_code'
+       # options[:grant_type] ||= 'authorization_code'
         super
       end
 
