@@ -39,14 +39,6 @@ module OmniAuth
           )        
       end       
 
-  #    def request_phase
-  #      options[:scope] ||= 'wl.signin wl.basic'
-  #      options[:response_type] ||= 'code'
-  #      options[:display] ||= 'popup'
-  #      super
-   #   end
-
-
       def user_data
         @data ||= MultiJson.decode(@access_token.get('https://apis.live.net/v5.0/me').body)
       end
@@ -54,6 +46,7 @@ module OmniAuth
       def user_info
         {
           'id' => user_data['id'],
+          'email' => user_data['name'],
           'name' => user_data['name'],
           'first_name' => user_data['first_name'],
           'last_name' => user_data['last_name'],
