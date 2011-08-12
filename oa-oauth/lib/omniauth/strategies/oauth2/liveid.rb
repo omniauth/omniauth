@@ -27,20 +27,20 @@ module OmniAuth
         super(app, :liveid, client_id, client_secret, client_options, options, &block)
       end
 
-      def auth_hash
-        OmniAuth::Utils.deep_merge(
-          super, {
-            'uid' => user_data['data']['id'],
-            'user_info' => user_info,
-            'extra' => {
-              'user_hash' => user_data['data'],
-            }
-          }
-        )
-      end         
+     # def auth_hash
+    #  OmniAuth::Utils.deep_merge(
+    #      super, {
+     #       'uid' => user_data['data']['id'],
+      #      'user_info' => user_info,
+       #     'extra' => {
+        #      'user_hash' => user_data['data'],
+        #    }
+        #  }
+        #)
+      #end         
 
       def request_phase
-        options[:scope] ||= 'wl.signin'
+        options[:scope] ||= 'wl.signin wl.basic'
         options[:response_type] ||= 'code'
         options[:display] ||= 'popup'
         options[:ssl] ||= false
@@ -52,9 +52,10 @@ module OmniAuth
       #  super
       #end
 
-      #def user_data
-      #  @data ||= MultiJson.decode(@access_token.get('/me'))
-      #end
+      def user_data
+#        @data ||= MultiJson.decode(@access_token.get('/me'))
+        @data
+      end
 
       #def user_info
       #  {
