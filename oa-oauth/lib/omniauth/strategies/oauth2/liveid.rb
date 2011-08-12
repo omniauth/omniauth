@@ -39,7 +39,7 @@ module OmniAuth
       end         
 
       def request_phase
-        options[:scope] ||= 'wl.signin wl.basic'
+        options[:scope] ||= 'wl.signin'
         options[:response_type] ||= 'code'
         options[:display] ||= 'popup'
         options[:ssl] ||= false
