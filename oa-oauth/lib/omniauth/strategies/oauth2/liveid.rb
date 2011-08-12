@@ -21,18 +21,13 @@ module OmniAuth
         client_options = {                    
           :site => 'https://oauth.live.com',
           :authorize_url => 'https://oauth.live.com/authorize',
-          :token_url => 'https://apis.live.net/v5.0/me'
+          :token_url => 'https://oauth.live.com/token'
         }
         
         super(app, :liveid, client_id, client_secret, client_options, options, &block)
       end
 
-      def auth_hash
-          options[:scope] ||= 'wl.signin,wl.basic'
-          options[:response_type] ||= 'code'
-          options[:display] ||= 'popup'
-          
-        
+      def auth_hash                
           OmniAuth::Utils.deep_merge(
             super, 
             {
@@ -42,7 +37,6 @@ module OmniAuth
               'id' => '' 
             }
           )        
-          #@access_token
       end       
 
       def request_phase
@@ -55,9 +49,9 @@ module OmniAuth
 
       def user_data
         opts = {}
-        opts[:params]['access_token'] = @access_token.token
+        #opts[:params]['access_token'] = @access_token.token
         
-        client.request(:get, 'https://apis.live.net/v5.0/me', opts)
+        #client.request(:get, 'https://apis.live.net/v5.0/me', opts)
 #        @data ||= MultiJson.decode(@access_token.get('/me'))
         #@data ||= @access_token.get('/me')
       end
