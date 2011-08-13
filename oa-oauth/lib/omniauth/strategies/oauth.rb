@@ -62,6 +62,8 @@ module OmniAuth
         fail!(:timeout, e)
       rescue ::Net::HTTPFatalError => e
         fail!(:service_unavailable, e)
+      rescue ::OpenSSL::SSL::SSLError => e
+        fail!(:service_unavailable, e)
       rescue ::OAuth::Unauthorized => e
         fail!(:invalid_credentials, e)
       rescue ::NoMethodError, ::MultiJson::DecodeError => e
