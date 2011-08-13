@@ -13,13 +13,13 @@ observations:
    to one, three, or twelve other services. Modern authentication systems
    should allow a user's identity to be associated with many authentications.
 
-Installation
+<a name="installation">Installation</a>
 ------------
 To install OmniAuth, simply install the gem:
 
     gem install omniauth
 
-Continuous Integration
+<a name="ci">Continuous Integration</a>
 ----------------------
 [![Build Status](https://secure.travis-ci.org/intridea/omniauth.png)](http://travis-ci.org/intridea/omniauth)
 
@@ -99,7 +99,7 @@ OmniAuth is tested against the following Ruby versions:
 * Rubinius
 * REE
 
-Usage
+<a name="usage">Usage</a>
 -----
 OmniAuth is a collection of Rack middleware. To use a single strategy, you simply need to add the middleware:
 
@@ -141,7 +141,7 @@ OmniAuth Core
 * **Michael Bleigh** ([mbleigh](https://github.com/mbleigh))
 * **Erik Michaels-Ober** ([sferik](https://github.com/sferik))
 
-Supported Rubies
+<a name="rubies">Supported Rubies</a>
 ----------------
 This library aims to support and is [tested
 against](http://travis-ci.org/intridea/omniauth) the following Ruby
