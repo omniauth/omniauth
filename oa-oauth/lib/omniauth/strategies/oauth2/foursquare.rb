@@ -34,7 +34,7 @@ module OmniAuth
       end
 
       def user_data
-        @data ||= MultiJson.decode(@access_token.get('https://foursquare.com/users/self', {'oauth_token' => @access_token.token}))
+        @data ||= MultiJson.decode(@access_token.get('https://api.foursquare.com/v2/users/self', { :params => { 'oauth_token' => @access_token.token } }).body)
       end
 
       def request_phase
