@@ -1,3 +1,5 @@
+# zhuangbiaowei write this file
+
 require 'omniauth/oauth'
 require 'multi_json'
 require 'hmac-sha1'
