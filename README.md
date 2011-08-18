@@ -74,6 +74,7 @@ OmniAuth currently supports the following external providers:
   * Tsohu (credit: [quake](https://github.com/quake))
   * Tumblr (credit: [jamiew](https://github.com/jamiew))
   * Twitter (credit: [mbleigh](https://github.com/mbleigh))
+  * Viadeo (credit: [guillaug](https://github.com/guillaug))
   * Vimeo (credit: [jamiew](https://github.com/jamiew))
   * Vkontakte (credit: [german](https://github.com/german))
   * WePay (credit: [ryanwood](https://github.com/ryanwood))
