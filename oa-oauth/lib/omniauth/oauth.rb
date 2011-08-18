@@ -60,6 +60,7 @@ module OmniAuth
     autoload :TaoBao,             'omniauth/strategies/oauth2/taobao'
     autoload :Teambox,            'omniauth/strategies/oauth2/teambox'
     autoload :ThirtySevenSignals, 'omniauth/strategies/oauth2/thirty_seven_signals'
+    autoload :Viadeo,             'omniauth/strategies/oauth2/viadeo'
     autoload :Vkontakte,          'omniauth/strategies/oauth2/vkontakte'
     autoload :WePay,              'omniauth/strategies/oauth2/we_pay'
 
