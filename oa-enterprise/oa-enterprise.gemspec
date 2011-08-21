@@ -8,9 +8,9 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'oa-core', OmniAuth::Version::STRING
   gem.add_dependency 'pyu-ruby-sasl', '~> 0.0.3.1'
   gem.add_dependency 'rubyntlm', '~> 0.1.1'
-  gem.add_development_dependency 'maruku', '~> 0.6'
   gem.add_development_dependency 'rack-test', '~> 0.5'
   gem.add_development_dependency 'rake', '~> 0.8'
+  gem.add_development_dependency 'rdiscount', '~> 1.6'
   gem.add_development_dependency 'rspec', '~> 2.5'
   gem.add_development_dependency 'simplecov', '~> 0.4'
   gem.add_development_dependency 'webmock', '~> 1.7'
