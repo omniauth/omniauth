@@ -10,7 +10,7 @@ module OmniAuth
     #
     # @example Basic Usage
     # use OmniAuth::Strategies::TaoBao, 'client_id', 'client_secret'
-    class TaoBao < OmniAuth::Strategies::OAuth2
+    class Taobao < OmniAuth::Strategies::OAuth2
       # @param [Rack Application] app standard middleware application parameter
       # @param [String] client_id the app key at taobao open platform
       # @param [String] client_secret  the app secret at taobao open platform
@@ -71,7 +71,8 @@ module OmniAuth
       end
 
       def generate_sign(params)
-        str = client_secret + (params.sort.collect { |k, v| "#{k}#{v}" }).join + client_secret
+        # params.sort.collect { |k, v| "#{k}#{v}" }
+        str = client_secret + params.sort {|a,b| "#{a[0]}"<=>"#{b[0]}"}.flatten.join + client_secret
         params['sign'] = Digest::MD5.hexdigest(str).upcase!
         params
       end
