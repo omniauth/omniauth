@@ -57,7 +57,7 @@ module OmniAuth
     autoload :Renren,             'omniauth/strategies/oauth2/renren'
     autoload :Salesforce,         'omniauth/strategies/oauth2/salesforce'
     autoload :SoundCloud,         'omniauth/strategies/oauth2/sound_cloud'
-    autoload :TaoBao,             'omniauth/strategies/oauth2/taobao'
+    autoload :Taobao,             'omniauth/strategies/oauth2/taobao'
     autoload :Teambox,            'omniauth/strategies/oauth2/teambox'
     autoload :ThirtySevenSignals, 'omniauth/strategies/oauth2/thirty_seven_signals'
     autoload :Viadeo,             'omniauth/strategies/oauth2/viadeo'
