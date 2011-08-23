@@ -51,6 +51,7 @@ OmniAuth currently supports the following external providers:
   * Instapaper (credit: [micpringle](https://github.com/micpringle))
   * LastFM (credit: [tictoc](https://github.com/tictoc))
   * LinkedIn (credit: [mbleigh](https://github.com/mbleigh))
+  * Mailchimp (via [srbiv](http://github.com/srbiv))
   * Mailru (credit: [lexer](https://github.com/lexer))
   * Meetup (credit [coderoshi](https://github.com/coderoshi))
   * Miso (credit: [rickenharp](https://github.com/rickenharp))

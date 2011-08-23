@@ -53,6 +53,7 @@ module OmniAuth
     autoload :Instagram,          'omniauth/strategies/oauth2/instagram'
     autoload :Liveid,             'omniauth/strategies/oauth2/liveid'    
     autoload :Mailru,             'omniauth/strategies/oauth2/mailru'
+    autoload :Mailchimp,          'omniauth/strategies/oauth2/mailchimp'
     autoload :Mixi,               'omniauth/strategies/oauth2/mixi'
     autoload :Renren,             'omniauth/strategies/oauth2/renren'
     autoload :Salesforce,         'omniauth/strategies/oauth2/salesforce'
