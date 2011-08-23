@@ -68,8 +68,8 @@ module OmniAuth
 
       # MonkeyPath to symbolize tina parameters
       def callback_phase
-        session[:oauth].symbolize_keys!
-        session[:oauth][name.to_sym].symbolize_keys! if session[:oauth][name.to_sym]
+        session[:oauth].stringify_keys!
+        session[:oauth][name.to_s].stringify_keys! if session[:oauth][name.to_s]
         super
       end
 
