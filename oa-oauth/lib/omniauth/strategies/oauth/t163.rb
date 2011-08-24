@@ -42,7 +42,7 @@ module OmniAuth
           'location' => user_hash['location'],
           'image' => user_hash['profile_image_url'],
           'description' => user_hash['description'],
-          'email' => user_hash['email']
+          'email' => user_hash['email'],
           'urls' => {
             'T163' => 'http://t.163.com',
           },
