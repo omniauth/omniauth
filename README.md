@@ -25,6 +25,7 @@ OmniAuth currently supports the following external providers:
 
 * via OAuth (OAuth 1.0, OAuth 2, and xAuth)
   * 37signals ID (credit: [mbleigh](https://github.com/mbleigh))
+  * AngelList (credit: [joshuaxls](https://github.com/joshuaxls))
   * Bit.ly (credit: [philnash](https://github.com/philnash))
   * Blogger (credit: [dsueiro-backing](https://github.com/dsueiro-backing))
   * Cobot (credit: [kamal](https://github.com/kamal))
