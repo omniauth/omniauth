@@ -40,6 +40,7 @@ module OmniAuth
     autoload :YouTube,            'omniauth/strategies/oauth/you_tube'
 
     autoload :OAuth2,             'omniauth/strategies/oauth2'
+    autoload :AngelList,          'omniauth/strategies/oauth2/angellist'
     autoload :Bitly,              'omniauth/strategies/oauth2/bitly'
     autoload :Cobot,              'omniauth/strategies/oauth2/cobot'
     autoload :Dailymile,          'omniauth/strategies/oauth2/dailymile'
