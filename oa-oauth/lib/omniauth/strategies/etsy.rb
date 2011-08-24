@@ -11,7 +11,6 @@ module OmniAuth
 
       # Set the environment, accepts either :sandbox or :production. Defaults to :production
       # and will raise an exception when set to an unrecognized environment.
-      #
       def self.environment=(environment)
         unless [:sandbox, :production].include?(environment)
           raise(ArgumentError, "environment must be set to either :sandbox or :production")
@@ -22,7 +21,7 @@ module OmniAuth
 
       # The currently configured environment.
       def self.environment
-        @environment || :sandbox
+        @environment || :production
       end
 
       def self.host # :nodoc:
@@ -34,8 +33,10 @@ module OmniAuth
       end
 
       def initialize(app, consumer_key=nil, consumer_secret=nil, options={}, &block)
+        # Set environment first; this can update our host
+        OmniAuth::Strategies::Etsy.environment=options[:environment] if options[:environment]
         client_options = {
-          :site => "http://#{Etsy.host}",
+          :site => "http://#{OmniAuth::Strategies::Etsy.host}",
           :request_token_path => request_token_path(options),
           :access_token_path => access_token_path,
           :http_method => :get,
