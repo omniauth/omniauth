@@ -18,7 +18,10 @@ module OmniAuth
           super, {
             'uid' => @access_token['id'],
             'credentials' => {
+              'issued_at' => @access_token['issued_at'],
+              'refresh_token' => @access_token.refresh_token,
               'instance_url' => @access_token['instance_url'],
+              'signature' => @access_token['signature'],
             },
             'extra' => {
               'user_hash' => data,
