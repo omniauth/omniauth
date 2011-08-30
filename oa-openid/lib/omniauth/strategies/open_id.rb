@@ -56,9 +56,11 @@ module OmniAuth
       end
 
       def identifier
-        options[:identifier] || request[IDENTIFIER_URL_PARAMETER]
+        i = options[:identifier] || request[IDENTIFIER_URL_PARAMETER]
+        i = nil if i == ''
+        i
       end
-
+      
       def request_phase
         identifier ? start : get_identifier
       end
