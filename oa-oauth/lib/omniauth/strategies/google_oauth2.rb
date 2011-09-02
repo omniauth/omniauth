@@ -20,7 +20,9 @@ module OmniAuth
       end
 
       def request_phase
-        options[:scope] ||= "https://www.googleapis.com/auth/userinfo.email"
+        google_email_scope = "https://www.googleapis.com/auth/userinfo.email"
+        options[:scope] ||= google_email_scope
+        options[:scope] << "#{google_email_scope}" unless options[:scope] =~ %r[http[s]?:\/\/#{google_email_scope}]
         redirect client.auth_code.authorize_url(
           {:redirect_uri => callback_url, :response_type => "code"}.merge(options))
       end
