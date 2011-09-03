@@ -267,6 +267,11 @@ describe OmniAuth::Strategy do
         strategy.call(make_env('/AUTH/TeSt/CaLlBAck')).should == strategy.call(make_env('/auth/test/callback'))
       end
 
+      it 'should maintain query string parameters' do
+        response = strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'cheese=stilton'))
+        response[1]['Location'].should == '/auth/test/callback?cheese=stilton'
+      end
+
       it 'should not short circuit requests outside of authentication' do
         strategy.call(make_env('/')).should == app.call(make_env('/'))
       end
