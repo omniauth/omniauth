@@ -144,6 +144,7 @@ describe OmniAuth::Strategy do
           strategy.callback_url.should == 'http://example.com/sub_uri/auth/test/callback'
         end
       end
+
     end
 
     context 'pre-request call through' do
@@ -160,7 +161,78 @@ describe OmniAuth::Strategy do
         subject.response.body.should == ['Whatev']
       end
     end
+    
+    context 'dynamic paths' do
+      it 'should trigger request phase' do
+        strategy.stub(:full_host).and_return('http://example.com')
+        lambda{ strategy.call(make_env('/auth/test/fresh')) }.should raise_error("Request Phase")
+        lambda{ strategy.call(make_env('/auth/test/fresh/78')) }.should raise_error("Request Phase")
+        lambda{ strategy.call(make_env('/auth/test/fresh/78/')) }.should raise_error("Request Phase")
+      end
+     
+      it 'should be passed on to callback url' do
+        strategy.stub(:full_host).and_return('http://example.com')
+        lambda{ strategy.call(make_env('/auth/test/fresh/78')) }.should raise_error("Request Phase")
+        strategy.callback_url.should == 'http://example.com/auth/test/fresh/78/callback'
+      end
+      
+      it 'should include query parameters' do
+        strategy.stub(:full_host).and_return('http://example.com')
+        lambda{ strategy.call(make_env('/auth/test/fresh/78', 'QUERY_STRING' => 'id=5')) }.should raise_error("Request Phase")
+        strategy.callback_url.should == 'http://example.com/auth/test/fresh/78/callback?id=5'
+      end
+      
+      it 'should strip trailing slash' do
+        strategy.stub(:full_host).and_return('http://example.com')
+        lambda{ strategy.call(make_env('/auth/test/fresh/78/')) }.should raise_error("Request Phase")
+        strategy.callback_url.should == 'http://example.com/auth/test/fresh/78/callback'
+      end
 
+      it 'should be included in failure path' do
+        @options = {:failure => :forced_fail}
+        strategy.stub(:full_host).and_return('http://example.com')
+        begin
+          strategy.call(make_env('/auth/test/fresh/78'))
+        rescue RuntimeError; end
+        OmniAuth.config.on_failure.call(strategy.env)[1]['Location'].should == "/auth/test/fresh/78/failure?message=forced_fail"
+      end
+
+      it 'should not affect simple failure_path when not used' do
+        @options = {:failure => :forced_fail}
+        strategy.stub(:full_host).and_return('http://example.com')
+        begin
+          strategy.call(make_env('/auth/test'))
+        rescue RuntimeError; end
+        OmniAuth.config.on_failure.call(strategy.env)[1]['Location'].should == "/auth/failure?message=forced_fail"
+        begin
+          strategy.call(make_env('/auth/test/'))
+        rescue RuntimeError; end
+        OmniAuth.config.on_failure.call(strategy.env)[1]['Location'].should == "/auth/failure?message=forced_fail"
+      end
+
+      it 'dynamic path should respect custom path_prefix' do
+        @options = {:path_prefix => '/awesome'}
+        strategy.stub(:full_host).and_return('http://example.com')
+        lambda{ strategy.call(make_env('/awesome/test/fresh/78')) }.should raise_error("Request Phase")
+        strategy.callback_url.should == 'http://example.com/awesome/test/fresh/78/callback'
+      end
+
+      it 'dynamic path should respect custom request_path' do
+        @options = {:request_path => '/awesome'}
+        strategy.stub(:full_host).and_return('http://example.com')
+        lambda{ strategy.call(make_env('/awesome/fresh/78')) }.should raise_error("Request Phase")
+        strategy.callback_url.should == 'http://example.com/auth/test/fresh/78/callback'
+      end
+
+      it 'dynamic path should respect custom callback_path' do
+        @options = {:callback_path => '/awesome'}
+        strategy.stub(:full_host).and_return('http://example.com')
+        lambda{ strategy.call(make_env('/auth/test/fresh/78')) }.should raise_error("Request Phase")
+        strategy.callback_url.should == 'http://example.com/awesome/fresh/78'
+      end
+
+    end
+    
     context 'custom paths' do
       it 'should use a custom request_path if one is provided' do
         @options = {:request_path => '/awesome'}
@@ -218,7 +290,7 @@ describe OmniAuth::Strategy do
         it 'preserves the query parameters' do
           strategy.stub(:full_host).and_return('http://example.com')
           begin
-            strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'id=5'))
+            strategy.call(make_env('/wowzers/test', 'QUERY_STRING' => 'id=5'))
           rescue RuntimeError; end
           strategy.callback_url.should == 'http://example.com/wowzers/test/callback?id=5'
         end
@@ -362,6 +434,34 @@ describe OmniAuth::Strategy do
       it 'should call the rack app' do
         strategy.call(make_env('/auth/test'))
         strategy.options[:awesome].should == 'sauce'
+      end
+    end
+
+    context 'when using a dynamic path' do
+      context 'when options[:setup] = true' do
+        let(:strategy){ ExampleStrategy.new(app, 'test', :setup => true) }
+        let(:app){lambda{|env| env['omniauth.strategy'].options[:awesome] = 'sauce' if env['PATH_INFO'] == '/auth/test/shiny/23/setup'; [404, {}, 'Awesome'] }}
+
+        it 'should call through to /auth/:provider/dynamic/path/setup' do
+          strategy.stub(:full_host).and_return('http://example.com')
+          strategy.call(make_env('/auth/test/shiny/23'))
+          strategy.callback_url.should == 'http://example.com/auth/test/shiny/23/callback'
+          strategy.options[:awesome].should == 'sauce'
+        end
+      end
+
+      context 'when options[:setup] is an app' do
+        let(:setup_proc) do
+          Proc.new do |env|
+            env['omniauth.strategy'].options[:awesome] = 'sauce'
+          end
+        end
+        let(:strategy){ ExampleStrategy.new(app, 'test', :setup => setup_proc) }
+
+        it 'should call the rack app' do
+          strategy.call(make_env('/auth/test/shiny/23'))
+          strategy.options[:awesome].should == 'sauce'
+        end
       end
     end
   end
