@@ -65,6 +65,7 @@ module OmniAuth
     autoload :Viadeo,             'omniauth/strategies/oauth2/viadeo'
     autoload :Vkontakte,          'omniauth/strategies/oauth2/vkontakte'
     autoload :WePay,              'omniauth/strategies/oauth2/we_pay'
+    autoload :Snda,		  'omniauth/strategies/oauth2/snda'
 
 
     autoload :XAuth,              'omniauth/strategies/xauth'
