@@ -40,7 +40,7 @@ module OmniAuth
 
       rescue ::Timeout::Error => e
         fail!(:timeout, e)
-      rescue ::Net::HTTPFatalError => e
+      rescue ::Net::HTTPFatalError, ::OpenSSL::SSL::SSLError => e
         fail!(:service_unavailable, e)
       end
 
@@ -60,7 +60,7 @@ module OmniAuth
         super
       rescue ::Timeout::Error => e
         fail!(:timeout, e)
-      rescue ::Net::HTTPFatalError => e
+      rescue ::Net::HTTPFatalError, ::OpenSSL::SSL::SSLError => e
         fail!(:service_unavailable, e)
       rescue ::OAuth::Unauthorized => e
         fail!(:invalid_credentials, e)

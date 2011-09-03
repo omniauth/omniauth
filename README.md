@@ -1,5 +1,4 @@
-OmniAuth: Standardized Multi-Provider Authentication
-====================================================
+# OmniAuth: Standardized Multi-Provider Authentication
 OmniAuth is a new Rack-based authentication system for multi-provider external
 authentcation. OmniAuth is built from the ground up on the philosophy that
 **authentication is not the same as identity**, and is based on two
@@ -13,22 +12,20 @@ observations:
    to one, three, or twelve other services. Modern authentication systems
    should allow a user's identity to be associated with many authentications.
 
-Installation
-------------
+## <a name="installation">Installation</a>
 To install OmniAuth, simply install the gem:
 
     gem install omniauth
 
-Continuous Integration
-----------------------
-[![Build Status](https://secure.travis-ci.org/intridea/omniauth.png)](http://travis-ci.org/intridea/omniauth)
+## <a name="ci">Continuous Integration</a>
+[![Build Status](https://travis-ci.org/intridea/omniauth.png)](http://travis-ci.org/intridea/omniauth)
 
-Providers
----------
+## <a name="providers">Providers</a>
 OmniAuth currently supports the following external providers:
 
 * via OAuth (OAuth 1.0, OAuth 2, and xAuth)
   * 37signals ID (credit: [mbleigh](https://github.com/mbleigh))
+  * AngelList (credit: [joshuaxls](https://github.com/joshuaxls))
   * Bit.ly (credit: [philnash](https://github.com/philnash))
   * Blogger (credit: [dsueiro-backing](https://github.com/dsueiro-backing))
   * Cobot (credit: [kamal](https://github.com/kamal))
@@ -51,6 +48,7 @@ OmniAuth currently supports the following external providers:
   * Instapaper (credit: [micpringle](https://github.com/micpringle))
   * LastFM (credit: [tictoc](https://github.com/tictoc))
   * LinkedIn (credit: [mbleigh](https://github.com/mbleigh))
+  * Mailchimp (via [srbiv](http://github.com/srbiv))
   * Mailru (credit: [lexer](https://github.com/lexer))
   * Meetup (credit [coderoshi](https://github.com/coderoshi))
   * Miso (credit: [rickenharp](https://github.com/rickenharp))
@@ -74,6 +72,7 @@ OmniAuth currently supports the following external providers:
   * Tsohu (credit: [quake](https://github.com/quake))
   * Tumblr (credit: [jamiew](https://github.com/jamiew))
   * Twitter (credit: [mbleigh](https://github.com/mbleigh))
+  * Viadeo (credit: [guillaug](https://github.com/guillaug))
   * Vimeo (credit: [jamiew](https://github.com/jamiew))
   * Vkontakte (credit: [german](https://github.com/german))
   * WePay (credit: [ryanwood](https://github.com/ryanwood))
@@ -88,19 +87,7 @@ OmniAuth currently supports the following external providers:
 * OpenID (credit: [mbleigh](https://github.com/mbleigh))
 * Yupoo (credit: [chouti](https://github.com/chouti))
 
-Compatibility
--------------
-OmniAuth is tested against the following Ruby versions:
-
-* 1.8.7
-* 1.9.1
-* 1.9.2
-* JRuby (note, the Evernote strategy is not available for JRuby)
-* Rubinius
-* REE
-
-Usage
------
+## <a name="usage">Usage</a>
 OmniAuth is a collection of Rack middleware. To use a single strategy, you simply need to add the middleware:
 
     require 'oa-oauth'
@@ -126,8 +113,7 @@ The hash in question will look something like this:
 
 The `user_info` hash will automatically be populated with as much information about the user as OmniAuth was able to pull from the given API or authentication provider.
 
-Resources
----------
+## <a name="resources">Resources</a>
 The best place to find more information is the [OmniAuth Wiki](https://github.com/intridea/omniauth/wiki). Some specific information you might be interested in:
 
 * [CI Build Status](http://travis-ci.org/intridea/omniauth)
@@ -136,20 +122,20 @@ The best place to find more information is the [OmniAuth Wiki](https://github.co
 * [Report Issues](https://github.com/intridea/omniauth/issues)
 * [Mailing List](http://groups.google.com/group/omniauth)
 
-OmniAuth Core
--------------
+## <a name="core">Core Team</a>
 * **Michael Bleigh** ([mbleigh](https://github.com/mbleigh))
 * **Erik Michaels-Ober** ([sferik](https://github.com/sferik))
 
-Supported Rubies
-----------------
+## <a name="rubies">Supported Rubies</a>
 This library aims to support and is [tested
 against](http://travis-ci.org/intridea/omniauth) the following Ruby
 implementations:
 
 * Ruby 1.8.7
 * Ruby 1.9.2
-* Ruby Enterprise Edition 1.8.7
+* [JRuby](http://www.jruby.org/)
+* [Rubinius](http://rubini.us/)
+* [Ruby Enterprise Edition](http://www.rubyenterpriseedition.com/)
 
 If something doesn't work on one of these interpreters, it should be considered
 a bug.
@@ -165,6 +151,5 @@ implementation, you will be personally responsible for providing patches in a
 timely fashion. If critical issues for a particular implementation exist at the
 time of a major release, support for that Ruby version may be dropped.
 
-License
--------
-OmniAuth is licensed under the MIT License.
+## <a name="license">License</a>
+OmniAuth is released under the MIT License.

@@ -9,6 +9,7 @@ module OmniAuth
     autoload :Dropbox,            'omniauth/strategies/oauth/dropbox'
     autoload :Evernote,           'omniauth/strategies/oauth/evernote'
     autoload :Flattr,             'omniauth/strategies/oauth/flattr'    
+    autoload :Flickr,             'omniauth/strategies/oauth/flickr'    
     autoload :Goodreads,          'omniauth/strategies/oauth/goodreads'
     autoload :Google,             'omniauth/strategies/oauth/google'
     autoload :GoogleHealth,       'omniauth/strategies/oauth/google_health'
@@ -24,7 +25,6 @@ module OmniAuth
     autoload :Plurk,              'omniauth/strategies/oauth/plurk'
     autoload :Rdio,               'omniauth/strategies/oauth/rdio'
     autoload :SmugMug,            'omniauth/strategies/oauth/smug_mug'
-    autoload :SoundCloud,         'omniauth/strategies/oauth/sound_cloud'
     autoload :T163,               'omniauth/strategies/oauth/t163'
     autoload :Tqq,                'omniauth/strategies/oauth/tqq'
     autoload :TradeMe,            'omniauth/strategies/oauth/trade_me'
@@ -40,6 +40,7 @@ module OmniAuth
     autoload :YouTube,            'omniauth/strategies/oauth/you_tube'
 
     autoload :OAuth2,             'omniauth/strategies/oauth2'
+    autoload :AngelList,          'omniauth/strategies/oauth2/angellist'
     autoload :Bitly,              'omniauth/strategies/oauth2/bitly'
     autoload :Cobot,              'omniauth/strategies/oauth2/cobot'
     autoload :Dailymile,          'omniauth/strategies/oauth2/dailymile'
@@ -48,19 +49,26 @@ module OmniAuth
     autoload :Foursquare,         'omniauth/strategies/oauth2/foursquare'
     autoload :GitHub,             'omniauth/strategies/oauth2/github'
     autoload :Glitch,             'omniauth/strategies/oauth2/glitch'
+    autoload :GoogleOAuth2,       'omniauth/strategies/google_oauth2'
     autoload :Gowalla,            'omniauth/strategies/oauth2/gowalla'
     autoload :Instagram,          'omniauth/strategies/oauth2/instagram'
+    autoload :Liveid,             'omniauth/strategies/oauth2/liveid'
+    autoload :Mailchimp,          'omniauth/strategies/oauth2/mailchimp'
     autoload :Mailru,             'omniauth/strategies/oauth2/mailru'
     autoload :Mixi,               'omniauth/strategies/oauth2/mixi'
     autoload :Renren,             'omniauth/strategies/oauth2/renren'
     autoload :Salesforce,         'omniauth/strategies/oauth2/salesforce'
-    autoload :TaoBao,             'omniauth/strategies/oauth2/taobao'
+    autoload :SoundCloud,         'omniauth/strategies/oauth2/sound_cloud'
+    autoload :Taobao,             'omniauth/strategies/oauth2/taobao'
     autoload :Teambox,            'omniauth/strategies/oauth2/teambox'
     autoload :ThirtySevenSignals, 'omniauth/strategies/oauth2/thirty_seven_signals'
+    autoload :Viadeo,             'omniauth/strategies/oauth2/viadeo'
     autoload :Vkontakte,          'omniauth/strategies/oauth2/vkontakte'
     autoload :WePay,              'omniauth/strategies/oauth2/we_pay'
 
+
     autoload :XAuth,              'omniauth/strategies/xauth'
     autoload :Instapaper,         'omniauth/strategies/xauth/instapaper'
+    
   end
 end

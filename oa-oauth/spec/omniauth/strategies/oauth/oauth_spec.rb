@@ -57,6 +57,19 @@ describe "OmniAuth::Strategies::OAuth" do
         last_request.env['omniauth.error'].should be_kind_of(::Net::HTTPFatalError)
         last_request.env['omniauth.error.type'] = :service_unavailable
       end
+
+      context "SSL failure" do
+        before do
+          stub_request(:post, 'https://api.example.org/oauth/request_token').
+             to_raise(::OpenSSL::SSL::SSLError.new("SSL_connect returned=1 errno=0 state=SSLv3 read server certificate B: certificate verify failed"))
+          get '/auth/example.org'
+        end
+
+        it 'should call fail! with :service_unavailable' do
+          last_request.env['omniauth.error'].should be_kind_of(::OpenSSL::SSL::SSLError)
+          last_request.env['omniauth.error.type'] = :service_unavailable
+        end
+      end
     end
   end
 
@@ -85,6 +98,19 @@ describe "OmniAuth::Strategies::OAuth" do
 
       it 'should call fail! with :service_unavailable' do
         last_request.env['omniauth.error'].should be_kind_of(::Net::HTTPFatalError)
+        last_request.env['omniauth.error.type'] = :service_unavailable
+      end
+    end
+
+    context "SSL failure" do
+      before do
+        stub_request(:post, 'https://api.example.org/oauth/access_token').
+           to_raise(::OpenSSL::SSL::SSLError.new("SSL_connect returned=1 errno=0 state=SSLv3 read server certificate B: certificate verify failed"))
+        get '/auth/example.org/callback', {:oauth_verifier => 'dudeman'}, {'rack.session' => {'oauth' => {"example.org" => {'callback_confirmed' => true, 'request_token' => 'yourtoken', 'request_secret' => 'yoursecret'}}}}
+      end
+
+      it 'should call fail! with :service_unavailable' do
+        last_request.env['omniauth.error'].should be_kind_of(::OpenSSL::SSL::SSLError)
         last_request.env['omniauth.error.type'] = :service_unavailable
       end
     end

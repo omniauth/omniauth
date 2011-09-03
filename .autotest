@@ -1,9 +1,0 @@
-require 'autotest/bundler'
-
-Autotest.add_hook :initialize do |at|
-  at.clear_mappings
-
-  at.add_mapping(%r{^.*/spec/.*_spec.rb$}) do |filename, _|
-    filename
-  end
-end

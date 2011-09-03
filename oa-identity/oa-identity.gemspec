@@ -26,4 +26,3 @@ Gem::Specification.new do |gem|
   gem.require_paths = ['lib']
   gem.required_rubygems_version = Gem::Requirement.new('>= 1.3.6') if gem.respond_to? :required_rubygems_version=
 end
-

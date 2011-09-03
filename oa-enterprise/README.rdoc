@@ -66,7 +66,40 @@ are not familiar with these authentication methods, please just avoid them.
 
 Direct users to '/auth/ldap' to have them authenticated via your
 company's LDAP server.
-    
+
+== SAML
+
+Use the SAML strategy as a middleware in your application:
+
+    require 'omniauth/enterprise'
+    use OmniAuth::Strategies::SAML, 
+        :assertion_consumer_service_url => "consumer_service_url",
+        :issuer                         => "issuer",
+        :idp_sso_target_url             => "idp_sso_target_url",
+        :idp_cert_fingerprint           => "E7:91:B2:E1:...",
+        :name_identifier_format         => "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
+
+:assertion_consumer_service_url 
+  The URL at which the SAML assertion should be received. 
+
+:issuer
+  The name of your application. Some identity providers might need this to establish the 
+  identity of the service provider requesting the login.
+
+:idp_sso_target_url
+  The URL to which the authentication request should be sent. This would be on the identity provider.
+
+:idp_cert_fingerprint
+  The certificate fingerprint, e.g. "90:CC:16:F0:8D:A6:D1:C6:BB:27:2D:BA:93:80:1A:1F:16:8E:4E:08".
+  This is provided from the identity provider when setting up the relationship.
+
+:name_identifier_format
+  Describes the format of the username required by this application. 
+  If you need the email address, use "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress". 
+  See http://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf section 8.3 for 
+  other options. Note that the identity provider might not support all options.  
+
+
 == Multiple Strategies
 
 If you're using multiple strategies together, use OmniAuth's Builder. That's

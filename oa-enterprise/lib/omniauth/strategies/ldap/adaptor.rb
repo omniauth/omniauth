@@ -125,12 +125,12 @@ module OmniAuth
         end
 
         def search(options={}, &block)
-          base = options[:base]
+          base = options[:base] || @base
           filter = options[:filter]
           limit = options[:limit]
 
           args = {
-            :base => @base,
+            :base => base,
             :filter => filter,
             :size => limit
           }
