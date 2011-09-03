@@ -34,7 +34,7 @@ PROJECTS.each do |project|
     task :build => :clean do
       cd dir
       sh "gem build #{gemspec}"
-      mkdir_p package_dir unless Dir.exists?(package_dir)
+      mkdir_p package_dir unless File.directory?(package_dir)
       mv gem, "#{package_dir}/#{gem}"
     end
 
