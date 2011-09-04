@@ -38,10 +38,17 @@ module OmniAuth
 
       return mock_call!(env) if OmniAuth.config.test_mode
 
+      return options_call if on_auth_path? && options_request?
       return request_call if on_request_path? && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
       return callback_call if on_callback_path?
       return other_phase if respond_to?(:other_phase)
       @app.call(env)
+    end
+
+    # Responds to an OPTIONS request.
+    def options_call
+      verbs = OmniAuth.config.allowed_request_methods.map(&:to_s).map(&:upcase).join(', ')
+      return [ 200, { 'Allow' => verbs }, [] ]
     end
 
     # Performs the steps necessary to run the request phase of a strategy.
@@ -73,11 +80,19 @@ module OmniAuth
     end
 
     def on_request_path?
-      current_path.casecmp(request_path) == 0
+      on_path?(request_path)
     end
 
     def on_callback_path?
-      current_path.casecmp(callback_path) == 0
+      on_path?(callback_path)
+    end
+
+    def on_path?(path)
+      current_path.casecmp(path) == 0
+    end
+
+    def options_request?
+      request.request_method == 'OPTIONS'
     end
 
     def mock_call!(env)
@@ -168,10 +183,7 @@ module OmniAuth
     end
 
     def auth_hash
-      {
-        'provider' => name.to_s,
-        'uid' => nil
-      }
+      AuthHash.new(:provider => name.to_s) 
     end
 
     def full_host

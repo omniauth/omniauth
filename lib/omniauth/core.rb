@@ -8,6 +8,7 @@ module OmniAuth
   autoload :Strategy, 'omniauth/strategy'
   autoload :Test,     'omniauth/test'
   autoload :Form,     'omniauth/form'
+  autoload :AuthHash, 'omniauth/auth_hash'
 
   def self.strategies
     @@strategies ||= []

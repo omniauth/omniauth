@@ -243,6 +243,35 @@ describe OmniAuth::Strategy do
       end
     end
 
+    context 'receiving an OPTIONS request' do
+      shared_examples_for "an OPTIONS request" do
+        it 'should respond with 200' do
+          response[0].should == 200
+        end
+
+        it 'should set the Allow header properly' do
+          response[1]['Allow'].should == "GET, POST"
+        end
+      end
+
+      context 'to the request path' do
+        let(:response) { strategy.call(make_env('/auth/test', 'REQUEST_METHOD' => 'OPTIONS')) }
+        it_should_behave_like 'an OPTIONS request'
+      end
+
+      context 'to the request path' do
+        let(:response) { strategy.call(make_env('/auth/test/callback', 'REQUEST_METHOD' => 'OPTIONS')) }
+        it_should_behave_like 'an OPTIONS request'
+      end
+
+      context 'to some other path' do
+        it 'should not short-circuit the request' do
+          env = make_env('/other', 'REQUEST_METHOD' => 'OPTIONS')
+          strategy.call(env).should == app.call(env)
+        end
+      end
+    end
+
     context 'test mode' do
       before do
         OmniAuth.config.test_mode = true
