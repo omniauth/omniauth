@@ -98,7 +98,7 @@ module OmniAuth
     end
 
     def self.build(title=nil,&block)
-      form = OmniAuth::Form.new(title)
+      form = OmniAuth::Form.new(:title => title)
       if block.arity > 0
         yield form 
       else
