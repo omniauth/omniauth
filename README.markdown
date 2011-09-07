@@ -37,6 +37,7 @@ OmniAuth currently supports the following external providers:
   * Mixi (credit: [kiyoshi](https://github.com/kiyoshi))
   * Netflix (credit: [caged](https://github.com/caged))
   * Salesforce (via [CloudSpokes](http://www.cloudspokes.com))
+	* Shelby.TV (via [Shelby.TV](http://dev.shelby.tv))
   * SmugMug (credit: [pchilton](https://github.com/pchilton))
   * SoundCloud (credit: [leemartin](https://github.com/leemartin))
   * TradeMe (credit: [pchilton](https://github.com/pchilton))
