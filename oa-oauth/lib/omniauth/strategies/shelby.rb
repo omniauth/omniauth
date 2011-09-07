@@ -19,7 +19,7 @@ module OmniAuth
       
       # user info as supplied by Shelby
       def user_hash
-        @user_hash ||= MultiJson.decode(@access_token.get('/get_user_info').body)  #['Auth']['User']
+        @user_hash ||= MultiJson.decode(@access_token.get('/get_user_info').body)
       end
 
       def auth_hash
