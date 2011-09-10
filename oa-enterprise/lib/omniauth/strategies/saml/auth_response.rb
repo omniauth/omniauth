@@ -4,7 +4,7 @@ module OmniAuth
   module Strategies
     class SAML
       class AuthResponse
-        
+
         ASSERTION = "urn:oasis:names:tc:SAML:2.0:assertion"
         PROTOCOL  = "urn:oasis:names:tc:SAML:2.0:protocol"
         DSIG      = "http://www.w3.org/2000/09/xmldsig#"
@@ -47,7 +47,7 @@ module OmniAuth
               name  = attr_element.attributes["Name"]
               value = attr_element.elements.first.text
 
-              result[name] = value
+              result[name.downcase] = value
             end
 
             result.keys.each do |key|
@@ -134,7 +134,7 @@ module OmniAuth
             Time.parse(node.attributes[attribute])
           end
         end
-        
+
       end
     end
   end
