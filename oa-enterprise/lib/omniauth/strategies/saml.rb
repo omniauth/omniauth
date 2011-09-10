@@ -8,9 +8,9 @@ module OmniAuth
       autoload :AuthResponse,     'omniauth/strategies/saml/auth_response'
       autoload :ValidationError,  'omniauth/strategies/saml/validation_error'
       autoload :XMLSecurity,      'omniauth/strategies/saml/xml_security'
-      
+
       @@settings = {}
-      
+
       def initialize(app, options={})
         super(app, :saml)
         @@settings = {
@@ -21,30 +21,39 @@ module OmniAuth
           :name_identifier_format         => options[:name_identifier_format] || "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
         }
       end
-          
+
       def request_phase
         request = OmniAuth::Strategies::SAML::AuthRequest.new
         redirect(request.create(@@settings))
       end
-      
+
       def callback_phase
         begin
-          response = OmniAuth::Strategies::SAML::AuthResponse.new(request.params['SAMLResponse'])
-          response.settings = @@settings
+          @response = OmniAuth::Strategies::SAML::AuthResponse.new(request.params['SAMLResponse'])
+          @response.settings = @@settings
           @name_id  = response.name_id
           return fail!(:invalid_ticket, 'Invalid SAML Ticket') if @name_id.nil? || @name_id.empty?
           super
         rescue ArgumentError => e
           fail!(:invalid_ticket, 'Invalid SAML Response')
-        end        
+        end
       end
-      
+
       def auth_hash
         OmniAuth::Utils.deep_merge(super, {
-          'uid' => @name_id
+          'uid' => @name_id,
+          'user_info' => user_info
         })
-      end  
-            
+      end
+
+      def user_info
+        name = @response.attributes[:name] || "#{@response.attributes[:firstname]} #{@response.attributes[:lastname]}"
+        {
+          :name => name,
+          :email => @response.attributes[:email]
+        }
+      end
+
     end
   end
 end

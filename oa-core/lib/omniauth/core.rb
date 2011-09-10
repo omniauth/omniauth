@@ -104,6 +104,7 @@ module OmniAuth
       'cas' => 'CAS',
       'trademe' => 'TradeMe',
       'ldap'  => 'LDAP',
+      'saml'  => 'SAML',
       'google_oauth2' => 'GoogleOAuth2'
     }
 
