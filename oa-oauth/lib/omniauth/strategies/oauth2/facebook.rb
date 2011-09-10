@@ -21,6 +21,7 @@ module OmniAuth
 
         options = {
           :parse => :query
+          :display => "popup"
         }.merge(options)
 
         super(app, :facebook, client_id, client_secret, client_options, options, &block)
