@@ -36,7 +36,6 @@ module OmniAuth
     autoload :TypePad,            'omniauth/strategies/oauth/type_pad'
     autoload :Vimeo,              'omniauth/strategies/oauth/vimeo'
     autoload :Yahoo,              'omniauth/strategies/oauth/yahoo'
-    autoload :Yammer,             'omniauth/strategies/oauth/yammer'
     autoload :YouTube,            'omniauth/strategies/oauth/you_tube'
 
     autoload :OAuth2,             'omniauth/strategies/oauth2'
@@ -65,6 +64,7 @@ module OmniAuth
     autoload :Viadeo,             'omniauth/strategies/oauth2/viadeo'
     autoload :Vkontakte,          'omniauth/strategies/oauth2/vkontakte'
     autoload :WePay,              'omniauth/strategies/oauth2/we_pay'
+    autoload :Yammer,             'omniauth/strategies/oauth2/yammer'
 
 
     autoload :XAuth,              'omniauth/strategies/xauth'
