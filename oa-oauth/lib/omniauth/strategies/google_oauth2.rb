@@ -4,7 +4,7 @@ require 'multi_json'
 module OmniAuth
   module Strategies
     # OAuth 2.0 based authentication with Google.
-    class GoogleOAuth2 < OAuth2
+    class GoogleOAuth2 < OmniAuth::Strategies::OAuth2
       # @param [Rack Application] app standard middleware application argument
       # @param [String] client_id the application ID for your client
       # @param [String] client_secret the application secret
