@@ -49,8 +49,8 @@ module OmniAuth
       def user_info
         name = @response.attributes[:name] || "#{@response.attributes[:firstname]} #{@response.attributes[:lastname]}"
         {
-          :name => name,
-          :email => @response.attributes[:email]
+          'name' => name,
+          'email' => @response.attributes[:email]
         }
       end
 
