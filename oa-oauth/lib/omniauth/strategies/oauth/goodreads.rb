@@ -13,7 +13,7 @@ module OmniAuth
       end
 
       def auth_hash
-        hash = user_info
+        hash = user_info(@access_token)
 
         OmniAuth::Utils.deep_merge(
           super, {
@@ -23,10 +23,10 @@ module OmniAuth
         )
       end
 
-      def user_info
-        authenticated_user = MultiXml.parse(@access_token.get('/api/auth_user').body)
+      def user_info(access_token)
+        authenticated_user = MultiXml.parse(access_token.get('/api/auth_user').body)
         id = authenticated_user['GoodreadsResponse']['user']['id'].to_i
-        response_doc = MultiXml.parse(@access_token.get("/user/show/#{id}.xml?key=#{@consumer_key}").body)
+        response_doc = MultiXml.parse(access_token.get("/user/show/#{id}.xml?key=#{@consumer_key}").body)
         user = response_doc['GoodreadsResponse']['user']
 
         hash = {
