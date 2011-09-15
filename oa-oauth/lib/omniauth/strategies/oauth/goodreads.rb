@@ -23,7 +23,7 @@ module OmniAuth
         )
       end
 
-      def user_info(access_token)
+      def user_info
         authenticated_user = MultiXml.parse(@access_token.get('/api/auth_user').body)
         id = authenticated_user['GoodreadsResponse']['user']['id'].to_i
         response_doc = MultiXml.parse(@access_token.get("/user/show/#{id}.xml?key=#{@consumer_key}").body)
