@@ -107,6 +107,7 @@ module OmniAuth
         @env['omniauth.auth'] = mocked_auth
         @env['omniauth.origin'] = session.delete('omniauth.origin')
         @env['omniauth.origin'] = nil if env['omniauth.origin'] == ''
+        copy_query_params
         call_app!
       end
     end
@@ -124,10 +125,14 @@ module OmniAuth
       raise NotImplementedError
     end
 
-    def callback_phase
-      @env['omniauth.auth'] = auth_hash
+    def copy_query_params
       @env['omniauth.params'] = session['query_params'] || {}
       session['query_params'] = nil if session['query_params']
+    end
+
+    def callback_phase
+      @env['omniauth.auth'] = auth_hash
+      copy_query_params
       call_app!
     end
 
