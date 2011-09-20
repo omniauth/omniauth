@@ -8,11 +8,11 @@ module OmniAuth
       autoload :AuthResponse,     'omniauth/strategies/saml/auth_response'
       autoload :ValidationError,  'omniauth/strategies/saml/validation_error'
       autoload :XMLSecurity,      'omniauth/strategies/saml/xml_security'
-      
+
       @@settings = {}
-      
+
       def initialize(app, options={})
-        super(app, :saml)
+        super( app, (options[:name] || :saml) )
         @@settings = {
           :assertion_consumer_service_url => options[:assertion_consumer_service_url],
           :issuer                         => options[:issuer],
@@ -21,12 +21,12 @@ module OmniAuth
           :name_identifier_format         => options[:name_identifier_format] || "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
         }
       end
-          
+
       def request_phase
         request = OmniAuth::Strategies::SAML::AuthRequest.new
         redirect(request.create(@@settings))
       end
-      
+
       def callback_phase
         begin
           response = OmniAuth::Strategies::SAML::AuthResponse.new(request.params['SAMLResponse'])
@@ -36,15 +36,15 @@ module OmniAuth
           super
         rescue ArgumentError => e
           fail!(:invalid_ticket, 'Invalid SAML Response')
-        end        
+        end
       end
-      
+
       def auth_hash
         OmniAuth::Utils.deep_merge(super, {
           'uid' => @name_id
         })
-      end  
-            
+      end
+
     end
   end
 end
