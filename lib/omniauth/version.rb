@@ -10,7 +10,7 @@ module OmniAuth
       PATCH = 0
     end
     unless defined?(::OmniAuth::Version::PRE)
-      PRE   = "rc1"
+      PRE   = nil
     end
     unless defined?(::OmniAuth::Version::STRING)
       STRING = [MAJOR, MINOR, PATCH, PRE].compact.join('.')
