@@ -1,4 +1,4 @@
-require 'omniauth/core'
+require 'omniauth'
 
 module OmniAuth
   class NoSessionError < StandardError; end
