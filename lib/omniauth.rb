@@ -18,6 +18,7 @@ module OmniAuth
     include Singleton
 
     @@defaults = {
+      :camelizations => {},
       :path_prefix => '/auth',
       :on_failure => Proc.new do |env|
         message_key = env['omniauth.error.type']
@@ -31,9 +32,7 @@ module OmniAuth
         :default => {
           'provider' => 'default',
           'uid' => '1234',
-          'user_info' => {
-            'name' => 'Bob Example'
-          }
+          'name' => 'Bob Example'
         }
       }
     }
@@ -75,8 +74,12 @@ module OmniAuth
       self.mock_auth[provider.to_sym] = mock
     end
 
+    def add_camelization(name, camelized)
+      self.camelizations[name.to_s] = camelized.to_s
+    end
+
     attr_writer :on_failure
-    attr_accessor :path_prefix, :allowed_request_methods, :form_css, :test_mode, :mock_auth, :full_host
+    attr_accessor :path_prefix, :allowed_request_methods, :form_css, :test_mode, :mock_auth, :full_host, :camelizations
   end
 
   def self.config
@@ -92,21 +95,6 @@ module OmniAuth
   end
 
   module Utils
-    CAMELIZE_SPECIAL = {
-      'oauth' => 'OAuth',
-      'oauth2' => 'OAuth2',
-      'openid' => 'OpenID',
-      'open_id' => 'OpenID',
-      'github' => 'GitHub',
-      'tripit' => 'TripIt',
-      'soundcloud' => 'SoundCloud',
-      'smugmug' => 'SmugMug',
-      'cas' => 'CAS',
-      'trademe' => 'TradeMe',
-      'ldap'  => 'LDAP',
-      'google_oauth2' => 'GoogleOAuth2'
-    }
-
     module_function
 
     def form_css
@@ -129,7 +117,7 @@ module OmniAuth
     end
 
     def camelize(word, first_letter_in_uppercase = true)
-      return CAMELIZE_SPECIAL[word.to_s] if CAMELIZE_SPECIAL[word.to_s]
+      return OmniAuth.config.camelizations[word.to_s] if OmniAuth.config.camelizations[word.to_s]
 
       if first_letter_in_uppercase
         word.to_s.gsub(/\/(.?)/) { "::" + $1.upcase }.gsub(/(^|_)(.)/) { $2.upcase }

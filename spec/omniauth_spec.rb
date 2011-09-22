@@ -1,4 +1,4 @@
-require File.expand_path('../../spec_helper', __FILE__)
+require 'spec_helper'
 
 describe OmniAuth do
   describe '.strategies' do
@@ -67,12 +67,9 @@ describe OmniAuth do
         }.each_pair{ |k,v| OmniAuth::Utils.camelize(k).should == v }
       end
 
-      it 'should work in special cases' do
-        {
-          'oauth' => "OAuth",
-          'openid' => 'OpenID',
-          'open_id' => 'OpenID'
-        }.each_pair{ |k,v| OmniAuth::Utils.camelize(k).should == v}
+      it 'should work in special cases that have been added' do
+        OmniAuth.config.add_camelization('oauth', 'OAuth')
+        OmniAuth::Utils.camelize(:oauth).should == 'OAuth'
       end
     end
   end
