@@ -1,5 +1,7 @@
 require 'omniauth/oauth'
 require 'multi_json'
+require 'base64'
+require 'openssl'
 
 module OmniAuth
   module Strategies
@@ -27,10 +29,13 @@ module OmniAuth
       end
 
       def build_access_token
-        if facebook_session.nil? || facebook_session.empty?
-          super
-        else
+        if !signed_request.nil? && !signed_request.empty?
+          verifier = signed_request['code']
+          client.web_server.get_access_token(verifier, { :redirect_uri => '' }.merge(options))
+        elsif !facebook_session.nil? && !facebook_session.empty? 
           @access_token = ::OAuth2::AccessToken.new(client, facebook_session['access_token'])
+        else
+          super
         end
       end
 
@@ -42,7 +47,16 @@ module OmniAuth
           nil
         end
       end
-
+     
+      def signed_request
+        signed_request_cookie = request.cookies["fbsr_#{client.id}"]
+        if signed_request_cookie
+          @signed_request ||= parse_signed_request(signed_request_cookie)
+        else
+          nil
+        end
+      end
+      
       def user_info
         {
           'nickname' => user_data["username"],
@@ -64,6 +78,32 @@ module OmniAuth
           'user_info' => user_info,
           'extra' => {'user_hash' => user_data}
         })
+      end
+      
+    private
+      
+      def parse_signed_request(value)
+        signature, encoded_payload = value.split('.')
+        
+        decoded_hex_signature = base64_decode_url(signature)#.unpack('H*')
+        decoded_payload = MultiJson.decode(base64_decode_url(encoded_payload))
+        
+        unless decoded_payload['algorithm'] == 'HMAC-SHA256'
+          raise NotImplementedError, "unkown algorithm: #{decoded_payload['algorithm']}"
+        end
+        
+        if valid_signature?(client.secret, decoded_hex_signature, encoded_payload)
+          decoded_payload
+        end
+      end
+      
+      def valid_signature?(secret, signature, payload, algorithm = OpenSSL::Digest::SHA256.new)
+        OpenSSL::HMAC.digest(algorithm, secret, payload) == signature
+      end
+      
+      def base64_decode_url(value)
+        value += '=' * (4 - value.size.modulo(4))
+        Base64.decode64(value.tr('-_', '+/'))
       end
     end
   end
