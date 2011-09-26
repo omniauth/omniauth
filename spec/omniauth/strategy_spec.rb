@@ -29,6 +29,37 @@ end
 
 describe OmniAuth::Strategy do
   let(:app){ lambda{|env| [404, {}, ['Awesome']]}}
+
+  describe '.default_options' do
+    it 'should be inherited from a parent class' do
+      superklass = Class.new
+      superklass.send :include, OmniAuth::Strategy
+      superklass.configure do |c|
+        c.foo = 'bar'
+      end
+
+      klass = Class.new(superklass)
+      klass.default_options.foo.should == 'bar'
+    end
+  end
+
+  describe '.configure' do
+    subject { klass = Class.new; klass.send :include, OmniAuth::Strategy; klass }
+    it 'should take a block and allow for default options setting' do
+      subject.configure do |c|
+        c.wakka = 'doo'
+      end
+      subject.default_options.should == {"wakka" => "doo"}
+    end
+
+    it 'should take a hash and deep merge it' do
+      subject.configure :abc => {:def => 123}
+      subject.configure :abc => {:hgi => 456}
+      subject.default_options.should == {'abc' => {'def' => 123, 'hgi' => 456}}
+    end
+  end
+
+
   describe '#initialize' do
     context 'options extraction' do
       it 'should be the last argument if the last argument is a Hash' do
@@ -37,6 +68,11 @@ describe OmniAuth::Strategy do
 
       it 'should be a blank hash if none are provided' do
         ExampleStrategy.new(app, 'test').options.should == {}
+      end
+
+      it 'should be the default options if any are provided' do
+        ExampleStrategy.stub!(:default_options).and_return(OmniAuth::Strategy::Options.new(:abc => 123))
+        ExampleStrategy.new(app, 'test').options.abc.should == 123
       end
     end
   end

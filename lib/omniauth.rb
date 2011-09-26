@@ -74,6 +74,12 @@ module OmniAuth
       self.mock_auth[provider.to_sym] = mock
     end
 
+    # This is a convenience method to be used by strategy authors
+    # so that they can add special cases to the camelization utility
+    # method that allows OmniAuth::Builder to work.
+    #
+    # @param name [String] The underscored name, e.g. `oauth`
+    # @param camelized [String] The properly camelized name, e.g. 'OAuth'
     def add_camelization(name, camelized)
       self.camelizations[name.to_s] = camelized.to_s
     end

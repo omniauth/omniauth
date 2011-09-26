@@ -1,4 +1,5 @@
 require 'omniauth'
+require 'hashie/mash'
 
 module OmniAuth
   class NoSessionError < StandardError; end
@@ -12,12 +13,58 @@ module OmniAuth
       base.class_eval do
         attr_reader :app, :name, :env, :options, :response
       end
+      base.extend ClassMethods
     end
 
+    module ClassMethods
+      # Returns an inherited set of default options set at the class-level
+      # for each strategy.
+      def default_options
+        return @default_options if @default_options
+        existing = superclass.respond_to?(:default_options) ? superclass.default_options : {}
+        @default_options = OmniAuth::Strategy::Options.new(existing)
+      end
+
+      # This allows for more declarative subclassing of strategies by allowing
+      # default options to be set using a simple configure call.
+      #
+      # @param options [Hash] If supplied, these will be the default options (deep-merged into the superclass's default options).
+      # @yield [Options] The options Mash that allows you to set your defaults as you'd like.
+      #
+      # @example Using a yield to configure the default options.
+      #
+      #   class MyStrategy
+      #     include OmniAuth::Strategy
+      #
+      #     configure do |c|
+      #       c.foo = 'bar'
+      #     end
+      #   end
+      #
+      # @example Using a hash to configure the default options.
+      #
+      #   class MyStrategy
+      #     include OmniAuth::Strategy
+      #     configure foo: 'bar'
+      #   end
+      def configure(options = nil)
+        yield default_options and return unless options
+        default_options.deep_merge!(options)
+      end
+    end
+
+    # Initializes the strategy by passing in the Rack endpoint,
+    # the unique URL segment name for this strategy, and any
+    # additional arguments. An `options` hash is automatically
+    # created from the last argument if it is a hash.
+    #
+    # @param app [Rack application] The application on which this middleware is applied.
+    # @param name [String] A unique URL segment to describe this particular strategy. For example, `'openid'`.
+    # @yield [Strategy] Yields itself for block-based configuration.
     def initialize(app, name, *args, &block)
       @app = app
-      @name = name.to_sym
-      @options = args.last.is_a?(Hash) ? args.pop : {}
+      @name = name.to_s
+      @options = self.class.default_options.deep_merge(args.last.is_a?(Hash) ? args.pop : {})
 
       yield self if block_given?
     end
@@ -26,10 +73,17 @@ module OmniAuth
       "#<#{self.class.to_s}>"
     end
 
+    # Duplicates this instance and runs #call! on it.
+    # @param [Hash] The Rack environment.
     def call(env)
       dup.call!(env)
     end
 
+    # The logic for dispatching any additional actions that need
+    # to be taken. For instance, calling the request phase if
+    # the request path is recognized.
+    #
+    # @param env [Hash] The Rack environment.
     def call!(env)
       raise OmniAuth::NoSessionError.new("You must provide a session to use OmniAuth.") unless env['rack.session']
 
@@ -75,6 +129,8 @@ module OmniAuth
       callback_phase
     end
 
+    # Returns true if the environment recognizes either the 
+    # request or callback path.
     def on_auth_path?
       on_request_path? || on_callback_path?
     end
@@ -95,6 +151,9 @@ module OmniAuth
       request.request_method == 'OPTIONS'
     end
 
+    # This is called in lieu of the normal request process
+    # in the event that OmniAuth has been configured to be
+    # in test mode.
     def mock_call!(env)
       return mock_request_call if on_request_path?
       return mock_callback_call if on_callback_path?
@@ -115,7 +174,7 @@ module OmniAuth
 
     def mock_callback_call
       setup_phase
-      mocked_auth = OmniAuth.mock_auth_for(name.to_sym)
+      mocked_auth = OmniAuth.mock_auth_for(name.to_s)
       if mocked_auth.is_a?(Symbol)
         fail!(mocked_auth)
       else
@@ -126,6 +185,10 @@ module OmniAuth
       end
     end
 
+    # The setup phase looks for the `:setup` option to exist and,
+    # if it is, will call either the Rack endpoint supplied to the
+    # `:setup` option or it will call out to the setup path of the
+    # underlying application. This will default to `/auth/:provider/setup`.
     def setup_phase
       if options[:setup].respond_to?(:call)
         options[:setup].call(env)
@@ -183,7 +246,7 @@ module OmniAuth
     end
 
     def auth_hash
-      AuthHash.new(:provider => name.to_s) 
+      AuthHash.new(:provider => name) 
     end
 
     def full_host
@@ -238,5 +301,7 @@ module OmniAuth
 
       OmniAuth.config.on_failure.call(self.env)
     end
+
+    class Options < Hashie::Mash; end
   end
 end

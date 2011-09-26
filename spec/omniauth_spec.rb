@@ -11,6 +11,12 @@ describe OmniAuth do
   end
 
   context 'configuration' do
+    describe '.defaults' do
+      it 'should be a hash of default configuration' do
+        OmniAuth::Configuration.defaults.should be_kind_of(Hash)
+      end
+    end
+
     it 'should be callable from .configure' do
       OmniAuth.configure do |c|
         c.should be_kind_of(OmniAuth::Configuration)
