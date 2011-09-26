@@ -59,6 +59,18 @@ describe OmniAuth::Strategy do
     end
   end
 
+  describe '.option' do
+    subject { klass = Class.new; klass.send :include, OmniAuth::Strategy; klass }
+    it 'should set a default value' do
+      subject.option :abc, 123
+      subject.default_options.abc.should == 123
+    end
+
+    it 'should set the default value to nil if none is provided' do
+      subject.option :abc
+      subject.default_options.abc.should be_nil
+    end
+  end
 
   describe '#initialize' do
     context 'options extraction' do

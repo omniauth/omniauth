@@ -51,6 +51,25 @@ module OmniAuth
         yield default_options and return unless options
         default_options.deep_merge!(options)
       end
+
+      # Directly declare a default option for your class. This is a useful from
+      # a documentation perspective as it provides a simple line-by-line analysis
+      # of the kinds of options your strategy provides by default.
+      #
+      # @param name [Symbol] The key of the default option in your configuration hash.
+      # @param value [Object] The value your object defaults to. Nil if not provided.
+      #
+      # @example
+      #
+      #   class MyStrategy
+      #     include OmniAuth::Strategy
+      #
+      #     option :foo, 'bar'
+      #     option 
+      #   end
+      def option(name, value = nil)
+        default_options[name] = value
+      end
     end
 
     # Initializes the strategy by passing in the Rack endpoint,
