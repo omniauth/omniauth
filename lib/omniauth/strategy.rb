@@ -100,7 +100,7 @@ module OmniAuth
       @options = self.class.default_options.dup
 
       options.deep_merge!(args.pop) if args.last.is_a?(Hash)
-      options.name ||= self.class.name.split('::').last.downcase
+      options.name ||= self.class.to_s.split('::').last.downcase
 
       self.class.args.each do |arg|
         options[arg] = args.shift
@@ -168,7 +168,7 @@ module OmniAuth
       setup_phase
       @env['omniauth.origin'] = session.delete('omniauth.origin')
       @env['omniauth.origin'] = nil if env['omniauth.origin'] == ''
-
+      @env['omniauth.params'] = session.delete('query_params') || {}
       callback_phase
     end
 
@@ -245,10 +245,16 @@ module OmniAuth
       raise NotImplementedError
     end
 
+    def uid
+      raise NotImplementedError
+    end
+
+    def info
+      raise NotImplementedError
+    end
+
     def callback_phase
       @env['omniauth.auth'] = auth_hash
-      @env['omniauth.params'] = session['query_params'] || {}
-      session['query_params'] = nil if session['query_params']
       call_app!
     end
 
@@ -289,7 +295,13 @@ module OmniAuth
     end
 
     def auth_hash
-      AuthHash.new(:provider => name) 
+      hash = AuthHash.new(
+        :provider => name,
+        :uid => uid
+      )
+      hash.info = info unless options.skip_info?
+
+      hash
     end
 
     def full_host

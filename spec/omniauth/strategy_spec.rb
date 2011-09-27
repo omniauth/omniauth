@@ -73,6 +73,14 @@ describe OmniAuth::Strategy do
     end
   end
 
+  describe '.args' do
+    subject{ c = Class.new; c.send :include, OmniAuth::Strategy; c }
+    it 'should set args to the specified argument if there is one' do
+      subject.args [:abc, :def]
+      subject.args.should == [:abc, :def]
+    end
+  end
+
   describe '#initialize' do
     context 'options extraction' do
       it 'should be the last argument if the last argument is a Hash' do
@@ -83,6 +91,22 @@ describe OmniAuth::Strategy do
         ExampleStrategy.stub!(:default_options).and_return(OmniAuth::Strategy::Options.new(:abc => 123))
         ExampleStrategy.new(app).options.abc.should == 123
       end
+    end
+
+    context 'custom args' do
+      subject{ c = Class.new; c.send :include, OmniAuth::Strategy; c }
+      it 'should set options based on the arguments if they are supplied' do
+        subject.args [:abc, :def]
+        s = subject.new app, 123, 456
+        s.options[:abc].should == 123
+        s.options[:def].should == 456
+      end
+    end
+  end
+
+  describe '#inspect' do
+    it 'should just be the class name in Ruby inspect format' do
+      ExampleStrategy.new(app).inspect.should == '#<ExampleStrategy>'
     end
   end
 
