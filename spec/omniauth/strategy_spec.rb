@@ -81,6 +81,39 @@ describe OmniAuth::Strategy do
     end
   end
 
+  %w(request_phase uid info).each do |abstract_method|
+    it "#{abstract_method} should raise a NotImplementedError" do
+      strat = Class.new
+      strat.send :include, OmniAuth::Strategy
+      lambda{ strat.new(app).send(abstract_method) }.should raise_error(NotImplementedError)
+    end
+  end
+
+  describe '#auth_hash' do
+    subject do
+      klass = Class.new
+      klass.send :include, OmniAuth::Strategy
+      klass.option :name, 'auth_hasher'
+      klass
+    end
+    let(:instance){ subject.new(app) }
+
+    it 'should call through to uid and info' do
+      instance.should_receive :uid
+      instance.should_receive :info
+      instance.auth_hash
+    end
+
+    it 'should return an AuthHash' do
+      instance.stub!(:uid).and_return('123')
+      instance.stub!(:info).and_return(:name => 'Hal Awesome')
+      hash = instance.auth_hash
+      hash.should be_kind_of(OmniAuth::AuthHash)
+      hash.uid.should == '123'
+      hash.info.name.should == 'Hal Awesome'
+    end
+  end
+
   describe '#initialize' do
     context 'options extraction' do
       it 'should be the last argument if the last argument is a Hash' do
@@ -104,9 +137,36 @@ describe OmniAuth::Strategy do
     end
   end
 
+  it '#call should duplicate and call' do
+    klass = Class.new
+    klass.send :include, OmniAuth::Strategy
+    instance = klass.new(app)
+    instance.should_receive(:dup).and_return(instance)
+    instance.call({'rack.session' => {}})
+  end
+
   describe '#inspect' do
     it 'should just be the class name in Ruby inspect format' do
       ExampleStrategy.new(app).inspect.should == '#<ExampleStrategy>'
+    end
+  end
+
+  describe '#redirect' do
+    it 'should use javascript if :iframe is true' do
+      response = ExampleStrategy.new(app, :iframe => true).redirect("http://abc.com")
+      response.last.body.first.should be_include("top.location.href")
+    end
+  end
+
+  describe '#callback_phase' do
+    subject{ k = Class.new; k.send :include, OmniAuth::Strategy; k.new(app) }
+
+    it 'should set the auth hash' do
+      env = make_env
+      subject.stub!(:env).and_return(env)
+      subject.stub!(:auth_hash).and_return("AUTH HASH")
+      subject.callback_phase
+      env['omniauth.auth'].should == "AUTH HASH"
     end
   end
 

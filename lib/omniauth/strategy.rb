@@ -253,8 +253,14 @@ module OmniAuth
       raise NotImplementedError
     end
 
+    def auth_hash
+      hash = AuthHash.new(:provider => name, :uid => uid)
+      hash.info = info unless options.skip_info?
+      hash
+    end
+
     def callback_phase
-      @env['omniauth.auth'] = auth_hash
+      self.env['omniauth.auth'] = auth_hash
       call_app!
     end
 
@@ -292,16 +298,6 @@ module OmniAuth
 
     def call_app!(env = @env)
       @app.call(env)
-    end
-
-    def auth_hash
-      hash = AuthHash.new(
-        :provider => name,
-        :uid => uid
-      )
-      hash.info = info unless options.skip_info?
-
-      hash
     end
 
     def full_host
