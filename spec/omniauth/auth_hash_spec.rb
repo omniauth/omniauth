@@ -9,7 +9,7 @@ describe OmniAuth::AuthHash do
   end
 
   describe '#valid?' do
-    subject{ OmniAuth::AuthHash.new(:uid => '123', :provider => 'example', :name => 'Steven') }
+    subject{ OmniAuth::AuthHash.new(:uid => '123', :provider => 'example', :info => {:name => 'Steven'}) }
 
     it 'should be valid with the right parameters' do
       subject.should be_valid
@@ -26,15 +26,15 @@ describe OmniAuth::AuthHash do
     end
 
     it 'should require a name in the user info hash' do
-      subject.name = nil
+      subject.info.name = nil
       subject.should_not be_valid?
     end
   end
 
   describe '#name' do
     subject{ OmniAuth::AuthHash.new(
-      :name => 'Phillip J. Fry',
       :info => {
+        :name => 'Phillip J. Fry',
         :first_name => 'Phillip',
         :last_name => 'Fry',
         :nickname => 'meatbag',
@@ -42,30 +42,30 @@ describe OmniAuth::AuthHash do
     })}
 
     it 'should default to the name key' do
-      subject.name.should == 'Phillip J. Fry'
+      subject.info.name.should == 'Phillip J. Fry'
     end
 
     it 'should fall back to go to first_name last_name concatenation' do
-      subject.name = nil
-      subject.name.should == 'Phillip Fry'
+      subject.info.name = nil
+      subject.info.name.should == 'Phillip Fry'
     end
 
     it 'should display only a first or last name if only that is available' do
-      subject.name = nil
+      subject.info.name = nil
       subject.info.first_name = nil
-      subject.name.should == 'Fry'
+      subject.info.name.should == 'Fry'
     end
 
     it 'should display the nickname if no name, first, or last is available' do
-      subject.name = nil
+      subject.info.name = nil
       %w(first_name last_name).each{|k| subject.info[k] = nil}
-      subject.name.should == 'meatbag'
+      subject.info.name.should == 'meatbag'
     end
 
     it 'should display the email if no name, first, last, or nick is available' do
-      subject.name = nil
+      subject.info.name = nil
       %w(first_name last_name nickname).each{|k| subject.info[k] = nil}
-      subject.name.should == 'fry@planetexpress.com'
+      subject.info.name.should == 'fry@planetexpress.com'
     end
   end
 
@@ -88,9 +88,8 @@ describe OmniAuth::AuthHash do
     end
 
     it 'should supply the calculated name in the converted hash' do
-      subject.name = nil
       subject.info = {:first_name => 'Bob', :last_name => 'Examplar'}
-      hash['name'].should == 'Bob Examplar'
+      hash['info']['name'].should == 'Bob Examplar'
     end
   end
 

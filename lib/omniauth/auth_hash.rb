@@ -12,19 +12,8 @@ module OmniAuth
     # valid info hash. See InfoHash#valid? for
     # more details there.
     def valid?
-      uid? && provider? && name?
+      uid? && provider? && info? && info.valid?
     end
-
-    def name
-      return self[:name] if self[:name]
-      return nil unless info?
-      return "#{info.first_name} #{info.last_name}".strip if info.first_name? || info.last_name?
-      return info.nickname if info.nickname?
-      return info.email if info.email?
-      nil
-    end
-
-    def name?; !!name end
 
     def regular_writer(key, value)
       if key.to_s == 'info' && !value.is_a?(InfoHash)
@@ -33,15 +22,25 @@ module OmniAuth
       super
     end
 
-    def to_hash
-      hash = super
-      hash['name'] ||= name
-      hash
-    end
-
     class InfoHash < Hashie::Mash
+      def name
+        return self[:name] if self[:name]
+        return "#{first_name} #{last_name}".strip if first_name? || last_name?
+        return nickname if nickname?
+        return email if email?
+        nil
+      end
+
+      def name?; !!name end
+
       def valid?
         name?
+      end
+
+      def to_hash
+        hash = super
+        hash['name'] ||= name
+        hash
       end
     end
   end
