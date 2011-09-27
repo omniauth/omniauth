@@ -11,7 +11,7 @@ module OmniAuth
     def self.included(base)
       OmniAuth.strategies << base
       base.class_eval do
-        attr_reader :app, :name, :env, :options, :response
+        attr_reader :app, :env, :options, :response
       end
       base.extend ClassMethods
     end
@@ -70,6 +70,14 @@ module OmniAuth
       def option(name, value = nil)
         default_options[name] = value
       end
+
+      # Sets (and retrieves) option key names for initializer arguments to be
+      # recorded as. This takes care of 90% of the use cases for overriding
+      # the initializer in OmniAuth Strategies.
+      def args(args = nil)
+        return @args || [] unless args
+        @args = Array(args)
+      end
     end
 
     # Initializes the strategy by passing in the Rack endpoint,
@@ -78,14 +86,30 @@ module OmniAuth
     # created from the last argument if it is a hash.
     #
     # @param app [Rack application] The application on which this middleware is applied.
-    # @param name [String] A unique URL segment to describe this particular strategy. For example, `'openid'`.
-    # @yield [Strategy] Yields itself for block-based configuration.
-    def initialize(app, name, *args, &block)
+    #
+    # @overload new(app, options = {})
+    #   If nothing but a hash is supplied, initialized with the supplied options
+    #   overriding the strategy's default options via a deep merge.
+    # @overload new(app, *args, options = {})
+    #   If the strategy has supplied custom arguments that it accepts, they may
+    #   will be passed through and set to the appropriate values.
+    #
+    # @yield [Options] Yields options to block for further configuration.
+    def initialize(app, *args, &block)
       @app = app
-      @name = name.to_s
-      @options = self.class.default_options.deep_merge(args.last.is_a?(Hash) ? args.pop : {})
+      @options = self.class.default_options.dup
 
-      yield self if block_given?
+      options.deep_merge!(args.pop) if args.last.is_a?(Hash)
+      options.name ||= self.class.name.split('::').last.downcase
+
+      self.class.args.each do |arg|
+        options[arg] = args.shift
+      end
+
+      # Make sure that all of the args have been dealt with, otherwise error out.
+      raise ArgumentError, "Received wrong number of arguments. #{args.inspect}" unless args.empty?
+
+      yield options if block_given?
     end
 
     def inspect
@@ -211,7 +235,7 @@ module OmniAuth
     def setup_phase
       if options[:setup].respond_to?(:call)
         options[:setup].call(env)
-      elsif options[:setup]
+      elsif options.setup?
         setup_env = env.merge('PATH_INFO' => setup_path, 'REQUEST_METHOD' => 'GET')
         call_app!(setup_env)
       end
@@ -296,6 +320,10 @@ module OmniAuth
 
     def request
       @request ||= Rack::Request.new(@env)
+    end
+
+    def name
+      options.name
     end
 
     def redirect(uri)

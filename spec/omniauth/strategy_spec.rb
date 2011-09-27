@@ -2,6 +2,7 @@ require File.expand_path('../../spec_helper', __FILE__)
 
 class ExampleStrategy
   include OmniAuth::Strategy
+  option :name, 'test'
   def call(env); self.call!(env) end
   attr_reader :last_env
   def request_phase
@@ -75,22 +76,18 @@ describe OmniAuth::Strategy do
   describe '#initialize' do
     context 'options extraction' do
       it 'should be the last argument if the last argument is a Hash' do
-        ExampleStrategy.new(app, 'test', :abc => 123).options[:abc].should == 123
-      end
-
-      it 'should be a blank hash if none are provided' do
-        ExampleStrategy.new(app, 'test').options.should == {}
+        ExampleStrategy.new(app, :abc => 123).options[:abc].should == 123
       end
 
       it 'should be the default options if any are provided' do
         ExampleStrategy.stub!(:default_options).and_return(OmniAuth::Strategy::Options.new(:abc => 123))
-        ExampleStrategy.new(app, 'test').options.abc.should == 123
+        ExampleStrategy.new(app).options.abc.should == 123
       end
     end
   end
 
   describe '#full_host' do
-    let(:strategy){ ExampleStrategy.new(app, 'test', {}) }
+    let(:strategy){ ExampleStrategy.new(app, {}) }
     it 'should not freak out if there is a pipe in the URL' do
       strategy.call!(make_env('/whatever', 'rack.url_scheme' => 'http', 'SERVER_NAME' => 'facebook.lame', 'QUERY_STRING' => 'code=asofibasf|asoidnasd', 'SCRIPT_NAME' => '', 'SERVER_PORT' => 80))
       lambda{ strategy.full_host }.should_not raise_error
@@ -98,7 +95,7 @@ describe OmniAuth::Strategy do
   end
 
   describe '#call' do
-    let(:strategy){ ExampleStrategy.new(app, 'test', @options) }
+    let(:strategy){ ExampleStrategy.new(app, @options || {}) }
 
     context 'omniauth.origin' do
       it 'should be set on the request phase' do
@@ -195,7 +192,7 @@ describe OmniAuth::Strategy do
     end
 
     context 'pre-request call through' do
-      subject { ExampleStrategy.new(app, 'test') }
+      subject { ExampleStrategy.new(app) }
       let(:app){ lambda{|env| env['omniauth.boom'] = true; [env['test.status'] || 404, {}, ['Whatev']] } }
       it 'should be able to modify the env on the fly before the request_phase' do
         lambda{ subject.call(make_env) }.should raise_error("Request Phase")
@@ -408,7 +405,7 @@ describe OmniAuth::Strategy do
 
   context 'setup phase' do
     context 'when options[:setup] = true' do
-      let(:strategy){ ExampleStrategy.new(app, 'test', :setup => true) }
+      let(:strategy){ ExampleStrategy.new(app, :setup => true) }
       let(:app){lambda{|env| env['omniauth.strategy'].options[:awesome] = 'sauce' if env['PATH_INFO'] == '/auth/test/setup'; [404, {}, 'Awesome'] }}
 
       it 'should call through to /auth/:provider/setup' do
@@ -429,7 +426,7 @@ describe OmniAuth::Strategy do
         end
       end
 
-      let(:strategy){ ExampleStrategy.new(app, 'test', :setup => setup_proc) }
+      let(:strategy){ ExampleStrategy.new(app, :setup => setup_proc) }
 
       it 'should not call the app on a non-omniauth endpoint' do
         strategy.call(make_env('/somehwere/else'))
