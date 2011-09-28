@@ -123,9 +123,9 @@ describe OmniAuth::Strategy do
     subject{ fresh_strategy }
     %w(uid info credentials extra).each do |fetcher|
       it ".#{fetcher}_stack should be an array of called ancestral procs" do
-        proc = lambda{ "Hello" }
-        subject.send(fetcher, &proc)
-        subject.send(fetcher + "_stack").should == ["Hello"]
+        fetchy = Proc.new{ "Hello" }
+        subject.send(fetcher, &fetchy)
+        subject.send("#{fetcher}_stack", subject.new(app)).should == ["Hello"]
       end
     end
   end

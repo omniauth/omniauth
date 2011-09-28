@@ -91,15 +91,15 @@ module OmniAuth
             @#{fetcher}_proc = block
           end
 
-          def #{fetcher}_stack
-            compile_stack(self.ancestors, :#{fetcher})
+          def #{fetcher}_stack(context)
+            compile_stack(self.ancestors, :#{fetcher}, context)
           end
         RUBY
       end
 
-      def compile_stack(ancestors, method)
+      def compile_stack(ancestors, method, context)
         stack = ancestors.inject([]) do |a, ancestor|
-          a << ancestor.send(method).call if ancestor.respond_to?(method) && ancestor.send(method)
+          a << context.instance_eval(&ancestor.send(method)) if ancestor.respond_to?(method) && ancestor.send(method)
           a
         end
         stack.reverse!
@@ -275,19 +275,19 @@ module OmniAuth
     end
 
     def uid
-      self.class.uid_stack.last
+      self.class.uid_stack(self).last
     end
 
     def info
-      merge_stack(self.class.info_stack)
+      merge_stack(self.class.info_stack(self))
     end
 
     def credentials
-      merge_stack(self.class.credentials_stack)
+      merge_stack(self.class.credentials_stack(self))
     end
 
     def extra
-      merge_stack(self.class.extra_stack)
+      merge_stack(self.class.extra_stack(self))
     end
 
     def auth_hash
