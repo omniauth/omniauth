@@ -79,8 +79,9 @@ module OmniAuth
       # recorded as. This takes care of 90% of the use cases for overriding
       # the initializer in OmniAuth Strategies.
       def args(args = nil)
-        return @args || [] unless args
-        @args = Array(args)
+        @args = Array(args) and return if args
+        existing = superclass.respond_to?(:args) ? superclass.args : []
+        return @args || existing
       end
     end
 

@@ -99,6 +99,12 @@ describe OmniAuth::Strategy do
       subject.args [:abc, :def]
       subject.args.should == [:abc, :def]
     end
+
+    it 'should be inheritable' do
+      subject.args [:abc, :def]
+      c = Class.new(subject)
+      c.args.should == [:abc, :def]
+    end
   end
 
   %w(request_phase uid info).each do |abstract_method|
