@@ -50,13 +50,33 @@ describe OmniAuth::Strategy do
       subject.configure do |c|
         c.wakka = 'doo'
       end
-      subject.default_options.should == {"wakka" => "doo"}
+      subject.default_options["wakka"].should == "doo"
     end
 
     it 'should take a hash and deep merge it' do
       subject.configure :abc => {:def => 123}
       subject.configure :abc => {:hgi => 456}
-      subject.default_options.should == {'abc' => {'def' => 123, 'hgi' => 456}}
+      subject.default_options['abc'].should == {'def' => 123, 'hgi' => 456}
+    end
+  end
+
+  describe '#skip_info?' do
+    it 'should be true if options.skip_info is true' do
+      ExampleStrategy.new(app, :skip_info => true).should be_skip_info
+    end
+
+    it 'should be false if options.skip_info is false' do
+      ExampleStrategy.new(app, :skip_info => false).should_not be_skip_info
+    end
+
+    it 'should be false by default' do
+      ExampleStrategy.new(app).should_not be_skip_info
+    end
+
+    it 'should be true if options.skip_info is a callable that evaluates to truthy' do
+      instance = ExampleStrategy.new(app, :skip_info => lambda{|uid| uid})
+      instance.should_receive(:uid).and_return(true)
+      instance.should be_skip_info
     end
   end
 

@@ -10,10 +10,14 @@ module OmniAuth
   module Strategy
     def self.included(base)
       OmniAuth.strategies << base
+
+      base.extend ClassMethods
       base.class_eval do
         attr_reader :app, :env, :options, :response
+
+        option :setup, false
+        option :skip_info, false
       end
-      base.extend ClassMethods
     end
 
     module ClassMethods
@@ -241,22 +245,49 @@ module OmniAuth
       end
     end
 
+    # @abstract This method is called when the user is on the request path. You should
+    # perform any information gathering you need to be able to authenticate
+    # the user in this phase.
     def request_phase
       raise NotImplementedError
     end
 
+    # @abstract This method, called during the callback phase, should be a
+    # String unique identifier that is never duplicated for this strategy.
     def uid
       raise NotImplementedError
     end
 
+    # @abstract This method, called during the callback phase, should be a
+    # Hash with keys for as much user information as you can gather.
     def info
       raise NotImplementedError
     end
 
     def auth_hash
       hash = AuthHash.new(:provider => name, :uid => uid)
-      hash.info = info unless options.skip_info?
+      hash.info = info unless skip_info?
       hash
+    end
+
+    # Determines whether or not user info should be retrieved. This
+    # allows some strategies to save a call to an external API service
+    # for existing users. You can use it either by setting the `:skip_info`
+    # to true or by setting `:skip_info` to a Proc that takes a uid and
+    # evaluates to true when you would like to skip info.
+    #
+    # @example
+    #
+    #   use MyStrategy, :skip_info => lambda{|uid| User.find_by_uid(uid)}
+    def skip_info?
+      if options.skip_info?
+        if options.skip_info.respond_to?(:call)
+          return options.skip_info.call(uid)
+        else
+          return true
+        end
+      end
+      false
     end
 
     def callback_phase
