@@ -30,6 +30,7 @@ end
 
 describe OmniAuth::Strategy do
   let(:app){ lambda{|env| [404, {}, ['Awesome']]}}
+  let(:fresh_strategy){ c = Class.new; c.send :include, OmniAuth::Strategy; c}
 
   describe '.default_options' do
     it 'should be inherited from a parent class' do
@@ -107,7 +108,29 @@ describe OmniAuth::Strategy do
     end
   end
 
-  %w(request_phase uid info).each do |abstract_method|
+  context 'fetcher procs' do
+    subject{ fresh_strategy }
+    %w(uid info credentials extra).each do |fetcher|
+      it ".#{fetcher} should be able to set and retrieve a proc" do
+        proc = lambda{ "Hello" }
+        subject.send(fetcher, &proc)
+        subject.send(fetcher).should == proc
+      end
+    end
+  end
+
+  context 'fetcher stacks' do
+    subject{ fresh_strategy }
+    %w(uid info credentials extra).each do |fetcher|
+      it ".#{fetcher}_stack should be an array of called ancestral procs" do
+        proc = lambda{ "Hello" }
+        subject.send(fetcher, &proc)
+        subject.send(fetcher + "_stack").should == ["Hello"]
+      end
+    end
+  end
+
+  %w(request_phase).each do |abstract_method|
     it "#{abstract_method} should raise a NotImplementedError" do
       strat = Class.new
       strat.send :include, OmniAuth::Strategy
@@ -201,6 +224,35 @@ describe OmniAuth::Strategy do
     it 'should not freak out if there is a pipe in the URL' do
       strategy.call!(make_env('/whatever', 'rack.url_scheme' => 'http', 'SERVER_NAME' => 'facebook.lame', 'QUERY_STRING' => 'code=asofibasf|asoidnasd', 'SCRIPT_NAME' => '', 'SERVER_PORT' => 80))
       lambda{ strategy.full_host }.should_not raise_error
+    end
+  end
+
+  describe '#uid' do
+    subject{ fresh_strategy }
+    it "should be the current class's uid if one exists" do
+      subject.uid{ "Hi" }
+      subject.new(app).uid.should == "Hi"
+    end
+
+    it "should inherit if it can" do
+      subject.uid{ "Hi" }
+      c = Class.new(subject)
+      c.new(app).uid.should == "Hi"
+    end
+  end
+
+  %w(info credentials extra).each do |fetcher|
+    subject{ fresh_strategy }
+    it "should be the current class's proc call if one exists" do
+      subject.send(fetcher){ {:abc => 123} }
+      subject.new(app).send(fetcher).should == {:abc => 123}
+    end
+
+    it 'should inherit by merging with preference for the latest class' do
+      subject.send(fetcher){ {:abc => 123, :def => 456} }
+      c = Class.new(subject)
+      c.send(fetcher){ {:abc => 789} }
+      c.new(app).send(fetcher).should == {:abc => 789, :def => 456}
     end
   end
 

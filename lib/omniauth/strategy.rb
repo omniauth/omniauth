@@ -83,6 +83,27 @@ module OmniAuth
         existing = superclass.respond_to?(:args) ? superclass.args : []
         return @args || existing
       end
+
+      %w(uid info extra credentials).each do |fetcher|
+        class_eval <<-RUBY
+          def #{fetcher}(&block)
+            return @#{fetcher}_proc unless block_given?
+            @#{fetcher}_proc = block
+          end
+
+          def #{fetcher}_stack
+            compile_stack(self.ancestors, :#{fetcher})
+          end
+        RUBY
+      end
+
+      def compile_stack(ancestors, method)
+        stack = ancestors.inject([]) do |a, ancestor|
+          a << ancestor.send(method).call if ancestor.respond_to?(method) && ancestor.send(method)
+          a
+        end
+        stack.reverse!
+      end
     end
 
     # Initializes the strategy by passing in the Rack endpoint,
@@ -253,30 +274,20 @@ module OmniAuth
       raise NotImplementedError
     end
 
-    # @abstract This method, called during the callback phase, should be a
-    # String unique identifier that is never duplicated for this strategy.
     def uid
-      raise NotImplementedError
+      self.class.uid_stack.last
     end
 
-    # @abstract This method, called during the callback phase, should be a
-    # Hash with keys for as much user information as you can gather.
     def info
-      raise NotImplementedError
+      merge_stack(self.class.info_stack)
     end
 
-    # @abstract Override this method and return a hash containing any information
-    # needed to authorize the authenticating user to an API for the strategy.
     def credentials
-      nil
+      merge_stack(self.class.credentials_stack)
     end
 
-    # @abstract Override this method and return a hash containing any information
-    # that you believe will be useful for the user but doesn't fit in anywhere
-    # else. An example might be the raw user info hash from the API that contains
-    # information not specified in the auth hash schema.
     def extra
-      nil
+      merge_stack(self.class.extra_stack)
     end
 
     def auth_hash
@@ -406,5 +417,11 @@ module OmniAuth
     end
 
     class Options < Hashie::Mash; end
+
+    protected
+
+    def merge_stack(stack)
+      stack.inject({}){|c,h| c.merge!(h); c}
+    end
   end
 end
