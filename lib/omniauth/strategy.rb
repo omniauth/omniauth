@@ -264,9 +264,25 @@ module OmniAuth
       raise NotImplementedError
     end
 
+    # @abstract Override this method and return a hash containing any information
+    # needed to authorize the authenticating user to an API for the strategy.
+    def credentials
+      nil
+    end
+
+    # @abstract Override this method and return a hash containing any information
+    # that you believe will be useful for the user but doesn't fit in anywhere
+    # else. An example might be the raw user info hash from the API that contains
+    # information not specified in the auth hash schema.
+    def extra
+      nil
+    end
+
     def auth_hash
       hash = AuthHash.new(:provider => name, :uid => uid)
       hash.info = info unless skip_info?
+      hash.credentials = credentials if credentials
+      hash.extra = extra if extra
       hash
     end
 
