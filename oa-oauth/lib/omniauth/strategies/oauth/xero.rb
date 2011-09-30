@@ -23,15 +23,15 @@ module OmniAuth
         
         client_options = if app_type.eql? :public
           {
-          :request_token_url => 'https://api.xero.com/oauth/RequestToken',
-          :authorize_url => 'https://api.xero.com/oauth/Authorize',
-          :access_token_url => 'https://api.xero.com/oauth/AccessToken'
+            :request_token_url => 'https://api.xero.com/oauth/RequestToken',
+            :authorize_url => 'https://api.xero.com/oauth/Authorize',
+            :access_token_url => 'https://api.xero.com/oauth/AccessToken'
           }
         else
           {
-          :request_token_url => 'https://api-partner.network.xero.com/oauth/RequestToken',
-          :authorize_url => 'https://api.xero.com/oauth/Authorize',
-          :access_token_url => 'https://api-partner.network.xero.com/oauth/AccessToken'
+            :request_token_url => 'https://api-partner.network.xero.com/oauth/RequestToken',
+            :authorize_url => 'https://api.xero.com/oauth/Authorize',
+            :access_token_url => 'https://api-partner.network.xero.com/oauth/AccessToken'
           }
         end
         
