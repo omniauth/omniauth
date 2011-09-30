@@ -110,7 +110,7 @@ describe OmniAuth::Strategy do
 
   context 'fetcher procs' do
     subject{ fresh_strategy }
-    %w(uid info credentials extra).each do |fetcher|
+    %w(uid info credentials extra initialized request_phase callback_phase).each do |fetcher|
       it ".#{fetcher} should be able to set and retrieve a proc" do
         proc = lambda{ "Hello" }
         subject.send(fetcher, &proc)
@@ -130,11 +130,30 @@ describe OmniAuth::Strategy do
     end
   end
 
-  %w(request_phase).each do |abstract_method|
-    it "#{abstract_method} should raise a NotImplementedError" do
-      strat = Class.new
-      strat.send :include, OmniAuth::Strategy
-      lambda{ strat.new(app).send(abstract_method) }.should raise_error(NotImplementedError)
+  context 'callback stacks' do
+    subject{ fresh_strategy }
+
+    describe '.initialized' do
+      it 'should be called after initialization' do
+        subject.initialized{ raise("Called!") }
+        lambda{ subject.new(app) }.should raise_error("Called!")
+      end
+    end
+
+    describe '.request_phase' do
+      it 'should be called when #request_phase is called' do
+        subject.request_phase{ raise("Called!") }
+        lambda{ subject.new(app).request_phase }.should raise_error("Called!")
+      end
+    end
+
+    describe '.callback_phase' do
+      it 'should be called before the rest of the callback_phase' do
+        subject.callback_phase{ raise("Called!") }
+        instance = subject.new(app)
+        instance.should_receive(:auth_hash).exactly(0).times
+        lambda{ instance.callback_phase }.should raise_error("Called!")
+      end
     end
   end
 
