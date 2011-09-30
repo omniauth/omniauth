@@ -8,15 +8,33 @@ module OmniAuth
     # The Xero OAuth process is pretty straight forward and follows the typical 3-legged authentication process. 
     # 
     # For this reason we can re-use the majority of the default OmniAuth::Strategies::OAuth class and lifecycle.
+    # 
+    # Xero however provide two auth types via OAuth, one for public applications that receive a default 30 minute timeout
+    # and partner applications that get up to a year with the ability to refresh the token's expiration. Read the Xero
+    # docs on the difference. 
+    # 
+    # This strategy allows you to pass in the application type and then it will switch in the appropriate end points. 
+    # 
+    # Usage : OmniAuth::Strategies::Xero "CONSUMER_KEY", "CONSUMER_SECRET", { :application => [:public, :partner] }
     #
     class Xero < OmniAuth::Strategies::OAuth
       def initialize(app, consumer_key=nil, consumer_secret=nil, options={}, &block)
-        client_options = {
-          :request_token_path => '/oauth/RequestToken',          
-          :authorize_path => '/oauth/Authorize',
-          :access_token_path => '/oauth/AccessToken',
-          :site => 'https://api.xero.com',
-        }        
+        app_type = options.delete(:app_type) || :public
+        
+        client_options = if app_type.eql? :public
+          {
+          :request_token_url => 'https://api.xero.com/oauth/RequestToken',
+          :authorize_url => 'https://api.xero.com/oauth/Authorize',
+          :access_token_url => 'https://api.xero.com/oauth/AccessToken'
+          }
+        else
+          {
+          :request_token_url => 'https://api-partner.network.xero.com/oauth/RequestToken',
+          :authorize_url => 'https://api.xero.com/oauth/Authorize',
+          :access_token_url => 'https://api-partner.network.xero.com/oauth/AccessToken'
+          }
+        end
+        
         super(app, :xero, consumer_key, consumer_secret, client_options, options, &block)
       end      
     end
