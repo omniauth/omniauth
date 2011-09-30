@@ -1,5 +1,5 @@
 require 'spec_helper'
 
-describe OmniAuth::Strategies::XING do
+describe OmniAuth::Strategies::Xing do
   it_should_behave_like "an oauth strategy"
 end
