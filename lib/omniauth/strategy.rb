@@ -84,10 +84,7 @@ module OmniAuth
         return @args || existing
       end
 
-      DATA_METHODS = [:uid, :info, :extra, :credentials]
-      CALLBACK_METHODS = [:initialized, :request_phase, :callback_phase]
-
-      (DATA_METHODS + CALLBACK_METHODS).each do |fetcher|
+      %w(uid info extra credentials).each do |fetcher|
         class_eval <<-RUBY
           def #{fetcher}(&block)
             return @#{fetcher}_proc unless block_given?
@@ -101,10 +98,11 @@ module OmniAuth
       end
 
       def compile_stack(ancestors, method, context)
-        stack = ancestors.reverse.inject([]) do |a, ancestor|
+        stack = ancestors.inject([]) do |a, ancestor|
           a << context.instance_eval(&ancestor.send(method)) if ancestor.respond_to?(method) && ancestor.send(method)
           a
         end
+        stack.reverse!
       end
     end
 
@@ -138,8 +136,6 @@ module OmniAuth
       raise ArgumentError, "Received wrong number of arguments. #{args.inspect}" unless args.empty?
 
       yield options if block_given?
-
-      self.class.initialized_stack(self)
     end
 
     def inspect
@@ -275,7 +271,7 @@ module OmniAuth
     # perform any information gathering you need to be able to authenticate
     # the user in this phase.
     def request_phase
-      self.class.request_phase_stack(self)
+      raise NotImplementedError
     end
 
     def uid
@@ -323,7 +319,6 @@ module OmniAuth
     end
 
     def callback_phase
-      self.class.callback_phase_stack(self)
       self.env['omniauth.auth'] = auth_hash
       call_app!
     end
