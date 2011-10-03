@@ -177,13 +177,15 @@ module OmniAuth
     # Performs the steps necessary to run the request phase of a strategy.
     def request_call
       setup_phase
-      if response = call_through_to_app
-        response
+      if options.form.respond_to?(:call)
+        options.form.call(env)
+      elsif options.form
+        call_app!
       else
         if request.params['origin']
-          @env['rack.session']['omniauth.origin'] = request.params['origin']
+          env['rack.session']['omniauth.origin'] = request.params['origin']
         elsif env['HTTP_REFERER'] && !env['HTTP_REFERER'].match(/#{request_path}$/)
-          @env['rack.session']['omniauth.origin'] = env['HTTP_REFERER']
+          env['rack.session']['omniauth.origin'] = env['HTTP_REFERER']
         end
         request_phase
       end

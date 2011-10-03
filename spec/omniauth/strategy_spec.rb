@@ -353,18 +353,15 @@ describe OmniAuth::Strategy do
       end
     end
 
-    context 'pre-request call through' do
-      subject { ExampleStrategy.new(app) }
-      let(:app){ lambda{|env| env['omniauth.boom'] = true; [env['test.status'] || 404, {}, ['Whatev']] } }
-      it 'should be able to modify the env on the fly before the request_phase' do
-        lambda{ subject.call(make_env) }.should raise_error("Request Phase")
-        subject.response.status.should == 404
-        subject.last_env.should be_key('omniauth.boom')
+    context ':form option' do
+      it 'should call through to the supplied form option if one exists' do
+        strategy.options.form = lambda{|env| "Called me!"}
+        strategy.call(make_env('/auth/test')).should == "Called me!"
       end
 
-      it 'should call through to the app instead if a non-404 response is received' do
-        lambda{ subject.call(make_env('/auth/test', 'test.status' => 200)) }.should_not raise_error
-        subject.response.body.should == ['Whatev']
+      it 'should call through to the app if :form => true is set as an option' do
+        strategy.options.form = true
+        strategy.call(make_env('/auth/test')).should == app.call(make_env('/auth/test'))
       end
     end
 
