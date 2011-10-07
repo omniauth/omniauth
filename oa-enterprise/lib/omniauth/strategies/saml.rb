@@ -32,6 +32,7 @@ module OmniAuth
           response = OmniAuth::Strategies::SAML::AuthResponse.new(request.params['SAMLResponse'])
           response.settings = @@settings
           @name_id  = response.name_id
+          @extra_attributes = response.attributes
           return fail!(:invalid_ticket, 'Invalid SAML Ticket') if @name_id.nil? || @name_id.empty?
           super
         rescue ArgumentError => e
@@ -41,7 +42,8 @@ module OmniAuth
 
       def auth_hash
         OmniAuth::Utils.deep_merge(super, {
-          'uid' => @name_id
+          'uid' => @name_id,
+          'extra' => @extra_attributes
         })
       end
 
