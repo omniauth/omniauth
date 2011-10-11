@@ -19,6 +19,7 @@ module OmniAuth
     autoload :LinkedIn,           'omniauth/strategies/oauth/linked_in'
     autoload :Meetup,             'omniauth/strategies/oauth/meetup'
     autoload :Miso,               'omniauth/strategies/oauth/miso'
+    autoload :MySpace,            'omniauth/strategies/oauth/my_space'
     autoload :Netflix,            'omniauth/strategies/oauth/netflix'
     autoload :Orkut,              'omniauth/strategies/oauth/orkut'    
     autoload :Qzone,              'omniauth/strategies/oauth/qzone'
