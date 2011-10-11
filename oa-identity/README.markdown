@@ -37,6 +37,9 @@ through to `/auth/identity/callback` with the same kinds of information
 it would had the user authenticated through an external provider.
 Simple!
 
+Please see http://github.com/adambair/simple-identity for a working example 
+of an `oa-identity` implementation.
+
 ## Custom Auth Model
 
 To use a class other than the default, specify the <tt>:model</tt> option to a
@@ -88,3 +91,7 @@ For more information on rack endpoints, check out [this
 introduction](http://library.edgecase.com/Rails/2011/01/04/rails-routing-and-rack-endpoints.html)
 and
 [ActionController::Metal](http://rubydoc.info/docs/rails/ActionController/Metal)
+
+## Examples
+
+  * Rails 3.1 ActiveRecord - http://github.com/adambair/simple-identity
