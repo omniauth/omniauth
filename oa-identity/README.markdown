@@ -16,7 +16,7 @@ look something like this:
       provider :identity, :fields => [:email]
     end
 
-Next, you need to create a model (called `Identity by default`) that will be
+Next, you need to create a model (called `Identity` by default) that will be
 able to persist the information provided by the user. Luckily for you, there
 are pre-built models for popular ORMs that make this dead simple. You just
 need to subclass the relevant class:
