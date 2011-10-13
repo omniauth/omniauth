@@ -37,6 +37,7 @@ module OmniAuth
     autoload :Vimeo,              'omniauth/strategies/oauth/vimeo'
     autoload :Yahoo,              'omniauth/strategies/oauth/yahoo'
     autoload :YouTube,            'omniauth/strategies/oauth/you_tube'
+    autoload :Xing,               'omniauth/strategies/oauth/xing'
 
     autoload :OAuth2,             'omniauth/strategies/oauth2'
     autoload :AngelList,          'omniauth/strategies/oauth2/angellist'
