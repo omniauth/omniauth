@@ -5,11 +5,21 @@ module OmniAuth
     class Salesforce < OmniAuth::Strategies::OAuth2
       def initialize(app, client_id=nil, client_secret=nil, options={}, &block)
         client_options = {
-          :authorize_url => 'https://login.salesforce.com/services/oauth2/authorize',
-          :token_url => 'https://login.salesforce.com/services/oauth2/token',
+          :site => 'https://login.salesforce.com',
+          :authorize_url  => '/services/oauth2/authorize',
+          :token_url      => '/services/oauth2/token',
         }
-        options.merge!(:response_type => 'code', :grant_type => 'authorization_code')
         super(app, :salesforce, client_id, client_secret, client_options, options, &block)
+      end
+      
+      def request_phase
+        options[:response_type] ||= 'code'
+        super
+      end
+
+      def callback_phase
+        options[:grant_type] ||= 'authorization_code'
+        super
       end
 
       def auth_hash
@@ -35,10 +45,12 @@ module OmniAuth
       end
 
       def user_data
-        @data ||= MultiJson.decode(@access_token.get(@access_token['id']))
+        @access_token.options[:header_format] = 'OAuth %s'
+
+        @data ||= @access_token.get(@access_token['id']).parsed
       rescue ::OAuth2::Error => e
         if e.response.status == 302
-          @data ||= MultiJson.decode(@access_token.get(e.response.headers['location']))
+          @data ||= @access_token.get(e.response.headers['location']).parsed
         else
           raise e
         end
