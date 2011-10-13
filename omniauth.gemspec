@@ -18,7 +18,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'rspec', '~> 2.5'
   gem.add_development_dependency 'yard', '~> 0.7'
 
-  gem.version = OmniAuth::Version::STRING
+  gem.version = OmniAuth::VERSION
   gem.files = `git ls-files`.split("\n")
   gem.homepage = 'http://github.com/intridea/omniauth'
   gem.require_paths = ['lib']
