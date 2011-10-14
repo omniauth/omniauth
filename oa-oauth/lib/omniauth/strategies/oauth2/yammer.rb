@@ -24,7 +24,7 @@ module OmniAuth
             'extra' => {
               'user_hash' => user_hash,
             },
-          },
+          }
         )
       end
 
@@ -56,8 +56,8 @@ module OmniAuth
       def user_hash
         @user_hash ||= MultiJson.decode(@access_token.get('/api/v1/users/current.json').body)
       end
-      
-      
+
+
     end
   end
 end

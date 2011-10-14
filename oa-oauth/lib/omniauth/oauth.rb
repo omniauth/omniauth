@@ -19,6 +19,7 @@ module OmniAuth
     autoload :LinkedIn,           'omniauth/strategies/oauth/linked_in'
     autoload :Meetup,             'omniauth/strategies/oauth/meetup'
     autoload :Miso,               'omniauth/strategies/oauth/miso'
+    autoload :MySpace,            'omniauth/strategies/oauth/my_space'
     autoload :Netflix,            'omniauth/strategies/oauth/netflix'
     autoload :Orkut,              'omniauth/strategies/oauth/orkut'    
     autoload :Qzone,              'omniauth/strategies/oauth/qzone'
@@ -37,6 +38,7 @@ module OmniAuth
     autoload :Vimeo,              'omniauth/strategies/oauth/vimeo'
     autoload :Yahoo,              'omniauth/strategies/oauth/yahoo'
     autoload :YouTube,            'omniauth/strategies/oauth/you_tube'
+    autoload :Xing,               'omniauth/strategies/oauth/xing'
 
     autoload :OAuth2,             'omniauth/strategies/oauth2'
     autoload :AngelList,          'omniauth/strategies/oauth2/angellist'

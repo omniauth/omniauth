@@ -52,17 +52,31 @@ module OmniAuth
       end
 
       def build_access_token
-        if facebook_session.nil? || facebook_session.empty?
-          super
-        else
+        if !signed_request.nil? && !signed_request.empty?
+          verifier = signed_request['code']
+          client.auth_code.get_token(verifier, {:redirect_uri => ''}.merge(options))
+        elsif !facebook_session.nil? && !facebook_session.empty?
           @access_token = ::OAuth2::AccessToken.new(client, facebook_session['access_token'], {:mode => :query, :param_name => 'access_token'})
+        else
+          super
         end
+      rescue ::OAuth2::Error => e
+        raise e.response.inspect
       end
 
       def facebook_session
         session_cookie = request.cookies["fbs_#{client.id}"]
         if session_cookie
           @facebook_session ||= Rack::Utils.parse_query(request.cookies["fbs_#{client.id}"].gsub('"', ''))
+        else
+          nil
+        end
+      end
+
+      def signed_request
+        signed_request_cookie = request.cookies["fbsr_#{client.id}"]
+        if signed_request_cookie
+          signed_request = parse_signed_request(signed_request_cookie)
         else
           nil
         end
@@ -82,6 +96,35 @@ module OmniAuth
           },
         }
       end
+
+      protected
+        # Borrowed from koala gem.
+        #
+        # Originally provided directly by Facebook, however this has changed
+        # as their concept of crypto changed. For historic purposes, this is their proposal:
+        # https://developers.facebook.com/docs/authentication/canvas/encryption_proposal/
+        # Currently see https://github.com/facebook/php-sdk/blob/master/src/facebook.php#L758
+        # for a more accurate reference implementation strategy.
+        def parse_signed_request(input)
+          encoded_sig, encoded_envelope = input.split('.', 2)
+          signature = base64_url_decode(encoded_sig).unpack("H*").first
+          envelope = MultiJson.decode(base64_url_decode(encoded_envelope))
+
+          raise "SignedRequest: Unsupported algorithm #{envelope['algorithm']}" if envelope['algorithm'] != 'HMAC-SHA256'
+
+          # now see if the signature is valid (digest, key, data)
+          hmac = OpenSSL::HMAC.hexdigest(OpenSSL::Digest::SHA256.new, client.secret, encoded_envelope.tr("-_", "+/"))
+          raise 'SignedRequest: Invalid signature' if (signature != hmac)
+
+          return envelope
+        end
+
+        # base 64
+        # directly from https://github.com/facebook/crypto-request-examples/raw/master/sample.rb
+        def base64_url_decode(str)
+          str += '=' * (4 - str.length.modulo(4))
+          Base64.decode64(str.tr('-_', '+/'))
+        end
     end
   end
 end
