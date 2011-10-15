@@ -91,6 +91,11 @@ describe OmniAuth::AuthHash do
       subject.info = {:first_name => 'Bob', :last_name => 'Examplar'}
       hash['info']['name'].should == 'Bob Examplar'
     end
+
+    it 'should not pollute the URL hash with "name" etc' do
+      subject.info = {'urls' => {'Homepage' => "http://homepage.com"}}
+      subject.to_hash['info']['urls'].should == {'Homepage' => "http://homepage.com"}
+    end
   end
 
   describe OmniAuth::AuthHash::InfoHash do

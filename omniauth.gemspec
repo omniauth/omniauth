@@ -8,7 +8,7 @@ Gem::Specification.new do |gem|
   gem.email = ['michael@intridea.com', 'sferik@gmail.com']
 
   gem.add_runtime_dependency 'rack'
-  gem.add_runtime_dependency 'hashie'
+  gem.add_runtime_dependency 'hashie', '~> 1.2'
 
   gem.add_development_dependency 'maruku', '~> 0.6'
   gem.add_development_dependency 'simplecov', '~> 0.4'
