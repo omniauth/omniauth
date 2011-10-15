@@ -26,6 +26,7 @@ module OmniAuth
           super, {
             'uid' => user_data['url'].split('/').last,
             'user_info' => user_info,
+             'credentials' => {'refresh_token' => @access_token.refresh_token},
             'extra' => {
               'user_hash' => user_data,
               'refresh_token' => refresh_token,
@@ -34,10 +35,22 @@ module OmniAuth
           }
         )
       end
-
       def user_data
-        @data ||= MultiJson.decode(@access_token.get('/users/me.json'))
+        puts "user_data"
+        if(@data.nil?)
+          opts={
+            :raise_errors=>false,
+            :headers =>{:Accept => 'application/json','X-Gowalla-API-Key'=> self.client_id},
+            :params=>{:oauth_token=>@access_token.token}
+            }
+          response=@access_token.get('http://api.gowalla.com/users/me',opts)
+      
+          @data = MultiJson.decode(response.body) 
+        end
+        
+        @data 
       end
+     
 
       def refresh_token
         @refresh_token ||= @access_token.refresh_token
@@ -53,6 +66,7 @@ module OmniAuth
       end
 
       def user_info
+        
         {
           'name' => "#{user_data['first_name']} #{user_data['last_name']}",
           'nickname' => user_data['username'],
@@ -67,6 +81,21 @@ module OmniAuth
           },
         }
       end
+    def build_access_token
+      token=super
+      ##remove expires_at from token, invalid format
+      token=::OAuth2::AccessToken.new(token.client,token.token,{:expires_in=>token.expires_in,:refresh_token=>token.refresh_token}.merge(token.params))
+      ## if token is expired refresh and again remove expires_at
+      if token.expired?
+        token=token.refresh!
+        token=::OAuth2::AccessToken.new(token.client,token.token,{:expires_in=>token.expires_in,:refresh_token=>token.refresh_token}.merge(token.params))
+      end
+      token
+      
     end
+     
+    end
+    
+    
   end
 end
