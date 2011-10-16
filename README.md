@@ -18,7 +18,12 @@ one or more strategies. These strategies are generally released
 individually as RubyGems, and you can see a [community maintained list](https://github.com/intridea/omniauth/wiki/List-of-Strategies) 
 on the wiki for this project.
 
-## Adding OmniAuth to Your Application
+One strategy, called `Developer`, is included with OmniAuth and provides
+a completely unsecure, non-production-usable strategy that directly
+prompts a user for authentication information and then passes it
+straight through.
+
+## Getting Started
 
 Each OmniAuth strategy is a Rack Middleware. That means that you can use
 it the same way that you use any other Rack middleware. For example, to

@@ -4,7 +4,7 @@ describe OmniAuth::Strategies::Developer do
   let(:app){ Rack::Builder.new do |b|
     b.use Rack::Session::Cookie
     b.use OmniAuth::Strategies::Developer
-    b.run lambda{|env| [200, {:auth_hash => env['omniauth.auth']}, ['Not Found']]}
+    b.run lambda{|env| [200, {}, ['Not Found']]}
   end.to_app }
 
   context 'request phase' do
