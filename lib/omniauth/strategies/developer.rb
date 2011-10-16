@@ -18,13 +18,18 @@ module OmniAuth
     #     provider :developer
     #   end
     #
+    # @example Custom Fields
+    #
+    #   use OmniAuth::Builder do
+    #     provider :developer, 
+    #       :fields => [:first_name, :last_name],
+    #       :uid_field => :last_name
+    #   end
+    #
     # This will create a strategy that, when the user visits `/auth/developer`
     # they will be presented a form that prompts for (by default) their name
     # and email address. The auth hash will be populated with these fields and
     # the `uid` will simply be set to the provided email.
-    #
-    # @option options [Array] :fields An array of fields you would like to collect.
-    # @option options [Symbol] :uid_field The field you'd like to use for the uid.
     class Developer
       include OmniAuth::Strategy
 
