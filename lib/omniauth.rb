@@ -2,7 +2,9 @@ require 'rack'
 require 'singleton'
 
 module OmniAuth
-  module Strategies; end
+  module Strategies
+    autoload :Developer, 'omniauth/strategies/developer'
+  end
 
   autoload :Builder,  'omniauth/builder'
   autoload :Strategy, 'omniauth/strategy'
