@@ -2,9 +2,9 @@ require 'rack'
 require 'omniauth/test'
 
 module OmniAuth
-  
+
   module Test
-    
+
     # Support for testing OmniAuth strategies.
     #
     # @example Usage
@@ -19,7 +19,7 @@ module OmniAuth
     #     end
     #   end
     module StrategyTestCase
-      
+
       def app
         strat = self.strategy
         resp = self.app_response
@@ -29,7 +29,7 @@ module OmniAuth
           run lambda {|env| [404, {'Content-Type' => 'text/plain'}, [resp || env.key?('omniauth.auth').to_s]] }
         }.to_app
       end
-      
+
       def app_response
         nil
       end
@@ -37,13 +37,13 @@ module OmniAuth
       def session
         last_request.env['rack.session']
       end
-      
+
       def strategy
         raise NotImplementedError.new('Including specs must define #strategy')
       end
-      
+
     end
-      
+
   end
-  
+
 end

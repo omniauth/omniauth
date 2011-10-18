@@ -2,14 +2,12 @@ require 'rack'
 require 'singleton'
 
 module OmniAuth
+  module Strategies; end
+
   autoload :Builder,  'omniauth/builder'
   autoload :Strategy, 'omniauth/strategy'
   autoload :Test,     'omniauth/test'
   autoload :Form,     'omniauth/form'
-
-  module Strategies
-    autoload :Password, 'omniauth/strategies/password'
-  end
 
   def self.strategies
     @@strategies ||= []
@@ -57,10 +55,14 @@ module OmniAuth
 
     def add_mock(provider, mock={})
       # Stringify keys recursively one level.
-      mock.stringify_keys!
-      mock.keys.each do|key|
-        if mock[key].is_a? Hash
-          mock[key].stringify_keys!
+      mock.keys.each do |key|
+        mock[key.to_s] = mock.delete(key)
+      end
+      mock.each_pair do |key, val|
+        if val.is_a? Hash
+          val.keys.each do |subkey|
+            val[subkey.to_s] = val.delete(subkey)
+          end
         end
       end
 
@@ -75,7 +77,7 @@ module OmniAuth
     attr_writer :on_failure
     attr_accessor :path_prefix, :allowed_request_methods, :form_css, :test_mode, :mock_auth, :full_host
   end
-  
+
   def self.config
     Configuration.instance
   end
@@ -99,7 +101,9 @@ module OmniAuth
       'soundcloud' => 'SoundCloud',
       'smugmug' => 'SmugMug',
       'cas' => 'CAS',
-      'trademe' => 'TradeMe'
+      'trademe' => 'TradeMe',
+      'ldap'  => 'LDAP',
+      'google_oauth2' => 'GoogleOAuth2'
     }
 
     module_function

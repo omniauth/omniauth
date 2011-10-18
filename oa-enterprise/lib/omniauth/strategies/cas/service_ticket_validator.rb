@@ -1,9 +1,11 @@
+require 'net/http'
+require 'net/https'
 require 'nokogiri'
 
 module OmniAuth
   module Strategies
     class CAS
-      class ServiceTicketValidator        
+      class ServiceTicketValidator
 
         VALIDATION_REQUEST_HEADERS = { 'Accept' => '*/*' }
 
@@ -36,16 +38,23 @@ module OmniAuth
         # returns nil if given nil
         def parse_user_info(node)
           return nil if node.nil?
-          node.children.inject({}) do |hash, child|
-            unless child.kind_of?(Nokogiri::XML::Text) ||
-                   child.name == 'cas:proxies' ||
-                   child.name == 'proxies'
-              hash[child.name.sub(/^cas:/, '')] = child.content
+          hash = {}
+          node.children.each do |e|
+            unless e.kind_of?(Nokogiri::XML::Text) ||
+                   e.name == 'cas:proxies' ||
+                   e.name == 'proxies'
+              # There are no child elements
+              if e.element_children.count == 0
+                hash[e.name.sub(/^cas:/, '')] = e.content
+              elsif e.element_children.count
+                hash[e.name.sub(/^cas:/, '')] = [] if hash[e.name.sub(/^cas:/, '')].nil?
+                hash[e.name.sub(/^cas:/, '')].push parse_user_info e
+              end
             end
-            hash
           end
+          hash
         end
-        
+
         # finds an `<cas:authenticationSuccess>` node in
         # a `<cas:serviceResponse>` body if present; returns nil
         # if the passed body is nil or if there is no such node.
@@ -62,11 +71,11 @@ module OmniAuth
             nil
           end
         end
-        
+
         # retrieves the `<cas:serviceResponse>` XML from the CAS server
         def get_service_response_body
           result = ''
-          http = Net::HTTP.new(@uri.host, @uri.port)
+          http = ::Net::HTTP.new(@uri.host, @uri.port)
           http.use_ssl = @uri.port == 443 || @uri.instance_of?(URI::HTTPS)
           http.verify_mode = OpenSSL::SSL::VERIFY_NONE if http.use_ssl? && @configuration.disable_ssl_verification?
           http.start do |c|
@@ -75,7 +84,7 @@ module OmniAuth
           end
           result
         end
-        
+
       end
     end
   end

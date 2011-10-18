@@ -1,18 +1,19 @@
-require 'rubygems'
-require 'bundler'
-Bundler.setup
+$:.unshift File.expand_path('..', __FILE__)
+$:.unshift File.expand_path('../../lib', __FILE__)
+require 'simplecov'
+SimpleCov.start
 require 'rspec'
-require 'rspec/autorun'
-require 'webmock/rspec'
 require 'rack/test'
+require 'webmock/rspec'
+require 'vcr'
 require 'omniauth/core'
 require 'omniauth/test'
 require 'omniauth/oauth'
-
-Dir[File.dirname(__FILE__) + "/support/**/*.rb"].each {|f| require f}
+require File.expand_path('../support/shared_examples', __FILE__)
 
 RSpec.configure do |config|
-  config.include WebMock
+  config.include WebMock::API
+  config.extend VCR::RSpec::Macros
   config.include Rack::Test::Methods
   config.extend  OmniAuth::Test::StrategyMacros, :type => :strategy
 end
@@ -28,5 +29,3 @@ end
 def app
   lambda{|env| [200, {}, ['Hello']]}
 end
-
-WebMock.disable_net_connect!

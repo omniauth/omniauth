@@ -1,3 +1,4 @@
+require 'multi_json'
 require 'oauth'
 require 'omniauth/oauth'
 
@@ -6,13 +7,14 @@ module OmniAuth
     class OAuth
       include OmniAuth::Strategy
 
-      def initialize(app, name, consumer_key = nil, consumer_secret = nil, consumer_options = {}, options = {}, &block)
+      def initialize(app, name, consumer_key=nil, consumer_secret=nil, consumer_options={}, options={}, &block)
         self.consumer_key = consumer_key
         self.consumer_secret = consumer_secret
         self.consumer_options = consumer_options
         super
         self.options[:open_timeout] ||= 30
         self.options[:read_timeout] ||= 30
+        self.options[:authorize_params] = options[:authorize_params] || {}
       end
 
       def consumer
@@ -29,20 +31,22 @@ module OmniAuth
         request_token = consumer.get_request_token(:oauth_callback => callback_url)
         session['oauth'] ||= {}
         session['oauth'][name.to_s] = {'callback_confirmed' => request_token.callback_confirmed?, 'request_token' => request_token.token, 'request_secret' => request_token.secret}
-        r = Rack::Response.new
 
         if request_token.callback_confirmed?
-          r.redirect(request_token.authorize_url)
+          redirect request_token.authorize_url(options[:authorize_params])
         else
-          r.redirect(request_token.authorize_url(:oauth_callback => callback_url))
+          redirect request_token.authorize_url(options[:authorize_params].merge(:oauth_callback => callback_url))
         end
 
-        r.finish
       rescue ::Timeout::Error => e
         fail!(:timeout, e)
+      rescue ::Net::HTTPFatalError, ::OpenSSL::SSL::SSLError => e
+        fail!(:service_unavailable, e)
       end
 
       def callback_phase
+        raise OmniAuth::NoSessionError.new("Session Expired") if session['oauth'].nil?
+
         request_token = ::OAuth::RequestToken.new(consumer, session['oauth'][name.to_s].delete('request_token'), session['oauth'][name.to_s].delete('request_secret'))
 
         opts = {}
@@ -56,12 +60,14 @@ module OmniAuth
         super
       rescue ::Timeout::Error => e
         fail!(:timeout, e)
-      rescue ::Net::HTTPFatalError => e
+      rescue ::Net::HTTPFatalError, ::OpenSSL::SSL::SSLError => e
         fail!(:service_unavailable, e)
       rescue ::OAuth::Unauthorized => e
         fail!(:invalid_credentials, e)
-      rescue ::MultiJson::DecodeError => e
+      rescue ::NoMethodError, ::MultiJson::DecodeError => e
         fail!(:invalid_response, e)
+      rescue ::OmniAuth::NoSessionError => e
+        fail!(:session_expired, e)
       end
 
       def auth_hash

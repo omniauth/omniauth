@@ -1,8 +1,6 @@
-require 'rubygems'
-require 'bundler'
-Bundler.setup
+require 'simplecov'
+SimpleCov.start
 require 'rspec'
-require 'rspec/autorun'
 require 'rack/test'
 require 'omniauth/core'
 require 'omniauth/test'

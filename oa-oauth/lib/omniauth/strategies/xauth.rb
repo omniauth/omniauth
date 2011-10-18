@@ -4,18 +4,18 @@ require 'multi_json'
 module OmniAuth
   module Strategies
     class XAuth
-      include OmniAuth::Strategy
-      
       attr_reader :name
       attr_accessor :consumer_key, :consumer_secret, :consumer_options
-      
-      def initialize(app, name, consumer_key = nil, consumer_secret = nil, consumer_options = {}, options = {}, &block)
+
+      include OmniAuth::Strategy
+
+      def initialize(app, name, consumer_key=nil, consumer_secret=nil, consumer_options={}, options={}, &block)
         self.consumer_key = consumer_key
         self.consumer_secret = consumer_secret
         self.consumer_options = consumer_options
         super
       end
-      
+
       def request_phase
         session['oauth'] ||= {}
         if env['REQUEST_METHOD'] == 'GET'
@@ -25,18 +25,18 @@ module OmniAuth
           redirect callback_path
         end
       end
-      
+
       def get_credentials
         OmniAuth::Form.build(consumer_options[:title] || "xAuth Credentials") do
           text_field 'Username', 'username'
           password_field 'Password', 'password'
         end.to_response
       end
-      
+
       def consumer
         ::OAuth::Consumer.new(consumer_key, consumer_secret, consumer_options.merge(options[:client_options] || options[:consumer_options] || {}))
       end
-      
+
       def callback_phase
         @access_token = consumer.get_access_token(nil, {}, session['omniauth.xauth'])
         super
@@ -47,9 +47,9 @@ module OmniAuth
         rescue ::MultiJson::DecodeError => e
           fail!(:invalid_response, e)
       ensure
-        session['omniauth.xauth'] = nil        
+        session['omniauth.xauth'] = nil
       end
-      
+
       def auth_hash
         OmniAuth::Utils.deep_merge(super, {
           'credentials' => {
@@ -60,7 +60,7 @@ module OmniAuth
           }
         })
       end
-    
+
     end
   end
 end

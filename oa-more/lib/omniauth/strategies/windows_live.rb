@@ -5,9 +5,9 @@ module OmniAuth
   module Strategies
     class WindowsLive
       include OmniAuth::Strategy
-      
+
       attr_accessor :app_id, :app_secret
-      
+
       # Initialize the strategy by providing
       #
       # @param app_id [String] The application ID from your registered app with Microsoft.
