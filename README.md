@@ -21,7 +21,8 @@ on the wiki for this project.
 One strategy, called `Developer`, is included with OmniAuth and provides
 a completely unsecure, non-production-usable strategy that directly
 prompts a user for authentication information and then passes it
-straight through.
+straight through. You can use it as a placeholder when you start
+development and easily swap in other strategies later.
 
 ## Getting Started
 
