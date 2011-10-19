@@ -1,4 +1,4 @@
-require File.expand_path('../../../spec_helper', __FILE__)
+require 'spec_helper'
 
 describe OmniAuth::Strategies::GoogleOAuth2 do
   it_should_behave_like "an oauth2 strategy"
