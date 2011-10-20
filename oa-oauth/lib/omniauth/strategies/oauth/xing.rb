@@ -39,6 +39,7 @@ module OmniAuth
           'first_name'  => person['first_name'],
           'last_name'   => person['last_name'],
           'image'       => person["photo_urls"]["large"],
+          'email'       => person["active_email"],
         }
       end
 
