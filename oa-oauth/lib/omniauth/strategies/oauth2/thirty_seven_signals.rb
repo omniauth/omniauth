@@ -25,7 +25,7 @@ module OmniAuth
       end
 
       def user_data
-        @data ||= MultiJson.decode(@access_token.get('/authorization.json'))
+        @data ||= @access_token.get('https://launchpad.37signals.com/authorization.json').parsed
       end
 
       def user_info
