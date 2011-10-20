@@ -49,8 +49,6 @@ module OmniAuth
         temp_access_token = client.auth_code.get_token(verifier, {:redirect_uri => callback_url}.merge(options))
         token = eval(temp_access_token.token)['token']
         @access_token = ::OAuth2::AccessToken.new(client, token, temp_access_token.params)
-      rescue ::OAuth2::Error => e
-        raise e.response.inspect
       end
 
       def user_hash

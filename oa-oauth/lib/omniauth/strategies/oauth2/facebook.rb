@@ -42,8 +42,6 @@ module OmniAuth
         @access_token.options[:mode] = :query
         @access_token.options[:param_name] = 'access_token'
         @data ||= @access_token.get('/me').parsed
-      rescue ::OAuth2::Error => e
-        raise e.response.inspect
       end
 
       def request_phase
@@ -60,8 +58,6 @@ module OmniAuth
         else
           super
         end
-      rescue ::OAuth2::Error => e
-        raise e.response.inspect
       end
 
       def facebook_session
