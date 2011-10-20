@@ -52,6 +52,7 @@ module OmniAuth
     autoload :GoogleOAuth2,       'omniauth/strategies/google_oauth2'
     autoload :Gowalla,            'omniauth/strategies/oauth2/gowalla'
     autoload :Instagram,          'omniauth/strategies/oauth2/instagram'
+    autoload :Kaixin001,          'omniauth/strategies/oauth2/kaixin001'
     autoload :Liveid,             'omniauth/strategies/oauth2/liveid'
     autoload :Mailchimp,          'omniauth/strategies/oauth2/mailchimp'
     autoload :Mailru,             'omniauth/strategies/oauth2/mailru'
