@@ -43,7 +43,7 @@ module OmniAuth
 
       def user_data
         @access_token.options.merge!({:param_name => 'access_token', :mode => :query})
-        @data ||= MultiJson.decode(@access_token.get('/v1/users/self'))
+        @data ||= @access_token.get('https://api.instagram.com/v1/users/self').parsed
       end
 
       def user_info
