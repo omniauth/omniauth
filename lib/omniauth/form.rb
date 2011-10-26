@@ -97,8 +97,8 @@ module OmniAuth
       header(options[:title],options[:header_info])
     end
 
-    def self.build(title=nil,&block)
-      form = OmniAuth::Form.new(:title => title)
+    def self.build(options = {},&block)
+      form = OmniAuth::Form.new(options)
       if block.arity > 0
         yield form 
       else
