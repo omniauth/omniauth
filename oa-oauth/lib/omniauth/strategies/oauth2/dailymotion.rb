@@ -18,6 +18,19 @@ module OmniAuth
 
         super(app, :dailymotion, client_id, client_secret, client_options, options, &block)
       end
+
+      def auth_hash
+        OmniAuth::Utils.deep_merge(super, {
+          'uid' => user_data['id'],
+          'screenaname' => user_data['screenaname'],
+          'credentials' => {'expires_at' => @access_token.expires_at},
+          'extra' => {'user_hash' => user_data}
+        })
+      end
+
+      def user_data
+        @data ||= @access_token.get('/me').parsed
+      end
     end
   end
 end
