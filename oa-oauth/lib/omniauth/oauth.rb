@@ -45,6 +45,7 @@ module OmniAuth
     autoload :Bitly,              'omniauth/strategies/oauth2/bitly'
     autoload :Cobot,              'omniauth/strategies/oauth2/cobot'
     autoload :Dailymile,          'omniauth/strategies/oauth2/dailymile'
+    autoload :Dailymotion,        'omniauth/strategies/oauth2/dailymotion'
     autoload :Doit,               'omniauth/strategies/oauth2/doit'
     autoload :Facebook,           'omniauth/strategies/oauth2/facebook'
     autoload :Foursquare,         'omniauth/strategies/oauth2/foursquare'
