@@ -7,6 +7,7 @@ module OmniAuth
     autoload :Dopplr,             'omniauth/strategies/oauth/dopplr'
     autoload :Douban,             'omniauth/strategies/oauth/douban'
     autoload :Dropbox,            'omniauth/strategies/oauth/dropbox'
+    autoload :Etsy,               'omniauth/strategies/oauth/etsy'
     autoload :Evernote,           'omniauth/strategies/oauth/evernote'
     autoload :Flattr,             'omniauth/strategies/oauth/flattr'    
     autoload :Flickr,             'omniauth/strategies/oauth/flickr'    
@@ -67,10 +68,7 @@ module OmniAuth
     autoload :Vkontakte,          'omniauth/strategies/oauth2/vkontakte'
     autoload :WePay,              'omniauth/strategies/oauth2/we_pay'
     autoload :Yammer,             'omniauth/strategies/oauth2/yammer'
-
-
     autoload :XAuth,              'omniauth/strategies/xauth'
     autoload :Instapaper,         'omniauth/strategies/xauth/instapaper'
-    
   end
 end
