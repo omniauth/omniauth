@@ -1,5 +1,8 @@
-require 'simplecov'
-SimpleCov.start
+unless ENV['TRAVIS']
+  require 'simplecov'
+  SimpleCov.start
+end
+
 require 'rspec'
 require 'rack/test'
 require 'omniauth'
