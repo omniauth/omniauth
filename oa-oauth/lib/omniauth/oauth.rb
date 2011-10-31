@@ -68,7 +68,10 @@ module OmniAuth
     autoload :Vkontakte,          'omniauth/strategies/oauth2/vkontakte'
     autoload :WePay,              'omniauth/strategies/oauth2/we_pay'
     autoload :Yammer,             'omniauth/strategies/oauth2/yammer'
+
+
     autoload :XAuth,              'omniauth/strategies/xauth'
     autoload :Instapaper,         'omniauth/strategies/xauth/instapaper'
+
   end
 end
