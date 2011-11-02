@@ -1,10 +1,5 @@
 # OmniAuth: Standardized Multi-Provider Authentication
 
-**NOTICE:** This documentation and code is for OmniAuth 1.0 in which
-each provider will become its own separate gem. If you're looking for
-the current released version, please visit [OmniAuth 0.3 Stable
-Branch](https://github.com/intridea/omniauth/tree/0-3-stable).
-
 ## An Introduction
 
 OmniAuth is a libary that standardizes multi-provider authentication for
@@ -115,6 +110,15 @@ The [OmniAuth Wiki](https://github.com/intridea/omniauth/wiki) has
 actively maintained in-depth documentation for OmniAuth. It should be
 your first stop if you are wondering about a more in-depth look at
 OmniAuth, how it works, and how to use it.
+
+## Supported Rubies
+
+OmniAuth is tested under 1.8.7, 1.9.2, 1.9.3, JRuby, Rubinius (1.8
+mode), and Ruby Enterprise Edition.
+
+[![CI Build
+Status](http://secure.travis-ci.org/intridea/omniauth.png)](https://travis-ci.org/intridea/omniauth)
+
 
 ## License
 
