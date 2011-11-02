@@ -117,7 +117,7 @@ OmniAuth is tested under 1.8.7, 1.9.2, 1.9.3, JRuby, Rubinius (1.8
 mode), and Ruby Enterprise Edition.
 
 [![CI Build
-Status](http://secure.travis-ci.org/intridea/omniauth.png)](https://travis-ci.org/intridea/omniauth)
+Status](https://secure.travis-ci.org/intridea/omniauth.png)](http://travis-ci.org/intridea/omniauth)
 
 
 ## License
