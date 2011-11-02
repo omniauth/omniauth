@@ -15,7 +15,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'rack-test', '~> 0.5'
   gem.add_development_dependency 'rake', '~> 0.8'
   gem.add_development_dependency 'rdiscount', '~> 1.6'
-  gem.add_development_dependency 'rspec', '~> 2.5'
+  gem.add_development_dependency 'rspec', '~> 2.7'
   gem.add_development_dependency 'yard', '~> 0.7'
 
   gem.version = OmniAuth::VERSION
