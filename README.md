@@ -1,5 +1,10 @@
 # OmniAuth: Standardized Multi-Provider Authentication
 
+**OmniAuth 1.0 has several breaking changes from version 0.x. You can set
+the dependency to `~> 0.3.2` if you do not wish to make the more difficult
+upgrade. See [the wiki](https://github.com/intridea/omniauth/wiki/Upgrading-to-1.0)
+for more information.**
+
 ## An Introduction
 
 OmniAuth is a libary that standardizes multi-provider authentication for
