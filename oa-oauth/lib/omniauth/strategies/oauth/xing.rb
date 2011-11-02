@@ -15,11 +15,6 @@ module OmniAuth
         super(app, :xing, consumer_key, consumer_secret, client_options, options, &block)
       end
 
-      def callback_phase
-        session['oauth'][name.to_s]['callback_confirmed'] = true
-        super
-      end
-
       def auth_hash
         hash = user_hash(@access_token)
 
