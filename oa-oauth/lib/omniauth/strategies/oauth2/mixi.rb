@@ -23,7 +23,9 @@ module OmniAuth
           super, {
             'uid' => user_data['entry']['id'],
             'user_info' => user_info,
-            'credentials' => {'refresh_token' => @access_token.refresh_token},
+            'credentials' => {'refresh_token' => @access_token.refresh_token,
+                              'expires_in' => @access_token.expires_in
+                             },
             'extra' => {
               'user_hash' => user_data['entry'],
             },
@@ -32,10 +34,12 @@ module OmniAuth
       end
 
       def user_data
+        @access_token.options[:mode] = :query
+        @access_token.options[:param_name] = 'oauth_token'
         @data ||= MultiJson.decode(@access_token.get(
           'http://api.mixi-platform.com/2/people/@me/@self',
           {'oauth_token' => @access_token.token}
-        ))
+        ).body)
       end
 
       def request_phase
