@@ -31,13 +31,15 @@ it the same way that you use any other Rack middleware. For example, to
 use the built-in Developer strategy in a Sinatra application I might do
 this:
 
-    require 'sinatra'
-    require 'omniauth'
+```ruby
+require 'sinatra'
+require 'omniauth'
 
-    class MyApplication < Sinatra::Base
-      use Rack::Session
-      use OmniAuth::Strategies::Developer
-    end
+class MyApplication < Sinatra::Base
+  use Rack::Session
+  use OmniAuth::Strategies::Developer
+end
+```
 
 Because OmniAuth is built for *multi-provider* authentication, I may
 want to leave room to run multiple strategies. For this, the built-in
@@ -47,10 +49,12 @@ code and using each strategy individually as middleware. This is an
 example that you might put into a Rails initializer at
 `config/initializers/omniauth.rb`:
 
-    Rails.application.config.middleware.use OmniAuth::Builder do
-      provider :developer unless Rails.env.production?
-      provider :twitter, ENV['TWITTER_KEY'], ENV['TWITTER_SECRET']
-    end
+```ruby
+Rails.application.config.middleware.use OmniAuth::Builder do
+  provider :developer unless Rails.env.production?
+  provider :twitter, ENV['TWITTER_KEY'], ENV['TWITTER_SECRET']
+end
+```
 
 You should look to the documentation for each provider you use for
 specific initialization requirements.
@@ -78,24 +82,28 @@ application that matches to the callback URL and then performs whatever
 steps are necessary for your application. For example, in a Rails app I
 would add a line in my `routes.rb` file like this:
 
-    match '/auth/:provider/callback', to: 'sessions#create'
+```ruby
+match '/auth/:provider/callback', to: 'sessions#create'
+```
 
 And I might then have a `SessionsController` with code that looks
 something like this:
 
-    class SessionsController < ApplicationController
-      def create
-        @user = User.find_or_create_from_auth_hash(auth_hash)
-        self.current_user = @user
-        redirect_to '/'
-      end
+```ruby
+class SessionsController < ApplicationController
+  def create
+    @user = User.find_or_create_from_auth_hash(auth_hash)
+    self.current_user = @user
+    redirect_to '/'
+  end
 
-      protected
+  protected
 
-      def auth_hash
-        request.env['omniauth.auth']
-      end
-    end
+  def auth_hash
+    request.env['omniauth.auth']
+  end
+end
+```
 
 The `omniauth.auth` key in the environment hash gives me my
 Authentication Hash which will contain information about the just
@@ -121,8 +129,7 @@ OmniAuth, how it works, and how to use it.
 OmniAuth is tested under 1.8.7, 1.9.2, 1.9.3, JRuby, Rubinius (1.8
 mode), and Ruby Enterprise Edition.
 
-[![CI Build
-Status](https://secure.travis-ci.org/intridea/omniauth.png)](http://travis-ci.org/intridea/omniauth)
+[![CI Build Status](https://secure.travis-ci.org/intridea/omniauth.png)](http://travis-ci.org/intridea/omniauth)
 
 
 ## License
