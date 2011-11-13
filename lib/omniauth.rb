@@ -34,7 +34,9 @@ module OmniAuth
         :default => {
           'provider' => 'default',
           'uid' => '1234',
-          'name' => 'Bob Example'
+          'info' => {
+            'name' => 'Bob Example'
+          }
         }
       }
     }
