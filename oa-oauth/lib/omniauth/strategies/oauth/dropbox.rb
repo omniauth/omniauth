@@ -6,10 +6,10 @@ module OmniAuth
     class Dropbox < OmniAuth::Strategies::OAuth
       def initialize(app, consumer_key=nil, consumer_secret=nil, options={}, &block)
         client_options = {
-          :authorize_url => 'https://www.dropbox.com/0/oauth/authorize',
-          :access_token_url => 'https://api.dropbox.com/0/oauth/access_token',
+          :authorize_url => 'https://www.dropbox.com/1/oauth/authorize',
+          :access_token_url => 'https://api.dropbox.com/1/oauth/access_token',
           :proxy => ENV['HTTP_PROXY'] || ENV['http_proxy'],
-          :request_token_url => 'https://api.dropbox.com/0/oauth/request_token',
+          :request_token_url => 'https://api.dropbox.com/1/oauth/request_token',
           :site => 'https://api.dropbox.com',
         }
         super(app, :dropbox, consumer_key, consumer_secret, client_options, options, &block)
@@ -25,7 +25,7 @@ module OmniAuth
       end
 
       def user_data
-        @data ||= MultiJson.decode(@access_token.get('/0/account/info').body)
+        @data ||= MultiJson.decode(@access_token.get('/1/account/info').body)
       end
 
       def user_info
