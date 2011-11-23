@@ -177,6 +177,10 @@ module OmniAuth
     # Performs the steps necessary to run the request phase of a strategy.
     def request_call
       setup_phase
+
+      #store query params from the request url, extracted in the callback_phase
+      session['query_params'] = Rack::Request.new(env).params 
+
       if options.form.respond_to?(:call)
         options.form.call(env)
       elsif options.form
