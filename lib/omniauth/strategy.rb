@@ -179,7 +179,7 @@ module OmniAuth
       setup_phase
 
       #store query params from the request url, extracted in the callback_phase
-      session['query_params'] = Rack::Request.new(env).params 
+      session['omniauth.params'] = request.params
 
       if options.form.respond_to?(:call)
         options.form.call(env)
@@ -200,7 +200,7 @@ module OmniAuth
       setup_phase
       @env['omniauth.origin'] = session.delete('omniauth.origin')
       @env['omniauth.origin'] = nil if env['omniauth.origin'] == ''
-      @env['omniauth.params'] = session.delete('query_params') || {}
+      @env['omniauth.params'] = session.delete('omniauth.params') || {}
       callback_phase
     end
 
