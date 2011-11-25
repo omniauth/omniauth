@@ -16,5 +16,13 @@ describe OmniAuth::Builder do
         provider ::ExampleClass
       end }.should_not raise_error
     end
+
+    it "should raise a helpful LoadError messgae if it can't find the class" do
+      expect {
+        OmniAuth::Builder.new(nil) do
+          provider :lorax
+        end
+      }.to raise_error(LoadError, "Could not find matching strategy for :lorax. You may need to install an additional gem (such as omniauth-lorax).")
+    end
   end
 end
