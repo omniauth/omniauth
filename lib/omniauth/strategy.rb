@@ -254,6 +254,7 @@ module OmniAuth
         fail!(mocked_auth)
       else
         @env['omniauth.auth'] = mocked_auth
+        @env['omniauth.params'] = session.delete('query_params') || {}
         @env['omniauth.origin'] = session.delete('omniauth.origin')
         @env['omniauth.origin'] = nil if env['omniauth.origin'] == ''
         call_app!
