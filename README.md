@@ -15,7 +15,7 @@ have been created for everything from Facebook to LDAP.
 
 In order to use OmniAuth in your applications, you will need to leverage
 one or more strategies. These strategies are generally released
-individually as RubyGems, and you can see a [community maintained list](https://github.com/intridea/omniauth/wiki/List-of-Strategies) 
+individually as RubyGems, and you can see a [community maintained list](https://github.com/intridea/omniauth/wiki/List-of-Strategies)
 on the wiki for this project.
 
 One strategy, called `Developer`, is included with OmniAuth and provides
@@ -117,39 +117,42 @@ environment information on the callback request. It is entirely up to
 you how you want to implement the particulars of your application's
 authentication flow.
 
-## Resources
+## <a name="resources"></a>Resources
 
 The [OmniAuth Wiki](https://github.com/intridea/omniauth/wiki) has
 actively maintained in-depth documentation for OmniAuth. It should be
 your first stop if you are wondering about a more in-depth look at
 OmniAuth, how it works, and how to use it.
 
-## Supported Rubies
+## <a name="versions"></a>Supported Ruby Versions
 
 OmniAuth is tested under 1.8.7, 1.9.2, 1.9.3, JRuby, Rubinius (1.8
 mode), and Ruby Enterprise Edition.
 
 [![CI Build Status](https://secure.travis-ci.org/intridea/omniauth.png)](http://travis-ci.org/intridea/omniauth)
 
+[gemnasium status][gemnasium]: [![Dependency Status](https://gemnasium.com/intridea/omniauth.png)][gemnasium]
 
-## License
+[gemnasium]: https://gemnasium.com/intridea/omniauth
+
+## <a name="license"></a>License
 
 Copyright (c) 2011 Intridea, Inc.
 
-Permission is hereby granted, free of charge, to any person obtaining a 
-copy of this software and associated documentation files (the "Software"), 
-to deal in the Software without restriction, including without limitation 
-the rights to use, copy, modify, merge, publish, distribute, sublicense, 
-and/or sell copies of the Software, and to permit persons to whom the 
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the "Software"),
+to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the
 Software is furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included 
+The above copyright notice and this permission notice shall be included
 in all copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS 
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
 OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL 
-THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
