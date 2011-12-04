@@ -129,9 +129,11 @@ OmniAuth, how it works, and how to use it.
 OmniAuth is tested under 1.8.7, 1.9.2, 1.9.3, JRuby, Rubinius (1.8
 mode), and Ruby Enterprise Edition.
 
-[![CI Build Status](https://secure.travis-ci.org/intridea/omniauth.png)](http://travis-ci.org/intridea/omniauth)
+[![CI Build Status](https://secure.travis-ci.org/intridea/omniauth.png)][travis]
 
-[gemnasium status][gemnasium]: [![Dependency Status](https://gemnasium.com/intridea/omniauth.png)][gemnasium]
+[travis]: http://travis-ci.org/intridea/omniauth
+
+[gemnasium status][gemnasium]: [![Dependency Status](https://gemnasium.com/intridea/omniauth.png?travis)][gemnasium]
 
 [gemnasium]: https://gemnasium.com/intridea/omniauth
 
