@@ -94,6 +94,7 @@ module OmniAuth
       self.options = options
 
       @html = ""
+      @with_custom_button = false
       header(options[:title],options[:header_info])
     end
 
@@ -130,6 +131,7 @@ module OmniAuth
     end
 
     def button(text)
+      @with_custom_button = true
       @html << "\n<button type='submit'>#{text}</button>"
     end
 
@@ -162,8 +164,8 @@ module OmniAuth
 
     def footer
       return self if @footer
+      @html << "\n<button type='submit'>Connect</button>" unless @with_custom_button
       @html << <<-HTML
-      <button type='submit'>Connect</button>
       </form>
       </body>
       </html>
