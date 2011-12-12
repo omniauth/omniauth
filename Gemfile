@@ -1,11 +1,11 @@
-source 'http://rubygems.org'
+source 'https://rubygems.org'
 
 gemspec
 
 group :development do
-  gem 'guard'
-  gem 'guard-rspec'
-  gem 'guard-bundler'
   gem 'growl'
+  gem 'guard'
+  gem 'guard-bundler'
+  gem 'guard-rspec'
   gem 'rb-fsevent'
 end
