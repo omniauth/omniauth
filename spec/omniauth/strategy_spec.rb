@@ -496,6 +496,18 @@ describe OmniAuth::Strategy do
         response[1]['Location'].should == '/sub_uri/auth/test/callback'
       end
 
+      it 'should redirect on failure' do
+        response = OmniAuth.config.on_failure.call(make_env('/auth/test', 'omniauth.error.type' => 'error'))
+        response[0].should == 302
+        response[1]['Location'].should == '/auth/failure?message=error'
+      end
+
+      it 'should respect SCRIPT_NAME (a.k.a. BaseURI) on failure' do
+        response = OmniAuth.config.on_failure.call(make_env('/auth/test', 'SCRIPT_NAME' => '/sub_uri', 'omniauth.error.type' => 'error'))
+        response[0].should == 302
+        response[1]['Location'].should == '/sub_uri/auth/failure?message=error'
+      end
+
       it 'should be case insensitive on callback path' do
         strategy.call(make_env('/AUTH/TeSt/CaLlBAck')).should == strategy.call(make_env('/auth/test/callback'))
       end
