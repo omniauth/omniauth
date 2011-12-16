@@ -546,7 +546,14 @@ describe OmniAuth::Strategy do
         strategy.call(make_env('/auth/test/callback', 'rack.session' => {'omniauth.origin' => 'http://example.com/origin'}))
         strategy.env['omniauth.origin'].should == 'http://example.com/origin'
       end
-      
+
+      it 'should set omniauth.auth as an instance of Hashie::Mash' do
+        OmniAuth.config.mock_auth[:test] = {}
+
+        strategy.call make_env('/auth/test/callback')
+        strategy.env['omniauth.auth'].should be_a(Hashie::Mash)
+      end
+
       after do
         OmniAuth.config.test_mode = false
       end
