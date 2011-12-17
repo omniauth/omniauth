@@ -1,4 +1,7 @@
-# OmniAuth: Standardized Multi-Provider Authentication
+# OmniAuth: Standardized Multi-Provider Authentication [![CI Build Status](https://secure.travis-ci.org/intridea/omniauth.png)][travis] [![Dependency Status](https://gemnasium.com/intridea/omniauth.png?travis)][gemnasium]
+
+[travis]: http://travis-ci.org/intridea/omniauth
+[gemnasium]: https://gemnasium.com/intridea/omniauth
 
 **OmniAuth 1.0 has several breaking changes from version 0.x. You can set
 the dependency to `~> 0.3.2` if you do not wish to make the more difficult
@@ -128,14 +131,6 @@ OmniAuth, how it works, and how to use it.
 
 OmniAuth is tested under 1.8.7, 1.9.2, 1.9.3, JRuby, Rubinius (1.8
 mode), and Ruby Enterprise Edition.
-
-[![CI Build Status](https://secure.travis-ci.org/intridea/omniauth.png)][travis]
-
-[travis]: http://travis-ci.org/intridea/omniauth
-
-[gemnasium status][gemnasium]: [![Dependency Status](https://gemnasium.com/intridea/omniauth.png?travis)][gemnasium]
-
-[gemnasium]: https://gemnasium.com/intridea/omniauth
 
 ## <a name="license"></a>License
 
