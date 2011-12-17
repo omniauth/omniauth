@@ -1,4 +1,4 @@
-# OmniAuth: Standardized Multi-Provider Authentication [![CI Build Status](https://secure.travis-ci.org/intridea/omniauth.png)][travis] [![Dependency Status](https://gemnasium.com/intridea/omniauth.png?travis)][gemnasium]
+# OmniAuth: Standardized Multi-Provider Authentication [![CI Build Status](https://secure.travis-ci.org/intridea/omniauth.png?branch=master)][travis] [![Dependency Status](https://gemnasium.com/intridea/omniauth.png?travis)][gemnasium]
 
 [travis]: http://travis-ci.org/intridea/omniauth
 [gemnasium]: https://gemnasium.com/intridea/omniauth
