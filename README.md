@@ -10,7 +10,7 @@ for more information.**
 
 ## An Introduction
 
-OmniAuth is a libary that standardizes multi-provider authentication for
+OmniAuth is a library that standardizes multi-provider authentication for
 web applications. It was created to be powerful, flexible, and do as
 little as possible. Any developer can create **strategies** for OmniAuth
 that can authenticate users via disparate systems. OmniAuth strategies
@@ -22,7 +22,7 @@ individually as RubyGems, and you can see a [community maintained list](https://
 on the wiki for this project.
 
 One strategy, called `Developer`, is included with OmniAuth and provides
-a completely unsecure, non-production-usable strategy that directly
+a completely insecure, non-production-usable strategy that directly
 prompts a user for authentication information and then passes it
 straight through. You can use it as a placeholder when you start
 development and easily swap in other strategies later.
