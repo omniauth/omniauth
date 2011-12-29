@@ -2,11 +2,6 @@ require 'omniauth'
 
 module OmniAuth
   class Builder < ::Rack::Builder
-    def initialize(app, &block)
-      @app = app
-      super(&block)
-    end
-
     def on_failure(&block)
       OmniAuth.config.on_failure = block
     end
@@ -30,7 +25,6 @@ module OmniAuth
     end
 
     def call(env)
-      @ins << @app unless @ins.include?(@app)
       to_app.call(env)
     end
   end
