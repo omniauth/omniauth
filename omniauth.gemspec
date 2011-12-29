@@ -7,7 +7,7 @@ Gem::Specification.new do |gem|
   gem.authors = ['Michael Bleigh', 'Erik Michaels-Ober']
   gem.email = ['michael@intridea.com', 'sferik@gmail.com']
 
-  gem.add_runtime_dependency 'rack', '~> 1.0'
+  gem.add_runtime_dependency 'rack', '~> 1.4'
   gem.add_runtime_dependency 'hashie', '~> 1.2'
 
   gem.add_development_dependency 'growl'
