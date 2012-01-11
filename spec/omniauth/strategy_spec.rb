@@ -510,6 +510,8 @@ describe OmniAuth::Strategy do
       end
 
       it 'should respond with the default hash if none is set' do
+        OmniAuth.config.mock_auth[:test] = nil
+
         strategy.call make_env('/auth/test/callback')
         strategy.env['omniauth.auth']['uid'].should == '1234'
       end
@@ -546,7 +548,7 @@ describe OmniAuth::Strategy do
         strategy.call(make_env('/auth/test/callback', 'rack.session' => {'omniauth.origin' => 'http://example.com/origin'}))
         strategy.env['omniauth.origin'].should == 'http://example.com/origin'
       end
-      
+
       after do
         OmniAuth.config.test_mode = false
       end
@@ -556,7 +558,7 @@ describe OmniAuth::Strategy do
       before do
         OmniAuth.config.test_mode = true
       end
-      
+
       it 'should be the string when a string is there' do
         OmniAuth.config.full_host = 'my.host.com'
         strategy.full_host.should == 'my.host.com'
@@ -567,7 +569,7 @@ describe OmniAuth::Strategy do
         strategy.call(make_env('/auth/test', 'HOST' => 'my.host.net'))
         strategy.full_host.should == 'my.host.net'
       end
-      
+
       after do
         OmniAuth.config.test_mode = false
       end
@@ -578,7 +580,7 @@ describe OmniAuth::Strategy do
     before do
       OmniAuth.config.test_mode = true
     end
-    
+
     context 'when options[:setup] = true' do
       let(:strategy){ ExampleStrategy.new(app, :setup => true) }
       let(:app){lambda{|env| env['omniauth.strategy'].options[:awesome] = 'sauce' if env['PATH_INFO'] == '/auth/test/setup'; [404, {}, 'Awesome'] }}
@@ -613,7 +615,7 @@ describe OmniAuth::Strategy do
         strategy.options[:awesome].should == 'sauce'
       end
     end
-    
+
     after do
       OmniAuth.config.test_mode = false
     end
