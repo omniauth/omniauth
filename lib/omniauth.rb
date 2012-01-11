@@ -31,13 +31,13 @@ module OmniAuth
       :test_mode => false,
       :allowed_request_methods => [:get, :post],
       :mock_auth => {
-        :default => {
+        :default => AuthHash.new(
           'provider' => 'default',
           'uid' => '1234',
           'info' => {
             'name' => 'Bob Example'
           }
-        }
+        )
       }
     }
 
