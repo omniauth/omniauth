@@ -52,6 +52,28 @@ describe OmniAuth do
 
       OmniAuth.config.on_failure.call.should == 'yoyo'
     end
+    describe 'mock auth' do
+      before do
+        OmniAuth.config.add_mock(:facebook, :uid => '12345',:info=>{:name=>'Joe', :email=>'joe@example.com'})
+      end
+      it 'default should be AuthHash' do
+        OmniAuth.configure do |config|
+          config.mock_auth[:default].should be_kind_of(OmniAuth::AuthHash)
+        end
+      end
+      it 'facebook should be AuthHash' do
+        OmniAuth.configure do |config|
+          config.mock_auth[:facebook].should be_kind_of(OmniAuth::AuthHash)
+        end        
+      end
+      it 'should set facebook attributes' do
+        OmniAuth.configure do |config|
+          config.mock_auth[:facebook].uid.should eq('12345')
+          config.mock_auth[:facebook].info.name.should eq('Joe')
+          config.mock_auth[:facebook].info.email.should eq('joe@example.com')
+        end
+      end
+    end
   end
 
   describe '::Utils' do
