@@ -2,6 +2,19 @@ require 'omniauth'
 
 module OmniAuth
   class Builder < ::Rack::Builder
+    def initialize(app, &block)
+      if rack14?
+        super
+      else
+        @app = app
+        super(&block)
+      end
+    end
+
+    def rack14?
+      Rack.release.split('.')[1].to_i >= 4
+    end
+
     def on_failure(&block)
       OmniAuth.config.on_failure = block
     end
@@ -25,6 +38,7 @@ module OmniAuth
     end
 
     def call(env)
+      @ins << @app unless rack14? || @ins.include?(@app)
       to_app.call(env)
     end
   end
