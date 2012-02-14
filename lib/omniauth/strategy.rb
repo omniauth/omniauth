@@ -237,7 +237,9 @@ module OmniAuth
 
     def mock_request_call
       setup_phase
-      return response if response = call_through_to_app
+      if response = call_through_to_app
+        return response
+      end
 
       if request.params['origin']
         @env['rack.session']['omniauth.origin'] = request.params['origin']
