@@ -24,7 +24,12 @@ module OmniAuth
       :path_prefix => '/auth',
       :on_failure => Proc.new do |env|
         message_key = env['omniauth.error.type']
-        new_path = "#{env['SCRIPT_NAME']}#{OmniAuth.config.path_prefix}/failure?message=#{message_key}"
+        if env['omniauth.strategy']
+          failure_path = env['omniauth.strategy'].failure_path
+        else
+          failure_path = "#{OmniAuth.config.path_prefix}/failure"
+        end
+        new_path = "#{env['SCRIPT_NAME']}#{failure_path}?message=#{message_key}"
         [302, {'Location' => new_path, 'Content-Type'=> 'text/html'}, []]
       end,
       :form_css => Form::DEFAULT_CSS,
