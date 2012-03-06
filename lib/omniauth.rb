@@ -11,6 +11,7 @@ module OmniAuth
   autoload :Test,     'omniauth/test'
   autoload :Form,     'omniauth/form'
   autoload :AuthHash, 'omniauth/auth_hash'
+  autoload :FailureEndpoint, 'omniauth/failure_endpoint'
 
   def self.strategies
     @@strategies ||= []
@@ -22,11 +23,7 @@ module OmniAuth
     @@defaults = {
       :camelizations => {},
       :path_prefix => '/auth',
-      :on_failure => Proc.new do |env|
-        message_key = env['omniauth.error.type']
-        new_path = "#{env['SCRIPT_NAME']}#{OmniAuth.config.path_prefix}/failure?message=#{message_key}"
-        [302, {'Location' => new_path, 'Content-Type'=> 'text/html'}, []]
-      end,
+      :on_failure => OmniAuth::FailureEndpoint,
       :form_css => Form::DEFAULT_CSS,
       :test_mode => false,
       :allowed_request_methods => [:get, :post],
