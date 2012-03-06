@@ -509,7 +509,7 @@ describe OmniAuth::Strategy do
       end
 
       it 'should be case insensitive on callback path' do
-        strategy.call(make_env('/AUTH/TeSt/CaLlBAck')).should == strategy.call(make_env('/auth/test/callback'))
+        strategy.call(make_env('/AUTH/TeSt/CaLlBAck')).first.should == strategy.call(make_env('/auth/test/callback')).first
       end
 
       it 'should maintain query string parameters' do
