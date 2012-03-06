@@ -211,11 +211,16 @@ module OmniAuth
     end
 
     def on_request_path?
-      on_path?(request_path)
+      return false if current_path =~ /.*\/(setup|callback|failure|register)$/i
+      current_path =~ /^#{request_path}.*/i
     end
 
     def on_callback_path?
-      on_path?(callback_path)
+      if options[:callback_path]
+        current_path == options[:callback_path]
+      else
+        current_path =~ /^#{path_prefix}\/#{name}.*\/callback$/i
+      end
     end
 
     def on_path?(path)
@@ -336,20 +341,49 @@ module OmniAuth
       options[:path_prefix] || OmniAuth.config.path_prefix
     end
 
+    def dynamic_path
+      if current_path =~ /\/(setup|callback|failure)$/i
+        current_path =~ /^#{request_path}(\/.*)?\/(setup|callback|failure)$/i
+      else
+        current_path =~ /^#{request_path}(\/.*)$/i
+      end
+      $1.to_s.sub(/\/?\s*$/,'') if $1
+    end
+
     def request_path
       options[:request_path] || "#{path_prefix}/#{name}"
     end
 
     def callback_path
-      options[:callback_path] || "#{path_prefix}/#{name}/callback"
+      if options[:callback_path]
+        "#{options[:callback_path]}#{dynamic_path}"
+      else
+        "#{path_prefix}/#{name}#{dynamic_path}/callback"
+      end
     end
 
     def setup_path
-      options[:setup_path] || "#{path_prefix}/#{name}/setup"
+      if options[:setup_path]
+        "#{options[:setup_path]}#{dynamic_path}"
+      else
+        "#{path_prefix}/#{name}#{dynamic_path}/setup"
+      end
+    end
+
+    def failure_path
+      if current_base_path != "#{path_prefix}/#{name}"
+        "#{current_base_path}/failure"
+      else
+        "#{path_prefix}/failure"
+      end
     end
 
     def current_path
       request.path_info.downcase.sub(/\/$/,'')
+    end
+
+    def current_base_path
+      current_path.sub(/\/(setup|callback|failure)$/,'')
     end
 
     def query_string
@@ -423,7 +457,6 @@ module OmniAuth
       self.env['omniauth.error'] = exception
       self.env['omniauth.error.type'] = message_key.to_sym
       self.env['omniauth.error.strategy'] = self
-
       OmniAuth.config.on_failure.call(self.env)
     end
 
