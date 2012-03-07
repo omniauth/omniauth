@@ -237,9 +237,6 @@ module OmniAuth
 
     def mock_request_call
       setup_phase
-      if response = call_through_to_app
-        return response
-      end
 
       if request.params['origin']
         @env['rack.session']['omniauth.origin'] = request.params['origin']
@@ -354,14 +351,6 @@ module OmniAuth
 
     def query_string
       request.query_string.empty? ? "" : "?#{request.query_string}"
-    end
-
-    def call_through_to_app
-      status, headers, body = *call_app!
-      session['query_params'] = Rack::Request.new(env).params
-      @response = Rack::Response.new(body, status, headers)
-
-      status == 404 ? nil : @response.finish
     end
 
     def call_app!(env = @env)
