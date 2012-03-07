@@ -477,6 +477,11 @@ describe OmniAuth::Strategy do
     end
 
     context 'test mode' do
+      let(:app) do
+        # In test mode, the underlying app shouldn't be called on request phase.
+        lambda { |env| [404, {"Content-Type" => "text/html"}, []] }
+      end
+
       before do
         OmniAuth.config.test_mode = true
       end
