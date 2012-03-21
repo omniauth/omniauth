@@ -41,5 +41,11 @@ describe OmniAuth::FailureEndpoint do
       status, head, body = *subject.call(env)
       head["Location"].should == '/boo/failure?message=invalid_request'
     end
+
+    it 'should include the origin (escaped) if one is provided' do
+      env.merge! 'omniauth.origin' => '/origin-example'
+      status, head, body = *subject.call(env)
+      head['Location'].should be_include('&origin=%2Forigin-example')
+    end
   end
 end
