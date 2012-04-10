@@ -4,7 +4,7 @@ describe OmniAuth::FailureEndpoint do
   subject{ OmniAuth::FailureEndpoint }
 
   context 'development' do
-    before do 
+    before do
       @rack_env = ENV['RACK_ENV']
       ENV['RACK_ENV'] = 'development'
     end
@@ -24,8 +24,9 @@ describe OmniAuth::FailureEndpoint do
   end
 
   context 'non-development' do
-    let(:env){ {'omniauth.error.type' => 'invalid_request'} }
-    
+    let(:env){ {'omniauth.error.type' => 'invalid_request',
+                'omniauth.error.strategy' => ExampleStrategy.new({}) } }
+
     it 'should be a redirect' do
       status, head, body = *subject.call(env)
       status.should == 302
@@ -33,13 +34,13 @@ describe OmniAuth::FailureEndpoint do
 
     it 'should include the SCRIPT_NAME' do
       status, head, body = *subject.call(env.merge('SCRIPT_NAME' => '/random'))
-      head['Location'].should == '/random/auth/failure?message=invalid_request'
+      head['Location'].should == '/random/auth/failure?message=invalid_request&strategy=test'
     end
 
     it 'should respect configured path prefix' do
       OmniAuth.config.stub(:path_prefix => '/boo')
       status, head, body = *subject.call(env)
-      head["Location"].should == '/boo/failure?message=invalid_request'
+      head["Location"].should == '/boo/failure?message=invalid_request&strategy=test'
     end
 
     it 'should include the origin (escaped) if one is provided' do
