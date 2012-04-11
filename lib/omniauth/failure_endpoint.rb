@@ -38,7 +38,7 @@ module OmniAuth
 
     def origin_query_param
       return "" unless env['omniauth.origin']
-      "&origin=#{CGI.escape(env['omniauth.origin'])}"
+      "&origin=#{Rack::Utils.escape(env['omniauth.origin'])}"
     end
   end
 end
