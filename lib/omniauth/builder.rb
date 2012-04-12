@@ -23,6 +23,11 @@ module OmniAuth
       OmniAuth.configure(&block)
     end
 
+    def options(options = false)
+      return @options || {} if options == false
+      @options = options
+    end
+
     def provider(klass, *args, &block)
       if klass.is_a?(Class)
         middleware = klass
@@ -34,6 +39,7 @@ module OmniAuth
         end
       end
 
+      args.last.is_a?(Hash) ? args.push(options.merge(args.pop)) : args.push(options)
       use middleware, *args, &block
     end
 
