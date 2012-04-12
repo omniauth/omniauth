@@ -346,6 +346,23 @@ describe OmniAuth::Strategy do
       end
     end
 
+    context 'dynamic paths' do
+      it 'should run the request phase if the custom request path evaluator is truthy' do
+        @options = {:request_path => lambda{|env| true}}
+        lambda{ strategy.call(make_env('/asoufibasfi')) }.should raise_error("Request Phase")
+      end
+
+      it 'should run the callback phase if the custom callback path evaluator is truthy' do
+        @options = {:callback_path => lambda{|env| true}}
+        lambda{ strategy.call(make_env('/asoufiasod')) }.should raise_error("Callback Phase")
+      end
+
+      it 'should provide a custom callback path if request_path evals to a string' do
+        strategy_instance = fresh_strategy.new(nil, :request_path => lambda{|env| "/auth/boo/callback/22" })
+        strategy_instance.callback_path.should == '/auth/boo/callback/22'
+      end      
+    end
+
     context 'custom paths' do
       it 'should use a custom request_path if one is provided' do
         @options = {:request_path => '/awesome'}
