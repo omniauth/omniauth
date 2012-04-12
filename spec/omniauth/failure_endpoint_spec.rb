@@ -10,8 +10,9 @@ describe OmniAuth::FailureEndpoint do
     end
 
     it 'should raise out the error' do
-      err = StandardError.new("Blah")
-      expect{ subject.call('omniauth.error' => err) }.to raise_error(err)
+      expect do
+        subject.call('omniauth.error' => StandardError.new("Blah"))
+      end.to raise_error(StandardError, "Blah")
     end
 
     it 'should raise out an OmniAuth::Error if no omniauth.error is set' do
