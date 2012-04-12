@@ -1,5 +1,6 @@
 require 'rack'
 require 'singleton'
+require 'logger'
 
 module OmniAuth
   class Error < StandardError; end
@@ -22,12 +23,19 @@ module OmniAuth
   class Configuration
     include Singleton
 
+    def self.default_logger
+      logger = Logger.new(STDOUT)
+      logger.progname = "omniauth"
+      logger
+    end
+
     @@defaults = {
       :camelizations => {},
       :path_prefix => '/auth',
       :on_failure => OmniAuth::FailureEndpoint,
       :form_css => Form::DEFAULT_CSS,
       :test_mode => false,
+      :logger => default_logger,
       :allowed_request_methods => [:get, :post],
       :mock_auth => {
         :default => AuthHash.new(
@@ -88,7 +96,7 @@ module OmniAuth
     end
 
     attr_writer :on_failure
-    attr_accessor :path_prefix, :allowed_request_methods, :form_css, :test_mode, :mock_auth, :full_host, :camelizations
+    attr_accessor :path_prefix, :allowed_request_methods, :form_css, :test_mode, :mock_auth, :full_host, :camelizations, :logger
   end
 
   def self.config
@@ -97,6 +105,10 @@ module OmniAuth
 
   def self.configure
     yield config
+  end
+
+  def self.logger
+    config.logger
   end
 
   def self.mock_auth_for(provider)

@@ -120,6 +120,16 @@ environment information on the callback request. It is entirely up to
 you how you want to implement the particulars of your application's
 authentication flow.
 
+## Logging
+
+OmniAuth supports a configurable logger. By default, OmniAuth will log 
+to `STDOUT` but you can configure this using `OmniAuth.config.logger`:
+
+```ruby
+# Rails application example
+OmniAuth.config.logger = Rails.logger
+```
+
 ## <a name="resources"></a>Resources
 
 The [OmniAuth Wiki](https://github.com/intridea/omniauth/wiki) has

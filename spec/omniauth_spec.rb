@@ -76,6 +76,13 @@ describe OmniAuth do
     end
   end
 
+  describe '.logger' do
+    it 'should call through to the configured logger' do
+      OmniAuth.stub(:config => mock(:logger => "foo"))
+      OmniAuth.logger.should == "foo"
+    end
+  end
+
   describe '::Utils' do
     describe '.deep_merge' do
       it 'should combine hashes' do

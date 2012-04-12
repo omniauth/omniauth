@@ -142,6 +142,15 @@ module OmniAuth
       "#<#{self.class.to_s}>"
     end
 
+    # Direct access to the OmniAuth logger, automatically prefixed
+    # with this strategy's name.
+    #
+    # @example
+    #   log :warn, "This is a warning."
+    def log(level, message)
+      OmniAuth.logger.send(level, "(#{name}) #{message}")
+    end
+
     # Duplicates this instance and runs #call! on it.
     # @param [Hash] The Rack environment.
     def call(env)
@@ -178,12 +187,16 @@ module OmniAuth
     def request_call
       setup_phase
 
+      log :info, "Request phase initiated."
+
       #store query params from the request url, extracted in the callback_phase
       session['omniauth.params'] = request.params
 
       if options.form.respond_to?(:call)
+        log :info, "Rendering form from supplied Rack endpoint."
         options.form.call(env)
       elsif options.form
+        log :info, "Rendering form from underlying application."
         call_app!
       else
         if request.params['origin']
@@ -198,6 +211,8 @@ module OmniAuth
     # Performs the steps necessary to run the callback phase of a strategy.
     def callback_call
       setup_phase
+
+      log :info, "Callback phase initiated."
       @env['omniauth.origin'] = session.delete('omniauth.origin')
       @env['omniauth.origin'] = nil if env['omniauth.origin'] == ''
       @env['omniauth.params'] = session.delete('omniauth.params') || {}
@@ -266,8 +281,10 @@ module OmniAuth
     # underlying application. This will default to `/auth/:provider/setup`.
     def setup_phase
       if options[:setup].respond_to?(:call)
+        log :info, "Setup endpoint detected, running now."
         options[:setup].call(env)
       elsif options.setup?
+        log :info, "Calling through to underlying application for setup."
         setup_env = env.merge('PATH_INFO' => setup_path, 'REQUEST_METHOD' => 'GET')
         call_app!(setup_env)
       end
@@ -412,6 +429,12 @@ module OmniAuth
       self.env['omniauth.error'] = exception
       self.env['omniauth.error.type'] = message_key.to_sym
       self.env['omniauth.error.strategy'] = self
+
+      if exception
+        log :error, "Authentication failure! #{message_key}: #{exception.class.to_s}, #{exception.message}"
+      else
+        log :error, "Authentication failure! #{message_key} encountered."
+      end
 
       OmniAuth.config.on_failure.call(self.env)
     end
