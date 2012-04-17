@@ -12,7 +12,6 @@
 *.un~
 *~
 .*
-.DS_Store
 .Spotlight-V100
 .Trashes
 .\#*
@@ -34,7 +33,6 @@ Gemfile.lock
 Icon?
 InstalledFiles
 Session.vim
-Thumbs.db
 \#*
 \#*\#
 _yardoc
