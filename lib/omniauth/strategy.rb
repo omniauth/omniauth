@@ -230,8 +230,10 @@ module OmniAuth
     # in the event that OmniAuth has been configured to be
     # in test mode.
     def mock_call!(env)
+      return options_call if on_auth_path? && options_request?
       return mock_request_call if on_request_path?
       return mock_callback_call if on_callback_path?
+      return other_phase if respond_to?(:other_phase)
       call_app!
     end
 
