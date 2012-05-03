@@ -122,7 +122,7 @@ authentication flow.
 
 ## Logging
 
-OmniAuth supports a configurable logger. By default, OmniAuth will log 
+OmniAuth supports a configurable logger. By default, OmniAuth will log
 to `STDOUT` but you can configure this using `OmniAuth.config.logger`:
 
 ```ruby
@@ -130,19 +130,19 @@ to `STDOUT` but you can configure this using `OmniAuth.config.logger`:
 OmniAuth.config.logger = Rails.logger
 ```
 
-## <a name="resources"></a>Resources
+## Resources
 
 The [OmniAuth Wiki](https://github.com/intridea/omniauth/wiki) has
 actively maintained in-depth documentation for OmniAuth. It should be
 your first stop if you are wondering about a more in-depth look at
 OmniAuth, how it works, and how to use it.
 
-## <a name="versions"></a>Supported Ruby Versions
+## Supported Ruby Versions
 
 OmniAuth is tested under 1.8.7, 1.9.2, 1.9.3, JRuby (1.8 mode), and Rubinius
 (1.8 and 1.9 modes).
 
-## <a name="license"></a>License
+## License
 
 Copyright (c) 2011 Intridea, Inc.
 
