@@ -8,6 +8,7 @@ module OmniAuth
       else
         @app = app
         super(&block)
+        @ins << @app
       end
     end
 
@@ -44,7 +45,6 @@ module OmniAuth
     end
 
     def call(env)
-      @ins << @app unless rack14? || @ins.include?(@app)
       to_app.call(env)
     end
   end
