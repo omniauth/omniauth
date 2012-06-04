@@ -564,6 +564,20 @@ describe OmniAuth::Strategy do
         strategy.env['omniauth.origin'].should == 'http://example.com/origin'
       end
 
+      it 'should set omniauth.params on the request phase' do
+        OmniAuth.config.mock_auth[:test] = {}
+
+        strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'foo=bar'))
+        strategy.env['rack.session']['omniauth.params'].should == {'foo' => 'bar'}
+      end
+
+      it 'should turn omniauth.params into an env variable on the callback phase' do
+        OmniAuth.config.mock_auth[:test] = {}
+
+        strategy.call(make_env('/auth/test/callback', 'rack.session' => {'omniauth.params' => {'foo' => 'bar'}}))
+        strategy.env['omniauth.params'].should == {'foo' => 'bar'}
+      end
+
       after do
         OmniAuth.config.test_mode = false
       end

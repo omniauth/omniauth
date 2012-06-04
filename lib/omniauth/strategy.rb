@@ -261,6 +261,8 @@ module OmniAuth
     def mock_request_call
       setup_phase
 
+      session['omniauth.params'] = request.params
+
       if request.params['origin']
         @env['rack.session']['omniauth.origin'] = request.params['origin']
       elsif env['HTTP_REFERER'] && !env['HTTP_REFERER'].match(/#{request_path}$/)
@@ -276,7 +278,7 @@ module OmniAuth
         fail!(mocked_auth)
       else
         @env['omniauth.auth'] = mocked_auth
-        @env['omniauth.params'] = session.delete('query_params') || {}
+        @env['omniauth.params'] = session.delete('omniauth.params') || {}
         @env['omniauth.origin'] = session.delete('omniauth.origin')
         @env['omniauth.origin'] = nil if env['omniauth.origin'] == ''
         call_app!
