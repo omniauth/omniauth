@@ -10,10 +10,10 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency 'rack'
   gem.add_runtime_dependency 'hashie', '~> 1.2'
 
+  gem.add_development_dependency 'maruku'
   gem.add_development_dependency 'simplecov'
   gem.add_development_dependency 'rack-test'
   gem.add_development_dependency 'rake'
-  gem.add_development_dependency 'rdiscount'
   gem.add_development_dependency 'rspec', '~> 2.8'
   gem.add_development_dependency 'yard'
 
