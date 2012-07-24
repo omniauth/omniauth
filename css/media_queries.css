@@ -1,0 +1,164 @@
+@media only screen and (max-width: 460px) {
+	.multiplebgs header{
+		background:url("../img/header.png") top right;	
+	}
+	
+	#reg_logo {
+		display: block;
+		margin: 0 auto 10px auto;
+	}
+	header section{
+		padding:30px 10px 10px;
+	}
+	
+	header h1{
+		font-size:3em !important;
+		display: block!important;
+		margin: 0 0 20px 0!important;
+		line-height: 38px!important;
+	}
+	
+	#quick_links {
+		display: block;
+		margin: 20px 0 0 0;
+	}	
+
+	#content{
+		padding:20px 0!important;
+	}
+	
+	#content p{
+		margin-bottom:20px;
+	}
+	
+	#content ul {
+		padding: 0 20px;
+	}
+		
+	#content ul.author-links {
+		padding: 0;
+	}
+
+	article.provider {
+		padding: 10px;
+	}
+	article.provider h1 {
+		float: none;
+		display: block;
+		margin: 0 10px
+	}
+	article.provider nav {
+		float: none;
+		clear: both;
+		margin: 10px 0 10px 0;
+	}
+
+	article.provider .button {
+		display: block;
+		margin: 0!important;
+		width:100%!important;
+	}
+	
+	footer section{
+		padding:0;
+	}
+	
+	footer span{
+		width:50%;
+	}
+	
+	footer #hiring{
+		right:54px;
+	}
+}
+
+@media only screen and (max-width: 646px) {  
+
+	header{
+		height:auto;
+		clear:both;
+		overflow:auto;
+		text-align:center;
+	}
+	
+	header img{
+		height:100px;
+		margin-bottom:10px;
+		display:inline-block;
+	}
+	
+	header h1{
+		display:block;
+		line-height:25px;
+		margin:10px 0 30px 0;
+		padding:0;
+		font-size:4em;
+	}
+	
+		header section{
+			padding-bottom:10px;
+		}
+
+		header #quick_links .button_outer{
+			clear:both;
+			width:100%;
+			margin-bottom:10px;
+		}
+		
+
+		
+	#content{
+		padding:20px 10px !important;
+	}
+
+	footer span{
+		max-width:60%;
+	}
+
+}
+
+@media only screen and (max-width: 768px) {  
+
+	header{
+		height:auto;
+		clear:both;
+		overflow:auto;
+	}
+
+		header section{
+			padding:20px 20px 20px;
+		}
+
+		
+
+	#content{
+		padding:20px 10px 0px !important;
+	}
+	
+		#content .col{
+			width:100%;
+		}
+}
+  
+@media only screen and (max-width: 960px) {  
+	header section{
+		padding:20px 20px;
+	}
+	
+	#content{
+		padding:30px 20px 10px;
+	}
+	
+	.col{
+		margin:0px 0px 0px;
+	}
+
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 1.5) and (max-width: 460px) {
+	.multiplebgs header{
+		background:url("../img/header_2x.png") right;	
+		background-size:auto 390px;
+	}
+}
+

@@ -1,168 +1,207 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-  <head>
-    <meta name="Content-Type" content="text/html; charset=utf-8" />
-<title>Documentation by YARD 0.6.1</title>
-<link rel="stylesheet" href="css/style.css" type="text/css" media="screen" charset="utf-8" />
-<link rel="stylesheet" href="css/common.css" type="text/css" media="screen" charset="utf-8" />
+<!doctype html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 
-<script type="text/javascript" charset="utf-8">
-  relpath = '';
-  if (relpath != '') relpath += '/';
-</script>
-<script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
-<script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  
+  <title></title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width">
+  
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 
-  </head>
-  <body>
-    <script type="text/javascript" charset="utf-8">
-      if (window.top.frames.main) document.body.className = 'frames';
-    </script>
-    
-    <div id="header">
-      <div id="menu">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/screen.css">
+  <link rel="stylesheet" href="css/media_queries.css">
+  <link rel="stylesheet" href="css/code.css">
+  <link rel="stylesheet" href="http://f.fontdeck.com/s/css/xQRUgUWyXok9D7t4bZvudjwwiaQ/clients.intridea.com/18305.css" type="text/css" />
+
+  <script src="js/libs/modernizr-2.5.3.min.js"></script>
   
-    <a href="_index.html" title="Index">Index</a> &raquo; 
-    <span class="title">File: README</span>
-  
-  
-  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</head>
+<body>
+  <div id="container">
+
+  <!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
+  <header class="cf">
+		<section>
+			  <a href="http://www.intridea.com" id="tag"></a>
+		<div id="title">
+			<img src="img/logo.png" id="reg_logo">
+			<h1>Omniauth</h1>
+		</div>
+		<div id="quick_links" class="cf">
+			<span class="button_outer"><a href="https://github.com/intridea/omniauth" class="button">Fork this on Github</a></span>
+			<span class="button_outer"><a href="https://github.com/intridea/omniauth/wiki" class="button">Full Documentation</a></span>
+			<span class="button_outer"><a href="https://github.com/intridea/omniauth/issues" class="button">Report a Problem</a></span>				
+		</div>
+		</section>
+  </header>
+  <div id="header_border"></div>
+  <div id="content_container">
+  <div role="main" id="content" class="cf">
+	<div class="col">
+		<h2>What is Omniauth?</h2>
+		<p>The web application landscape has changed drastically in the past few years. Most users login in to dozens, sometimes hundreds of services each day; sites are no longer silos unto themselves and cannot reasonably expect users to create a unique login and password for each service. This is where OmniAuth comes in.</p>
+		<p>OmniAuth is a library that standardizes multi-provider authentication for web applications. It was created to be powerful, secure, and flexible. Any developer can create strategies for OmniAuth that can authenticate users via disparate systems. OmniAuth strategies have been created for everything from Facebook to LDAP.</p>
+		
+		<h2>Who’s Using OmniAuth?</h2>
+		<p>Hundreds of people are leveraging the advantages of super simple, secure authentication with OmniAuth in their applications. From event registration sites to online wholesale distribution stores, to online trading platforms and beyond, developers are relying on OmniAuth to streamline user authentication in their systems. </p>
+		
+		<ul class="whouses cf">
+			<li class="git"><a href="http://www.github.com"><img src="img/github_logo.png" alt="GitHub" class="git" /></a></li>
+			<li class="hall"><a href="http://www.hall.com"><img src="img/hall_logo.png" alt="Hall" class="hall" /></a></li>
+			<li><a href="http://www.intridea.com"><img src="img/Intridea_Logo_whois.png" alt="Intridea" class="intidea" /></a></a></li>
+		</ul>
+
+		<h2>Getting Started</h2>
+
+		<p>To use OmniAuth in a project with a Gemfile, just add each of the strategies
+		you want to use individually:</p>
+		
+		<pre><code class="code">gem 'omniauth-github'<br />gem 'omniauth-openid'</code></pre>
+		
+		<p>Now you can use the <code>OmniAuth::Builder</code> Rack middleware to build
+		up your list of OmniAuth strategies for use in your application:</p>
+		
+		<pre><code class="code">use OmniAuth::Builder do<br />  provider:github, ENV['GITHUB_KEY'], ENV['GITHUB_SECRET']<br />  provider:openid, :store =&gt; OpenID::Store::Filesystem.new('/tmp')</br />end</code></pre>
+		
+		<p>By default, OmniAuth will return auth information to the path 
+<code>/auth/:provider/callback</code> inside the Rack environment. In Sinatra,
+for example, a callback might look something like this:</p>
+		
+		<pre><code class="code"># Support both GET and POST for callbacks<br />%w(get post).each do |method|<br />  send(method, "/auth/:provider/callback") do<br />    env['omniauth.auth'] # =&gt; OmniAuth::AuthHash<br />  end<br />end</code></pre>
+		<p>For additional documentation, you should see the <a href="https://github.com/intridea/omniauth/wiki">OmniAuth wiki</a>.</p>
+
+	</div>
+
+	<div class="col">
+				
+		<h2>Try OmniAuth!</h2>
+		<p>Want an idea of the different providers OmniAuth gives you the ability to authenticate through? Try out any of the providers in the list below, each one is a live example of authenticating with OmniAuth!</p>
+		
+		<article class="provider cf facebook">
+	      <h1>Facebook <small>by <a href="https://github.com/mkdynamic">mkdynamic</a></small></h1>
+	      <nav>
+	        <a href="https://github.com/mkdynamic/omniauth-facebook" class="button">Usage</a>
+	      </nav>
+	    </article>	
+	  
+	    <article class="provider cf foursquare">
+	      <h1>Foursquare <small>by <a href="https://github.com/arunagw">arunagw</a></small></h1>
+	      <nav>
+	        <a href="https://github.com/arunagw/omniauth-foursquare" class="button">Usage</a>
+	      </nav>
+	    </article>
+	  
+	    <article class="provider cf geoloqi">
+	      <h1>Geoloqi <small>by <a href="https://github.com/kyledrake">kyledrake</a></small></h1>
+	      <nav>
+	        <a href="https://github.com/geoloqi/omniauth-geoloqi" class="button">Usage</a>
+	      </nav>
+	    </article>
+	  
+	    <article class="provider cf github">
+	      <h1>GitHub <small>by <a href="https://github.com/intridea">intridea</a></small></h1>
+	      <nav>
+	        <a href="https://github.com/intridea/omniauth-github" class="button">Usage</a>
+	      </nav>
+	    </article>
+	  
+	    <article class="provider cf identity">
+	      <h1>Identity <small>by <a href="https://github.com/intridea">intridea</a></small></h1>
+	      <nav>
+	        <a href="https://github.com/intridea/omniauth-identity" class="button">Usage</a>
+	      </nav>
+	    </article>
+	  
+	    <article class="provider cf linkedin">
+	      <h1>LinkedIn <small>by <a href="https://github.com/skorks">skorks</a></small></h1>
+	      <nav>
+	        <a href="https://github.com/skorks/omniauth-linkedin" class="button">Usage</a>
+	      </nav>
+	    </article>
+	  
+	    <article class="provider cf picplz">
+	      <h1>PicPlz <small>by <a href="https://github.com/arunagw">arunagw</a></small></h1>
+	      <nav>
+	        <a href="https://github.com/arunagw/omniauth-picplz" class="button">Usage</a>
+	      </nav>
+	    </article>
+	  
+	    <article class="provider cf open_id">
+	      <h1>OpenID <small>by <a href="https://github.com/intridea">intridea</a></small></h1>
+	      <nav>
+	        <a href="https://github.com/intridea/omniauth-openid" class="button">Usage</a>
+	      </nav>
+	    </article>
+	  
+	    <article class="provider cf twitter">
+	      <h1>Twitter <small>by <a href="https://github.com/arunagw">arunagw</a></small></h1>
+	      <div>
+		      <nav>
+		        <a href="https://github.com/arunagw/omniauth-twitter" class="button">Usage</a>
+		      </nav>
+	      </div>
+	   </article>
+		
+		<h2>Resources</h2>
+		<ul class="rescource">
+			<li><a href="https://github.com/intridea/omniauth/wiki">Official OmniAuth Wiki</a> - Official OmniAuth Wiki</li>
+			<li><a href="https://github.com/intridea/omniauth-github">The official Github OmniAuth Strategy </a> - The official Github OmniAuth Strategy</li>
+			<li><a href="http://rubydoc.info/github/intridea/omniauth/master/frames">README Doc</a> - Blog post announcing OmniAuth 1.0</li>
+			<li><a href="http://www.intridea.com/blog/2011/11/2/omniauth-1-0">Announcing OmniAuth 1.0</a> - Blog post announcing OmniAuth 1.0</li>
+			<li><a href="https://github.com/intridea/omniauth/wiki/Sinatra-Example">Sinatra Example</a> - Example of an OmniAuth implementation in Sinatra</li>
+			<li><a href="https://github.com/intridea/omniauth-identity">OmniAuth Identity</a> - A simple login and password strategy for OmniAuth</li>
+		</ul>
+		
+		<h2>Created By:</h2>
+		<div id="author" class="cf">
+			<section class="bio">
+				<h1>Michael Bleigh</h1>
+				<ul class="author-links">
+					<li class="icn_twitter"><a href="https://twitter.com/mbleigh">@mbleigh</a></li>
+				</ul>
+				<p>Michael has been with Intridea since 2007 and works to build Intridea's portfolio of products. With many years of experience working as both a designer and a developer, Michael specializes in helping to bridge the gap between the back-end development and the front-end design of a project.</p>
+
+				<p>Michael is a prolific member of the Ruby on Rails community, having released popular open source libraries such as OmniAuth and spoken at conferences including RailsConf and RubyConf.</p>
+				
+			</section>
+		</div>
+		
+	</div>
+
+	</div>
+  </div>
+  <footer>
+
+	<section>
+	<a id="hiring" href="http://www.intridea.com/careers">We're Hiring!</a>
+	<span>Copyright &copy; 2012 <a href="http://www.intridea.com">Intridea</a>. Released under the MIT License on <a href="https://github.com/intridea/omniauth">GitHub</a>.</span>
+	<a id="footer_logo" href="http://www.intridea.com">Intridea.com</a>
+	</section>
+  </footer>
 </div>
 
-      <div id="search">
-  <a id="class_list_link" href="#">Class List</a>
-  <a id="method_list_link" href="#">Method List</a>
-  <a id ="file_list_link" href="#">File List</a>
-</div>
-
-      <div class="clear"></div>
-    </div>
-    
-    <iframe id="search_frame"></iframe>
-    
-    <div id="content"><div id='filecontents'><h1 id='omniauth_standardized_multiprovider_authentication'>OmniAuth: Standardized Multi-Provider Authentication</h1>
-
-<p>OmniAuth is a new Rack-based authentication system for multi-provider external authentcation. OmniAuth is built from the ground up on the philosophy that <strong>authentication is not the same as identity</strong>, and is based on two observations:</p>
-
-<ol>
-<li>The traditional &#8216;sign up using a login and password&#8217; model is becoming the exception, not the rule. Modern web applications offer external authentication via OpenID, Facebook, and/or OAuth.</li>
-
-<li>The interconnectable web is no longer a dream, it is a necessity. It is not unreasonable to expect that one application may need to be able to connect to one, three, or twelve other services. Modern authentication systems should allow a user&#8217;s identity to be associated with many authentications.</li>
-</ol>
-
-<h2 id='installation'>Installation</h2>
-
-<p>To install OmniAuth, simply install the gem:</p>
-
-<pre class="code"><span class='gem identifier id'>gem</span> <span class='install identifier id'>install</span> <span class='omniauth identifier id'>omniauth</span>
-</pre>
-
-<h2 id='providers'>Providers</h2>
-
-<p>OmniAuth currently supports the following external providers:</p>
-
-<ul>
-<li>
-<p>via OAuth</p>
-
-<ul>
-<li>Facebook</li>
-
-<li>Twitter</li>
-
-<li>37signals ID</li>
-
-<li>Foursquare</li>
-
-<li>LinkedIn</li>
-
-<li>GitHub</li>
-
-<li>Identi.ca (credit: <a href='http://github.com/dcu'>dcu</a>)</li>
-
-<li>Gowalla (credit: <a href='http://github.com/kvnsmth'>kvnsmth</a>)</li>
-
-<li>Dopplr (credit: <a href='http://github.com/flextrip'>flextrip</a>)</li>
-
-<li>TripIt (credit: <a href='http://github.com/flextrip'>flextrip</a>)</li>
-
-<li>Meetup (credit <a href='http://github.com/coderoshi'>coderoshi</a>)</li>
-
-<li>SoundCloud (credit: <a href='http://github.com/leemartin'>leemartin</a>)</li>
-</ul>
-</li>
-
-<li>
-<p>OpenID</p>
-</li>
-
-<li>
-<p>Google Apps (via OpenID)</p>
-</li>
-
-<li>
-<p>CAS (Central Authentication Service) (credit: <a href='http://github.com/jamesarosen'>jamesarosen</a>)</p>
-</li>
-
-<li>
-<p>LDAP (credit: <a href='http://github.com/pyu10055'>pyu10055</a>)</p>
-</li>
-</ul>
-
-<h2 id='usage'>Usage</h2>
-
-<p>OmniAuth is a collection of Rack middleware. To use a single strategy, you simply need to add the middleware:</p>
-
-<pre class="code"><span class='require identifier id'>require</span> <span class='string val'>'oa-oauth'</span>
-<span class='use identifier id'>use</span> <span class='OmniAuth constant id'>OmniAuth</span><span class='colon2 op'>::</span><span class='Strategies constant id'>Strategies</span><span class='colon2 op'>::</span><span class='Twitter constant id'>Twitter</span><span class='comma token'>,</span> <span class='string val'>'CONSUMER_KEY'</span><span class='comma token'>,</span> <span class='string val'>'CONSUMER_SECRET'</span>
-</pre>
-
-<p>Now to initiate authentication you merely need to redirect the user to <code>/auth/twitter</code> via a link or other means. Once the user has authenticated to Twitter, they will be redirected to <code>/auth/twitter/callback</code>. You should build an endpoint that handles this URL, at which point you will will have access to the authentication information through the <code>omniauth.auth</code> parameter of the Rack environment. For example, in Sinatra you would do something like this:</p>
-
-<pre class="code"><span class='get identifier id'>get</span> <span class='string val'>'/auth/twitter/callback'</span> <span class='do do kw'>do</span>
-  <span class='auth_hash identifier id'>auth_hash</span> <span class='assign token'>=</span> <span class='request identifier id'>request</span><span class='dot token'>.</span><span class='env identifier id'>env</span><span class='lbrack token'>[</span><span class='string val'>'omniauth.auth'</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
-
-<p>The hash in question will look something like this:</p>
-
-<pre class="code"><span class='lbrace token'>{</span>
-  <span class='string val'>'uid'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'12356'</span><span class='comma token'>,</span>
-  <span class='string val'>'provider'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'twitter'</span><span class='comma token'>,</span>
-  <span class='string val'>'user_info'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='lbrace token'>{</span>
-    <span class='string val'>'name'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'User Name'</span><span class='comma token'>,</span>
-    <span class='string val'>'nickname'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'username'</span><span class='comma token'>,</span>
-    <span class='comment val'># ...</span>
-  <span class='rbrace token'>}</span>
-<span class='rbrace token'>}</span>
-</pre>
-
-<p>The <code>user_info</code> hash will automatically be populated with as much information about the user as OmniAuth was able to pull from the given API or authentication provider.</p>
-
-<h2 id='resources'>Resources</h2>
-
-<p>The best place to find more information is the <a href='http://github.com/intridea/omniauth/wiki'>OmniAuth Wiki</a>. Some specific information you might be interested in:</p>
-
-<ul>
-<li><a href='http://github.com/intridea/omniauth/wiki/Roadmap'>Roadmap</a></li>
-
-<li><a href='http://github.com/intridea/omniauth/wiki/Changelog'>Changelog</a></li>
-
-<li><a href='http://github.com/intridea/omniauth/issues'>Report Issues</a></li>
-
-<li><a href='http://groups.google.com/group/omniauth'>Mailing List</a></li>
-</ul>
-
-<h2 id='license'>License</h2>
-
-<p>OmniAuth is licensed under the MIT License.</p></div></div>
-    
-    <div id="footer">
-  Generated on Mon Oct 25 17:24:47 2010 by 
-  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.6.1 (ruby-1.8.7).
-</div>
-
-  </body>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')</script>
+  	
+  <script src="js/plugins.js"></script>
+  <script src="js/script.js"></script>
+  <script src="js/css3-mediaqueries.js"></script> 
+  <script type="text/javascript" src="js/retina.js"></script>
+  <script src="js/jquery.lettering-0.6.1.min.js"></script>
+  
+  <script>
+    var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+  </script>
+  
+</body>
 </html>

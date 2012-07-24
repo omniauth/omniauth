@@ -1,0 +1,534 @@
+/*
+div { font-family:"FS Me Web Bold", Helvetica, Arial, Verdana , sans-serif; font-size-adjust:0.53; font-weight:bold; font-style:normal; }
+div { font-family:"FS Me Web Italic", Helvetica, Arial, Verdana , sans-serif; font-size-adjust:0.53; font-weight:normal; font-style:italic; }
+div { font-family:"FS Me Web Bold Italic", Helvetica, Arial, Verdana , sans-serif; font-size-adjust:0.53; font-weight:bold; font-style:italic; }
+div { font-family:"FS Me Web Light Italic", Helvetica, Arial, Verdana , sans-serif; font-size-adjust:0.53; font-weight:200; font-style:italic; }
+div { font-family:"FS Me Web Regular", Helvetica, Arial, Verdana , sans-serif; font-size-adjust:0.53; font-weight:normal; font-style:normal; }
+div { font-family:"FS Me Web Light", Helvetica, Arial, Verdana , sans-serif; font-size-adjust:0.53; font-weight:200; font-style:normal; }
+*/
+/*intridea.com tag at top*/
+#tag{
+	position:absolute;
+	top:0;
+	display:block;
+	right:20px;
+	width:40px;
+	height:40px;
+	background:url("../img/tag.png") bottom center;
+	z-index:5000;
+	background-size:100%;
+	opacity:.4;
+	border-radius:0px 0px 3px 3px;
+	box-shadow:rgba(0,0,0,0.1) 0px 2px 4px;
+	
+	-webkit-transition: all .3s linear; 
+	-moz-transition: all .3s linear; 
+	-o-transition: all .3s linear; 
+	transition: all .3s linear;
+}
+
+	@media only screen and (-webkit-min-device-pixel-ratio: 1.5){
+		#tag{
+			background:url("../img/tag_2x.png");
+		}
+
+	}
+
+	#tag:hover{	opacity:.8;}
+
+
+	#tag:active{
+			box-shadow:inset rgba(84,6,90,.12) 0px 2px 4px;
+	}
+
+
+/* apply a natural box layout model to all elements */
+* { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;}
+	
+body{
+	background:#e5e5e5;
+	font-family:"FS me","FS Me Web Regular", Helvetica, Arial, Verdana , sans-serif; font-size-adjust:0.53; font-weight:normal; font-style:normal;
+	-webkit-font-smoothing: antialiased;
+	-webkit-tap-highlight-color: rgba(84,6,90,.4);	
+	font-size:16px;
+}
+
+header{
+	display:block;
+	background:url("../img/header.png") bottom center;
+	width:100%;
+	padding-top:30px;
+	text-align:center;
+	position:relative;
+	padding:0;
+	height:auto;
+}
+
+	header section{
+		max-width:1300px;
+		margin:0 auto;
+		position:relative;
+		padding:30px 20px;
+	}
+	
+	#reg_logo{
+		display:inline	;
+	}
+	#alt_logo{
+		display:none;
+	}
+	
+	header h1{
+		font-size:4em;
+		line-height:70px;
+		color:#fff;
+		margin:0 0 10px 0;
+		text-transform:uppercase;
+		letter-spacing:-5px;
+		padding:0;
+		font-family:"FS me","FS Me Web Bold", Helvetica, Arial, Verdana , sans-serif; font-style:normal;
+	}
+	
+	h1 .char5 {
+		vertical-align: top;
+		margin-left: 0.047em;
+	}
+		
+	h1 .char6 {
+		vertical-align: top;
+		margin-left: -0.030em;
+		}
+		
+	h1 .char7 {
+		vertical-align: top;
+		margin-left: 0.034em;
+	}
+		
+	h1 .char8 {
+		vertical-align: top;
+		margin-left: 0.016em;
+	}
+
+	.lt-ie7 header h1 {
+		font-size:4.5em;
+		line-height:80px;
+		color:#fff;
+		margin:0 0 10px 0;
+		text-transform:uppercase;
+		letter-spacing:-5px;
+		padding:0;
+		font-family: Arial, Verdana , sans-serif; font-style:normal;
+	}
+
+	#header_border
+		{
+			content:"";
+			width:100%;
+			height:10px;
+			background:#797984;
+			background-size:10px 10px;
+			display:block;
+		}
+
+.multiplebgs header{
+		background:url("../img/header_left.png")top left no-repeat,url("../img/header_right.png") top right no-repeat,url("../img/header.png") top right;	
+}
+
+
+
+@media only screen and (-webkit-min-device-pixel-ratio: 1.5) {
+	.multiplebgs header{
+		background:url("../img/header_left_2x.png") left no-repeat,url("../img/header_right_2x.png") right no-repeat,url("../img/header_2x.png") right;	
+		background-size:250px 390px,250px 390px,auto 390px;
+	}
+}
+
+#quick_links{
+	clear:both;
+	display:block;
+	margin:0 auto 0px;
+	width:100%;
+}
+
+
+#content .button:visited {
+	color: white;
+}
+
+.button, .button:hover, .button:visited{
+	color: white;
+	text-decoration:none;
+	-webkit-transition: all .3s ease-in; 
+	-moz-transition: all .3s ease-in; 
+	-o-transition: all .3s ease-in; 
+	transition: all .3s ease-in;
+}
+
+.button_outer{
+	width:33.33%;
+	float:left;
+	display:block;
+	padding:0 10px;
+}
+
+.button, #content .button {
+	float:left;
+	display:block;
+	width:100%;
+	height:40px;
+	background:#666572;
+	background:rgba(255,255,255,.25);
+	line-height:43px;
+	font-size:1.2em;
+	font-family:"FS Me","FS Me Web Light", Helvetica, Arial, Verdana , sans-serif; font-size-adjust:0.53; font-weight:200; font-style:normal;
+	color:#fff;
+	border-radius:3px;
+	box-shadow:rgba(0,0,0,0.1) 0px 2px 4px
+	cursor:pointer;
+	-webkit-font-smoothing: antialiased;
+	text-align: center;
+}
+
+	.button:hover, #content .button:hover {
+		box-shadow:rgba(0,0,0,0.1) 0px 2px 4px;
+		background: #9998A1;
+		background:rgba(255,255,255,.5);
+		color:#343243;
+		text-decoration: none;
+	}
+	
+	.button:active, #content .button:active{
+		background: #24232E;
+		box-shadow:inset rgba(0,0,0,.12) 0px 2px 4px;
+		-webkit-transition: all .1s ease-in; 
+		-moz-transition: all .1s ease-in; 
+		-o-transition: all .1s ease-in; 
+		transition: all .1s ease-in;
+		color:#fff;
+	}
+	
+#content_container{
+ 	background:#eeeeee;
+}	
+	
+#content{
+	clear:both;
+	max-width:1300px;
+	margin:0px auto 0px;
+	padding:40px 20px 0px;
+}	
+	
+.col{
+	width:50%;
+	float:left;
+	margin:0px 0px 30px;
+	padding:0 20px 0 20px;
+}
+
+
+.clear{
+	clear:both;
+}
+
+h1 {
+	color: #4B4A55;
+}
+h2{
+	color:#4b4a55;
+	font-size:1.4em;
+	line-height:30px;
+	font-weight:500;
+	margin:2em 0 6px;
+	padding:0;
+	font-family:"FS me","FS Me Web Bold", Helvetica, Arial, Verdana , sans-serif; font-size-adjust:0.53; font-weight:bold; font-style:normal;
+	font-weight:bold;
+}
+
+pre{
+	margin:10px 0;
+}
+.col h2:first-child {
+	margin-top: 0;
+} 
+#content ul {
+	color:#474747;
+	font-family: "FS me","FS Me Web Light",Helvetica,Arial,Verdana,sans-serif;
+	font-weight: 200;
+    line-height: 1.8em;
+    padding:0;
+    margin: 5px 0;
+}
+#content img {
+	width: 100%;
+	margin: 15px 0 0 0;
+	display: block;
+	overflow: hidden;
+}
+#content a,#content a:visited {
+	color:#776EBD;
+	text-decoration: none;
+	font-weight: normal;
+}
+
+#content a:hover {
+	text-decoration: underline;
+	color:#000;
+}
+
+#content a:active {
+	text-decoration: none;
+	color: #000;
+}
+
+#content p{
+	margin:5px 0 20px;
+	padding:0;
+	color:#474747;
+	line-height:1.8em;
+	font-family:"FS me","FS Me Web Light", Helvetica, Arial, Verdana , sans-serif; font-size-adjust:0.53; font-weight:200; font-style:normal; 
+
+}
+
+
+#content .button:hover {
+	background:rgba(255,255,255,.9);
+	box-shadow: none;
+}
+
+#content .button:visited {
+	color:#4B4A55;
+}
+
+#content .button:active {
+	color:#ffffff;
+	background:rgba(130,130,130,1);
+}
+
+#content .button {
+	width: auto;
+	padding: 0 10px;
+	margin: 0 10px 0 0;
+	height: 30px;
+	line-height: 30px;
+	font-size: 1em;
+	background:rgba(255,255,255,.4);
+	color:#4B4A55;
+}
+
+.code{
+	margin:0;
+	background:#767676;
+	background:rgba(0,0,0,.5);
+	color:#fff;
+	font-size:14px;
+	font-family:"menlo","Courier New",monospace;
+	padding:10px 10px 10px 20px;
+	border-radius:3px;
+	box-shadow:inset rgba(0,0,0,.3) 0px 0px 4px;	
+	margin:10px 0;
+}
+
+article.provider {
+	background:#ccc;
+	border-radius:3px;
+	margin:0 0 20px 0;
+	padding: 10px 0 10px 10px;
+}
+
+article.provider h1 {
+	float: left;
+	font-size: 1em;
+	margin: 0;
+	height: 30px;
+    line-height: 30px;
+}
+
+#content article.provider h1 a, #content article.provider h1 a:visited {
+	color:#4B4A55;
+}
+article.provider nav {
+	float: right;
+}
+
+article.provider .button {
+	display: inline-block;
+	margin: 0 5px;
+}
+
+#content ul.whouses {
+	list-style: none;
+	padding: 0;
+	margin: 0 0 20px 0;
+}
+
+ul.whouses li {
+	list-style: none;
+	float: left;
+	margin: 0;
+	padding: 0 10px;
+	width: 33%;
+	text-align: left;
+}
+
+ul.whouses li.git {
+	padding: 0 10px 0 0;
+}
+
+li.git img {
+	width: 60%!important;
+}
+
+#content ul.whouses li.hall img {
+	margin: 0 0 0 -20%;
+}
+
+#content ul.whouses img  {
+	margin: 0;
+}
+
+#author {
+	margin-top: 1em;
+}
+#author img {
+	border-radius: 3px 3px 3px 3px;
+    float: left;
+    margin: 0 4% 4% 0;
+    width: 20%;
+}
+
+#author .bio h1 {
+	margin: 0 10px 0 0;
+	font-size: 1em;
+	float: left;
+}
+
+#content .author-links {
+	margin:2px 0 20px 0;
+	float: left;
+}
+
+#author p {
+	clear: both;
+}
+
+.icn_twitter {
+	list-style: none;
+}
+.icn_twitter a {
+	background: url(../img/twitter.png) top left no-repeat;
+	display: block;
+	height: 16px;
+	line-height: 16px;
+	padding: 0 0 0 21px;
+	width: auto;
+	font-size: .9em;
+}
+
+.icn_twitter a:hover {
+	background: url(../img/twitter.png) bottom left no-repeat;
+}
+
+footer{
+	width:100%;	
+	color:#a2a1a1;
+	padding:20px 20px;
+	float:left;
+}
+
+	footer section{
+		position:relative;
+		margin:0 auto;
+		font-size:.8em;
+		display:block;
+		clear:both;
+		max-width:1260px;
+		padding:0 20px;
+		margin:10px auto 0px;
+	}
+
+	footer span{
+		float:left;
+		padding-top:5px;
+	}
+
+	#footer_logo{
+				background:url("../img/intridea_logo.png") center right no-repeat;
+				width:136px;
+				height:30px;
+				float:right;
+				background-size:100%;
+				text-indent:-9999px;
+				}
+	
+				@media only screen and (-webkit-min-device-pixel-ratio: 1.5) {
+					#footer_logo{
+								background:url("../img/intridea_logo_2x.png") center right no-repeat;
+
+								}
+				}
+	
+	
+	footer a,	footer a:hover, 	footer a:active, 	footer a:visited {
+		color:#a2a1a1;
+	}
+	
+
+	footer #hiring{
+		position:absolute;
+		top:-40px;
+		right:74px;
+		line-height:24px;
+		height:24px;
+		border-radius:3px;
+		display:block;
+		background:#fff;
+		padding:0 15px;
+		text-decoration:none;
+		font-size:.9em;
+		font-weight:400;
+		color:#005e98;
+		box-shadow:rgba(161,161,161,.2) 0px 2px 4px;
+		-webkit-transition: all .3s linear; 
+		-moz-transition: all .3s linear; 
+		-o-transition: all .3s linear; 
+		transition: all .3s linear;
+		
+	
+	}
+	
+	footer #hiring:hover{
+		color:#333 !important;
+	}
+	
+		footer #hiring:after{
+			content:".";
+			text-indent:-5000px;
+			width: 0;
+			height: 0;
+			border-left: 10px solid transparent;
+			border-right: 10px solid transparent;
+			border-top: 10px solid white;
+			position:absolute;
+			top:22px;
+			left:22px;
+		}
+
+/*updates*/
+
+.cf:before,
+.cf:after {
+    content: " "; /* 1 */
+    display: table; /* 2 */
+}
+
+.cf:after {
+    clear: both;
+}
+
+/**
+ * For IE 6/7 only
+ * Include this rule to trigger hasLayout and contain floats.
+ */
+.cf {
+    *zoom: 1;
+}	
