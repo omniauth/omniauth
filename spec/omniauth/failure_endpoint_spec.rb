@@ -3,19 +3,19 @@ require 'spec_helper'
 describe OmniAuth::FailureEndpoint do
   subject{ OmniAuth::FailureEndpoint }
 
-  context 'development' do
+  context "development" do
     before do
       @rack_env = ENV['RACK_ENV']
       ENV['RACK_ENV'] = 'development'
     end
 
-    it 'should raise out the error' do
+    it "raises out the error" do
       expect do
         subject.call('omniauth.error' => StandardError.new("Blah"))
       end.to raise_error(StandardError, "Blah")
     end
 
-    it 'should raise out an OmniAuth::Error if no omniauth.error is set' do
+    it "raises out an OmniAuth::Error if no omniauth.error is set" do
       expect{ subject.call('omniauth.error.type' => 'example') }.to raise_error(OmniAuth::Error, "example")
     end
 
@@ -24,30 +24,30 @@ describe OmniAuth::FailureEndpoint do
     end
   end
 
-  context 'non-development' do
+  context "non-development" do
     let(:env){ {'omniauth.error.type' => 'invalid_request',
                 'omniauth.error.strategy' => ExampleStrategy.new({}) } }
 
-    it 'should be a redirect' do
+    it "is a redirect" do
       status, head, body = *subject.call(env)
-      status.should == 302
+      expect(status).to eq(302)
     end
 
-    it 'should include the SCRIPT_NAME' do
+    it "includes the SCRIPT_NAME" do
       status, head, body = *subject.call(env.merge('SCRIPT_NAME' => '/random'))
-      head['Location'].should == '/random/auth/failure?message=invalid_request&strategy=test'
+      expect(head['Location']).to eq('/random/auth/failure?message=invalid_request&strategy=test')
     end
 
-    it 'should respect configured path prefix' do
+    it "respects the configured path prefix" do
       OmniAuth.config.stub(:path_prefix => '/boo')
       status, head, body = *subject.call(env)
-      head["Location"].should == '/boo/failure?message=invalid_request&strategy=test'
+      expect(head["Location"]).to eq('/boo/failure?message=invalid_request&strategy=test')
     end
 
-    it 'should include the origin (escaped) if one is provided' do
+    it "includes the origin (escaped) if one is provided" do
       env.merge! 'omniauth.origin' => '/origin-example'
       status, head, body = *subject.call(env)
-      head['Location'].should be_include('&origin=%2Forigin-example')
+      expect(head['Location']).to be_include('&origin=%2Forigin-example')
     end
   end
 end

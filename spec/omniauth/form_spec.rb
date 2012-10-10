@@ -1,23 +1,23 @@
 require 'spec_helper'
 
 describe OmniAuth::Form do
-  describe '.build' do
-    it 'should yield the instance when called with a block and argument' do
-      OmniAuth::Form.build{|f| f.should be_kind_of(OmniAuth::Form)}
+  describe ".build" do
+    it "yields the instance when called with a block and argument" do
+      OmniAuth::Form.build{|f| expect(f).to be_kind_of(OmniAuth::Form)}
     end
 
-    it 'should evaluate in the instance when called with a block and no argument' do
-      OmniAuth::Form.build{ self.class.should == OmniAuth::Form }
+    it "evaluates in the instance when called with a block and no argument" do
+      OmniAuth::Form.build{|f| expect(f.class).to eq(OmniAuth::Form)}
     end
   end
 
-  describe '#initialize' do
-    it 'the :url option should supply to the form that is built' do
-      OmniAuth::Form.new(:url => '/awesome').to_html.should be_include("action='/awesome'")
+  describe "#initialize" do
+    it "sets the form action to the passed :url option" do
+      expect(OmniAuth::Form.new(:url => '/awesome').to_html).to be_include("action='/awesome'")
     end
 
-    it 'the :title option should set an H1 tag' do
-      OmniAuth::Form.new(:title => 'Something Cool').to_html.should be_include('<h1>Something Cool</h1>')
+    it "sets an H1 tag from the passed :title option" do
+      expect(OmniAuth::Form.new(:title => 'Something Cool').to_html).to be_include('<h1>Something Cool</h1>')
     end
   end
 end

@@ -15,6 +15,9 @@ OmniAuth.config.logger = Logger.new("/dev/null")
 RSpec.configure do |config|
   config.include Rack::Test::Methods
   config.extend  OmniAuth::Test::StrategyMacros, :type => :strategy
+  config.expect_with :rspec do |c|
+    c.syntax = :expect
+  end
 end
 
 class ExampleStrategy

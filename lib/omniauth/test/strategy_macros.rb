@@ -5,26 +5,26 @@ module OmniAuth
     module StrategyMacros
 
       def sets_an_auth_hash
-        it 'should set an auth hash' do
-          last_request.env['omniauth.auth'].should be_kind_of(Hash)
+        it "sets an auth hash" do
+          expect(last_request.env['omniauth.auth']).to be_kind_of(Hash)
         end
       end
 
       def sets_provider_to(provider)
-        it "should set the provider to #{provider}" do
-          (last_request.env['omniauth.auth'] || {})['provider'].should == provider
+        it "sets the provider to #{provider}" do
+          expect((last_request.env['omniauth.auth'] || {})['provider']).to eq provider
         end
       end
 
       def sets_uid_to(uid)
-        it "should set the UID to #{uid}" do
-          (last_request.env['omniauth.auth'] || {})['uid'].should == uid
+        it "sets the UID to #{uid}" do
+          expect((last_request.env['omniauth.auth'] || {})['uid']).to eq uid
         end
       end
 
       def sets_user_info_to(user_info)
-        it "should set the user_info to #{user_info}" do
-          (last_request.env['omniauth.auth'] || {})['user_info'].should == user_info
+        it "sets the user_info to #{user_info}" do
+          expect((last_request.env['omniauth.auth'] || {})['user_info']).to eq user_info
         end
       end
     end

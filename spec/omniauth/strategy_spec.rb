@@ -13,8 +13,8 @@ describe OmniAuth::Strategy do
   let(:app){ lambda{|env| [404, {}, ['Awesome']]}}
   let(:fresh_strategy){ c = Class.new; c.send :include, OmniAuth::Strategy; c}
 
-  describe '.default_options' do
-    it 'should be inherited from a parent class' do
+  describe ".default_options" do
+    it "is inherited from a parent class" do
       superklass = Class.new
       superklass.send :include, OmniAuth::Strategy
       superklass.configure do |c|
@@ -22,104 +22,110 @@ describe OmniAuth::Strategy do
       end
 
       klass = Class.new(superklass)
-      klass.default_options.foo.should == 'bar'
+      expect(klass.default_options.foo).to eq('bar')
     end
   end
 
-  describe '.configure' do
+  describe ".configure" do
     subject { klass = Class.new; klass.send :include, OmniAuth::Strategy; klass }
-    it 'should take a block and allow for default options setting' do
+    it "takes a block and allow for default options setting" do
       subject.configure do |c|
         c.wakka = 'doo'
       end
-      subject.default_options["wakka"].should == "doo"
+      expect(subject.default_options["wakka"]).to eq("doo")
     end
 
-    it 'should take a hash and deep merge it' do
+    it "takes a hash and deep merge it" do
       subject.configure :abc => {:def => 123}
       subject.configure :abc => {:hgi => 456}
-      subject.default_options['abc'].should == {'def' => 123, 'hgi' => 456}
+      expect(subject.default_options['abc']).to eq({'def' => 123, 'hgi' => 456})
     end
   end
 
-  describe '#skip_info?' do
-    it 'should be true if options.skip_info is true' do
-      ExampleStrategy.new(app, :skip_info => true).should be_skip_info
+  describe "#skip_info?" do
+    it "is true if options.skip_info is true" do
+      expect(ExampleStrategy.new(app, :skip_info => true)).to be_skip_info
     end
 
-    it 'should be false if options.skip_info is false' do
-      ExampleStrategy.new(app, :skip_info => false).should_not be_skip_info
+    it "is false if options.skip_info is false" do
+      expect(ExampleStrategy.new(app, :skip_info => false)).not_to be_skip_info
     end
 
-    it 'should be false by default' do
-      ExampleStrategy.new(app).should_not be_skip_info
+    it "is false by default" do
+      expect(ExampleStrategy.new(app)).not_to be_skip_info
     end
 
-    it 'should be true if options.skip_info is a callable that evaluates to truthy' do
+    it "is true if options.skip_info is a callable that evaluates to truthy" do
       instance = ExampleStrategy.new(app, :skip_info => lambda{|uid| uid})
       instance.should_receive(:uid).and_return(true)
-      instance.should be_skip_info
+      expect(instance).to be_skip_info
     end
   end
 
-  describe '.option' do
+  describe ".option" do
     subject { klass = Class.new; klass.send :include, OmniAuth::Strategy; klass }
-    it 'should set a default value' do
+    it "sets a default value" do
       subject.option :abc, 123
-      subject.default_options.abc.should == 123
+      expect(subject.default_options.abc).to eq(123)
     end
 
-    it 'should set the default value to nil if none is provided' do
+    it "sets the default value to nil if none is provided" do
       subject.option :abc
-      subject.default_options.abc.should be_nil
+      expect(subject.default_options.abc).to be_nil
     end
   end
 
-  describe '.args' do
+  describe ".args" do
     subject{ c = Class.new; c.send :include, OmniAuth::Strategy; c }
-    it 'should set args to the specified argument if there is one' do
+    it "sets args to the specified argument if there is one" do
       subject.args [:abc, :def]
-      subject.args.should == [:abc, :def]
+      expect(subject.args).to eq([:abc, :def])
     end
 
-    it 'should be inheritable' do
+    it "is inheritable" do
       subject.args [:abc, :def]
       c = Class.new(subject)
-      c.args.should == [:abc, :def]
+      expect(c.args).to eq([:abc, :def])
     end
   end
 
-  context 'fetcher procs' do
+  context "fetcher procs" do
     subject{ fresh_strategy }
     %w(uid info credentials extra).each do |fetcher|
-      it ".#{fetcher} should be able to set and retrieve a proc" do
-        proc = lambda{ "Hello" }
-        subject.send(fetcher, &proc)
-        subject.send(fetcher).should == proc
+      describe ".#{fetcher}" do
+        it "sets and retrieve a proc" do
+          proc = lambda{ "Hello" }
+          subject.send(fetcher, &proc)
+          expect(subject.send(fetcher)).to eq(proc)
+        end
       end
     end
   end
 
-  context 'fetcher stacks' do
+  context "fetcher stacks" do
     subject{ fresh_strategy }
     %w(uid info credentials extra).each do |fetcher|
-      it ".#{fetcher}_stack should be an array of called ancestral procs" do
-        fetchy = Proc.new{ "Hello" }
-        subject.send(fetcher, &fetchy)
-        subject.send("#{fetcher}_stack", subject.new(app)).should == ["Hello"]
+      describe ".#{fetcher}_stack" do
+        it "is an array of called ancestral procs" do
+          fetchy = Proc.new{ "Hello" }
+          subject.send(fetcher, &fetchy)
+          expect(subject.send("#{fetcher}_stack", subject.new(app))).to eq(["Hello"])
+        end
       end
     end
   end
 
   %w(request_phase).each do |abstract_method|
-    it "#{abstract_method} should raise a NotImplementedError" do
-      strat = Class.new
-      strat.send :include, OmniAuth::Strategy
-      lambda{ strat.new(app).send(abstract_method) }.should raise_error(NotImplementedError)
+    context "#{abstract_method}" do
+      it "raises a NotImplementedError" do
+        strat = Class.new
+        strat.send :include, OmniAuth::Strategy
+        expect{strat.new(app).send(abstract_method) }.to raise_error(NotImplementedError)
+      end
     end
   end
 
-  describe '#auth_hash' do
+  describe "#auth_hash" do
     subject do
       klass = Class.new
       klass.send :include, OmniAuth::Strategy
@@ -128,316 +134,318 @@ describe OmniAuth::Strategy do
     end
     let(:instance){ subject.new(app) }
 
-    it 'should call through to uid and info' do
+    it "calls through to uid and info" do
       instance.should_receive :uid
       instance.should_receive :info
       instance.auth_hash
     end
 
-    it 'should return an AuthHash' do
+    it "returns an AuthHash" do
       instance.stub!(:uid).and_return('123')
       instance.stub!(:info).and_return(:name => 'Hal Awesome')
       hash = instance.auth_hash
-      hash.should be_kind_of(OmniAuth::AuthHash)
-      hash.uid.should == '123'
-      hash.info.name.should == 'Hal Awesome'
+      expect(hash).to be_kind_of(OmniAuth::AuthHash)
+      expect(hash.uid).to eq('123')
+      expect(hash.info.name).to eq('Hal Awesome')
     end
   end
 
-  describe '#initialize' do
-    context 'options extraction' do
-      it 'should be the last argument if the last argument is a Hash' do
-        ExampleStrategy.new(app, :abc => 123).options[:abc].should == 123
+  describe "#initialize" do
+    context "options extraction" do
+      it "is the last argument if the last argument is a Hash" do
+        expect(ExampleStrategy.new(app, :abc => 123).options[:abc]).to eq(123)
       end
 
-      it 'should be the default options if any are provided' do
+      it "is the default options if any are provided" do
         ExampleStrategy.stub!(:default_options).and_return(OmniAuth::Strategy::Options.new(:abc => 123))
-        ExampleStrategy.new(app).options.abc.should == 123
+        expect(ExampleStrategy.new(app).options.abc).to eq(123)
       end
     end
 
-    context 'custom args' do
+    context "custom args" do
       subject{ c = Class.new; c.send :include, OmniAuth::Strategy; c }
-      it 'should set options based on the arguments if they are supplied' do
+      it "sets options based on the arguments if they are supplied" do
         subject.args [:abc, :def]
         s = subject.new app, 123, 456
-        s.options[:abc].should == 123
-        s.options[:def].should == 456
+        expect(s.options[:abc]).to eq(123)
+        expect(s.options[:def]).to eq(456)
       end
     end
   end
 
-  it '#call should duplicate and call' do
-    klass = Class.new
-    klass.send :include, OmniAuth::Strategy
-    instance = klass.new(app)
-    instance.should_receive(:dup).and_return(instance)
-    instance.call({'rack.session' => {}})
-  end
-
-  describe '#inspect' do
-    it 'should just be the class name in Ruby inspect format' do
-      ExampleStrategy.new(app).inspect.should == '#<ExampleStrategy>'
+  describe "#call" do
+    it "duplicates and calls" do
+      klass = Class.new
+      klass.send :include, OmniAuth::Strategy
+      instance = klass.new(app)
+      instance.should_receive(:dup).and_return(instance)
+      instance.call({'rack.session' => {}})
     end
   end
 
-  describe '#redirect' do
-    it 'should use javascript if :iframe is true' do
+  describe "#inspect" do
+    it "returns the class name" do
+      expect(ExampleStrategy.new(app).inspect).to eq('#<ExampleStrategy>')
+    end
+  end
+
+  describe "#redirect" do
+    it "uses javascript if :iframe is true" do
       response = ExampleStrategy.new(app, :iframe => true).redirect("http://abc.com")
-      response.last.body.first.should be_include("top.location.href")
+      expect(response.last.body.first).to be_include("top.location.href")
     end
   end
 
-  describe '#callback_phase' do
+  describe "#callback_phase" do
     subject{ k = Class.new; k.send :include, OmniAuth::Strategy; k.new(app) }
 
-    it 'should set the auth hash' do
+    it "sets the auth hash" do
       env = make_env
       subject.stub!(:env).and_return(env)
       subject.stub!(:auth_hash).and_return("AUTH HASH")
       subject.callback_phase
-      env['omniauth.auth'].should == "AUTH HASH"
+      expect(env['omniauth.auth']).to eq("AUTH HASH")
     end
   end
 
-  describe '#full_host' do
+  describe "#full_host" do
     let(:strategy){ ExampleStrategy.new(app, {}) }
-    it 'should not freak out if there is a pipe in the URL' do
+    it "remains calm when there is a pipe in the URL" do
       strategy.call!(make_env('/whatever', 'rack.url_scheme' => 'http', 'SERVER_NAME' => 'facebook.lame', 'QUERY_STRING' => 'code=asofibasf|asoidnasd', 'SCRIPT_NAME' => '', 'SERVER_PORT' => 80))
-      lambda{ strategy.full_host }.should_not raise_error
+      expect{strategy.full_host }.not_to raise_error
     end
   end
 
-  describe '#uid' do
+  describe "#uid" do
     subject{ fresh_strategy }
-    it "should be the current class's uid if one exists" do
+    it "is the current class's uid if one exists" do
       subject.uid{ "Hi" }
-      subject.new(app).uid.should == "Hi"
+      expect(subject.new(app).uid).to eq("Hi")
     end
 
-    it "should inherit if it can" do
+    it "inherits if it can" do
       subject.uid{ "Hi" }
       c = Class.new(subject)
-      c.new(app).uid.should == "Hi"
+      expect(c.new(app).uid).to eq("Hi")
     end
   end
 
   %w(info credentials extra).each do |fetcher|
     subject{ fresh_strategy }
-    it "should be the current class's proc call if one exists" do
+    it "is the current class's proc call if one exists" do
       subject.send(fetcher){ {:abc => 123} }
-      subject.new(app).send(fetcher).should == {:abc => 123}
+      expect(subject.new(app).send(fetcher)).to eq({:abc => 123})
     end
 
-    it 'should inherit by merging with preference for the latest class' do
+    it "inherits by merging with preference for the latest class" do
       subject.send(fetcher){ {:abc => 123, :def => 456} }
       c = Class.new(subject)
       c.send(fetcher){ {:abc => 789} }
-      c.new(app).send(fetcher).should == {:abc => 789, :def => 456}
+      expect(c.new(app).send(fetcher)).to eq({:abc => 789, :def => 456})
     end
   end
 
-  describe '#call' do
+  describe "#call" do
     let(:strategy){ ExampleStrategy.new(app, @options || {}) }
 
-    context 'omniauth.origin' do
-      it 'should be set on the request phase' do
-        lambda{ strategy.call(make_env('/auth/test', 'HTTP_REFERER' => 'http://example.com/origin')) }.should raise_error("Request Phase")
-        strategy.last_env['rack.session']['omniauth.origin'].should == 'http://example.com/origin'
+    context "omniauth.origin" do
+      it "is set on the request phase" do
+        expect{strategy.call(make_env('/auth/test', 'HTTP_REFERER' => 'http://example.com/origin')) }.to raise_error("Request Phase")
+        expect(strategy.last_env['rack.session']['omniauth.origin']).to eq('http://example.com/origin')
       end
 
-      it 'should be turned into an env variable on the callback phase' do
-        lambda{ strategy.call(make_env('/auth/test/callback', 'rack.session' => {'omniauth.origin' => 'http://example.com/origin'})) }.should raise_error("Callback Phase")
-        strategy.last_env['omniauth.origin'].should == 'http://example.com/origin'
+      it "is turned into an env variable on the callback phase" do
+        expect{strategy.call(make_env('/auth/test/callback', 'rack.session' => {'omniauth.origin' => 'http://example.com/origin'})) }.to raise_error("Callback Phase")
+        expect(strategy.last_env['omniauth.origin']).to eq('http://example.com/origin')
       end
 
-      it 'should set from the params if provided' do
-        lambda{ strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'origin=/foo')) }.should raise_error('Request Phase')
-        strategy.last_env['rack.session']['omniauth.origin'].should == '/foo'
+      it "sets from the params if provided" do
+        expect{strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'origin=/foo')) }.to raise_error('Request Phase')
+        expect(strategy.last_env['rack.session']['omniauth.origin']).to eq('/foo')
       end
 
-      it 'should be set on the failure env' do
+      it "is set on the failure env" do
         OmniAuth.config.should_receive(:on_failure).and_return(lambda{|env| env})
         @options = {:failure => :forced_fail}
         strategy.call(make_env('/auth/test/callback', 'rack.session' => {'omniauth.origin' => '/awesome'}))
       end
 
       context "with script_name" do
-        it 'should be set on the request phase, containing full path' do
+        it "is set on the request phase, containing full path" do
           env = {'HTTP_REFERER' => 'http://example.com/sub_uri/origin', 'SCRIPT_NAME' => '/sub_uri' }
-          lambda{ strategy.call(make_env('/auth/test', env)) }.should raise_error("Request Phase")
-          strategy.last_env['rack.session']['omniauth.origin'].should == 'http://example.com/sub_uri/origin'
+          expect{strategy.call(make_env('/auth/test', env)) }.to raise_error("Request Phase")
+          expect(strategy.last_env['rack.session']['omniauth.origin']).to eq('http://example.com/sub_uri/origin')
         end
 
-        it 'should be turned into an env variable on the callback phase, containing full path' do
+        it "is turned into an env variable on the callback phase, containing full path" do
           env = {
             'rack.session' => {'omniauth.origin' => 'http://example.com/sub_uri/origin'},
             'SCRIPT_NAME' => '/sub_uri'
           }
 
-          lambda{ strategy.call(make_env('/auth/test/callback', env)) }.should raise_error("Callback Phase")
-          strategy.last_env['omniauth.origin'].should == 'http://example.com/sub_uri/origin'
+          expect{strategy.call(make_env('/auth/test/callback', env)) }.to raise_error("Callback Phase")
+          expect(strategy.last_env['omniauth.origin']).to eq('http://example.com/sub_uri/origin')
         end
 
       end
     end
 
-    context 'default paths' do
-      it 'should use the default request path' do
-        lambda{ strategy.call(make_env) }.should raise_error("Request Phase")
+    context "default paths" do
+      it "uses the default request path" do
+        expect{strategy.call(make_env) }.to raise_error("Request Phase")
       end
 
-      it 'should be case insensitive on request path' do
-        lambda{ strategy.call(make_env('/AUTH/Test'))}.should raise_error("Request Phase")
+      it "is case insensitive on request path" do
+        expect{strategy.call(make_env('/AUTH/Test'))}.to raise_error("Request Phase")
       end
 
-      it 'should be case insensitive on callback path' do
-        lambda{ strategy.call(make_env('/AUTH/TeSt/CaLlBAck'))}.should raise_error("Callback Phase")
+      it "is case insensitive on callback path" do
+        expect{strategy.call(make_env('/AUTH/TeSt/CaLlBAck'))}.to raise_error("Callback Phase")
       end
 
-      it 'should use the default callback path' do
-        lambda{ strategy.call(make_env('/auth/test/callback')) }.should raise_error("Callback Phase")
+      it "uses the default callback path" do
+        expect{strategy.call(make_env('/auth/test/callback')) }.to raise_error("Callback Phase")
       end
 
-      it 'should strip trailing spaces on request' do
-        lambda{ strategy.call(make_env('/auth/test/')) }.should raise_error("Request Phase")
+      it "strips trailing spaces on request" do
+        expect{strategy.call(make_env('/auth/test/')) }.to raise_error("Request Phase")
       end
 
-      it 'should strip trailing spaces on callback' do
-        lambda{ strategy.call(make_env('/auth/test/callback/')) }.should raise_error("Callback Phase")
+      it "strips trailing spaces on callback" do
+        expect{strategy.call(make_env('/auth/test/callback/')) }.to raise_error("Callback Phase")
       end
 
-      context 'callback_url' do
-        it 'uses the default callback_path' do
+      context "callback_url" do
+        it "uses the default callback_path" do
           strategy.should_receive(:full_host).and_return('http://example.com')
 
-          lambda{ strategy.call(make_env) }.should raise_error("Request Phase")
+          expect{strategy.call(make_env) }.to raise_error("Request Phase")
 
-          strategy.callback_url.should == 'http://example.com/auth/test/callback'
+          expect(strategy.callback_url).to eq('http://example.com/auth/test/callback')
         end
 
-        it 'preserves the query parameters' do
+        it "preserves the query parameters" do
           strategy.stub(:full_host).and_return('http://example.com')
           begin
             strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'id=5'))
           rescue RuntimeError; end
-          strategy.callback_url.should == 'http://example.com/auth/test/callback?id=5'
+          expect(strategy.callback_url).to eq('http://example.com/auth/test/callback?id=5')
         end
 
-        it 'consider script name' do
+        it "consider script name" do
           strategy.stub(:full_host).and_return('http://example.com')
           begin
             strategy.call(make_env('/auth/test', 'SCRIPT_NAME' => '/sub_uri'))
           rescue RuntimeError; end
-          strategy.callback_url.should == 'http://example.com/sub_uri/auth/test/callback'
+          expect(strategy.callback_url).to eq('http://example.com/sub_uri/auth/test/callback')
         end
       end
     end
 
-    context ':form option' do
-      it 'should call through to the supplied form option if one exists' do
+    context ":form option" do
+      it "calls through to the supplied form option if one exists" do
         strategy.options.form = lambda{|env| "Called me!"}
-        strategy.call(make_env('/auth/test')).should == "Called me!"
+        expect(strategy.call(make_env('/auth/test'))).to eq("Called me!")
       end
 
-      it 'should call through to the app if :form => true is set as an option' do
+      it "calls through to the app if :form => true is set as an option" do
         strategy.options.form = true
-        strategy.call(make_env('/auth/test')).should == app.call(make_env('/auth/test'))
+        expect(strategy.call(make_env('/auth/test'))).to eq(app.call(make_env('/auth/test')))
       end
     end
 
-    context 'dynamic paths' do
-      it 'should run the request phase if the custom request path evaluator is truthy' do
+    context "dynamic paths" do
+      it "runs the request phase if the custom request path evaluator is truthy" do
         @options = {:request_path => lambda{|env| true}}
-        lambda{ strategy.call(make_env('/asoufibasfi')) }.should raise_error("Request Phase")
+        expect{strategy.call(make_env('/asoufibasfi')) }.to raise_error("Request Phase")
       end
 
-      it 'should run the callback phase if the custom callback path evaluator is truthy' do
+      it "runs the callback phase if the custom callback path evaluator is truthy" do
         @options = {:callback_path => lambda{|env| true}}
-        lambda{ strategy.call(make_env('/asoufiasod')) }.should raise_error("Callback Phase")
+        expect{strategy.call(make_env('/asoufiasod')) }.to raise_error("Callback Phase")
       end
 
-      it 'should provide a custom callback path if request_path evals to a string' do
+      it "provides a custom callback path if request_path evals to a string" do
         strategy_instance = fresh_strategy.new(nil, :request_path => lambda{|env| "/auth/boo/callback/22" })
-        strategy_instance.callback_path.should == '/auth/boo/callback/22'
-      end      
+        expect(strategy_instance.callback_path).to eq('/auth/boo/callback/22')
+      end
     end
 
-    context 'custom paths' do
-      it 'should use a custom request_path if one is provided' do
+    context "custom paths" do
+      it "uses a custom request_path if one is provided" do
         @options = {:request_path => '/awesome'}
-        lambda{ strategy.call(make_env('/awesome')) }.should raise_error("Request Phase")
+        expect{strategy.call(make_env('/awesome')) }.to raise_error("Request Phase")
       end
 
-      it 'should use a custom callback_path if one is provided' do
+      it "uses a custom callback_path if one is provided" do
         @options = {:callback_path => '/radical'}
-        lambda{ strategy.call(make_env('/radical')) }.should raise_error("Callback Phase")
+        expect{strategy.call(make_env('/radical')) }.to raise_error("Callback Phase")
       end
 
-      context 'callback_url' do
-        it 'uses a custom callback_path if one is provided' do
+      context "callback_url" do
+        it "uses a custom callback_path if one is provided" do
           @options = {:callback_path => '/radical'}
           strategy.should_receive(:full_host).and_return('http://example.com')
 
-          lambda{ strategy.call(make_env('/radical')) }.should raise_error("Callback Phase")
+          expect{strategy.call(make_env('/radical')) }.to raise_error("Callback Phase")
 
-          strategy.callback_url.should == 'http://example.com/radical'
+          expect(strategy.callback_url).to eq('http://example.com/radical')
         end
 
-        it 'preserves the query parameters' do
+        it "preserves the query parameters" do
           @options = {:callback_path => '/radical'}
           strategy.stub(:full_host).and_return('http://example.com')
           begin
             strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'id=5'))
           rescue RuntimeError; end
-          strategy.callback_url.should == 'http://example.com/radical?id=5'
+          expect(strategy.callback_url).to eq('http://example.com/radical?id=5')
         end
       end
     end
 
-    context 'custom prefix' do
+    context "custom prefix" do
       before do
         @options = {:path_prefix => '/wowzers'}
       end
 
-      it 'should use a custom prefix for request' do
-        lambda{ strategy.call(make_env('/wowzers/test')) }.should raise_error("Request Phase")
+      it "uses a custom prefix for request" do
+        expect{strategy.call(make_env('/wowzers/test')) }.to raise_error("Request Phase")
       end
 
-      it 'should use a custom prefix for callback' do
-        lambda{ strategy.call(make_env('/wowzers/test/callback')) }.should raise_error("Callback Phase")
+      it "uses a custom prefix for callback" do
+        expect{strategy.call(make_env('/wowzers/test/callback')) }.to raise_error("Callback Phase")
       end
 
-      context 'callback_url' do
-        it 'uses a custom prefix' do
+      context "callback_url" do
+        it "uses a custom prefix" do
           strategy.should_receive(:full_host).and_return('http://example.com')
 
-          lambda{ strategy.call(make_env('/wowzers/test')) }.should raise_error("Request Phase")
+          expect{strategy.call(make_env('/wowzers/test')) }.to raise_error("Request Phase")
 
-          strategy.callback_url.should == 'http://example.com/wowzers/test/callback'
+          expect(strategy.callback_url).to eq('http://example.com/wowzers/test/callback')
         end
 
-        it 'preserves the query parameters' do
+        it "preserves the query parameters" do
           strategy.stub(:full_host).and_return('http://example.com')
           begin
             strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'id=5'))
           rescue RuntimeError; end
-          strategy.callback_url.should == 'http://example.com/wowzers/test/callback?id=5'
+          expect(strategy.callback_url).to eq('http://example.com/wowzers/test/callback?id=5')
         end
       end
     end
 
-    context 'request method restriction' do
+    context "request method restriction" do
       before do
         OmniAuth.config.allowed_request_methods = [:post]
       end
 
-      it 'should not allow a request method of the wrong type' do
-        lambda{ strategy.call(make_env)}.should_not raise_error
+      it "does not allow a request method of the wrong type" do
+        expect{strategy.call(make_env)}.not_to raise_error
       end
 
-      it 'should allow a request method of the correct type' do
-        lambda{ strategy.call(make_env('/auth/test', 'REQUEST_METHOD' => 'POST'))}.should raise_error("Request Phase")
+      it "allows a request method of the correct type" do
+        expect{strategy.call(make_env('/auth/test', 'REQUEST_METHOD' => 'POST'))}.to raise_error("Request Phase")
       end
 
       after do
@@ -445,36 +453,36 @@ describe OmniAuth::Strategy do
       end
     end
 
-    context 'receiving an OPTIONS request' do
+    context "receiving an OPTIONS request" do
       shared_examples_for "an OPTIONS request" do
-        it 'should respond with 200' do
-          response[0].should == 200
+        it "responds with 200" do
+          expect(response[0]).to eq(200)
         end
 
-        it 'should set the Allow header properly' do
-          response[1]['Allow'].should == "GET, POST"
+        it "sets the Allow header properly" do
+          expect(response[1]['Allow']).to eq("GET, POST")
         end
       end
 
-      context 'to the request path' do
+      context "to the request path" do
         let(:response) { strategy.call(make_env('/auth/test', 'REQUEST_METHOD' => 'OPTIONS')) }
-        it_should_behave_like 'an OPTIONS request'
+        it_behaves_like "an OPTIONS request"
       end
 
-      context 'to the request path' do
+      context "to the request path" do
         let(:response) { strategy.call(make_env('/auth/test/callback', 'REQUEST_METHOD' => 'OPTIONS')) }
-        it_should_behave_like 'an OPTIONS request'
+        it_behaves_like "an OPTIONS request"
       end
 
-      context 'to some other path' do
-        it 'should not short-circuit the request' do
+      context "to some other path" do
+        it "does not short-circuit the request" do
           env = make_env('/other', 'REQUEST_METHOD' => 'OPTIONS')
-          strategy.call(env).should == app.call(env)
+          expect(strategy.call(env)).to eq(app.call(env))
         end
       end
     end
 
-    context 'test mode' do
+    context "test mode" do
       let(:app) do
         # In test mode, the underlying app shouldn't be called on request phase.
         lambda { |env| [404, {"Content-Type" => "text/html"}, []] }
@@ -484,98 +492,98 @@ describe OmniAuth::Strategy do
         OmniAuth.config.test_mode = true
       end
 
-      it 'should short circuit the request phase entirely' do
+      it "short circuits the request phase entirely" do
         response = strategy.call(make_env)
-        response[0].should == 302
-        response[1]['Location'].should == '/auth/test/callback'
+        expect(response[0]).to eq(302)
+        expect(response[1]['Location']).to eq('/auth/test/callback')
       end
 
-      it 'should be case insensitive on request path' do
-        strategy.call(make_env('/AUTH/Test'))[0].should == 302
+      it "is case insensitive on request path" do
+        expect(strategy.call(make_env('/AUTH/Test'))[0]).to eq(302)
       end
 
-      it 'should respect SCRIPT_NAME (a.k.a. BaseURI)' do
+      it "respects SCRIPT_NAME (a.k.a. BaseURI)" do
         response = strategy.call(make_env('/auth/test', 'SCRIPT_NAME' => '/sub_uri'))
-        response[1]['Location'].should == '/sub_uri/auth/test/callback'
+        expect(response[1]['Location']).to eq('/sub_uri/auth/test/callback')
       end
 
-      it 'should redirect on failure' do
+      it "redirects on failure" do
         response = OmniAuth.config.on_failure.call(make_env('/auth/test', 'omniauth.error.type' => 'error'))
-        response[0].should == 302
-        response[1]['Location'].should == '/auth/failure?message=error'
+        expect(response[0]).to eq(302)
+        expect(response[1]['Location']).to eq('/auth/failure?message=error')
       end
 
-      it 'should respect SCRIPT_NAME (a.k.a. BaseURI) on failure' do
+      it "respects SCRIPT_NAME (a.k.a. BaseURI) on failure" do
         response = OmniAuth.config.on_failure.call(make_env('/auth/test', 'SCRIPT_NAME' => '/sub_uri', 'omniauth.error.type' => 'error'))
-        response[0].should == 302
-        response[1]['Location'].should == '/sub_uri/auth/failure?message=error'
+        expect(response[0]).to eq(302)
+        expect(response[1]['Location']).to eq('/sub_uri/auth/failure?message=error')
       end
 
-      it 'should be case insensitive on callback path' do
-        strategy.call(make_env('/AUTH/TeSt/CaLlBAck')).first.should == strategy.call(make_env('/auth/test/callback')).first
+      it "is case insensitive on callback path" do
+        expect(strategy.call(make_env('/AUTH/TeSt/CaLlBAck')).first).to eq(strategy.call(make_env('/auth/test/callback')).first)
       end
 
-      it 'should maintain query string parameters' do
+      it "maintains query string parameters" do
         response = strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'cheese=stilton'))
-        response[1]['Location'].should == '/auth/test/callback?cheese=stilton'
+        expect(response[1]['Location']).to eq('/auth/test/callback?cheese=stilton')
       end
 
-      it 'should not short circuit requests outside of authentication' do
-        strategy.call(make_env('/')).should == app.call(make_env('/'))
+      it "does not short circuit requests outside of authentication" do
+        expect(strategy.call(make_env('/'))).to eq(app.call(make_env('/')))
       end
 
-      it 'should respond with the default hash if none is set' do
+      it "responds with the default hash if none is set" do
         OmniAuth.config.mock_auth[:test] = nil
 
         strategy.call make_env('/auth/test/callback')
-        strategy.env['omniauth.auth']['uid'].should == '1234'
+        expect(strategy.env['omniauth.auth']['uid']).to eq('1234')
       end
 
-      it 'should respond with a provider-specific hash if one is set' do
+      it "responds with a provider-specific hash if one is set" do
         OmniAuth.config.mock_auth[:test] = {
           'uid' => 'abc'
         }
 
         strategy.call make_env('/auth/test/callback')
-        strategy.env['omniauth.auth']['uid'].should == 'abc'
+        expect(strategy.env['omniauth.auth']['uid']).to eq('abc')
       end
 
-      it 'should simulate login failure if mocked data is set as a symbol' do
+      it "simulates login failure if mocked data is set as a symbol" do
         OmniAuth.config.mock_auth[:test] = :invalid_credentials
 
         strategy.call make_env('/auth/test/callback')
-        strategy.env['omniauth.error.type'].should == :invalid_credentials
+        expect(strategy.env['omniauth.error.type']).to eq(:invalid_credentials)
       end
 
-      it 'should set omniauth.origin on the request phase' do
+      it "sets omniauth.origin on the request phase" do
         strategy.call(make_env('/auth/test', 'HTTP_REFERER' => 'http://example.com/origin'))
-        strategy.env['rack.session']['omniauth.origin'].should == 'http://example.com/origin'
+        expect(strategy.env['rack.session']['omniauth.origin']).to eq('http://example.com/origin')
       end
 
-      it 'should set omniauth.origin from the params if provided' do
+      it "sets omniauth.origin from the params if provided" do
         strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'origin=/foo'))
-        strategy.env['rack.session']['omniauth.origin'].should == '/foo'
+        expect(strategy.env['rack.session']['omniauth.origin']).to eq('/foo')
       end
 
-      it 'should turn omniauth.origin into an env variable on the callback phase' do
+      it "turns omniauth.origin into an env variable on the callback phase" do
         OmniAuth.config.mock_auth[:test] = {}
 
         strategy.call(make_env('/auth/test/callback', 'rack.session' => {'omniauth.origin' => 'http://example.com/origin'}))
-        strategy.env['omniauth.origin'].should == 'http://example.com/origin'
+        expect(strategy.env['omniauth.origin']).to eq('http://example.com/origin')
       end
 
-      it 'should set omniauth.params on the request phase' do
+      it "sets omniauth.params on the request phase" do
         OmniAuth.config.mock_auth[:test] = {}
 
         strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'foo=bar'))
-        strategy.env['rack.session']['omniauth.params'].should == {'foo' => 'bar'}
+        expect(strategy.env['rack.session']['omniauth.params']).to eq({'foo' => 'bar'})
       end
 
-      it 'should turn omniauth.params into an env variable on the callback phase' do
+      it "turns omniauth.params into an env variable on the callback phase" do
         OmniAuth.config.mock_auth[:test] = {}
 
         strategy.call(make_env('/auth/test/callback', 'rack.session' => {'omniauth.params' => {'foo' => 'bar'}}))
-        strategy.env['omniauth.params'].should == {'foo' => 'bar'}
+        expect(strategy.env['omniauth.params']).to eq({'foo' => 'bar'})
       end
 
       after do
@@ -583,20 +591,20 @@ describe OmniAuth::Strategy do
       end
     end
 
-    context 'custom full_host' do
+    context "custom full_host" do
       before do
         OmniAuth.config.test_mode = true
       end
 
-      it 'should be the string when a string is there' do
+      it "is the string when a string is there" do
         OmniAuth.config.full_host = 'my.host.com'
-        strategy.full_host.should == 'my.host.com'
+        expect(strategy.full_host).to eq('my.host.com')
       end
 
-      it 'should run the proc with the env when it is a proc' do
+      it "runs the proc with the env when it is a proc" do
         OmniAuth.config.full_host = Proc.new{|env| env['HOST']}
         strategy.call(make_env('/auth/test', 'HOST' => 'my.host.net'))
-        strategy.full_host.should == 'my.host.net'
+        expect(strategy.full_host).to eq('my.host.net')
       end
 
       after do
@@ -605,27 +613,27 @@ describe OmniAuth::Strategy do
     end
   end
 
-  context 'setup phase' do
+  context "setup phase" do
     before do
       OmniAuth.config.test_mode = true
     end
 
-    context 'when options[:setup] = true' do
+    context "when options[:setup] = true" do
       let(:strategy){ ExampleStrategy.new(app, :setup => true) }
       let(:app){lambda{|env| env['omniauth.strategy'].options[:awesome] = 'sauce' if env['PATH_INFO'] == '/auth/test/setup'; [404, {}, 'Awesome'] }}
 
-      it 'should call through to /auth/:provider/setup' do
+      it "calls through to /auth/:provider/setup" do
         strategy.call(make_env('/auth/test'))
-        strategy.options[:awesome].should == 'sauce'
+        expect(strategy.options[:awesome]).to eq('sauce')
       end
 
-      it 'should not call through on a non-omniauth endpoint' do
+      it "does not call through on a non-omniauth endpoint" do
         strategy.call(make_env('/somewhere/else'))
-        strategy.options[:awesome].should_not == 'sauce'
+        expect(strategy.options[:awesome]).not_to eq('sauce')
       end
     end
 
-    context 'when options[:setup] is an app' do
+    context "when options[:setup] is an app" do
       let(:setup_proc) do
         Proc.new do |env|
           env['omniauth.strategy'].options[:awesome] = 'sauce'
@@ -634,14 +642,14 @@ describe OmniAuth::Strategy do
 
       let(:strategy){ ExampleStrategy.new(app, :setup => setup_proc) }
 
-      it 'should not call the app on a non-omniauth endpoint' do
+      it "does not call the app on a non-omniauth endpoint" do
         strategy.call(make_env('/somehwere/else'))
-        strategy.options[:awesome].should_not == 'sauce'
+        expect(strategy.options[:awesome]).not_to eq('sauce')
       end
 
-      it 'should call the rack app' do
+      it "calls the rack app" do
         strategy.call(make_env('/auth/test'))
-        strategy.options[:awesome].should == 'sauce'
+        expect(strategy.options[:awesome]).to eq('sauce')
       end
     end
 

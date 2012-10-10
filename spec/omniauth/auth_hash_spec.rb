@@ -2,36 +2,36 @@ require 'spec_helper'
 
 describe OmniAuth::AuthHash do
   subject{ OmniAuth::AuthHash.new }
-  it 'should convert a supplied info key into an InfoHash object' do
+  it "converts a supplied info key into an InfoHash object" do
     subject.info = {:first_name => 'Awesome'}
-    subject.info.should be_kind_of(OmniAuth::AuthHash::InfoHash)
-    subject.info.first_name.should == 'Awesome'
+    expect(subject.info).to be_kind_of(OmniAuth::AuthHash::InfoHash)
+    expect(subject.info.first_name).to eq('Awesome')
   end
 
-  describe '#valid?' do
+  describe "#valid?" do
     subject{ OmniAuth::AuthHash.new(:uid => '123', :provider => 'example', :info => {:name => 'Steven'}) }
 
-    it 'should be valid with the right parameters' do
-      subject.should be_valid
+    it "is valid with the right parameters" do
+      expect(subject).to be_valid
     end
 
-    it 'should require a uid' do
+    it "requires a uid" do
       subject.uid = nil
-      subject.should_not be_valid
+      expect(subject).not_to be_valid
     end
 
-    it 'should require a provider' do
+    it "requires a provider" do
       subject.provider = nil
-      subject.should_not be_valid
+      expect(subject).not_to be_valid
     end
 
-    it 'should require a name in the user info hash' do
+    it "requires a name in the user info hash" do
       subject.info.name = nil
-      subject.should_not be_valid?
+      expect(subject).not_to be_valid?
     end
   end
 
-  describe '#name' do
+  describe "#name" do
     subject{ OmniAuth::AuthHash.new(
       :info => {
         :name => 'Phillip J. Fry',
@@ -41,67 +41,67 @@ describe OmniAuth::AuthHash do
         :email => 'fry@planetexpress.com'
     })}
 
-    it 'should default to the name key' do
-      subject.info.name.should == 'Phillip J. Fry'
+    it "defaults to the name key" do
+      expect(subject.info.name).to eq('Phillip J. Fry')
     end
 
-    it 'should fall back to go to first_name last_name concatenation' do
+    it "falls back to go to first_name last_name concatenation" do
       subject.info.name = nil
-      subject.info.name.should == 'Phillip Fry'
+      expect(subject.info.name).to eq('Phillip Fry')
     end
 
-    it 'should display only a first or last name if only that is available' do
+    it "displays only a first or last name if only that is available" do
       subject.info.name = nil
       subject.info.first_name = nil
-      subject.info.name.should == 'Fry'
+      expect(subject.info.name).to eq('Fry')
     end
 
-    it 'should display the nickname if no name, first, or last is available' do
+    it "displays the nickname if no name, first, or last is available" do
       subject.info.name = nil
       %w(first_name last_name).each{|k| subject.info[k] = nil}
-      subject.info.name.should == 'meatbag'
+      expect(subject.info.name).to eq('meatbag')
     end
 
-    it 'should display the email if no name, first, last, or nick is available' do
+    it "displays the email if no name, first, last, or nick is available" do
       subject.info.name = nil
       %w(first_name last_name nickname).each{|k| subject.info[k] = nil}
-      subject.info.name.should == 'fry@planetexpress.com'
+      expect(subject.info.name).to eq('fry@planetexpress.com')
     end
   end
 
-  describe '#to_hash' do
+  describe "#to_hash" do
     subject{ OmniAuth::AuthHash.new(:uid => '123', :provider => 'test', :name => 'Bob Example')}
     let(:hash){ subject.to_hash }
 
-    it 'should be a plain old hash' do
-      hash.class.should == ::Hash
+    it "is a plain old hash" do
+      expect(hash.class).to eq(::Hash)
     end
 
-    it 'should have string keys' do
-      hash.keys.should be_include('uid')
+    it "has string keys" do
+      expect(hash.keys).to be_include('uid')
     end
 
-    it 'should convert an info hash as well' do
+    it "converts an info hash as well" do
       subject.info = {:first_name => 'Bob', :last_name => 'Example'}
-      subject.info.class.should == OmniAuth::AuthHash::InfoHash
-      subject.to_hash['info'].class.should == ::Hash
+      expect(subject.info.class).to eq(OmniAuth::AuthHash::InfoHash)
+      expect(subject.to_hash['info'].class).to eq(::Hash)
     end
 
-    it 'should supply the calculated name in the converted hash' do
+    it "supplies the calculated name in the converted hash" do
       subject.info = {:first_name => 'Bob', :last_name => 'Examplar'}
-      hash['info']['name'].should == 'Bob Examplar'
+      expect(hash['info']['name']).to eq('Bob Examplar')
     end
 
-    it 'should not pollute the URL hash with "name" etc' do
+    it "does not pollute the URL hash with 'name' etc" do
       subject.info = {'urls' => {'Homepage' => "http://homepage.com"}}
-      subject.to_hash['info']['urls'].should == {'Homepage' => "http://homepage.com"}
+      expect(subject.to_hash['info']['urls']).to eq({'Homepage' => "http://homepage.com"})
     end
   end
 
   describe OmniAuth::AuthHash::InfoHash do
-    describe '#valid?' do
-      it 'should be valid if there is a name' do
-        OmniAuth::AuthHash::InfoHash.new(:name => 'Awesome').should be_valid
+    describe "#valid?" do
+      it "is valid if there is a name" do
+        expect(OmniAuth::AuthHash::InfoHash.new(:name => 'Awesome')).to be_valid
       end
     end
   end
