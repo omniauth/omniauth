@@ -9,7 +9,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'pyu-ruby-sasl', '~> 0.0.3.1'
   gem.add_dependency 'rubyntlm', '~> 0.1.1'
   gem.add_dependency 'uuid'
-  gem.add_dependency 'XMLCanonicalizer', '~> 1.0.1'
+  gem.add_dependency 'xmlcanonicalizer', '~> 0.1.2'
   gem.add_development_dependency 'rack-test', '~> 0.5'
   gem.add_development_dependency 'rake', '~> 0.8'
   gem.add_development_dependency 'rdiscount', '~> 1.6'
