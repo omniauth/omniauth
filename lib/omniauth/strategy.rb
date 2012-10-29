@@ -405,7 +405,7 @@ module OmniAuth
           uri.path = ''
           uri.query = nil
           #sometimes the url is actually showing http inside rails because the other layers (like nginx) have handled the ssl termination.
-          uri.scheme = 'https' if(request.env['HTTP_X_FORWARDED_PROTO'] == 'https')          
+          uri.scheme = 'https' if request.ssl?
           uri.to_s
       end
     end
