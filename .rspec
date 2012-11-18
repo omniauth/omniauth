@@ -1,2 +1,3 @@
 --color
+--fail-fast
 --order random
