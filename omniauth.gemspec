@@ -10,11 +10,11 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'rack'
   spec.add_runtime_dependency 'hashie', '~> 1.2'
 
-  spec.add_development_dependency 'maruku'
+  spec.add_development_dependency 'kramdown'
   spec.add_development_dependency 'simplecov'
   spec.add_development_dependency 'rack-test'
   spec.add_development_dependency 'rake'
-  spec.add_development_dependency 'rspec', '~> 2.8'
+  spec.add_development_dependency 'rspec', '>= 2.8'
   spec.add_development_dependency 'yard'
 
   spec.version = OmniAuth::VERSION
