@@ -25,6 +25,10 @@ class ExampleStrategy
   option :name, 'test'
   def call(env); self.call!(env) end
   attr_reader :last_env
+  def initialize(*args, &block)
+    super
+    @fail = nil
+  end
   def request_phase
     @fail = fail!(options[:failure]) if options[:failure]
     @last_env = env
