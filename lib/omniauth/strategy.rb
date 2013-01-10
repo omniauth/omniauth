@@ -13,8 +13,6 @@ module OmniAuth
 
       base.extend ClassMethods
       base.class_eval do
-        attr_reader :app, :env, :options, :response
-
         option :setup, false
         option :skip_info, false
       end
@@ -105,6 +103,8 @@ module OmniAuth
         stack.reverse!
       end
     end
+
+    attr_reader :app, :env, :options, :response
 
     # Initializes the strategy by passing in the Rack endpoint,
     # the unique URL segment name for this strategy, and any
