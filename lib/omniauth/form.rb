@@ -95,6 +95,7 @@ module OmniAuth
 
       @html = ""
       @with_custom_button = false
+      @footer = nil
       header(options[:title],options[:header_info])
     end
 
