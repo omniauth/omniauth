@@ -246,6 +246,10 @@ describe OmniAuth::Strategy do
   end
 
   describe "#call" do
+    before(:all) do
+      @options = nil
+    end
+
     let(:strategy){ ExampleStrategy.new(app, @options || {}) }
 
     context "omniauth.origin" do

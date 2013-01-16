@@ -13,8 +13,6 @@ module OmniAuth
 
       base.extend ClassMethods
       base.class_eval do
-        attr_reader :app, :env, :options, :response
-
         option :setup, false
         option :skip_info, false
       end
@@ -24,7 +22,7 @@ module OmniAuth
       # Returns an inherited set of default options set at the class-level
       # for each strategy.
       def default_options
-        return @default_options if @default_options
+        return @default_options if instance_variable_defined?(:@default_options) && @default_options
         existing = superclass.respond_to?(:default_options) ? superclass.default_options : {}
         @default_options = OmniAuth::Strategy::Options.new(existing)
       end
@@ -79,9 +77,12 @@ module OmniAuth
       # recorded as. This takes care of 90% of the use cases for overriding
       # the initializer in OmniAuth Strategies.
       def args(args = nil)
-        @args = Array(args) and return if args
+        if args
+          @args = Array(args)
+          return
+        end
         existing = superclass.respond_to?(:args) ? superclass.args : []
-        return @args || existing
+        return (instance_variable_defined?(:@args) && @args) || existing
       end
 
       %w(uid info extra credentials).each do |fetcher|
@@ -106,6 +107,8 @@ module OmniAuth
       end
     end
 
+    attr_reader :app, :env, :options, :response
+
     # Initializes the strategy by passing in the Rack endpoint,
     # the unique URL segment name for this strategy, and any
     # additional arguments. An `options` hash is automatically
@@ -123,6 +126,7 @@ module OmniAuth
     # @yield [Options] Yields options to block for further configuration.
     def initialize(app, *args, &block)
       @app = app
+      @env = nil
       @options = self.class.default_options.dup
 
       options.deep_merge!(args.pop) if args.last.is_a?(Hash)

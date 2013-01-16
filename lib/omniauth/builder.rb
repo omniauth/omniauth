@@ -3,6 +3,7 @@ require 'omniauth'
 module OmniAuth
   class Builder < ::Rack::Builder
     def initialize(app, &block)
+      @options = nil
       if rack14?
         super
       else

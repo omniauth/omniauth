@@ -95,6 +95,7 @@ module OmniAuth
 
       @html = ""
       @with_custom_button = false
+      @footer = nil
       header(options[:title],options[:header_info])
     end
 
@@ -141,7 +142,7 @@ module OmniAuth
 
     def fieldset(legend, options = {}, &block)
       @html << "\n<fieldset#{" style='#{options[:style]}'" if options[:style]}#{" id='#{options[:id]}'" if options[:id]}>\n  <legend>#{legend}</legend>\n"
-      self.instance_eval &block
+      self.instance_eval(&block)
       @html << "\n</fieldset>"
       self
     end
