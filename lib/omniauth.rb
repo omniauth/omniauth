@@ -4,7 +4,7 @@ require 'logger'
 
 module OmniAuth
   class Error < StandardError; end
-  
+
   module Strategies
     autoload :Developer, 'omniauth/strategies/developer'
   end

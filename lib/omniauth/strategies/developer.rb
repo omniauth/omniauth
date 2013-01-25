@@ -21,7 +21,7 @@ module OmniAuth
     # @example Custom Fields
     #
     #   use OmniAuth::Builder do
-    #     provider :developer, 
+    #     provider :developer,
     #       :fields => [:first_name, :last_name],
     #       :uid_field => :last_name
     #   end

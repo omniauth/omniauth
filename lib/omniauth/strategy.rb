@@ -69,7 +69,7 @@ module OmniAuth
       #     include OmniAuth::Strategy
       #
       #     option :foo, 'bar'
-      #     option 
+      #     option
       #   end
       def option(name, value = nil)
         default_options[name] = value
@@ -219,7 +219,7 @@ module OmniAuth
       callback_phase
     end
 
-    # Returns true if the environment recognizes either the 
+    # Returns true if the environment recognizes either the
     # request or callback path.
     def on_auth_path?
       on_request_path? || on_callback_path?
@@ -362,7 +362,7 @@ module OmniAuth
 
     def custom_path(kind)
       if options[kind].respond_to?(:call)
-        result = options[kind].call(env) 
+        result = options[kind].call(env)
         return nil unless result.is_a?(String)
         result
       else

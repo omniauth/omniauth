@@ -1,17 +1,25 @@
-source 'https://rubygems.org'
+source :rubygems
 
-gem 'growl'
-gem 'guard'
-gem 'guard-bundler'
-gem 'guard-rspec'
-gem 'rack', '~> 1.4'
-gem 'rb-fsevent'
-#gem 'plymouth'
-#gem 'pry'
-#gem 'pry-nav'
+gem 'jruby-openssl', :platforms => :jruby
+gem 'rake'
+gem 'yard'
 
-platforms :jruby do
-  gem 'jruby-openssl'
+group :development do
+  gem 'growl'
+  gem 'guard'
+  gem 'guard-bundler'
+  gem 'guard-rspec'
+  gem 'kramdown'
+  gem 'plymouth'
+  gem 'pry'
+  gem 'pry-nav'
+  gem 'rb-fsevent'
+end
+
+group :test do
+  gem 'rack-test'
+  gem 'rspec', '>= 2.11'
+  gem 'simplecov'
 end
 
 gemspec
