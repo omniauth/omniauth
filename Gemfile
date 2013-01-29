@@ -12,7 +12,7 @@ group :development do
   gem 'kramdown'
   gem 'plymouth'
   gem 'pry'
-  gem 'pry-nav'
+  gem 'pry-debugger', :platforms => :mri_19
   gem 'rb-fsevent'
 end
 
