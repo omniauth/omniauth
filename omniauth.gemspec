@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
   spec.name          = 'omniauth'
   spec.require_paths = ['lib']
   spec.required_rubygems_version = '>= 1.3.6'
-  spec.signing_key   = '/Users/sferik/.gem/private_key.pem'
+  spec.signing_key   = File.expand_path("~/.gem/private_key.pem") if $0 =~ /gem\z/
   spec.summary       = spec.description
   spec.test_files    = Dir.glob("spec/**/*")
   spec.version       = OmniAuth::VERSION
