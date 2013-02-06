@@ -19,7 +19,7 @@ end
 group :test do
   gem 'rack-test'
   gem 'rspec', '>= 2.11'
-  gem 'simplecov'
+  gem 'simplecov', :require => false
 end
 
 gemspec
