@@ -1,9 +1,13 @@
 # OmniAuth: Standardized Multi-Provider Authentication
+[![Gem Version](https://badge.fury.io/rb/omniauth.png)][gem]
+[![CI Build Status](https://secure.travis-ci.org/intridea/omniauth.png?branch=master)][travis]
+[![Dependency Status](https://gemnasium.com/intridea/omniauth.png?travis)][gemnasium]
+[![Code Climate](https://codeclimate.com/badge.png)][codeclimate]
 
-[![CI Build Status](https://secure.travis-ci.org/intridea/omniauth.png?branch=master)][travis] [![Dependency Status](https://gemnasium.com/intridea/omniauth.png?travis)][gemnasium] [![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/intridea/omniauth) [![Gem Version](https://badge.fury.io/rb/omniauth.png)](http://badge.fury.io/rb/omniauth)
-
+[gem]: https://rubygems.org/gems/omniauth
 [travis]: http://travis-ci.org/intridea/omniauth
 [gemnasium]: https://gemnasium.com/intridea/omniauth
+[codeclimate]: https://codeclimate.com/github/intridea/omniauth
 
 **OmniAuth 1.0 has several breaking changes from version 0.x. You can set
 the dependency to `~> 0.3.2` if you do not wish to make the more difficult
@@ -11,7 +15,6 @@ upgrade. See [the wiki](https://github.com/intridea/omniauth/wiki/Upgrading-to-1
 for more information.**
 
 ## An Introduction
-
 OmniAuth is a library that standardizes multi-provider authentication for
 web applications. It was created to be powerful, flexible, and do as
 little as possible. Any developer can create **strategies** for OmniAuth
@@ -30,7 +33,6 @@ straight through. You can use it as a placeholder when you start
 development and easily swap in other strategies later.
 
 ## Getting Started
-
 Each OmniAuth strategy is a Rack Middleware. That means that you can use
 it the same way that you use any other Rack middleware. For example, to
 use the built-in Developer strategy in a Sinatra application I might do
@@ -65,7 +67,6 @@ You should look to the documentation for each provider you use for
 specific initialization requirements.
 
 ## Integrating OmniAuth Into Your Application
-
 OmniAuth is an extremely low-touch library. It is designed to be a
 black box that you can send your application's users into when you need
 authentication and then get information back. OmniAuth was intentionally
@@ -123,7 +124,6 @@ you how you want to implement the particulars of your application's
 authentication flow.
 
 ## Logging
-
 OmniAuth supports a configurable logger. By default, OmniAuth will log
 to `STDOUT` but you can configure this using `OmniAuth.config.logger`:
 
@@ -133,19 +133,16 @@ OmniAuth.config.logger = Rails.logger
 ```
 
 ## Resources
-
 The [OmniAuth Wiki](https://github.com/intridea/omniauth/wiki) has
 actively maintained in-depth documentation for OmniAuth. It should be
 your first stop if you are wondering about a more in-depth look at
 OmniAuth, how it works, and how to use it.
 
 ## Supported Ruby Versions
-
 OmniAuth is tested under 1.8.7, 1.9.2, 1.9.3, JRuby (1.8 mode), and Rubinius
 (1.8 and 1.9 modes).
 
 ## Versioning
-
 This library aims to adhere to [Semantic Versioning 2.0.0][semver]. Violations
 of this scheme should be reported as bugs. Specifically, if a minor or patch
 version is released that breaks backward compatibility, that version should be
