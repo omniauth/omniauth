@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'rack'
   spec.add_development_dependency 'bundler', '~> 1.0'
   spec.authors       = ['Michael Bleigh', 'Erik Michaels-Ober']
-  spec.cert_chain    = ['certs/sferik.pem']
+  spec.cert_chain    = %w(certs/sferik.pem)
   spec.description   = %q{A generalized Rack framework for multiple-provider authentication.}
   spec.email         = ['michael@intridea.com', 'sferik@gmail.com']
   spec.files         = %w(.yardopts LICENSE.md README.md Rakefile omniauth.gemspec)
