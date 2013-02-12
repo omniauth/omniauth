@@ -10,7 +10,7 @@ group :development do
   gem 'guard-bundler'
   gem 'guard-rspec'
   gem 'kramdown'
-  gem 'plymouth'
+  gem 'plymouth', :platforms => :mri_19
   gem 'pry'
   gem 'pry-debugger', :platforms => :mri_19
   gem 'rb-fsevent'
