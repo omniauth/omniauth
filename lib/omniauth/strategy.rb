@@ -403,9 +403,8 @@ module OmniAuth
         else
           uri = URI.parse(request.url.gsub(/\?.*$/,''))
           uri.path = ''
-          uri.query = nil
           #sometimes the url is actually showing http inside rails because the other layers (like nginx) have handled the ssl termination.
-          uri.scheme = 'https' if(request.env['HTTP_X_FORWARDED_PROTO'] == 'https')
+          uri.scheme = 'https' if ssl?
           uri.to_s
       end
     end
@@ -465,6 +464,13 @@ module OmniAuth
 
     def merge_stack(stack)
       stack.inject({}){|c,h| c.merge!(h); c}
+    end
+    def ssl?
+      request.env['HTTPS'] == 'on' ||
+      request.env['HTTP_X_FORWARDED_SSL'] == 'on' ||
+      request.env['HTTP_X_FORWARDED_SCHEME'] == 'https' ||
+      (request.env['HTTP_X_FORWARDED_PROTO'] && request.env['HTTP_X_FORWARDED_PROTO'].split(',')[0] == 'https') ||
+      request.env['rack.url_scheme'] == 'https'
     end
   end
 end

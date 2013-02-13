@@ -607,6 +607,18 @@ describe OmniAuth::Strategy do
         expect(strategy.full_host).to eq('my.host.net')
       end
 
+      it "is based on the request if it's not a string nor a proc" do
+        OmniAuth.config.full_host = nil
+        strategy.call(make_env('/whatever', 'rack.url_scheme' => 'http', 'SERVER_NAME' => 'my.host.net', 'SERVER_PORT' => 80))
+        expect(strategy.full_host).to eq('http://my.host.net')
+      end
+
+      it "should honor HTTP_X_FORWARDED_PROTO if present" do
+        OmniAuth.config.full_host = nil
+        strategy.call(make_env('/whatever', 'HTTP_X_FORWARDED_PROTO' => 'https','rack.url_scheme' => 'http', 'SERVER_NAME' => 'my.host.net', 'SERVER_PORT' => 443))
+        expect(strategy.full_host).to eq('https://my.host.net')
+      end
+
       after do
         OmniAuth.config.test_mode = false
       end
