@@ -1,3 +1,3 @@
 module OmniAuth
-  VERSION = "1.1.2" unless defined?(OmniAuth::VERSION)
+  VERSION = "1.1.3" unless defined?(OmniAuth::VERSION)
 end
