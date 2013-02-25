@@ -20,6 +20,18 @@ module OmniAuth
       OmniAuth.config.on_failure = block
     end
 
+    def on_options_hook(&block)
+      OmniAuth.config.on_options_hook = block
+    end
+
+    def on_request_hook(&block)
+      OmniAuth.config.on_request_hook = block
+    end
+
+    def on_callback_hook(&block)
+      OmniAuth.config.on_callback_hook = block
+    end
+
     def configure(&block)
       OmniAuth.configure(&block)
     end

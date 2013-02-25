@@ -179,6 +179,7 @@ module OmniAuth
 
     # Responds to an OPTIONS request.
     def options_call
+      OmniAuth.config.on_options_hook.call(self.env)
       verbs = OmniAuth.config.allowed_request_methods.map(&:to_s).map(&:upcase).join(', ')
       return [ 200, { 'Allow' => verbs }, [] ]
     end
@@ -188,6 +189,8 @@ module OmniAuth
       setup_phase
 
       log :info, "Request phase initiated."
+
+      OmniAuth.config.on_request_hook.call(self.env)
 
       #store query params from the request url, extracted in the callback_phase
       session['omniauth.params'] = request.params
@@ -211,7 +214,7 @@ module OmniAuth
     # Performs the steps necessary to run the callback phase of a strategy.
     def callback_call
       setup_phase
-
+      OmniAuth.config.on_callback_hook.call(self.env)
       log :info, "Callback phase initiated."
       @env['omniauth.origin'] = session.delete('omniauth.origin')
       @env['omniauth.origin'] = nil if env['omniauth.origin'] == ''
