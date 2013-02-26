@@ -6,9 +6,10 @@ gem 'rake'
 gem 'yard'
 
 group :test do
+  gem 'coveralls', :require => false
   gem 'rack-test'
   gem 'rspec', '>= 2.11'
-  gem 'simplecov'
+  gem 'simplecov', :require => false
 end
 
 gemspec
