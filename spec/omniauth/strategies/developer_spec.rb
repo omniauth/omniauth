@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'helper'
 
 describe OmniAuth::Strategies::Developer do
   let(:app){ Rack::Builder.new do |b|

@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'helper'
 
 describe OmniAuth do
   describe ".strategies" do

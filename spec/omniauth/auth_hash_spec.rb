@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'helper'
 
 describe OmniAuth::AuthHash do
   subject{ OmniAuth::AuthHash.new }

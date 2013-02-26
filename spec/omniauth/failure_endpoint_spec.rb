@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'helper'
 
 describe OmniAuth::FailureEndpoint do
   subject{ OmniAuth::FailureEndpoint }

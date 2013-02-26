@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'helper'
 
 def make_env(path = '/auth/test', props = {})
   {
