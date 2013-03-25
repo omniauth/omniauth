@@ -183,7 +183,7 @@ module OmniAuth
 
     def to_response
       footer
-      Rack::Response.new(@html).finish
+      Rack::Response.new(@html, 200, {"content-type" => "text/html"}).finish
     end
 
     protected
