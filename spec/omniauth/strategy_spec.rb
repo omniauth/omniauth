@@ -28,11 +28,22 @@ describe OmniAuth::Strategy do
 
   describe ".configure" do
     subject { klass = Class.new; klass.send :include, OmniAuth::Strategy; klass }
-    it "takes a block and allow for default options setting" do
-      subject.configure do |c|
-        c.wakka = 'doo'
+    context "when block is passed" do
+      it "allows for default options setting" do
+        subject.configure do |c|
+          c.wakka = 'doo'
+        end
+        expect(subject.default_options["wakka"]).to eq("doo")
       end
-      expect(subject.default_options["wakka"]).to eq("doo")
+
+      it "works when block doesn't evaluate to true" do
+        environment_variable = nil
+        subject.configure do |c|
+          c.abc = '123'
+          c.hgi = environment_variable
+        end
+        expect(subject.default_options["abc"]).to eq("123")
+      end
     end
 
     it "takes a hash and deep merge it" do
