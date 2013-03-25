@@ -50,8 +50,11 @@ module OmniAuth
       #     configure foo: 'bar'
       #   end
       def configure(options = nil)
-        yield default_options and return unless options
-        default_options.deep_merge!(options)
+        if block_given?
+          yield default_options
+        else
+          default_options.deep_merge!(options)
+        end
       end
 
       # Directly declare a default option for your class. This is a useful from
