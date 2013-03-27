@@ -1,4 +1,5 @@
 require 'omniauth'
+require 'securerandom'
 
 module OmniAuth
   module Strategies
@@ -38,7 +39,7 @@ module OmniAuth
 
       def request_phase
         form = OmniAuth::Form.new(:title => "User Info", :url => callback_path)
-        form.authenticity_token_field(session[:_csrf_token])
+        form.authenticity_token_field(form_authenticity_token)
         options.fields.each do |field|
           form.text_field field.to_s.capitalize.gsub("_", " "), field.to_s
         end
@@ -55,6 +56,12 @@ module OmniAuth
           hash[field] = request.params[field.to_s]
           hash
         end
+      end
+
+      private
+
+      def form_authenticity_token
+        session[:_csrf_token] ||= SecureRandom.base64(32)
       end
     end
   end
