@@ -38,6 +38,7 @@ module OmniAuth
 
       def request_phase
         form = OmniAuth::Form.new(:title => "User Info", :url => callback_path)
+        form.authenticity_token_field(session[:_csrf_token])
         options.fields.each do |field|
           form.text_field field.to_s.capitalize.gsub("_", " "), field.to_s
         end
