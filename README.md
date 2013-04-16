@@ -93,7 +93,7 @@ steps are necessary for your application. For example, in a Rails app I
 would add a line in my `routes.rb` file like this:
 
 ```ruby
-match '/auth/:provider/callback', to: 'sessions#create'
+get '/auth/:provider/callback', to: 'sessions#create'
 ```
 
 And I might then have a `SessionsController` with code that looks
