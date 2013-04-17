@@ -408,11 +408,15 @@ module OmniAuth
         when Proc
           OmniAuth.config.full_host.call(env)
         else
-          uri = URI.parse(request.url.gsub(/\?.*$/,''))
-          uri.path = ''
-          #sometimes the url is actually showing http inside rails because the other layers (like nginx) have handled the ssl termination.
-          uri.scheme = 'https' if ssl?
-          uri.to_s
+          if self.class ==  OmniAuth::Strategies::Vkontakte && Rails.env.production?
+            AppConfig.vk_redirect_uri
+          else
+            uri = URI.parse(request.url.gsub(/\?.*$/,''))
+            uri.path = ''
+            #sometimes the url is actually showing http inside rails because the other layers (like nginx) have handled the ssl termination.
+            uri.scheme = 'https' if ssl?
+            uri.to_s
+          end
       end
     end
 
