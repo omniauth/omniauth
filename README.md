@@ -143,7 +143,7 @@ your first stop if you are wondering about a more in-depth look at
 OmniAuth, how it works, and how to use it.
 
 ## Supported Ruby Versions
-OmniAuth is tested under 1.8.7, 1.9.2, 1.9.3, JRuby (1.8 mode), and Rubinius
+OmniAuth is tested under 1.8.7, 1.9.2, 1.9.3, 2.0.0, JRuby (1.8 mode), and Rubinius
 (1.8 and 1.9 modes).
 
 ## Versioning
