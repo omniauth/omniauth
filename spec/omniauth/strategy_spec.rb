@@ -53,6 +53,12 @@ describe OmniAuth::Strategy do
     end
   end
 
+  describe "#name" do
+    it "name should be as expected" do
+      expect(Example1Strategy.new(app).options.name).to be_eql('example1_strategy')
+    end
+  end
+
   describe "#skip_info?" do
     it "is true if options.skip_info is true" do
       expect(ExampleStrategy.new(app, :skip_info => true)).to be_skip_info
