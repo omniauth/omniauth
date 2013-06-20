@@ -312,7 +312,9 @@ describe OmniAuth::Strategy do
       context 'disabled' do
         it 'does not set omniauth.origin' do
           @options = {:origin_param => false}
-          expect { strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'return=/foo')) }.to raise_error('Request Phase')
+          strategy.should_receive(:fail!).with('Request Phase', kind_of(StandardError))
+
+          strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'return=/foo'))
           expect(strategy.last_env['rack.session']['omniauth.origin']).to eq(nil)
         end
       end
@@ -320,24 +322,31 @@ describe OmniAuth::Strategy do
       context 'custom' do
         it 'sets from a custom param' do
           @options = {:origin_param => 'return'}
-          expect { strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'return=/foo')) }.to raise_error('Request Phase')
+          strategy.should_receive(:fail!).with('Request Phase', kind_of(StandardError))
+
+          strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'return=/foo'))
           expect(strategy.last_env['rack.session']['omniauth.origin']).to eq('/foo')
         end
       end
 
       context 'default flow' do
         it 'is set on the request phase' do
-          expect { strategy.call(make_env('/auth/test', 'HTTP_REFERER' => 'http://example.com/origin')) }.to raise_error('Request Phase')
+          strategy.should_receive(:fail!).with("Request Phase", kind_of(StandardError))
+          strategy.call(make_env('/auth/test', 'HTTP_REFERER' => 'http://example.com/origin'))
+
           expect(strategy.last_env['rack.session']['omniauth.origin']).to eq('http://example.com/origin')
         end
 
         it 'is turned into an env variable on the callback phase' do
-          expect { strategy.call(make_env('/auth/test/callback', 'rack.session' => {'omniauth.origin' => 'http://example.com/origin'})) }.to raise_error('Callback Phase')
+          strategy.should_receive(:fail!).with("Callback Phase", kind_of(StandardError))
+          strategy.call(make_env('/auth/test/callback', 'rack.session' => {'omniauth.origin' => 'http://example.com/origin'}))
+
           expect(strategy.last_env['omniauth.origin']).to eq('http://example.com/origin')
         end
 
         it 'sets from the params if provided' do
-          expect { strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'origin=/foo')) }.to raise_error('Request Phase')
+          strategy.should_receive(:fail!).with('Request Phase', kind_of(StandardError))
+          strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'origin=/foo'))
           expect(strategy.last_env['rack.session']['omniauth.origin']).to eq('/foo')
         end
 
@@ -350,7 +359,9 @@ describe OmniAuth::Strategy do
         context 'with script_name' do
           it 'is set on the request phase, containing full path' do
             env = {'HTTP_REFERER' => 'http://example.com/sub_uri/origin', 'SCRIPT_NAME' => '/sub_uri'}
-            expect { strategy.call(make_env('/auth/test', env)) }.to raise_error('Request Phase')
+            strategy.should_receive(:fail!).with('Request Phase', kind_of(StandardError))
+
+            strategy.call(make_env('/auth/test', env))
             expect(strategy.last_env['rack.session']['omniauth.origin']).to eq('http://example.com/sub_uri/origin')
           end
 
@@ -359,8 +370,9 @@ describe OmniAuth::Strategy do
               'rack.session' => {'omniauth.origin' => 'http://example.com/sub_uri/origin'},
               'SCRIPT_NAME' => '/sub_uri'
             }
+            strategy.should_receive(:fail!).with('Callback Phase', kind_of(StandardError))
 
-            expect { strategy.call(make_env('/auth/test/callback', env)) }.to raise_error('Callback Phase')
+            strategy.call(make_env('/auth/test/callback', env))
             expect(strategy.last_env['omniauth.origin']).to eq('http://example.com/sub_uri/origin')
           end
         end
@@ -369,34 +381,41 @@ describe OmniAuth::Strategy do
 
     context 'default paths' do
       it 'uses the default request path' do
-        expect { strategy.call(make_env) }.to raise_error('Request Phase')
+        strategy.should_receive(:fail!).with('Request Phase', kind_of(StandardError))
+        strategy.call(make_env)
       end
 
       it 'is case insensitive on request path' do
-        expect { strategy.call(make_env('/AUTH/Test')) }.to raise_error('Request Phase')
+        strategy.should_receive(:fail!).with('Request Phase', kind_of(StandardError))
+        strategy.call(make_env('/AUTH/Test'))
       end
 
       it 'is case insensitive on callback path' do
-        expect { strategy.call(make_env('/AUTH/TeSt/CaLlBAck')) }.to raise_error('Callback Phase')
+        strategy.should_receive(:fail!).with('Callback Phase', kind_of(StandardError))
+        strategy.call(make_env('/AUTH/TeSt/CaLlBAck'))
       end
 
       it 'uses the default callback path' do
-        expect { strategy.call(make_env('/auth/test/callback')) }.to raise_error('Callback Phase')
+        strategy.should_receive(:fail!).with('Callback Phase', kind_of(StandardError))
+        strategy.call(make_env('/auth/test/callback'))
       end
 
       it 'strips trailing spaces on request' do
-        expect { strategy.call(make_env('/auth/test/')) }.to raise_error('Request Phase')
+        strategy.should_receive(:fail!).with('Request Phase', kind_of(StandardError))
+        strategy.call(make_env('/auth/test/'))
       end
 
       it 'strips trailing spaces on callback' do
-        expect { strategy.call(make_env('/auth/test/callback/')) }.to raise_error('Callback Phase')
+        strategy.should_receive(:fail!).with('Callback Phase', kind_of(StandardError))
+        strategy.call(make_env('/auth/test/callback/'))
       end
 
       context 'callback_url' do
         it 'uses the default callback_path' do
           expect(strategy).to receive(:full_host).and_return('http://example.com')
+          strategy.should_receive(:fail!).with('Request Phase', kind_of(StandardError))
 
-          expect { strategy.call(make_env) }.to raise_error('Request Phase')
+          strategy.call(make_env)
 
           expect(strategy.callback_url).to eq('http://example.com/auth/test/callback')
         end
@@ -436,12 +455,15 @@ describe OmniAuth::Strategy do
     context 'dynamic paths' do
       it 'runs the request phase if the custom request path evaluator is truthy' do
         @options = {:request_path => lambda { |_env| true }}
-        expect { strategy.call(make_env('/asoufibasfi')) }.to raise_error('Request Phase')
+        strategy.should_receive(:fail!).with('Request Phase', kind_of(StandardError))
+        strategy.call(make_env('/asoufibasfi'))
       end
 
       it 'runs the callback phase if the custom callback path evaluator is truthy' do
         @options = {:callback_path => lambda { |_env| true }}
-        expect { strategy.call(make_env('/asoufiasod')) }.to raise_error('Callback Phase')
+        strategy.should_receive(:fail!).with('Callback Phase', kind_of(StandardError))
+
+        strategy.call(make_env('/asoufiasod'))
       end
 
       it 'provides a custom callback path if request_path evals to a string' do
@@ -451,8 +473,9 @@ describe OmniAuth::Strategy do
 
       it 'correctly reports the callback path when the custom callback path evaluator is truthy' do
         strategy_instance = ExampleStrategy.new(app, :callback_path => lambda { |env| env['PATH_INFO'] == '/auth/bish/bosh/callback' })
+        strategy_instance.should_receive(:fail!).with('Callback Phase', kind_of(StandardError))
 
-        expect { strategy_instance.call(make_env('/auth/bish/bosh/callback')) }.to raise_error('Callback Phase')
+        strategy_instance.call(make_env('/auth/bish/bosh/callback'))
         expect(strategy_instance.callback_path).to eq('/auth/bish/bosh/callback')
       end
     end
@@ -460,20 +483,25 @@ describe OmniAuth::Strategy do
     context 'custom paths' do
       it 'uses a custom request_path if one is provided' do
         @options = {:request_path => '/awesome'}
-        expect { strategy.call(make_env('/awesome')) }.to raise_error('Request Phase')
+        strategy.should_receive(:fail!).with('Request Phase', kind_of(StandardError))
+
+        strategy.call(make_env('/awesome'))
       end
 
       it 'uses a custom callback_path if one is provided' do
         @options = {:callback_path => '/radical'}
-        expect { strategy.call(make_env('/radical')) }.to raise_error('Callback Phase')
+        strategy.should_receive(:fail!).with('Callback Phase', kind_of(StandardError))
+
+        strategy.call(make_env('/radical'))
       end
 
       context 'callback_url' do
         it 'uses a custom callback_path if one is provided' do
           @options = {:callback_path => '/radical'}
           expect(strategy).to receive(:full_host).and_return('http://example.com')
+          strategy.should_receive(:fail!).with('Callback Phase', kind_of(StandardError))
 
-          expect { strategy.call(make_env('/radical')) }.to raise_error('Callback Phase')
+          strategy.call(make_env('/radical'))
 
           expect(strategy.callback_url).to eq('http://example.com/radical')
         end
@@ -496,18 +524,20 @@ describe OmniAuth::Strategy do
       end
 
       it 'uses a custom prefix for request' do
-        expect { strategy.call(make_env('/wowzers/test')) }.to raise_error('Request Phase')
+        strategy.should_receive(:fail!).with('Request Phase', kind_of(StandardError))
+        strategy.call(make_env('/wowzers/test'))
       end
 
       it 'uses a custom prefix for callback' do
-        expect { strategy.call(make_env('/wowzers/test/callback')) }.to raise_error('Callback Phase')
+        strategy.should_receive(:fail!).with('Callback Phase', kind_of(StandardError))
+        strategy.call(make_env('/wowzers/test/callback'))
       end
 
       context 'callback_url' do
         it 'uses a custom prefix' do
           expect(strategy).to receive(:full_host).and_return('http://example.com')
-
-          expect { strategy.call(make_env('/wowzers/test')) }.to raise_error('Request Phase')
+          strategy.should_receive(:fail!).with('Request Phase', kind_of(StandardError))
+          strategy.call(make_env('/wowzers/test'))
 
           expect(strategy.callback_url).to eq('http://example.com/wowzers/test/callback')
         end
@@ -533,7 +563,8 @@ describe OmniAuth::Strategy do
       end
 
       it 'allows a request method of the correct type' do
-        expect { strategy.call(make_env('/auth/test')) }.to raise_error('Request Phase')
+        strategy.should_receive(:fail!).with('Request Phase', kind_of(StandardError))
+        strategy.call(make_env('/auth/test'))
       end
 
       after(:context) do
@@ -579,14 +610,16 @@ describe OmniAuth::Strategy do
         it 'does not affect original options' do
           @options[:test_option] = true
           @options[:mutate_on_request] = proc { |options| options.delete(:test_option) }
-          expect { strategy.call(make_env) }.to raise_error('Request Phase')
+
+          strategy.call(make_env)
           expect(strategy.options).to have_key(:test_option)
         end
 
         it 'does not affect deep options' do
           @options[:deep_option] = {:test_option => true}
           @options[:mutate_on_request] = proc { |options| options[:deep_option].delete(:test_option) }
-          expect { strategy.call(make_env) }.to raise_error('Request Phase')
+
+          strategy.call(make_env)
           expect(strategy.options[:deep_option]).to have_key(:test_option)
         end
       end
@@ -595,14 +628,16 @@ describe OmniAuth::Strategy do
         it 'does not affect original options' do
           @options[:test_option] = true
           @options[:mutate_on_callback] = proc { |options| options.delete(:test_option) }
-          expect { strategy.call(make_env('/auth/test/callback', 'REQUEST_METHOD' => 'POST')) }.to raise_error('Callback Phase')
+
+          strategy.call(make_env('/auth/test/callback', 'REQUEST_METHOD' => 'POST'))
           expect(strategy.options).to have_key(:test_option)
         end
 
         it 'does not affect deep options' do
           @options[:deep_option] = {:test_option => true}
           @options[:mutate_on_callback] = proc { |options| options[:deep_option].delete(:test_option) }
-          expect { strategy.call(make_env('/auth/test/callback', 'REQUEST_METHOD' => 'POST')) }.to raise_error('Callback Phase')
+
+          strategy.call(make_env('/auth/test/callback', 'REQUEST_METHOD' => 'POST'))
           expect(strategy.options[:deep_option]).to have_key(:test_option)
         end
       end
@@ -822,8 +857,10 @@ describe OmniAuth::Strategy do
         let(:escaped_token) { URI.encode_www_form_component(csrf_token, Encoding::UTF_8) }
 
         it 'allows a request with matching authenticity_token' do
+          strategy.should_receive(:fail!).with('Request Phase', kind_of(StandardError))
+
           post_env = make_env('/auth/test', 'rack.session' => {:csrf => csrf_token}, 'rack.input' => StringIO.new("authenticity_token=#{escaped_token}"))
-          expect { strategy.call(post_env) }.to raise_error('Request Phase')
+          strategy.call(post_env)
         end
 
         it 'does not allow a request without a matching authenticity token' do
@@ -840,8 +877,10 @@ describe OmniAuth::Strategy do
         end
 
         it 'allows a request without authenticity token' do
+          strategy.should_receive(:fail!).with('Request Phase', kind_of(StandardError))
+
           get_env = make_env('/auth/test', 'REQUEST_METHOD' => 'GET')
-          expect { strategy.call(get_env) }.to raise_error('Request Phase')
+          strategy.call(get_env)
         end
 
         after(:context) do
@@ -852,6 +891,17 @@ describe OmniAuth::Strategy do
       after do
         OmniAuth.config.request_validation_phase = nil
       end
+    end
+
+    it 'calls fail! when encountering an unhandled exception' do
+      strategy.stub(:request_phase).and_raise(Errno::ECONNREFUSED)
+      strategy.should_receive(:fail!).with('Connection refused', kind_of(Errno::ECONNREFUSED))
+      strategy.call(make_env)
+    end
+
+    it 'redirects to the fail! result when encountering an unhandled exception' do
+      OmniAuth.config.test_mode = false
+      expect(strategy.call(make_env).first).to eq 302
     end
   end
 
