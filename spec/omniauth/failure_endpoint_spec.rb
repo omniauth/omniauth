@@ -49,5 +49,10 @@ describe OmniAuth::FailureEndpoint do
       _, head, _ = *subject.call(env)
       expect(head['Location']).to be_include('&origin=%2Forigin-example')
     end
+
+    it 'escapes the message key' do
+      _, head = *subject.call(env.merge('omniauth.error.type' => 'Connection refused!'))
+      expect(head['Location']).to be_include('message=Connection+refused%21')
+    end
   end
 end
