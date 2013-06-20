@@ -33,6 +33,7 @@ module OmniAuth
       :camelizations => {},
       :path_prefix => '/auth',
       :on_failure => OmniAuth::FailureEndpoint,
+      :failure_raise_out_environments => ['development'],
       :form_css => Form::DEFAULT_CSS,
       :test_mode => false,
       :logger => default_logger,
@@ -96,7 +97,7 @@ module OmniAuth
     end
 
     attr_writer :on_failure
-    attr_accessor :path_prefix, :allowed_request_methods, :form_css, :test_mode, :mock_auth, :full_host, :camelizations, :logger
+    attr_accessor :failure_raise_out_environments, :path_prefix, :allowed_request_methods, :form_css, :test_mode, :mock_auth, :full_host, :camelizations, :logger
   end
 
   def self.config
