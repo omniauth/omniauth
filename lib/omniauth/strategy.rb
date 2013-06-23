@@ -245,7 +245,16 @@ module OmniAuth
     end
 
     def on_path?(path)
-      current_path.casecmp(path) == 0
+      begin
+        route = Rails.application.routes.recognize_path(current_path)
+        route[:only_path] = true
+        #strip the format
+        route[:format] = nil
+
+        Rails.application.routes.url_for(route).casecmp(path) == 0
+      rescue
+        false
+      end
     end
 
     def options_request?
