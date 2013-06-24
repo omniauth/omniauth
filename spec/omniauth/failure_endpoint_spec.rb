@@ -3,10 +3,9 @@ require 'helper'
 describe OmniAuth::FailureEndpoint do
   subject{ OmniAuth::FailureEndpoint }
 
-  context "development" do
+  context "raise-out environment" do
     before do
-      @rack_env = ENV['RACK_ENV']
-      ENV['RACK_ENV'] = 'development'
+      @default, OmniAuth.config.failure_raise_out_environments = OmniAuth.config.failure_raise_out_environments, ['test']
     end
 
     it "raises out the error" do
@@ -20,11 +19,11 @@ describe OmniAuth::FailureEndpoint do
     end
 
     after do
-      ENV['RACK_ENV'] = @rack_env
+      OmniAuth.config.failure_raise_out_environments = @default
     end
   end
 
-  context "non-development" do
+  context "non-raise-out environment" do
     let(:env){ {'omniauth.error.type' => 'invalid_request',
                 'omniauth.error.strategy' => ExampleStrategy.new({}) } }
 
@@ -48,6 +47,11 @@ describe OmniAuth::FailureEndpoint do
       env.merge! 'omniauth.origin' => '/origin-example'
       _, head, _ = *subject.call(env)
       expect(head['Location']).to be_include('&origin=%2Forigin-example')
+    end
+
+    it 'escapes the message key' do
+      _, head = *subject.call(env.merge('omniauth.error.type' => 'Connection refused!'))
+      expect(head['Location']).to be_include('message=Connection+refused%21')
     end
   end
 end

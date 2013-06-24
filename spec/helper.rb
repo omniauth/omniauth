@@ -13,6 +13,7 @@ require 'omniauth'
 require 'omniauth/test'
 
 OmniAuth.config.logger = Logger.new("/dev/null")
+ENV['RACK_ENV'] ||= 'test'
 
 RSpec.configure do |config|
   config.include Rack::Test::Methods
