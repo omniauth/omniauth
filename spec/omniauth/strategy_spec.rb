@@ -152,8 +152,8 @@ describe OmniAuth::Strategy do
     end
 
     it "returns an AuthHash" do
-      instance.stub!(:uid).and_return('123')
-      instance.stub!(:info).and_return(:name => 'Hal Awesome')
+      instance.stub(:uid).and_return('123')
+      instance.stub(:info).and_return(:name => 'Hal Awesome')
       hash = instance.auth_hash
       expect(hash).to be_kind_of(OmniAuth::AuthHash)
       expect(hash.uid).to eq('123')
@@ -168,7 +168,7 @@ describe OmniAuth::Strategy do
       end
 
       it "is the default options if any are provided" do
-        ExampleStrategy.stub!(:default_options).and_return(OmniAuth::Strategy::Options.new(:abc => 123))
+        ExampleStrategy.stub(:default_options).and_return(OmniAuth::Strategy::Options.new(:abc => 123))
         expect(ExampleStrategy.new(app).options.abc).to eq(123)
       end
     end
@@ -212,8 +212,8 @@ describe OmniAuth::Strategy do
 
     it "sets the auth hash" do
       env = make_env
-      subject.stub!(:env).and_return(env)
-      subject.stub!(:auth_hash).and_return("AUTH HASH")
+      subject.stub(:env).and_return(env)
+      subject.stub(:auth_hash).and_return("AUTH HASH")
       subject.callback_phase
       expect(env['omniauth.auth']).to eq("AUTH HASH")
     end
