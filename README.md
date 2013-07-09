@@ -6,7 +6,6 @@
 [![Code Climate](https://codeclimate.com/github/intridea/omniauth.png)][codeclimate]
 [![Coverage Status](https://coveralls.io/repos/intridea/omniauth/badge.png?branch=master)][coveralls]
 
-
 [gem]: https://rubygems.org/gems/omniauth
 [travis]: http://travis-ci.org/intridea/omniauth
 [gemnasium]: https://gemnasium.com/intridea/omniauth
