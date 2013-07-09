@@ -80,7 +80,7 @@ describe OmniAuth do
 
   describe ".logger" do
     it "calls through to the configured logger" do
-      allow(OmniAuth).to receive(:config).and_return(mock(:logger => "foo"))
+      allow(OmniAuth).to receive(:config).and_return(double(:logger => "foo"))
       expect(OmniAuth.logger).to eq("foo")
     end
   end
