@@ -596,11 +596,30 @@ describe OmniAuth::Strategy do
         expect(strategy.env['omniauth.origin']).to eq('http://example.com/origin')
       end
 
+      it "executes callback_hook on the callback phase" do
+        OmniAuth.config.mock_auth[:test] = {}
+        OmniAuth.config.on_callback_hook do |env|
+          env['foobar']='baz'
+        end
+        strategy.call(make_env('/auth/test/callback', 'rack.session' => {'omniauth.origin' => 'http://example.com/origin'}))
+        expect(strategy.env['foobar']).to eq('baz')
+      end
+
+
       it "sets omniauth.params on the request phase" do
         OmniAuth.config.mock_auth[:test] = {}
 
         strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'foo=bar'))
         expect(strategy.env['rack.session']['omniauth.params']).to eq({'foo' => 'bar'})
+      end
+
+      it "executes request_hook on the request phase" do
+        OmniAuth.config.mock_auth[:test] = {}
+        OmniAuth.config.on_request_hook do |env|
+          env['foobar']='baz'
+        end
+        strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'foo=bar'))
+        expect(strategy.env['foobar']).to eq('baz')
       end
 
       it "turns omniauth.params into an env variable on the callback phase" do

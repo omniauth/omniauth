@@ -54,6 +54,34 @@ describe OmniAuth do
 
       expect(OmniAuth.config.on_failure.call).to eq('yoyo')
     end
+
+    it "is able to set hook on option_call" do
+      OmniAuth.configure do |config|
+        config.on_options_hook do
+          'yoyo'
+        end
+      end
+      expect(OmniAuth.config.on_options_hook.call).to eq('yoyo')
+    end
+
+    it "is able to set hook on request_call" do
+      OmniAuth.configure do |config|
+        config.on_request_hook do
+          'heyhey'
+        end
+      end
+      expect(OmniAuth.config.on_request_hook.call).to eq('heyhey')
+    end
+
+    it "is able to set hook on callback_call" do
+      OmniAuth.configure do |config|
+        config.on_callback_hook do
+          'heyhey'
+        end
+      end
+      expect(OmniAuth.config.on_callback_hook.call).to eq('heyhey')
+    end
+
     describe "mock auth" do
       before do
         OmniAuth.config.add_mock(:facebook, :uid => '12345',:info=>{:name=>'Joe', :email=>'joe@example.com'})
