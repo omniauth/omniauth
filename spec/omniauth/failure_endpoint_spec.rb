@@ -39,7 +39,7 @@ describe OmniAuth::FailureEndpoint do
     end
 
     it "respects the configured path prefix" do
-      OmniAuth.config.stub(:path_prefix => '/boo')
+      allow(OmniAuth.config).to receive(:path_prefix).and_return('/boo')
       _, head, _ = *subject.call(env)
       expect(head["Location"]).to eq('/boo/failure?message=invalid_request&strategy=test')
     end

@@ -244,11 +244,7 @@ module OmniAuth
     end
 
     def on_callback_path?
-      if options.callback_path.respond_to?(:call)
-        options.callback_path.call(env)
-      else
-        on_path?(callback_path)
-      end
+      on_path?(callback_path)
     end
 
     def on_path?(path)
@@ -386,7 +382,10 @@ module OmniAuth
     end
 
     def callback_path
-      options[:callback_path].is_a?(String) ? options[:callback_path] : (custom_path(:request_path) || "#{path_prefix}/#{name}/callback")
+      path = options[:callback_path] if options[:callback_path].is_a?(String)
+      path ||= current_path if options[:callback_path].respond_to?(:call) && options[:callback_path].call(env)
+      path ||= custom_path(:request_path)
+      path ||= "#{path_prefix}/#{name}/callback"
     end
 
     def setup_path

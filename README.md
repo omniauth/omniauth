@@ -6,7 +6,6 @@
 [![Code Climate](https://codeclimate.com/github/intridea/omniauth.png)][codeclimate]
 [![Coverage Status](https://coveralls.io/repos/intridea/omniauth/badge.png?branch=master)][coveralls]
 
-
 [gem]: https://rubygems.org/gems/omniauth
 [travis]: http://travis-ci.org/intridea/omniauth
 [gemnasium]: https://gemnasium.com/intridea/omniauth
@@ -93,7 +92,7 @@ steps are necessary for your application. For example, in a Rails app I
 would add a line in my `routes.rb` file like this:
 
 ```ruby
-match '/auth/:provider/callback', to: 'sessions#create'
+get '/auth/:provider/callback', to: 'sessions#create'
 ```
 
 And I might then have a `SessionsController` with code that looks
@@ -143,7 +142,7 @@ your first stop if you are wondering about a more in-depth look at
 OmniAuth, how it works, and how to use it.
 
 ## Supported Ruby Versions
-OmniAuth is tested under 1.8.7, 1.9.2, 1.9.3, JRuby (1.8 mode), and Rubinius
+OmniAuth is tested under 1.8.7, 1.9.2, 1.9.3, 2.0.0, JRuby (1.8 mode), and Rubinius
 (1.8 and 1.9 modes).
 
 ## Versioning

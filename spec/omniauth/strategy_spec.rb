@@ -152,8 +152,8 @@ describe OmniAuth::Strategy do
     end
 
     it "returns an AuthHash" do
-      instance.stub!(:uid).and_return('123')
-      instance.stub!(:info).and_return(:name => 'Hal Awesome')
+      allow(instance).to receive(:uid).and_return('123')
+      allow(instance).to receive(:info).and_return(:name => 'Hal Awesome')
       hash = instance.auth_hash
       expect(hash).to be_kind_of(OmniAuth::AuthHash)
       expect(hash.uid).to eq('123')
@@ -168,7 +168,7 @@ describe OmniAuth::Strategy do
       end
 
       it "is the default options if any are provided" do
-        ExampleStrategy.stub!(:default_options).and_return(OmniAuth::Strategy::Options.new(:abc => 123))
+        allow(ExampleStrategy).to receive(:default_options).and_return(OmniAuth::Strategy::Options.new(:abc => 123))
         expect(ExampleStrategy.new(app).options.abc).to eq(123)
       end
     end
@@ -212,8 +212,8 @@ describe OmniAuth::Strategy do
 
     it "sets the auth hash" do
       env = make_env
-      subject.stub!(:env).and_return(env)
-      subject.stub!(:auth_hash).and_return("AUTH HASH")
+      allow(subject).to receive(:env).and_return(env)
+      allow(subject).to receive(:auth_hash).and_return("AUTH HASH")
       subject.callback_phase
       expect(env['omniauth.auth']).to eq("AUTH HASH")
     end
@@ -340,7 +340,7 @@ describe OmniAuth::Strategy do
         end
 
         it "preserves the query parameters" do
-          strategy.stub(:full_host).and_return('http://example.com')
+          allow(strategy).to receive(:full_host).and_return('http://example.com')
           begin
             strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'id=5'))
           rescue RuntimeError; end
@@ -348,7 +348,7 @@ describe OmniAuth::Strategy do
         end
 
         it "consider script name" do
-          strategy.stub(:full_host).and_return('http://example.com')
+          allow(strategy).to receive(:full_host).and_return('http://example.com')
           begin
             strategy.call(make_env('/auth/test', 'SCRIPT_NAME' => '/sub_uri'))
           rescue RuntimeError; end
@@ -384,6 +384,15 @@ describe OmniAuth::Strategy do
         strategy_instance = fresh_strategy.new(nil, :request_path => lambda{|env| "/auth/boo/callback/22" })
         expect(strategy_instance.callback_path).to eq('/auth/boo/callback/22')
       end
+
+      it "correctly reports the callback path when the custom callback path evaluator is truthy" do
+        strategy_instance = ExampleStrategy.new(app,
+          :callback_path => lambda{|env| env['PATH_INFO'] == "/auth/bish/bosh/callback"}
+        )
+
+        expect{strategy_instance.call(make_env('/auth/bish/bosh/callback')) }.to raise_error("Callback Phase")
+        expect(strategy_instance.callback_path).to eq('/auth/bish/bosh/callback')
+      end
     end
 
     context "custom paths" do
@@ -409,7 +418,7 @@ describe OmniAuth::Strategy do
 
         it "preserves the query parameters" do
           @options = {:callback_path => '/radical'}
-          strategy.stub(:full_host).and_return('http://example.com')
+          allow(strategy).to receive(:full_host).and_return('http://example.com')
           begin
             strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'id=5'))
           rescue RuntimeError; end
@@ -441,7 +450,7 @@ describe OmniAuth::Strategy do
         end
 
         it "preserves the query parameters" do
-          strategy.stub(:full_host).and_return('http://example.com')
+          allow(strategy).to receive(:full_host).and_return('http://example.com')
           begin
             strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'id=5'))
           rescue RuntimeError; end
