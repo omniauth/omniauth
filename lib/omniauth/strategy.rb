@@ -1,4 +1,5 @@
 require 'omniauth'
+require 'omniauth/string_ext'
 require 'hashie/mash'
 
 module OmniAuth
@@ -133,7 +134,7 @@ module OmniAuth
       @options = self.class.default_options.dup
 
       options.deep_merge!(args.pop) if args.last.is_a?(Hash)
-      options.name ||= self.class.to_s.split('::').last.downcase
+      options.name ||= self.class.to_s.split('::').last.underscore
 
       self.class.args.each do |arg|
         options[arg] = args.shift

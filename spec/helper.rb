@@ -44,3 +44,7 @@ class ExampleStrategy
     raise "Callback Phase"
   end
 end
+
+class Example1Strategy
+  include OmniAuth::Strategy
+end
