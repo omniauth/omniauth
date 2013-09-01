@@ -5,6 +5,9 @@ describe OmniAuth::FailureEndpoint do
 
   context "raise-out environment" do
     before do
+      @rack_env = ENV['RACK_ENV']
+      ENV['RACK_ENV'] = 'test'
+
       @default = OmniAuth.config.failure_raise_out_environments
       OmniAuth.config.failure_raise_out_environments = ['test']
     end
@@ -20,6 +23,7 @@ describe OmniAuth::FailureEndpoint do
     end
 
     after do
+      ENV['RACK_ENV'] = @rack_env
       OmniAuth.config.failure_raise_out_environments = @default
     end
   end
