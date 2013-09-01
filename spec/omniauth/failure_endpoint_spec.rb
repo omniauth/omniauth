@@ -5,7 +5,8 @@ describe OmniAuth::FailureEndpoint do
 
   context "raise-out environment" do
     before do
-      @default, OmniAuth.config.failure_raise_out_environments = OmniAuth.config.failure_raise_out_environments, ['test']
+      @default = OmniAuth.config.failure_raise_out_environments
+      OmniAuth.config.failure_raise_out_environments = ['test']
     end
 
     it "raises out the error" do
