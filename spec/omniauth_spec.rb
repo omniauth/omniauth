@@ -26,14 +26,20 @@ describe OmniAuth do
     end
 
     before do
-      @old_path_prefix = OmniAuth.config.path_prefix
-      @old_on_failure  = OmniAuth.config.on_failure
+      @old_path_prefix      = OmniAuth.config.path_prefix
+      @old_on_failure       = OmniAuth.config.on_failure
+      @old_on_callback_hook = OmniAuth.config.on_callback_hook
+      @old_on_options_hook  = OmniAuth.config.on_options_hook
+      @old_on_request_hook  = OmniAuth.config.on_request_hook
     end
 
     after do
       OmniAuth.configure do |config|
-        config.path_prefix = @old_path_prefix
-        config.on_failure  = @old_on_failure
+        config.path_prefix      = @old_path_prefix
+        config.on_failure       = @old_on_failure
+        config.on_callback_hook = @old_on_callback_hook
+        config.on_options_hook  = @old_on_options_hook
+        config.on_request_hook  = @old_on_request_hook
       end
     end
 
@@ -54,6 +60,34 @@ describe OmniAuth do
 
       expect(OmniAuth.config.on_failure.call).to eq('yoyo')
     end
+
+    it "is able to set hook on option_call" do
+      OmniAuth.configure do |config|
+        config.on_options_hook do
+          'yoyo'
+        end
+      end
+      expect(OmniAuth.config.on_options_hook.call).to eq('yoyo')
+    end
+
+    it "is able to set hook on request_call" do
+      OmniAuth.configure do |config|
+        config.on_request_hook do
+          'heyhey'
+        end
+      end
+      expect(OmniAuth.config.on_request_hook.call).to eq('heyhey')
+    end
+
+    it "is able to set hook on callback_call" do
+      OmniAuth.configure do |config|
+        config.on_callback_hook do
+          'heyhey'
+        end
+      end
+      expect(OmniAuth.config.on_callback_hook.call).to eq('heyhey')
+    end
+
     describe "mock auth" do
       before do
         OmniAuth.config.add_mock(:facebook, :uid => '12345',:info=>{:name=>'Joe', :email=>'joe@example.com'})

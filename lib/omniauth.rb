@@ -34,6 +34,9 @@ module OmniAuth
       :path_prefix => '/auth',
       :on_failure => OmniAuth::FailureEndpoint,
       :failure_raise_out_environments => ['development'],
+      :on_callback_hook =>Proc.new {|p|},
+      :on_options_hook=>Proc.new {|p| },
+      :on_request_hook=>Proc.new {|p| },
       :form_css => Form::DEFAULT_CSS,
       :test_mode => false,
       :logger => default_logger,
@@ -64,6 +67,31 @@ module OmniAuth
         @on_failure
       end
     end
+
+    def on_callback_hook(&block)
+      if block_given?
+        @on_callback_hook = block
+      else
+        @on_callback_hook
+      end
+    end
+
+    def on_options_hook(&block)
+      if block_given?
+        @on_options_hook = block
+      else
+        @on_options_hook
+      end
+    end
+
+    def on_request_hook(&block)
+      if block_given?
+        @on_request_hook = block
+      else
+        @on_request_hook
+      end
+    end
+
 
     def add_mock(provider, mock={})
       # Stringify keys recursively one level.
@@ -96,7 +124,7 @@ module OmniAuth
       self.camelizations[name.to_s] = camelized.to_s
     end
 
-    attr_writer :on_failure
+    attr_writer :on_failure, :on_callback_hook,:on_options_hook,:on_request_hook
     attr_accessor :failure_raise_out_environments, :path_prefix, :allowed_request_methods, :form_css, :test_mode, :mock_auth, :full_host, :camelizations, :logger
   end
 
