@@ -605,7 +605,6 @@ describe OmniAuth::Strategy do
         expect(strategy.env['foobar']).to eq('baz')
       end
 
-
       it "sets omniauth.params on the request phase" do
         OmniAuth.config.mock_auth[:test] = {}
 
