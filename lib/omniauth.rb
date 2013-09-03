@@ -34,9 +34,9 @@ module OmniAuth
       :path_prefix => '/auth',
       :on_failure => OmniAuth::FailureEndpoint,
       :failure_raise_out_environments => ['development'],
-      :on_callback_hook => nil,
-      :on_options_hook  => nil,
-      :on_request_hook  => nil,
+      :before_request_phase   => nil,
+      :before_callback_phase  => nil,
+      :before_options_phase   => nil,
       :form_css => Form::DEFAULT_CSS,
       :test_mode => false,
       :logger => default_logger,
@@ -68,30 +68,29 @@ module OmniAuth
       end
     end
 
-    def on_callback_hook(&block)
+    def before_callback_phase(&block)
       if block_given?
-        @on_callback_hook = block
+        @before_callback_phase = block
       else
-        @on_callback_hook
+        @before_callback_phase
       end
     end
 
-    def on_options_hook(&block)
+    def before_options_phase(&block)
       if block_given?
-        @on_options_hook = block
+        @before_options_phase = block
       else
-        @on_options_hook
+        @before_options_phase
       end
     end
 
-    def on_request_hook(&block)
+    def before_request_phase(&block)
       if block_given?
-        @on_request_hook = block
+        @before_request_phase = block
       else
-        @on_request_hook
+        @before_request_phase
       end
     end
-
 
     def add_mock(provider, mock={})
       # Stringify keys recursively one level.
@@ -124,7 +123,7 @@ module OmniAuth
       self.camelizations[name.to_s] = camelized.to_s
     end
 
-    attr_writer :on_failure, :on_callback_hook,:on_options_hook,:on_request_hook
+    attr_writer   :on_failure, :before_callback_phase, :before_options_phase, :before_request_phase
     attr_accessor :failure_raise_out_environments, :path_prefix, :allowed_request_methods, :form_css, :test_mode, :mock_auth, :full_host, :camelizations, :logger
   end
 

@@ -186,7 +186,7 @@ module OmniAuth
 
     # Responds to an OPTIONS request.
     def options_call
-      OmniAuth.config.on_options_hook.call(self.env) if OmniAuth.config.on_options_hook
+      OmniAuth.config.before_options_phase.call(self.env) if OmniAuth.config.before_options_phase
       verbs = OmniAuth.config.allowed_request_methods.map(&:to_s).map(&:upcase).join(', ')
       return [ 200, { 'Allow' => verbs }, [] ]
     end
@@ -200,7 +200,7 @@ module OmniAuth
       #store query params from the request url, extracted in the callback_phase
       session['omniauth.params'] = request.params
 
-      OmniAuth.config.on_request_hook.call(self.env) if OmniAuth.config.on_request_hook
+      OmniAuth.config.before_request_phase.call(self.env) if OmniAuth.config.before_request_phase
 
       if options.form.respond_to?(:call)
         log :info, "Rendering form from supplied Rack endpoint."
@@ -225,7 +225,7 @@ module OmniAuth
       @env['omniauth.origin'] = session.delete('omniauth.origin')
       @env['omniauth.origin'] = nil if env['omniauth.origin'] == ''
       @env['omniauth.params'] = session.delete('omniauth.params') || {}
-      OmniAuth.config.on_callback_hook.call(@env) if OmniAuth.config.on_callback_hook
+      OmniAuth.config.before_callback_phase.call(@env) if OmniAuth.config.before_callback_phase
       callback_phase
     end
 
@@ -268,7 +268,7 @@ module OmniAuth
       setup_phase
 
       session['omniauth.params'] = request.params
-      OmniAuth.config.on_request_hook.call(self.env) if OmniAuth.config.on_request_hook
+      OmniAuth.config.before_request_phase.call(self.env) if OmniAuth.config.before_request_phase
       if request.params['origin']
         @env['rack.session']['omniauth.origin'] = request.params['origin']
       elsif env['HTTP_REFERER'] && !env['HTTP_REFERER'].match(/#{request_path}$/)
@@ -287,7 +287,7 @@ module OmniAuth
         @env['omniauth.params'] = session.delete('omniauth.params') || {}
         @env['omniauth.origin'] = session.delete('omniauth.origin')
         @env['omniauth.origin'] = nil if env['omniauth.origin'] == ''
-        OmniAuth.config.on_callback_hook.call(@env) if OmniAuth.config.on_callback_hook
+        OmniAuth.config.before_callback_phase.call(@env) if OmniAuth.config.before_callback_phase
         call_app!
       end
     end

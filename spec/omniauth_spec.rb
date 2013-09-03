@@ -26,20 +26,20 @@ describe OmniAuth do
     end
 
     before do
-      @old_path_prefix      = OmniAuth.config.path_prefix
-      @old_on_failure       = OmniAuth.config.on_failure
-      @old_on_callback_hook = OmniAuth.config.on_callback_hook
-      @old_on_options_hook  = OmniAuth.config.on_options_hook
-      @old_on_request_hook  = OmniAuth.config.on_request_hook
+      @old_path_prefix           = OmniAuth.config.path_prefix
+      @old_on_failure            = OmniAuth.config.on_failure
+      @old_before_callback_phase = OmniAuth.config.before_callback_phase
+      @old_before_options_phase  = OmniAuth.config.before_options_phase
+      @old_before_request_phase  = OmniAuth.config.before_request_phase
     end
 
     after do
       OmniAuth.configure do |config|
-        config.path_prefix      = @old_path_prefix
-        config.on_failure       = @old_on_failure
-        config.on_callback_hook = @old_on_callback_hook
-        config.on_options_hook  = @old_on_options_hook
-        config.on_request_hook  = @old_on_request_hook
+        config.path_prefix           = @old_path_prefix
+        config.on_failure            = @old_on_failure
+        config.before_callback_phase = @old_before_callback_phase
+        config.before_options_phase  = @old_before_options_phase
+        config.before_request_phase  = @old_before_request_phase
       end
     end
 
@@ -63,29 +63,29 @@ describe OmniAuth do
 
     it "is able to set hook on option_call" do
       OmniAuth.configure do |config|
-        config.on_options_hook do
+        config.before_options_phase do
           'yoyo'
         end
       end
-      expect(OmniAuth.config.on_options_hook.call).to eq('yoyo')
+      expect(OmniAuth.config.before_options_phase.call).to eq('yoyo')
     end
 
     it "is able to set hook on request_call" do
       OmniAuth.configure do |config|
-        config.on_request_hook do
+        config.before_request_phase do
           'heyhey'
         end
       end
-      expect(OmniAuth.config.on_request_hook.call).to eq('heyhey')
+      expect(OmniAuth.config.before_request_phase.call).to eq('heyhey')
     end
 
     it "is able to set hook on callback_call" do
       OmniAuth.configure do |config|
-        config.on_callback_hook do
+        config.before_callback_phase do
           'heyhey'
         end
       end
-      expect(OmniAuth.config.on_callback_hook.call).to eq('heyhey')
+      expect(OmniAuth.config.before_callback_phase.call).to eq('heyhey')
     end
 
     describe "mock auth" do
