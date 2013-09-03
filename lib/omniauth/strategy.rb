@@ -236,19 +236,20 @@ module OmniAuth
     end
 
     def on_request_path?
-      if options.request_path.respond_to?(:call)
-        options.request_path.call(env)
-      else
-        on_path?(request_path)
-      end
+      on_path?(request_path) || on_dynamic_path?(:request_path)
     end
 
     def on_callback_path?
-      on_path?(callback_path)
+      on_path?(callback_path) || on_dynamic_path?(:callback_path)
     end
 
     def on_path?(path)
       current_path.casecmp(path) == 0
+    end
+
+    def on_dynamic_path?(path_name)
+      option = options[:"is_#{path_name}"]
+      option.respond_to?(:call) && option.call(env)
     end
 
     def options_request?
@@ -382,10 +383,7 @@ module OmniAuth
     end
 
     def callback_path
-      path = options[:callback_path] if options[:callback_path].is_a?(String)
-      path ||= current_path if options[:callback_path].respond_to?(:call) && options[:callback_path].call(env)
-      path ||= custom_path(:request_path)
-      path ||= "#{path_prefix}/#{name}/callback"
+      custom_path(:callback_path) || custom_path(:request_path) || "#{path_prefix}/#{name}/callback"
     end
 
     def setup_path

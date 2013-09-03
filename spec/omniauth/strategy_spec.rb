@@ -371,12 +371,12 @@ describe OmniAuth::Strategy do
 
     context "dynamic paths" do
       it "runs the request phase if the custom request path evaluator is truthy" do
-        @options = {:request_path => lambda{|env| true}}
+        @options = {:is_request_path => lambda{|env| true}}
         expect{strategy.call(make_env('/asoufibasfi')) }.to raise_error("Request Phase")
       end
 
       it "runs the callback phase if the custom callback path evaluator is truthy" do
-        @options = {:callback_path => lambda{|env| true}}
+        @options = {:is_callback_path => lambda{|env| true}}
         expect{strategy.call(make_env('/asoufiasod')) }.to raise_error("Callback Phase")
       end
 
@@ -387,11 +387,10 @@ describe OmniAuth::Strategy do
 
       it "correctly reports the callback path when the custom callback path evaluator is truthy" do
         strategy_instance = ExampleStrategy.new(app,
-          :callback_path => lambda{|env| env['PATH_INFO'] == "/auth/bish/bosh/callback"}
+          :is_callback_path => lambda{|env| env['PATH_INFO'] == "/auth/bish/bosh/callback"}
         )
 
         expect{strategy_instance.call(make_env('/auth/bish/bosh/callback')) }.to raise_error("Callback Phase")
-        expect(strategy_instance.callback_path).to eq('/auth/bish/bosh/callback')
       end
     end
 
@@ -401,19 +400,33 @@ describe OmniAuth::Strategy do
         expect{strategy.call(make_env('/awesome')) }.to raise_error("Request Phase")
       end
 
-      it "uses a custom callback_path if one is provided" do
+      it "uses a custom callback_path if one is provided as a string" do
         @options = {:callback_path => '/radical'}
         expect{strategy.call(make_env('/radical')) }.to raise_error("Callback Phase")
       end
 
+      it "uses a custom callback_path if one is provided as a lambda" do
+        @options = {:callback_path => lambda{|env| '/radical'} }
+        expect{strategy.call(make_env('/radical')) }.to raise_error("Callback Phase")
+      end
+
       context "callback_url" do
-        it "uses a custom callback_path if one is provided" do
+        it "uses a custom callback_path if one is provided as a string" do
           @options = {:callback_path => '/radical'}
           strategy.should_receive(:full_host).and_return('http://example.com')
 
           expect{strategy.call(make_env('/radical')) }.to raise_error("Callback Phase")
 
           expect(strategy.callback_url).to eq('http://example.com/radical')
+        end
+
+        it "uses a custom callback_path if one is provided as a lambda" do
+          @options = {:callback_path => lambda{|env| "/foobar" }}
+          strategy.should_receive(:full_host).and_return('http://example.com')
+
+          expect{strategy.call(make_env('/foobar')) }.to raise_error("Callback Phase")
+
+          expect(strategy.callback_url).to eq('http://example.com/foobar')
         end
 
         it "preserves the query parameters" do
