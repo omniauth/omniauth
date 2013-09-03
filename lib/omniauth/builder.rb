@@ -21,16 +21,16 @@ module OmniAuth
       OmniAuth.config.on_failure = block
     end
 
-    def on_options_hook(&block)
-      OmniAuth.config.on_options_hook = block
+    def before_options_phase(&block)
+      OmniAuth.config.before_options_phase = block
     end
 
-    def on_request_hook(&block)
-      OmniAuth.config.on_request_hook = block
+    def before_request_phase(&block)
+      OmniAuth.config.before_request_phase = block
     end
 
-    def on_callback_hook(&block)
-      OmniAuth.config.on_callback_hook = block
+    def before_callback_phase(&block)
+      OmniAuth.config.before_callback_phase = block
     end
 
     def configure(&block)
