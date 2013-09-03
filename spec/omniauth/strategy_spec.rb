@@ -552,6 +552,12 @@ describe OmniAuth::Strategy do
         expect(response[1]['Location']).to eq('/auth/test/callback?cheese=stilton')
       end
 
+      it "respects set full host" do
+        OmniAuth.config.full_host = 'http://test.local'
+        response = strategy.call(make_env)
+        expect(response[1]['Location']).to eq('http://test.local/auth/test/callback')
+      end
+
       it "does not short circuit requests outside of authentication" do
         expect(strategy.call(make_env('/'))).to eq(app.call(make_env('/')))
       end
