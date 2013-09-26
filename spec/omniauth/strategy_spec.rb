@@ -547,6 +547,11 @@ describe OmniAuth::Strategy do
         expect(strategy.call(make_env('/AUTH/TeSt/CaLlBAck')).first).to eq(strategy.call(make_env('/auth/test/callback')).first)
       end
 
+      it "maintains host and port" do
+        response = strategy.call(make_env('/auth/test', 'rack.url_scheme' => "http", 'HTTP_HOST' => 'example.org', 'SERVER_PORT' => 3000))
+        expect(response[1]['Location']).to eq('http://example.org:3000/auth/test/callback')
+      end
+
       it "maintains query string parameters" do
         response = strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'cheese=stilton'))
         expect(response[1]['Location']).to eq('/auth/test/callback?cheese=stilton')
@@ -662,6 +667,7 @@ describe OmniAuth::Strategy do
       end
 
       after do
+        OmniAuth.config.full_host = nil
         OmniAuth.config.test_mode = false
       end
     end

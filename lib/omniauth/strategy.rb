@@ -274,7 +274,8 @@ module OmniAuth
       elsif env['HTTP_REFERER'] && !env['HTTP_REFERER'].match(/#{request_path}$/)
         @env['rack.session']['omniauth.origin'] = env['HTTP_REFERER']
       end
-      redirect(script_name + callback_path + query_string)
+
+      redirect(callback_url)
     end
 
     def mock_callback_call
@@ -406,16 +407,20 @@ module OmniAuth
 
     def full_host
       case OmniAuth.config.full_host
-        when String
-          OmniAuth.config.full_host
-        when Proc
-          OmniAuth.config.full_host.call(env)
-        else
+      when String
+        OmniAuth.config.full_host
+      when Proc
+        OmniAuth.config.full_host.call(env)
+      else
+        # in Rack 1.3.x, request.url explodes if scheme is nil
+        if request.scheme && request.url.match(URI::ABS_URI)
           uri = URI.parse(request.url.gsub(/\?.*$/,''))
           uri.path = ''
           #sometimes the url is actually showing http inside rails because the other layers (like nginx) have handled the ssl termination.
           uri.scheme = 'https' if ssl?
           uri.to_s
+        else ""
+        end
       end
     end
 
