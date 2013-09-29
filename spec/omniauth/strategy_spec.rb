@@ -87,7 +87,8 @@ describe OmniAuth::Strategy do
   end
 
   describe ".args" do
-    subject{ c = Class.new; c.send :include, OmniAuth::Strategy; c }
+    subject { c = Class.new; c.send :include, OmniAuth::Strategy; c }
+
     it "sets args to the specified argument if there is one" do
       subject.args [:abc, :def]
       expect(subject.args).to eq([:abc, :def])
@@ -97,6 +98,17 @@ describe OmniAuth::Strategy do
       subject.args [:abc, :def]
       c = Class.new(subject)
       expect(c.args).to eq([:abc, :def])
+    end
+
+    it "accepts corresponding options as default arg values" do
+      subject.args [:a, :b]
+      subject.option :a, "1"
+      subject.option :b, "2"
+
+      expect(subject.new(nil).options.a).to eq "1"
+      expect(subject.new(nil).options.b).to eq "2"
+      expect(subject.new(nil, "3", "4").options.b).to eq "4"
+      expect(subject.new(nil, nil, "4").options.a).to eq nil
     end
   end
 
@@ -700,7 +712,7 @@ describe OmniAuth::Strategy do
         end
       end
 
-      let(:strategy){ ExampleStrategy.new(app, :setup => setup_proc) }
+      let(:strategy) { ExampleStrategy.new(app, :setup => setup_proc) }
 
       it "does not call the app on a non-omniauth endpoint" do
         strategy.call(make_env('/somehwere/else'))
