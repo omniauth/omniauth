@@ -136,6 +136,7 @@ module OmniAuth
       options.name ||= self.class.to_s.split('::').last.downcase
 
       self.class.args.each do |arg|
+        break if args.empty?
         options[arg] = args.shift
       end
 
