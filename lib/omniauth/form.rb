@@ -119,6 +119,10 @@ module OmniAuth
       self
     end
 
+    def authenticity_token_field(token)
+      @html << "\n<input type='hidden' name='authenticity_token' value='#{token}' />"
+    end
+
     def text_field(label, name)
       label_field(label, name)
       input_field('text', name)

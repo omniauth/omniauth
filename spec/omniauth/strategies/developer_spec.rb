@@ -20,7 +20,11 @@ describe OmniAuth::Strategies::Developer do
     end
 
     it "has a text field for each of the fields" do
-      expect(last_response.body.scan('<input').size).to eq(2)
+      expect(last_response.body.scan("<input type='text'").size).to eq(2)
+    end
+
+    it "has a hidden field with the csrf token" do
+      expect(last_response.body.scan("<input type='hidden'").size).to eq(1)
     end
   end
 
