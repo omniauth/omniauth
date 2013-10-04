@@ -27,12 +27,7 @@ div { font-family:"FS Me Web Light", Helvetica, Arial, Verdana , sans-serif; fon
 	transition: all .3s linear;
 }
 
-	@media only screen and (-webkit-min-device-pixel-ratio: 1.5){
-		#tag{
-			background:url("../img/tag_2x.png");
-		}
 
-	}
 
 	#tag:hover{	opacity:.8;}
 
@@ -451,21 +446,17 @@ footer{
 		padding-top:5px;
 	}
 
-	#footer_logo{
-				background:url("../img/intridea_logo.png") center right no-repeat;
-				width:136px;
-				height:30px;
-				float:right;
-				background-size:100%;
-				text-indent:-9999px;
-				}
-	
-				@media only screen and (-webkit-min-device-pixel-ratio: 1.5) {
-					#footer_logo{
-								background:url("../img/intridea_logo_2x.png") center right no-repeat;
+  #footer_logo{
+        background:url("../img/intridea_logo.png") center right no-repeat;
+        width:140px;
+		height:23px;
+        float:right;
+        background-size:100%;
+        text-indent:-9999px;
+		background-size: 140px;
+		opacity:.5;
+        }
 
-								}
-				}
 	
 	
 	footer a,	footer a:hover, 	footer a:active, 	footer a:visited {
