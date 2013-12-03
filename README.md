@@ -5,12 +5,14 @@
 [![Dependency Status](https://gemnasium.com/intridea/omniauth.png?travis)][gemnasium]
 [![Code Climate](https://codeclimate.com/github/intridea/omniauth.png)][codeclimate]
 [![Coverage Status](https://coveralls.io/repos/intridea/omniauth/badge.png?branch=master)][coveralls]
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/intridea/omniauth/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
 [gem]: https://rubygems.org/gems/omniauth
 [travis]: http://travis-ci.org/intridea/omniauth
 [gemnasium]: https://gemnasium.com/intridea/omniauth
 [codeclimate]: https://codeclimate.com/github/intridea/omniauth
 [coveralls]: https://coveralls.io/r/intridea/omniauth
+
 
 **OmniAuth 1.0 has several breaking changes from version 0.x. You can set
 the dependency to `~> 0.3.2` if you do not wish to make the more difficult
@@ -165,7 +167,3 @@ Copyright (c) 2010-2013 Michael Bleigh and Intridea, Inc. See [LICENSE][] for
 details.
 
 [license]: LICENSE.md
-
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/intridea/omniauth/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
