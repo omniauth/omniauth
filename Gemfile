@@ -4,6 +4,13 @@ gem 'jruby-openssl', :platforms => :jruby
 gem 'rake'
 gem 'yard'
 
+platforms :rbx do
+ gem 'rubysl', '~> 2.0'
+ gem 'psych'
+ gem 'json'
+ gem 'rubinius-developer_tools'
+end
+
 group :development do
   gem 'growl'
   gem 'guard'
