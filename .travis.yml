@@ -6,9 +6,7 @@ language: ruby
 rvm:
   - rbx-2.1.1
   - rbx
-  - jruby-18mode
   - jruby-19mode
-  - 1.8.7
   - 1.9.2
   - 1.9.3
   - 2.0.0
