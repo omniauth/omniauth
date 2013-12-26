@@ -6,9 +6,11 @@ gem 'yard'
 
 group :development do
   gem 'growl'
-  gem 'guard'
-  gem 'guard-bundler'
-  gem 'guard-rspec'
+  platforms :ruby_19, :ruby_20 do
+    gem 'guard'
+    gem 'guard-bundler'
+    gem 'guard-rspec'
+  end
   gem 'kramdown'
   gem 'plymouth', :platforms => :mri_19
   gem 'pry'
@@ -18,6 +20,7 @@ end
 
 group :test do
   gem 'coveralls', :require => false
+  gem 'mime-types', '~> 1.25', :platforms => [:jruby, :ruby_18]
   gem 'rack-test'
   gem 'rspec', '>= 2.14'
   gem 'simplecov', :require => false
