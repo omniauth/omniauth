@@ -1,5 +1,3 @@
-require 'omniauth'
-
 module OmniAuth
   class Form
     DEFAULT_CSS = <<-CSS

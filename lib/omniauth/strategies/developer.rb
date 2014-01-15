@@ -1,5 +1,3 @@
-require 'omniauth'
-
 module OmniAuth
   module Strategies
     # The Developer strategy is a very simple strategy that can be used as a
