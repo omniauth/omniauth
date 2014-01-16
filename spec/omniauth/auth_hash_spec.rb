@@ -73,7 +73,7 @@ describe OmniAuth::AuthHash do
   end
 
   describe '#to_hash' do
-    subject { OmniAuth::AuthHash.new(:uid => '123', :provider => 'test', :name => 'Bob Example') }
+    subject { OmniAuth::AuthHash.new(:uid => '123', :provider => 'test', :name => 'Example User') }
     let(:hash) { subject.to_hash }
 
     it 'is a plain old hash' do
@@ -85,14 +85,14 @@ describe OmniAuth::AuthHash do
     end
 
     it 'converts an info hash as well' do
-      subject.info = {:first_name => 'Bob', :last_name => 'Example'}
+      subject.info = {:first_name => 'Example', :last_name => 'User'}
       expect(subject.info.class).to eq(OmniAuth::AuthHash::InfoHash)
       expect(subject.to_hash['info'].class).to eq(::Hash)
     end
 
     it 'supplies the calculated name in the converted hash' do
-      subject.info = {:first_name => 'Bob', :last_name => 'Examplar'}
-      expect(hash['info']['name']).to eq('Bob Examplar')
+      subject.info = {:first_name => 'Examplar', :last_name => 'User'}
+      expect(hash['info']['name']).to eq('Examplar User')
     end
 
     it "does not pollute the URL hash with 'name' etc" do
