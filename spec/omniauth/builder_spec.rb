@@ -3,7 +3,7 @@ require 'helper'
 describe OmniAuth::Builder do
   describe '#provider' do
     it 'translates a symbol to a constant' do
-      OmniAuth::Strategies.should_receive(:const_get).with('MyStrategy').and_return(Class.new)
+      expect(OmniAuth::Strategies).to receive(:const_get).with('MyStrategy').and_return(Class.new)
       OmniAuth::Builder.new(nil) do
         provider :my_strategy
       end
@@ -32,7 +32,7 @@ describe OmniAuth::Builder do
     it 'merges provided options in' do
       k = Class.new
       b = OmniAuth::Builder.new(nil)
-      b.should_receive(:use).with(k, :foo => 'bar', :baz => 'tik')
+      expect(b).to receive(:use).with(k, :foo => 'bar', :baz => 'tik')
 
       b.options :foo => 'bar'
       b.provider k, :baz => 'tik'
@@ -41,7 +41,7 @@ describe OmniAuth::Builder do
     it 'adds an argument if no options are provided' do
       k = Class.new
       b = OmniAuth::Builder.new(nil)
-      b.should_receive(:use).with(k, :foo => 'bar')
+      expect(b).to receive(:use).with(k, :foo => 'bar')
 
       b.options :foo => 'bar'
       b.provider k

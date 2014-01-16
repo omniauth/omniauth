@@ -78,7 +78,7 @@ describe OmniAuth::Strategy do
 
     it 'is true if options.skip_info is a callable that evaluates to truthy' do
       instance = ExampleStrategy.new(app, :skip_info => lambda { |uid| uid })
-      instance.should_receive(:uid).and_return(true)
+      expect(instance).to receive(:uid).and_return(true)
       expect(instance).to be_skip_info
     end
   end
@@ -174,8 +174,8 @@ describe OmniAuth::Strategy do
     let(:instance) { subject.new(app) }
 
     it 'calls through to uid and info' do
-      instance.should_receive :uid
-      instance.should_receive :info
+      expect(instance).to receive(:uid)
+      expect(instance).to receive(:info)
       instance.auth_hash
     end
 
@@ -221,7 +221,7 @@ describe OmniAuth::Strategy do
       klass = Class.new
       klass.send :include, OmniAuth::Strategy
       instance = klass.new(app)
-      instance.should_receive(:dup).and_return(instance)
+      expect(instance).to receive(:dup).and_return(instance)
       instance.call('rack.session' => {})
     end
   end
@@ -316,7 +316,7 @@ describe OmniAuth::Strategy do
       end
 
       it 'is set on the failure env' do
-        OmniAuth.config.should_receive(:on_failure).and_return(lambda { |env| env })
+        expect(OmniAuth.config).to receive(:on_failure).and_return(lambda { |env| env })
         @options = {:failure => :forced_fail}
         strategy.call(make_env('/auth/test/callback', 'rack.session' => {'omniauth.origin' => '/awesome'}))
       end
@@ -368,7 +368,7 @@ describe OmniAuth::Strategy do
 
       context 'callback_url' do
         it 'uses the default callback_path' do
-          strategy.should_receive(:full_host).and_return('http://example.com')
+          expect(strategy).to receive(:full_host).and_return('http://example.com')
 
           expect { strategy.call(make_env) }.to raise_error('Request Phase')
 
@@ -447,7 +447,7 @@ describe OmniAuth::Strategy do
       context 'callback_url' do
         it 'uses a custom callback_path if one is provided' do
           @options = {:callback_path => '/radical'}
-          strategy.should_receive(:full_host).and_return('http://example.com')
+          expect(strategy).to receive(:full_host).and_return('http://example.com')
 
           expect { strategy.call(make_env('/radical')) }.to raise_error('Callback Phase')
 
@@ -481,7 +481,7 @@ describe OmniAuth::Strategy do
 
       context 'callback_url' do
         it 'uses a custom prefix' do
-          strategy.should_receive(:full_host).and_return('http://example.com')
+          expect(strategy).to receive(:full_host).and_return('http://example.com')
 
           expect { strategy.call(make_env('/wowzers/test')) }.to raise_error('Request Phase')
 
@@ -700,7 +700,7 @@ describe OmniAuth::Strategy do
         expect(strategy.full_host).to eq('http://my.host.net')
       end
 
-      it 'should honor HTTP_X_FORWARDED_PROTO if present' do
+      it 'honors HTTP_X_FORWARDED_PROTO if present' do
         OmniAuth.config.full_host = nil
         strategy.call(make_env('/whatever', 'HTTP_X_FORWARDED_PROTO' => 'https', 'rack.url_scheme' => 'http', 'SERVER_NAME' => 'my.host.net', 'SERVER_PORT' => 443))
         expect(strategy.full_host).to eq('https://my.host.net')

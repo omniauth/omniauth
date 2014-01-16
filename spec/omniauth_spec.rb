@@ -92,12 +92,12 @@ describe OmniAuth do
       before do
         OmniAuth.config.add_mock(:facebook, :uid => '12345', :info => {:name => 'Joe', :email => 'joe@example.com'})
       end
-      it 'default should be AuthHash' do
+      it 'default is AuthHash' do
         OmniAuth.configure do |config|
           expect(config.mock_auth[:default]).to be_kind_of(OmniAuth::AuthHash)
         end
       end
-      it 'facebook should be AuthHash' do
+      it 'facebook is AuthHash' do
         OmniAuth.configure do |config|
           expect(config.mock_auth[:facebook]).to be_kind_of(OmniAuth::AuthHash)
         end
