@@ -1,3 +1,8 @@
+before_install:
+  - gem update bundler
+  - bundle --version
+  - gem update --system 2.1.11
+  - gem --version
 bundler_args: --without development
 gemfile:
   - Gemfile
@@ -9,14 +14,28 @@ rvm:
   - 1.9.3
   - 2.0.0
   - 2.1.0
-  - jruby-18mode
-  - jruby-19mode
-  - jruby-20mode
-  - jruby-21mode
-  - jruby-head
   - rbx
   - ruby-head
 matrix:
+  include:
+    - rvm: jruby-18mode
+      env: JRUBY_OPTS="$JRUBY_OPTS --debug"
+      gemfile: Gemfile
+    - rvm: jruby-18mode
+      env: JRUBY_OPTS="$JRUBY_OPTS --debug"
+      gemfile: Gemfile.rack-1.3.x
+    - rvm: jruby-19mode
+      env: JRUBY_OPTS="$JRUBY_OPTS --debug"
+      gemfile: Gemfile
+    - rvm: jruby-19mode
+      env: JRUBY_OPTS="$JRUBY_OPTS --debug"
+      gemfile: Gemfile.rack-1.3.x
+    - rvm: jruby-head
+      env: JRUBY_OPTS="$JRUBY_OPTS --debug"
+      gemfile: Gemfile
+    - rvm: jruby-head
+      env: JRUBY_OPTS="$JRUBY_OPTS --debug"
+      gemfile: Gemfile.rack-1.3.x
   allow_failures:
     - rvm: jruby-head
     - rvm: ruby-head
