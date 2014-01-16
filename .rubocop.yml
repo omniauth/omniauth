@@ -1,0 +1,82 @@
+AllCops:
+  Includes:
+    - 'Gemfile'
+    - 'Rakefile'
+    - 'omniauth.gemspec'
+
+# Avoid long parameter lists
+ParameterLists:
+  Max: 4
+  CountKeywordArgs: true
+
+MethodLength:
+  CountComments: false
+  Max: 14
+
+# Avoid more than `Max` levels of nesting.
+BlockNesting:
+  Max: 2
+
+# Align with the style guide.
+CollectionMethods:
+  PreferredMethods:
+    map:      'collect'
+    reduce:   'inject'
+    find:     'detect'
+    find_all: 'select'
+
+# Do not force public/protected/private keyword to be indented at the same
+# level as the def keyword. My personal preference is to outdent these keywords
+# because I think when scanning code it makes it easier to identify the
+# sections of code and visually separate them. When the keyword is at the same
+# level I think it sort of blends in with the def keywords and makes it harder
+# to scan the code and see where the sections are.
+AccessModifierIndentation:
+  Enabled: false
+
+# Limit line length
+LineLength:
+  Enabled: false
+
+# Disable documentation checking until a class needs to be documented once
+Documentation:
+  Enabled: false
+
+# Enforce Ruby 1.8-compatible hash syntax
+HashSyntax:
+  EnforcedStyle: hash_rockets
+
+# No spaces inside hash literals
+SpaceInsideHashLiteralBraces:
+  EnforcedStyle: no_space
+
+# Allow dots at the end of lines
+DotPosition:
+  Enabled: false
+
+# Don't require magic comment at the top of every file
+Encoding:
+  Enabled: false
+
+# Enforce outdenting of access modifiers (i.e. public, private, protected)
+AccessModifierIndentation:
+  EnforcedStyle: outdent
+
+EmptyLinesAroundAccessModifier:
+  Enabled: true
+
+# Align ends correctly
+EndAlignment:
+  AlignWith: variable
+
+# Indentation of when/else
+CaseIndentation:
+  IndentWhenRelativeTo: end
+  IndentOneStep: false
+
+Lambda:
+  Enabled: false
+
+HandleExceptions:
+  Exclude:
+    - 'spec'
