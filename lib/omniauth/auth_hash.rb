@@ -6,7 +6,9 @@ module OmniAuth
   # is able to provide into the InfoHash (stored as the `'info'`
   # key).
   class AuthHash < Hashie::Mash
-    def self.subkey_class; Hashie::Mash end
+    def self.subkey_class
+      Hashie::Mash
+    end
 
     # Tells you if this is considered to be a valid
     # OmniAuth AuthHash. The requirements for that
@@ -25,7 +27,9 @@ module OmniAuth
     end
 
     class InfoHash < Hashie::Mash
-      def self.subkey_class; Hashie::Mash end
+      def self.subkey_class
+        Hashie::Mash
+      end
 
       def name
         return self[:name] if self[:name]
@@ -35,11 +39,10 @@ module OmniAuth
         nil
       end
 
-      def name?; !!name end
-
-      def valid?
-        name?
+      def name?
+        !!name
       end
+      alias_method :valid?, :name?
 
       def to_hash
         hash = super

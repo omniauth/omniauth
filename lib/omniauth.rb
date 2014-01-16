@@ -17,7 +17,7 @@ module OmniAuth
   autoload :FailureEndpoint, 'omniauth/failure_endpoint'
 
   def self.strategies
-    @@strategies ||= []
+    @strategies ||= []
   end
 
   class Configuration
@@ -25,39 +25,29 @@ module OmniAuth
 
     def self.default_logger
       logger = Logger.new(STDOUT)
-      logger.progname = "omniauth"
+      logger.progname = 'omniauth'
       logger
     end
 
-    @@defaults = {
-      :camelizations => {},
-      :path_prefix => '/auth',
-      :on_failure => OmniAuth::FailureEndpoint,
-      :failure_raise_out_environments => ['development'],
-      :before_request_phase   => nil,
-      :before_callback_phase  => nil,
-      :before_options_phase   => nil,
-      :form_css => Form::DEFAULT_CSS,
-      :test_mode => false,
-      :logger => default_logger,
-      :allowed_request_methods => [:get, :post],
-      :mock_auth => {
-        :default => AuthHash.new(
-          'provider' => 'default',
-          'uid' => '1234',
-          'info' => {
-            'name' => 'Bob Example'
-          }
-        )
-      }
-    }
-
     def self.defaults
-      @@defaults
+      @defaults ||= {
+        :camelizations => {},
+        :path_prefix => '/auth',
+        :on_failure => OmniAuth::FailureEndpoint,
+        :failure_raise_out_environments => ['development'],
+        :before_request_phase   => nil,
+        :before_callback_phase  => nil,
+        :before_options_phase   => nil,
+        :form_css => Form::DEFAULT_CSS,
+        :test_mode => false,
+        :logger => default_logger,
+        :allowed_request_methods => [:get, :post],
+        :mock_auth => {:default => AuthHash.new('provider' => 'default', 'uid' => '1234', 'info' => {'name' => 'Bob Example'})}
+      }
     end
 
     def initialize
-      @@defaults.each_pair{|k,v| self.send("#{k}=",v)}
+      self.class.defaults.each_pair { |k, v| send("#{k}=", v) }
     end
 
     def on_failure(&block)
@@ -92,7 +82,7 @@ module OmniAuth
       end
     end
 
-    def add_mock(provider, mock={})
+    def add_mock(provider, mock = {})
       # Stringify keys recursively one level.
       mock.keys.each do |key|
         mock[key.to_s] = mock.delete(key)
@@ -106,11 +96,11 @@ module OmniAuth
       end
 
       # Merge with the default mock and ensure provider is correct.
-      mock = self.mock_auth[:default].dup.merge(mock)
-      mock["provider"] = provider.to_s
+      mock = mock_auth[:default].dup.merge(mock)
+      mock['provider'] = provider.to_s
 
       # Add it to the mocks.
-      self.mock_auth[provider.to_sym] = mock
+      mock_auth[provider.to_sym] = mock
     end
 
     # This is a convenience method to be used by strategy authors
@@ -120,7 +110,7 @@ module OmniAuth
     # @param name [String] The underscored name, e.g. `oauth`
     # @param camelized [String] The properly camelized name, e.g. 'OAuth'
     def add_camelization(name, camelized)
-      self.camelizations[name.to_s] = camelized.to_s
+      camelizations[name.to_s] = camelized.to_s
     end
 
     attr_writer   :on_failure, :before_callback_phase, :before_options_phase, :before_request_phase
@@ -154,8 +144,8 @@ module OmniAuth
       target = hash.dup
 
       other_hash.keys.each do |key|
-        if other_hash[key].is_a? ::Hash and hash[key].is_a? ::Hash
-          target[key] = deep_merge(target[key],other_hash[key])
+        if other_hash[key].is_a?(::Hash) && hash[key].is_a?(::Hash)
+          target[key] = deep_merge(target[key], other_hash[key])
           next
         end
 
@@ -169,7 +159,7 @@ module OmniAuth
       return OmniAuth.config.camelizations[word.to_s] if OmniAuth.config.camelizations[word.to_s]
 
       if first_letter_in_uppercase
-        word.to_s.gsub(/\/(.?)/) { "::" + $1.upcase }.gsub(/(^|_)(.)/) { $2.upcase }
+        word.to_s.gsub(/\/(.?)/) { '::' + Regexp.last_match[1].upcase }.gsub(/(^|_)(.)/) { Regexp.last_match[2].upcase }
       else
         word.first + camelize(word)[1..-1]
       end

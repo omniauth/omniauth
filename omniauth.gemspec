@@ -12,15 +12,15 @@ Gem::Specification.new do |spec|
   spec.description   = %q{A generalized Rack framework for multiple-provider authentication.}
   spec.email         = ['michael@intridea.com', 'sferik@gmail.com']
   spec.files         = %w(.yardopts LICENSE.md README.md Rakefile omniauth.gemspec)
-  spec.files        += Dir.glob("lib/**/*.rb")
-  spec.files        += Dir.glob("spec/**/*")
+  spec.files        += Dir.glob('lib/**/*.rb')
+  spec.files        += Dir.glob('spec/**/*')
   spec.homepage      = 'http://github.com/intridea/omniauth'
   spec.licenses      = ['MIT']
   spec.name          = 'omniauth'
   spec.require_paths = ['lib']
   spec.required_rubygems_version = '>= 1.3.5'
-  spec.signing_key   = File.expand_path("~/.gem/private_key.pem") if $0 =~ /gem\z/
+  spec.signing_key   = File.expand_path('~/.gem/private_key.pem') if $PROGRAM_NAME =~ /gem\z/
   spec.summary       = spec.description
-  spec.test_files    = Dir.glob("spec/**/*")
+  spec.test_files    = Dir.glob('spec/**/*')
   spec.version       = OmniAuth::VERSION
 end

@@ -84,7 +84,7 @@ module OmniAuth
           return
         end
         existing = superclass.respond_to?(:args) ? superclass.args : []
-        return (instance_variable_defined?(:@args) && @args) || existing
+        (instance_variable_defined?(:@args) && @args) || existing
       end
 
       %w(uid info extra credentials).each do |fetcher|
@@ -140,7 +140,7 @@ module OmniAuth
       end
 
       # Make sure that all of the args have been dealt with, otherwise error out.
-      raise ArgumentError, "Received wrong number of arguments. #{args.inspect}" unless args.empty?
+      fail(ArgumentError, "Received wrong number of arguments. #{args.inspect}") unless args.empty?
 
       yield options if block_given?
     end
@@ -169,14 +169,16 @@ module OmniAuth
     # the request path is recognized.
     #
     # @param env [Hash] The Rack environment.
-    def call!(env)
-      raise OmniAuth::NoSessionError.new("You must provide a session to use OmniAuth.") unless env['rack.session']
+    def call!(env) # rubocop:disable CyclomaticComplexity
+      unless env['rack.session']
+        error = OmniAuth::NoSessionError.new('You must provide a session to use OmniAuth.')
+        fail(error)
+      end
 
       @env = env
       @env['omniauth.strategy'] = self if on_auth_path?
 
       return mock_call!(env) if OmniAuth.config.test_mode
-
       return options_call if on_auth_path? && options_request?
       return request_call if on_request_path? && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
       return callback_call if on_callback_path?
@@ -186,27 +188,23 @@ module OmniAuth
 
     # Responds to an OPTIONS request.
     def options_call
-      OmniAuth.config.before_options_phase.call(self.env) if OmniAuth.config.before_options_phase
-      verbs = OmniAuth.config.allowed_request_methods.map(&:to_s).map(&:upcase).join(', ')
-      return [ 200, { 'Allow' => verbs }, [] ]
+      OmniAuth.config.before_options_phase.call(env) if OmniAuth.config.before_options_phase
+      verbs = OmniAuth.config.allowed_request_methods.collect(&:to_s).collect(&:upcase).join(', ')
+      [200, {'Allow' => verbs}, []]
     end
 
     # Performs the steps necessary to run the request phase of a strategy.
-    def request_call
+    def request_call # rubocop:disable CyclomaticComplexity, MethodLength
       setup_phase
-
-      log :info, "Request phase initiated."
-
-      #store query params from the request url, extracted in the callback_phase
+      log :info, 'Request phase initiated.'
+      # store query params from the request url, extracted in the callback_phase
       session['omniauth.params'] = request.params
-
-      OmniAuth.config.before_request_phase.call(self.env) if OmniAuth.config.before_request_phase
-
+      OmniAuth.config.before_request_phase.call(env) if OmniAuth.config.before_request_phase
       if options.form.respond_to?(:call)
-        log :info, "Rendering form from supplied Rack endpoint."
+        log :info, 'Rendering form from supplied Rack endpoint.'
         options.form.call(env)
       elsif options.form
-        log :info, "Rendering form from underlying application."
+        log :info, 'Rendering form from underlying application.'
         call_app!
       else
         if request.params['origin']
@@ -221,7 +219,7 @@ module OmniAuth
     # Performs the steps necessary to run the callback phase of a strategy.
     def callback_call
       setup_phase
-      log :info, "Callback phase initiated."
+      log :info, 'Callback phase initiated.'
       @env['omniauth.origin'] = session.delete('omniauth.origin')
       @env['omniauth.origin'] = nil if env['omniauth.origin'] == ''
       @env['omniauth.params'] = session.delete('omniauth.params') || {}
@@ -268,7 +266,7 @@ module OmniAuth
       setup_phase
 
       session['omniauth.params'] = request.params
-      OmniAuth.config.before_request_phase.call(self.env) if OmniAuth.config.before_request_phase
+      OmniAuth.config.before_request_phase.call(env) if OmniAuth.config.before_request_phase
       if request.params['origin']
         @env['rack.session']['omniauth.origin'] = request.params['origin']
       elsif env['HTTP_REFERER'] && !env['HTTP_REFERER'].match(/#{request_path}$/)
@@ -299,10 +297,10 @@ module OmniAuth
     # underlying application. This will default to `/auth/:provider/setup`.
     def setup_phase
       if options[:setup].respond_to?(:call)
-        log :info, "Setup endpoint detected, running now."
+        log :info, 'Setup endpoint detected, running now.'
         options[:setup].call(env)
       elsif options.setup?
-        log :info, "Calling through to underlying application for setup."
+        log :info, 'Calling through to underlying application for setup.'
         setup_env = env.merge('PATH_INFO' => setup_path, 'REQUEST_METHOD' => 'GET')
         call_app!(setup_env)
       end
@@ -312,7 +310,7 @@ module OmniAuth
     # perform any information gathering you need to be able to authenticate
     # the user in this phase.
     def request_phase
-      raise NotImplementedError
+      fail(NotImplementedError)
     end
 
     def uid
@@ -360,7 +358,7 @@ module OmniAuth
     end
 
     def callback_phase
-      self.env['omniauth.auth'] = auth_hash
+      env['omniauth.auth'] = auth_hash
       call_app!
     end
 
@@ -387,6 +385,7 @@ module OmniAuth
       path ||= current_path if options[:callback_path].respond_to?(:call) && options[:callback_path].call(env)
       path ||= custom_path(:request_path)
       path ||= "#{path_prefix}/#{name}/callback"
+      path
     end
 
     def setup_path
@@ -394,11 +393,11 @@ module OmniAuth
     end
 
     def current_path
-      request.path_info.downcase.sub(/\/$/,'')
+      request.path_info.downcase.sub(/\/$/, '')
     end
 
     def query_string
-      request.query_string.empty? ? "" : "?#{request.query_string}"
+      request.query_string.empty? ? '' : "?#{request.query_string}"
     end
 
     def call_app!(env = @env)
@@ -414,12 +413,13 @@ module OmniAuth
       else
         # in Rack 1.3.x, request.url explodes if scheme is nil
         if request.scheme && request.url.match(URI::ABS_URI)
-          uri = URI.parse(request.url.gsub(/\?.*$/,''))
+          uri = URI.parse(request.url.gsub(/\?.*$/, ''))
           uri.path = ''
-          #sometimes the url is actually showing http inside rails because the other layers (like nginx) have handled the ssl termination.
-          uri.scheme = 'https' if ssl?
+          # sometimes the url is actually showing http inside rails because the
+          # other layers (like nginx) have handled the ssl termination.
+          uri.scheme = 'https' if ssl? # rubocop:disable BlockNesting
           uri.to_s
-        else ""
+        else ''
         end
       end
     end
@@ -457,12 +457,14 @@ module OmniAuth
       r.finish
     end
 
-    def user_info; {} end
+    def user_info
+      {}
+    end
 
     def fail!(message_key, exception = nil)
-      self.env['omniauth.error'] = exception
-      self.env['omniauth.error.type'] = message_key.to_sym
-      self.env['omniauth.error.strategy'] = self
+      env['omniauth.error'] = exception
+      env['omniauth.error.type'] = message_key.to_sym
+      env['omniauth.error.strategy'] = self
 
       if exception
         log :error, "Authentication failure! #{message_key}: #{exception.class.to_s}, #{exception.message}"
@@ -470,16 +472,20 @@ module OmniAuth
         log :error, "Authentication failure! #{message_key} encountered."
       end
 
-      OmniAuth.config.on_failure.call(self.env)
+      OmniAuth.config.on_failure.call(env)
     end
 
     class Options < Hashie::Mash; end
 
-    protected
+  protected
 
     def merge_stack(stack)
-      stack.inject({}){|c,h| c.merge!(h); c}
+      stack.inject({}) do |a, e|
+        a.merge!(e)
+        a
+      end
     end
+
     def ssl?
       request.env['HTTPS'] == 'on' ||
       request.env['HTTP_X_FORWARDED_SSL'] == 'on' ||

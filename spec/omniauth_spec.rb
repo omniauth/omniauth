@@ -1,25 +1,25 @@
 require 'helper'
 
 describe OmniAuth do
-  describe ".strategies" do
-    it "increases when a new strategy is made" do
-      expect{
+  describe '.strategies' do
+    it 'increases when a new strategy is made' do
+      expect do
         class ExampleStrategy
           include OmniAuth::Strategy
         end
-      }.to change(OmniAuth.strategies, :size).by(1)
+      end.to change(OmniAuth.strategies, :size).by(1)
       expect(OmniAuth.strategies.last).to eq(ExampleStrategy)
     end
   end
 
-  context "configuration" do
-    describe ".defaults" do
-      it "is a hash of default configuration" do
+  context 'configuration' do
+    describe '.defaults' do
+      it 'is a hash of default configuration' do
         expect(OmniAuth::Configuration.defaults).to be_kind_of(Hash)
       end
     end
 
-    it "is callable from .configure" do
+    it 'is callable from .configure' do
       OmniAuth.configure do |c|
         expect(c).to be_kind_of(OmniAuth::Configuration)
       end
@@ -43,7 +43,7 @@ describe OmniAuth do
       end
     end
 
-    it "is able to set the path" do
+    it 'is able to set the path' do
       OmniAuth.configure do |config|
         config.path_prefix = '/awesome'
       end
@@ -51,7 +51,7 @@ describe OmniAuth do
       expect(OmniAuth.config.path_prefix).to eq('/awesome')
     end
 
-    it "is able to set the on_failure rack app" do
+    it 'is able to set the on_failure rack app' do
       OmniAuth.configure do |config|
         config.on_failure do
           'yoyo'
@@ -61,7 +61,7 @@ describe OmniAuth do
       expect(OmniAuth.config.on_failure.call).to eq('yoyo')
     end
 
-    it "is able to set hook on option_call" do
+    it 'is able to set hook on option_call' do
       OmniAuth.configure do |config|
         config.before_options_phase do
           'yoyo'
@@ -70,7 +70,7 @@ describe OmniAuth do
       expect(OmniAuth.config.before_options_phase.call).to eq('yoyo')
     end
 
-    it "is able to set hook on request_call" do
+    it 'is able to set hook on request_call' do
       OmniAuth.configure do |config|
         config.before_request_phase do
           'heyhey'
@@ -79,7 +79,7 @@ describe OmniAuth do
       expect(OmniAuth.config.before_request_phase.call).to eq('heyhey')
     end
 
-    it "is able to set hook on callback_call" do
+    it 'is able to set hook on callback_call' do
       OmniAuth.configure do |config|
         config.before_callback_phase do
           'heyhey'
@@ -88,21 +88,21 @@ describe OmniAuth do
       expect(OmniAuth.config.before_callback_phase.call).to eq('heyhey')
     end
 
-    describe "mock auth" do
+    describe 'mock auth' do
       before do
-        OmniAuth.config.add_mock(:facebook, :uid => '12345',:info=>{:name=>'Joe', :email=>'joe@example.com'})
+        OmniAuth.config.add_mock(:facebook, :uid => '12345', :info => {:name => 'Joe', :email => 'joe@example.com'})
       end
-      it "default should be AuthHash" do
+      it 'default should be AuthHash' do
         OmniAuth.configure do |config|
           expect(config.mock_auth[:default]).to be_kind_of(OmniAuth::AuthHash)
         end
       end
-      it "facebook should be AuthHash" do
+      it 'facebook should be AuthHash' do
         OmniAuth.configure do |config|
           expect(config.mock_auth[:facebook]).to be_kind_of(OmniAuth::AuthHash)
         end
       end
-      it "sets facebook attributes" do
+      it 'sets facebook attributes' do
         OmniAuth.configure do |config|
           expect(config.mock_auth[:facebook].uid).to eq('12345')
           expect(config.mock_auth[:facebook].info.name).to eq('Joe')
@@ -112,31 +112,31 @@ describe OmniAuth do
     end
   end
 
-  describe ".logger" do
-    it "calls through to the configured logger" do
-      allow(OmniAuth).to receive(:config).and_return(double(:logger => "foo"))
-      expect(OmniAuth.logger).to eq("foo")
+  describe '.logger' do
+    it 'calls through to the configured logger' do
+      allow(OmniAuth).to receive(:config).and_return(double(:logger => 'foo'))
+      expect(OmniAuth.logger).to eq('foo')
     end
   end
 
-  describe "::Utils" do
-    describe ".deep_merge" do
-      it "combines hashes" do
-        expect(OmniAuth::Utils.deep_merge({'abc' => {'def' => 123}}, {'abc' => {'foo' => 'bar'}})).to eq({'abc' => {'def' => 123, 'foo' => 'bar'}})
+  describe '::Utils' do
+    describe '.deep_merge' do
+      it 'combines hashes' do
+        expect(OmniAuth::Utils.deep_merge({'abc' => {'def' => 123}}, {'abc' => {'foo' => 'bar'}})).to eq('abc' => {'def' => 123, 'foo' => 'bar'})
       end
     end
 
-    describe ".camelize" do
-      it "works on normal cases" do
+    describe '.camelize' do
+      it 'works on normal cases' do
         {
           'some_word' => 'SomeWord',
           'AnotherWord' => 'AnotherWord',
           'one' => 'One',
           'three_words_now' => 'ThreeWordsNow'
-        }.each_pair{ |k,v| expect(OmniAuth::Utils.camelize(k)).to eq(v) }
+        }.each_pair { |k, v| expect(OmniAuth::Utils.camelize(k)).to eq(v) }
       end
 
-      it "works in special cases that have been added" do
+      it 'works in special cases that have been added' do
         OmniAuth.config.add_camelization('oauth', 'OAuth')
         expect(OmniAuth::Utils.camelize(:oauth)).to eq('OAuth')
       end

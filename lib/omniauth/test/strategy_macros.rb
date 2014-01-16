@@ -1,11 +1,8 @@
 module OmniAuth
-
   module Test
-
     module StrategyMacros
-
       def sets_an_auth_hash
-        it "sets an auth hash" do
+        it 'sets an auth hash' do
           expect(last_request.env['omniauth.auth']).to be_kind_of(Hash)
         end
       end
@@ -28,7 +25,5 @@ module OmniAuth
         end
       end
     end
-
   end
-
 end
