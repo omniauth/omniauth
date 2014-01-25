@@ -25,15 +25,6 @@ CollectionMethods:
     find:     'detect'
     find_all: 'select'
 
-# Do not force public/protected/private keyword to be indented at the same
-# level as the def keyword. My personal preference is to outdent these keywords
-# because I think when scanning code it makes it easier to identify the
-# sections of code and visually separate them. When the keyword is at the same
-# level I think it sort of blends in with the def keywords and makes it harder
-# to scan the code and see where the sections are.
-AccessModifierIndentation:
-  Enabled: false
-
 # Limit line length
 LineLength:
   Enabled: false
@@ -78,5 +69,10 @@ Lambda:
   Enabled: false
 
 HandleExceptions:
-  Exclude:
-    - 'spec'
+  Enabled: false
+
+RaiseArgs:
+  EnforcedStyle: compact
+
+TrailingComma:
+  Enabled: false

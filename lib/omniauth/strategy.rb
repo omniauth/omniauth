@@ -140,7 +140,7 @@ module OmniAuth
       end
 
       # Make sure that all of the args have been dealt with, otherwise error out.
-      fail(ArgumentError, "Received wrong number of arguments. #{args.inspect}") unless args.empty?
+      fail(ArgumentError.new("Received wrong number of arguments. #{args.inspect}")) unless args.empty?
 
       yield options if block_given?
     end
