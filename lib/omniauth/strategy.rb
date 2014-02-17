@@ -1,3 +1,4 @@
+require 'omniauth'
 require 'hashie/mash'
 
 module OmniAuth
