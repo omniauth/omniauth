@@ -1,10 +1,10 @@
 # OmniAuth: Standardized Multi-Provider Authentication
 
-[![Gem Version](https://badge.fury.io/rb/omniauth.png)][gem]
-[![CI Build Status](https://secure.travis-ci.org/intridea/omniauth.png?branch=master)][travis]
-[![Dependency Status](https://gemnasium.com/intridea/omniauth.png?travis)][gemnasium]
-[![Code Climate](https://codeclimate.com/github/intridea/omniauth.png)][codeclimate]
-[![Coverage Status](https://coveralls.io/repos/intridea/omniauth/badge.png?branch=master)][coveralls]
+[![Gem Version](http://img.shields.io/gem/v/omniauth.svg)][gem]
+[![Build Status](http://img.shields.io/travis/intridea/omniauth.svg)][travis]
+[![Dependency Status](http://img.shields.io/gemnasium/intridea/omniauth.svg)][gemnasium]
+[![Code Climate](http://img.shields.io/codeclimate/github/intridea/omniauth.svg)][codeclimate]
+[![Coverage Status](http://img.shields.io/coveralls/intridea/omniauth.svg)][coveralls]
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/intridea/omniauth/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
 [gem]: https://rubygems.org/gems/omniauth
@@ -12,7 +12,6 @@
 [gemnasium]: https://gemnasium.com/intridea/omniauth
 [codeclimate]: https://codeclimate.com/github/intridea/omniauth
 [coveralls]: https://coveralls.io/r/intridea/omniauth
-
 
 **OmniAuth 1.0 has several breaking changes from version 0.x. You can set
 the dependency to `~> 0.3.2` if you do not wish to make the more difficult
