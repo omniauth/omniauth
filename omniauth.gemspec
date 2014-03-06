@@ -8,7 +8,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'rack', '~> 1.0'
   spec.add_development_dependency 'bundler', '~> 1.0'
   spec.authors       = ['Michael Bleigh', 'Erik Michaels-Ober']
-  spec.cert_chain    = %w(certs/sferik.pem)
   spec.description   = %q{A generalized Rack framework for multiple-provider authentication.}
   spec.email         = ['michael@intridea.com', 'sferik@gmail.com']
   spec.files         = `git ls-files`.split($INPUT_RECORD_SEPARATOR)
@@ -17,7 +16,6 @@ Gem::Specification.new do |spec|
   spec.name          = 'omniauth'
   spec.require_paths = ['lib']
   spec.required_rubygems_version = '>= 1.3.5'
-  spec.signing_key   = File.expand_path('~/.gem/private_key.pem') if $PROGRAM_NAME =~ /gem\z/
   spec.summary       = spec.description
   spec.test_files    = spec.files.grep(/^spec\//)
   spec.version       = OmniAuth::VERSION
