@@ -10,7 +10,7 @@ describe OmniAuth::Builder do
     end
 
     it 'accepts a class' do
-      class ::ExampleClass; end
+      class ExampleClass; end
 
       expect do
         OmniAuth::Builder.new(nil) do
