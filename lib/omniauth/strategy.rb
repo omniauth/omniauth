@@ -146,7 +146,7 @@ module OmniAuth
     end
 
     def inspect
-      "#<#{self.class.to_s}>"
+      "#<#{self.class}>"
     end
 
     # Direct access to the OmniAuth logger, automatically prefixed
@@ -467,7 +467,7 @@ module OmniAuth
       env['omniauth.error.strategy'] = self
 
       if exception
-        log :error, "Authentication failure! #{message_key}: #{exception.class.to_s}, #{exception.message}"
+        log :error, "Authentication failure! #{message_key}: #{exception.class}, #{exception.message}"
       else
         log :error, "Authentication failure! #{message_key} encountered."
       end
