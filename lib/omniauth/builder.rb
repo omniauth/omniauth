@@ -31,6 +31,10 @@ module OmniAuth
       OmniAuth.config.before_callback_phase = block
     end
 
+    def filter(&block)
+      OmniAuth.config.filter = block
+    end
+
     def configure(&block)
       OmniAuth.configure(&block)
     end

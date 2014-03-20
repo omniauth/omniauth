@@ -178,11 +178,13 @@ module OmniAuth
       @env = env
       @env['omniauth.strategy'] = self if on_auth_path?
 
-      return mock_call!(env) if OmniAuth.config.test_mode
-      return options_call if on_auth_path? && options_request?
-      return request_call if on_request_path? && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
-      return callback_call if on_callback_path?
-      return other_phase if respond_to?(:other_phase)
+      if OmniAuth.config.filter.nil? || OmniAuth.config.filter.call(env)
+        return mock_call!(env) if OmniAuth.config.test_mode
+        return options_call if on_auth_path? && options_request?
+        return request_call if on_request_path? && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
+        return callback_call if on_callback_path?
+        return other_phase if respond_to?(:other_phase)
+      end
       @app.call(env)
     end
 

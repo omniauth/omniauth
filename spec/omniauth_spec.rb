@@ -31,6 +31,7 @@ describe OmniAuth do
       @old_before_callback_phase = OmniAuth.config.before_callback_phase
       @old_before_options_phase  = OmniAuth.config.before_options_phase
       @old_before_request_phase  = OmniAuth.config.before_request_phase
+      @old_filter                = OmniAuth.config.filter
     end
 
     after do
@@ -40,6 +41,7 @@ describe OmniAuth do
         config.before_callback_phase = @old_before_callback_phase
         config.before_options_phase  = @old_before_options_phase
         config.before_request_phase  = @old_before_request_phase
+        config.filter                = @old_filter
       end
     end
 
@@ -86,6 +88,15 @@ describe OmniAuth do
         end
       end
       expect(OmniAuth.config.before_callback_phase.call).to eq('heyhey')
+    end
+
+    it 'is able to set hook on filter' do
+      OmniAuth.configure do |config|
+        config.filter do
+          'heyhey'
+        end
+      end
+      expect(OmniAuth.config.filter.call).to eq('heyhey')
     end
 
     describe 'mock auth' do

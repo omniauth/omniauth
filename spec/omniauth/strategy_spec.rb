@@ -666,6 +666,22 @@ describe OmniAuth::Strategy do
         expect(strategy.env['foobar']).to eq('baz')
       end
 
+      it 'executes filters' do
+        OmniAuth.config.mock_auth[:test] = {}
+        OmniAuth.config.filter do |env|
+          false
+        end
+        OmniAuth.config.before_request_phase do |env|
+          env['foobar'] = 'baz'
+        end
+        strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'foo=bar'))
+        expect(strategy.env['foobar']).to_not eq('baz')
+        # Clean up
+        OmniAuth.config.filter do |env|
+          true
+        end
+      end
+
       it 'turns omniauth.params into an env variable on the callback phase' do
         OmniAuth.config.mock_auth[:test] = {}
 
