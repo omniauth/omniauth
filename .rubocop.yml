@@ -1,5 +1,5 @@
 AllCops:
-  Includes:
+  Include:
     - 'Gemfile'
     - 'Rakefile'
     - 'omniauth.gemspec'
@@ -11,7 +11,7 @@ ParameterLists:
 
 MethodLength:
   CountComments: false
-  Max: 14
+  Max: 15
 
 # Avoid more than `Max` levels of nesting.
 BlockNesting:
@@ -75,4 +75,7 @@ RaiseArgs:
   EnforcedStyle: compact
 
 TrailingComma:
+  Enabled: false
+
+EachWithObject:
   Enabled: false

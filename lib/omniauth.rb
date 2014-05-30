@@ -87,11 +87,13 @@ module OmniAuth
       mock.keys.each do |key|
         mock[key.to_s] = mock.delete(key)
       end
-      mock.each_pair do |key, val|
+      mock.each_pair do |_key, val|
         if val.is_a? Hash
           val.keys.each do |subkey|
             val[subkey.to_s] = val.delete(subkey)
           end
+        else
+          next
         end
       end
 
@@ -113,7 +115,7 @@ module OmniAuth
       camelizations[name.to_s] = camelized.to_s
     end
 
-    attr_writer   :on_failure, :before_callback_phase, :before_options_phase, :before_request_phase
+    attr_writer :on_failure, :before_callback_phase, :before_options_phase, :before_request_phase
     attr_accessor :failure_raise_out_environments, :path_prefix, :allowed_request_methods, :form_css, :test_mode, :mock_auth, :full_host, :camelizations, :logger
   end
 

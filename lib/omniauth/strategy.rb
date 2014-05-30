@@ -126,7 +126,7 @@ module OmniAuth
     #   will be passed through and set to the appropriate values.
     #
     # @yield [Options] Yields options to block for further configuration.
-    def initialize(app, *args, &block)
+    def initialize(app, *args, &block) # rubocop:disable UnusedMethodArgument
       @app = app
       @env = nil
       @options = self.class.default_options.dup
@@ -256,7 +256,7 @@ module OmniAuth
     # This is called in lieu of the normal request process
     # in the event that OmniAuth has been configured to be
     # in test mode.
-    def mock_call!(env)
+    def mock_call!(*)
       return mock_request_call if on_request_path?
       return mock_callback_call if on_callback_path?
       call_app!

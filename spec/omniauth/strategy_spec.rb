@@ -11,7 +11,7 @@ end
 
 describe OmniAuth::Strategy do
   let(:app) do
-    lambda { |env| [404, {}, ['Awesome']] }
+    lambda { |_env| [404, {}, ['Awesome']] }
   end
 
   let(:fresh_strategy) do
@@ -397,7 +397,7 @@ describe OmniAuth::Strategy do
 
     context ':form option' do
       it 'calls through to the supplied form option if one exists' do
-        strategy.options.form = lambda { |env| 'Called me!' }
+        strategy.options.form = lambda { |_env| 'Called me!' }
         expect(strategy.call(make_env('/auth/test'))).to eq('Called me!')
       end
 
@@ -409,17 +409,17 @@ describe OmniAuth::Strategy do
 
     context 'dynamic paths' do
       it 'runs the request phase if the custom request path evaluator is truthy' do
-        @options = {:request_path => lambda { |env| true }}
+        @options = {:request_path => lambda { |_env| true }}
         expect { strategy.call(make_env('/asoufibasfi')) }.to raise_error('Request Phase')
       end
 
       it 'runs the callback phase if the custom callback path evaluator is truthy' do
-        @options = {:callback_path => lambda { |env| true }}
+        @options = {:callback_path => lambda { |_env| true }}
         expect { strategy.call(make_env('/asoufiasod')) }.to raise_error('Callback Phase')
       end
 
       it 'provides a custom callback path if request_path evals to a string' do
-        strategy_instance = fresh_strategy.new(nil, :request_path => lambda { |env| '/auth/boo/callback/22' })
+        strategy_instance = fresh_strategy.new(nil, :request_path => lambda { |_env| '/auth/boo/callback/22' })
         expect(strategy_instance.callback_path).to eq('/auth/boo/callback/22')
       end
 
@@ -549,7 +549,7 @@ describe OmniAuth::Strategy do
     context 'test mode' do
       let(:app) do
         # In test mode, the underlying app shouldn't be called on request phase.
-        lambda { |env| [404, {'Content-Type' => 'text/html'}, []] }
+        lambda { |_env| [404, {'Content-Type' => 'text/html'}, []] }
       end
 
       before do
