@@ -14,7 +14,8 @@ group :development do
   gem 'kramdown'
   gem 'plymouth', :platforms => [:ruby_19, :ruby_20, :ruby_21]
   gem 'pry'
-  gem 'pry-debugger', :platforms => [:mri_19, :mri_20, :mri_21]
+  gem 'pry-debugger', :platforms => [:mri_19, :mri_20]
+  gem 'pry-byebug', :platforms => [:mri_21]
   gem 'rb-fsevent'
 end
 
@@ -23,7 +24,7 @@ group :test do
   gem 'json', '>= 1.8.1', :platforms => [:jruby, :ruby_18, :ruby_19]
   gem 'mime-types', '~> 1.25', :platforms => [:jruby, :ruby_18]
   gem 'rack-test'
-  gem 'rspec', '>= 2.14'
+  gem 'rspec', '~> 3.0'
   gem 'rubocop', '>= 0.22', :platforms => [:ruby_19, :ruby_20, :ruby_21]
   gem 'simplecov', :require => false
 end

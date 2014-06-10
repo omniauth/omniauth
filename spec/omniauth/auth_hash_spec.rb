@@ -27,7 +27,7 @@ describe OmniAuth::AuthHash do
 
     it 'requires a name in the user info hash' do
       subject.info.name = nil
-      expect(subject).not_to be_valid?
+      expect(subject).not_to be_valid
     end
   end
 
