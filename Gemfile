@@ -25,7 +25,7 @@ group :test do
   gem 'mime-types', '~> 1.25', :platforms => [:jruby, :ruby_18]
   gem 'rack-test'
   gem 'rspec', '~> 3.0'
-  gem 'rubocop', '>= 0.22', :platforms => [:ruby_19, :ruby_20, :ruby_21]
+  gem 'rubocop', '>= 0.23', :platforms => [:ruby_19, :ruby_20, :ruby_21]
   gem 'simplecov', :require => false
 end
 
