@@ -466,10 +466,11 @@ module OmniAuth
       env['omniauth.error.type'] = message_key.to_sym
       env['omniauth.error.strategy'] = self
 
+      log_level = ['user_denied'].include?(message_key) ? :warn : :error
       if exception
-        log :error, "Authentication failure! #{message_key}: #{exception.class}, #{exception.message}"
+        log log_level, "Authentication failure! #{message_key}: #{exception.class}, #{exception.message}"
       else
-        log :error, "Authentication failure! #{message_key} encountered."
+        log log_level, "Authentication failure! #{message_key} encountered."
       end
 
       OmniAuth.config.on_failure.call(env)
