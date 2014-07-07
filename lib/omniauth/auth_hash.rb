@@ -46,7 +46,8 @@ module OmniAuth
 
       def to_hash
         hash = super
-        hash['name'] ||= name
+        n = name
+        hash['name'] ||= n if n
         hash
       end
     end
