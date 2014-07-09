@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'rack', '~> 1.0'
   spec.add_development_dependency 'bundler', '~> 1.0'
   spec.authors       = ['Michael Bleigh', 'Erik Michaels-Ober', 'Tom Milewski']
-  spec.description   = %q(A generalized Rack framework for multiple-provider authentication.)
+  spec.description   = 'A generalized Rack framework for multiple-provider authentication.'
   spec.email         = ['michael@intridea.com', 'sferik@gmail.com', 'tmilewski@gmail.com']
   spec.files         = `git ls-files`.split($INPUT_RECORD_SEPARATOR)
   spec.homepage      = 'http://github.com/intridea/omniauth'
