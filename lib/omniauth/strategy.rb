@@ -408,7 +408,7 @@ module OmniAuth
         when Proc
           OmniAuth.config.full_host.call(env)
         else
-          if self.class ==  OmniAuth::Strategies::Vkontakte && Rails.env.production?
+          if self.class ==  OmniAuth::Strategies::Vkontakte && (Rails.env.production? || Rails.env.staging?)
             AppConfig.vk_redirect_uri
           else
             uri = URI.parse(request.url.gsub(/\?.*$/,''))
