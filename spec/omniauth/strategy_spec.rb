@@ -431,6 +431,15 @@ describe OmniAuth::Strategy do
         expect { strategy_instance.call(make_env('/auth/bish/bosh/callback')) }.to raise_error('Callback Phase')
         expect(strategy_instance.callback_path).to eq('/auth/bish/bosh/callback')
       end
+
+      it 'correctly reports the request path when the custom request path evaluator is truthy' do
+        strategy_instance = ExampleStrategy.new(app,
+                                                :request_path => lambda { |env| env['PATH_INFO'] == '/auth/bish/bosh' }
+        )
+
+        expect { strategy_instance.call(make_env('/auth/bish/bosh')) }.to raise_error('Request Phase')
+        expect(strategy_instance.request_path).to eq('/auth/bish/bosh')
+      end
     end
 
     context 'custom paths' do

@@ -377,7 +377,10 @@ module OmniAuth
     end
 
     def request_path
-      options[:request_path].is_a?(String) ? options[:request_path] : "#{path_prefix}/#{name}"
+      path = options[:request_path] if options[:request_path].is_a?(String)
+      path ||= current_path if options[:request_path].respond_to?(:call) && options[:request_path].call(env)
+      path ||= "#{path_prefix}/#{name}"
+      path
     end
 
     def callback_path
