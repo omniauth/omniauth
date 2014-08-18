@@ -33,15 +33,13 @@ describe OmniAuth::AuthHash do
 
   describe '#name' do
     subject do
-      OmniAuth::AuthHash.new(
-        :info => {
-          :name => 'Phillip J. Fry',
-          :first_name => 'Phillip',
-          :last_name => 'Fry',
-          :nickname => 'meatbag',
-          :email => 'fry@planetexpress.com',
-        }
-      )
+      OmniAuth::AuthHash.new(:info => {
+                               :name => 'Phillip J. Fry',
+                               :first_name => 'Phillip',
+                               :last_name => 'Fry',
+                               :nickname => 'meatbag',
+                               :email => 'fry@planetexpress.com',
+                             })
     end
 
     it 'defaults to the name key' do

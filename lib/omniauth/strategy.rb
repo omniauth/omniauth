@@ -169,7 +169,7 @@ module OmniAuth
     # the request path is recognized.
     #
     # @param env [Hash] The Rack environment.
-    def call!(env) # rubocop:disable CyclomaticComplexity
+    def call!(env) # rubocop:disable CyclomaticComplexity, PerceivedComplexity
       unless env['rack.session']
         error = OmniAuth::NoSessionError.new('You must provide a session to use OmniAuth.')
         fail(error)
@@ -194,7 +194,7 @@ module OmniAuth
     end
 
     # Performs the steps necessary to run the request phase of a strategy.
-    def request_call # rubocop:disable CyclomaticComplexity, MethodLength
+    def request_call # rubocop:disable CyclomaticComplexity, MethodLength, PerceivedComplexity
       setup_phase
       log :info, 'Request phase initiated.'
       # store query params from the request url, extracted in the callback_phase

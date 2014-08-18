@@ -1,81 +1,57 @@
-AllCops:
-  Include:
-    - 'Gemfile'
-    - 'Rakefile'
-    - 'omniauth.gemspec'
+Lint/HandleExceptions:
+  Enabled: false
 
-# Avoid long parameter lists
-ParameterLists:
-  Max: 4
-  CountKeywordArgs: true
+Metrics/BlockNesting:
+  Max: 2
 
-MethodLength:
+Metrics/LineLength:
+  AllowURI: true
+  Enabled: false
+
+Metrics/MethodLength:
   CountComments: false
   Max: 15
 
-# Avoid more than `Max` levels of nesting.
-BlockNesting:
-  Max: 2
+Metrics/ParameterLists:
+  Max: 4
+  CountKeywordArgs: true
 
-# Align with the style guide.
-CollectionMethods:
+Style/AccessModifierIndentation:
+  EnforcedStyle: outdent
+
+Style/CollectionMethods:
   PreferredMethods:
     map:      'collect'
     reduce:   'inject'
     find:     'detect'
     find_all: 'select'
 
-# Limit line length
-LineLength:
+Style/Documentation:
   Enabled: false
 
-# Disable documentation checking until a class needs to be documented once
-Documentation:
+Style/DotPosition:
+  EnforcedStyle: trailing
+
+Style/DoubleNegation:
   Enabled: false
 
-# Enforce Ruby 1.8-compatible hash syntax
-HashSyntax:
+Style/EachWithObject:
+  Enabled: false
+
+Style/Encoding:
+  Enabled: false
+
+Style/HashSyntax:
   EnforcedStyle: hash_rockets
 
-# No spaces inside hash literals
-SpaceInsideHashLiteralBraces:
-  EnforcedStyle: no_space
-
-# Allow dots at the end of lines
-DotPosition:
+Style/Lambda:
   Enabled: false
 
-# Don't require magic comment at the top of every file
-Encoding:
-  Enabled: false
-
-# Enforce outdenting of access modifiers (i.e. public, private, protected)
-AccessModifierIndentation:
-  EnforcedStyle: outdent
-
-EmptyLinesAroundAccessModifier:
-  Enabled: true
-
-# Align ends correctly
-EndAlignment:
-  AlignWith: variable
-
-# Indentation of when/else
-CaseIndentation:
-  IndentWhenRelativeTo: end
-  IndentOneStep: false
-
-Lambda:
-  Enabled: false
-
-HandleExceptions:
-  Enabled: false
-
-RaiseArgs:
+Style/RaiseArgs:
   EnforcedStyle: compact
 
-TrailingComma:
-  Enabled: false
+Style/SpaceInsideHashLiteralBraces:
+  EnforcedStyle: no_space
 
-EachWithObject:
-  Enabled: false
+Style/TrailingComma:
+  EnforcedStyleForMultiline: 'comma'

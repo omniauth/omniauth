@@ -132,7 +132,7 @@ describe OmniAuth do
           'some_word' => 'SomeWord',
           'AnotherWord' => 'AnotherWord',
           'one' => 'One',
-          'three_words_now' => 'ThreeWordsNow'
+          'three_words_now' => 'ThreeWordsNow',
         }.each_pair { |k, v| expect(OmniAuth::Utils.camelize(k)).to eq(v) }
       end
 

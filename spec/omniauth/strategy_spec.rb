@@ -5,7 +5,7 @@ def make_env(path = '/auth/test', props = {})
     'REQUEST_METHOD' => 'GET',
     'PATH_INFO' => path,
     'rack.session' => {},
-    'rack.input' => StringIO.new('test=true')
+    'rack.input' => StringIO.new('test=true'),
   }.merge(props)
 end
 
@@ -331,7 +331,7 @@ describe OmniAuth::Strategy do
         it 'is turned into an env variable on the callback phase, containing full path' do
           env = {
             'rack.session' => {'omniauth.origin' => 'http://example.com/sub_uri/origin'},
-            'SCRIPT_NAME' => '/sub_uri'
+            'SCRIPT_NAME' => '/sub_uri',
           }
 
           expect { strategy.call(make_env('/auth/test/callback', env)) }.to raise_error('Callback Phase')
@@ -424,9 +424,7 @@ describe OmniAuth::Strategy do
       end
 
       it 'correctly reports the callback path when the custom callback path evaluator is truthy' do
-        strategy_instance = ExampleStrategy.new(app,
-                                                :callback_path => lambda { |env| env['PATH_INFO'] == '/auth/bish/bosh/callback' }
-        )
+        strategy_instance = ExampleStrategy.new(app, :callback_path => lambda { |env| env['PATH_INFO'] == '/auth/bish/bosh/callback' })
 
         expect { strategy_instance.call(make_env('/auth/bish/bosh/callback')) }.to raise_error('Callback Phase')
         expect(strategy_instance.callback_path).to eq('/auth/bish/bosh/callback')
@@ -610,7 +608,7 @@ describe OmniAuth::Strategy do
 
       it 'responds with a provider-specific hash if one is set' do
         OmniAuth.config.mock_auth[:test] = {
-          'uid' => 'abc'
+          'uid' => 'abc',
         }
 
         strategy.call make_env('/auth/test/callback')
