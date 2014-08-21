@@ -22,3 +22,4 @@ matrix:
     - rvm: rbx-2
     - rvm: ruby-head
   fast_finish: true
+sudo: false
