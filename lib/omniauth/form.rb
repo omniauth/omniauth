@@ -5,6 +5,7 @@ module OmniAuth
     attr_accessor :options
 
     def initialize(options = {})
+      options[:method] ||= 'post'
       options[:title] ||= 'Authentication Info Required'
       options[:header_info] ||= ''
       self.options = options
@@ -75,7 +76,7 @@ module OmniAuth
       </head>
       <body>
       <h1>#{title}</h1>
-      <form method='post' #{"action='#{options[:url]}' " if options[:url]}noValidate='noValidate'>
+      <form method='#{options[:method]}' #{"action='#{options[:url]}' " if options[:url]}noValidate='noValidate'>
       HTML
       self
     end
