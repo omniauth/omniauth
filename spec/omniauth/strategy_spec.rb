@@ -59,7 +59,7 @@ describe OmniAuth::Strategy do
     it 'takes a hash and deep merge it' do
       subject.configure :abc => {:def => 123}
       subject.configure :abc => {:hgi => 456}
-      expect(subject.default_options['abc']).to eq('def' => 123, 'hgi' => 456)
+      expect(subject.default_options['abc'].to_hash).to eq('def' => 123, 'hgi' => 456)
     end
   end
 

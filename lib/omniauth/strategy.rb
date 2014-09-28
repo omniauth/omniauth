@@ -1,5 +1,3 @@
-require 'hashie/mash'
-
 module OmniAuth
   class NoSessionError < StandardError; end
   # The Strategy is the base unit of OmniAuth's ability to
@@ -21,9 +19,10 @@ module OmniAuth
       # Returns an inherited set of default options set at the class-level
       # for each strategy.
       def default_options
-        return @default_options if instance_variable_defined?(:@default_options) && @default_options
-        existing = superclass.respond_to?(:default_options) ? superclass.default_options : {}
-        @default_options = OmniAuth::Strategy::Options.new(existing)
+        @default_options ||= begin
+          existing = self.superclass.respond_to?(:default_options) ? superclass.default_options : {}
+          @default_options = OmniAuth::Strategy::Options.new(existing.to_hash)
+        end
       end
 
       # This allows for more declarative subclassing of strategies by allowing
@@ -299,7 +298,7 @@ module OmniAuth
       if options[:setup].respond_to?(:call)
         log :info, 'Setup endpoint detected, running now.'
         options[:setup].call(env)
-      elsif options.setup?
+      elsif options.setup
         log :info, 'Calling through to underlying application for setup.'
         setup_env = env.merge('PATH_INFO' => setup_path, 'REQUEST_METHOD' => 'GET')
         call_app!(setup_env)
@@ -347,7 +346,7 @@ module OmniAuth
     #
     #   use MyStrategy, :skip_info => lambda{|uid| User.find_by_uid(uid)}
     def skip_info?
-      if options.skip_info?
+      if options.skip_info
         if options.skip_info.respond_to?(:call)
           return options.skip_info.call(uid)
         else
@@ -392,8 +391,10 @@ module OmniAuth
       options[:setup_path] || "#{path_prefix}/#{name}/setup"
     end
 
+    EMPTY_STRING         = ''
+    TRAILING_SLASH_REGEX = /\/$/
     def current_path
-      request.path_info.downcase.sub(/\/$/, '')
+      request.path_info.downcase.sub(TRAILING_SLASH_REGEX, EMPTY_STRING)
     end
 
     def query_string
@@ -475,7 +476,8 @@ module OmniAuth
       OmniAuth.config.on_failure.call(env)
     end
 
-    class Options < Hashie::Mash; end
+    class Options < OmniStruct
+    end
 
   protected
 

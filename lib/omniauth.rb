@@ -1,12 +1,87 @@
 require 'rack'
 require 'singleton'
 require 'logger'
+require 'ostruct'
 
 module OmniAuth
   class Error < StandardError; end
 
   module Strategies
     autoload :Developer, 'omniauth/strategies/developer'
+  end
+
+  class OmniStruct < ::OpenStruct
+
+    def to_hash(options = {})
+      self.to_h.each_with_object({}) do |(key, value), object|
+        puts value.method(:to_hash).source_location if value.is_a?(OmniStruct)
+        value = value.to_hash(options) if value.is_a?(OmniStruct)
+        key   = if options[:stringify_keys]
+                   key.to_s
+                 elsif options[:symbolize_keys]
+                   key.to_sym
+                 else
+                   key.to_s
+                 end
+        object[key] = value
+      end
+    end
+
+    # internal ostruct implementaiton needed for on_write to work
+    def initialize(*args)
+      new_args = {}
+      args.each do |hash|
+        hash.each do |key, value|
+          new_args[key] = on_write(key, value)
+        end
+      end
+      super new_args
+    end
+
+    def on_write(key, value)
+      value.is_a?(::Hash) ? self.class.new(value) : value
+    end
+
+    # internal ostruct implementaiton needed for on_write to work
+    def new_ostruct_member(name)
+      name = name.to_sym
+      unless respond_to?(name)
+        define_singleton_method(name) { @table[name] }
+        define_singleton_method("#{name}=") { |value| modifiable[name] = on_write(name, value) }
+      end
+      name
+    end
+
+    EQUAL_END = /=$/
+
+    # internal ostruct implementaiton needed for on_write to work
+    def method_missing(method_name, *args)
+      if method_name.to_s.match(EQUAL_END)
+        args.map! {|arg| on_write(method_name.to_s.gsub(EQUAL_END, '').to_sym, arg) }
+      end
+      super method_name, *args
+    end
+
+    def merge!(hash)
+      hash.each do |key, value|
+        self[key] = value
+      end
+    end
+
+    def deep_merge!(hash)
+      hash.each do |key, value|
+        if value.is_a?(::Hash)
+          merge_hash = self[key].respond_to?(:to_h) ? self[key].to_h : {}
+          value      = on_write(key, merge_hash.merge(value))
+        end
+        self[key] = value
+      end
+      self
+    end
+
+    def merge(hash)
+      self.dup.deep_merge!(hash)
+    end
   end
 
   autoload :Builder,  'omniauth/builder'
