@@ -7,6 +7,8 @@ gem 'yard'
 group :development do
   gem 'kramdown'
   gem 'pry'
+  gem 'benchmark-ips'
+  gem 'memory_profiler'
 end
 
 group :test do
