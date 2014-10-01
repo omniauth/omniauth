@@ -377,23 +377,27 @@ module OmniAuth
     end
 
     def request_path
-      options[:request_path].is_a?(String) ? options[:request_path] : "#{path_prefix}/#{name}"
+      @request_path ||= options[:request_path].is_a?(String) ? options[:request_path] : "#{path_prefix}/#{name}"
     end
 
     def callback_path
-      path = options[:callback_path] if options[:callback_path].is_a?(String)
-      path ||= current_path if options[:callback_path].respond_to?(:call) && options[:callback_path].call(env)
-      path ||= custom_path(:request_path)
-      path ||= "#{path_prefix}/#{name}/callback"
-      path
+      @callback_path ||= begin
+        path = options[:callback_path] if options[:callback_path].is_a?(String)
+        path ||= current_path if options[:callback_path].respond_to?(:call) && options[:callback_path].call(env)
+        path ||= custom_path(:request_path)
+        path ||= "#{path_prefix}/#{name}/callback"
+        path
+      end
     end
 
     def setup_path
       options[:setup_path] || "#{path_prefix}/#{name}/setup"
     end
 
+    CURRENT_PATH_REGEX = /\/$/
+    EMPTY_STRING       = ''.freeze
     def current_path
-      request.path_info.downcase.sub(/\/$/, '')
+      @current_path ||= request.path_info.downcase.sub(CURRENT_PATH_REGEX, EMPTY_STRING)
     end
 
     def query_string
