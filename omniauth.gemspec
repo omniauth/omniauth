@@ -10,13 +10,12 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Michael Bleigh', 'Erik Michaels-Ober', 'Tom Milewski']
   spec.description   = 'A generalized Rack framework for multiple-provider authentication.'
   spec.email         = ['michael@intridea.com', 'sferik@gmail.com', 'tmilewski@gmail.com']
-  spec.files         = `git ls-files`.split($INPUT_RECORD_SEPARATOR)
+  spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.start_with?('spec/') }
   spec.homepage      = 'http://github.com/intridea/omniauth'
   spec.licenses      = %w(MIT)
   spec.name          = 'omniauth'
   spec.require_paths = %w(lib)
   spec.required_rubygems_version = '>= 1.3.5'
   spec.summary       = spec.description
-  spec.test_files    = spec.files.grep(/^spec\//)
   spec.version       = OmniAuth::VERSION
 end
