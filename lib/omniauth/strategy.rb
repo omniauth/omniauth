@@ -132,7 +132,7 @@ module OmniAuth
       @options = self.class.default_options.dup
 
       options.deep_merge!(args.pop) if args.last.is_a?(Hash)
-      options.name ||= self.class.to_s.split('::').last.downcase
+      options[:name] ||= self.class.to_s.split('::').last.downcase
 
       self.class.args.each do |arg|
         break if args.empty?
@@ -234,8 +234,8 @@ module OmniAuth
     end
 
     def on_request_path?
-      if options.request_path.respond_to?(:call)
-        options.request_path.call(env)
+      if options[:request_path].respond_to?(:call)
+        options[:request_path].call(env)
       else
         on_path?(request_path)
       end
@@ -299,7 +299,7 @@ module OmniAuth
       if options[:setup].respond_to?(:call)
         log :info, 'Setup endpoint detected, running now.'
         options[:setup].call(env)
-      elsif options.setup?
+      elsif options[:setup]
         log :info, 'Calling through to underlying application for setup.'
         setup_env = env.merge('PATH_INFO' => setup_path, 'REQUEST_METHOD' => 'GET')
         call_app!(setup_env)
@@ -347,9 +347,9 @@ module OmniAuth
     #
     #   use MyStrategy, :skip_info => lambda{|uid| User.find_by_uid(uid)}
     def skip_info?
-      if options.skip_info?
-        if options.skip_info.respond_to?(:call)
-          return options.skip_info.call(uid)
+      if options[:skip_info]
+        if options[:skip_info].respond_to?(:call)
+          return options[:skip_info].call(uid)
         else
           return true
         end
@@ -445,7 +445,7 @@ module OmniAuth
     end
 
     def name
-      options.name
+      options[:name]
     end
 
     def redirect(uri)
