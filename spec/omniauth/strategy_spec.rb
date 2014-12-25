@@ -337,7 +337,6 @@ describe OmniAuth::Strategy do
           expect { strategy.call(make_env('/auth/test/callback', env)) }.to raise_error('Callback Phase')
           expect(strategy.last_env['omniauth.origin']).to eq('http://example.com/sub_uri/origin')
         end
-
       end
     end
 

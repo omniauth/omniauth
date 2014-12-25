@@ -492,10 +492,10 @@ module OmniAuth
 
     def ssl?
       request.env['HTTPS'] == 'on' ||
-      request.env['HTTP_X_FORWARDED_SSL'] == 'on' ||
-      request.env['HTTP_X_FORWARDED_SCHEME'] == 'https' ||
-      (request.env['HTTP_X_FORWARDED_PROTO'] && request.env['HTTP_X_FORWARDED_PROTO'].split(',')[0] == 'https') ||
-      request.env['rack.url_scheme'] == 'https'
+        request.env['HTTP_X_FORWARDED_SSL'] == 'on' ||
+        request.env['HTTP_X_FORWARDED_SCHEME'] == 'https' ||
+        (request.env['HTTP_X_FORWARDED_PROTO'] && request.env['HTTP_X_FORWARDED_PROTO'].split(',')[0] == 'https') ||
+        request.env['rack.url_scheme'] == 'https'
     end
   end
 end
