@@ -110,6 +110,19 @@ describe OmniAuth do
         end
       end
     end
+
+    specify '.add_mock does not change the hash inputed' do
+      @hash_inputed = {
+        :uid => '12345',
+        :info => {:name => 'Joe', :email => 'joe@example.com'},
+      }
+
+      OmniAuth.config.add_mock(:facebook, @hash_inputed)
+
+      expect(@hash_inputed[:uid]).to be == '12345'
+      expect(@hash_inputed[:info][:name]).to be == 'Joe'
+      expect(@hash_inputed[:info][:email]).to be == 'joe@example.com'
+    end
   end
 
   describe '.logger' do
