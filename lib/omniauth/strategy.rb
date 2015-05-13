@@ -505,7 +505,7 @@ module OmniAuth
     end
 
     def headers
-      headers = env.select { |key, value| key.start_with? 'HTTP_' }
+      headers = env.select { |key, _value| key.start_with? 'HTTP_' }
       Hash[headers.map { |key, value| [key.sub(/^HTTP_/, ''), value] }]
     end
   end
