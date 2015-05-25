@@ -2,6 +2,8 @@ require 'rack'
 require 'singleton'
 require 'logger'
 
+require 'omniauth/railtie' if defined?(Rails)
+
 module OmniAuth
   class Error < StandardError; end
 
