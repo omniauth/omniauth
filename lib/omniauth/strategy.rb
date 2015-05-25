@@ -6,7 +6,7 @@ module OmniAuth
   # wrangle multiple providers. Each strategy provided by
   # OmniAuth includes this mixin to gain the default functionality
   # necessary to be compatible with the OmniAuth library.
-  module Strategy
+  module Strategy # rubocop:disable ModuleLength
     def self.included(base)
       OmniAuth.strategies << base
 
