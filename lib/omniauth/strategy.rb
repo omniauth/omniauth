@@ -394,7 +394,7 @@ module OmniAuth
       options[:setup_path] || "#{path_prefix}/#{name}/setup"
     end
 
-    CURRENT_PATH_REGEX = /\/$/
+    CURRENT_PATH_REGEX = %r{/$}
     EMPTY_STRING       = ''.freeze
     def current_path
       @current_path ||= request.path_info.downcase.sub(CURRENT_PATH_REGEX, EMPTY_STRING)

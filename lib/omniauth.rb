@@ -161,7 +161,7 @@ module OmniAuth
       return OmniAuth.config.camelizations[word.to_s] if OmniAuth.config.camelizations[word.to_s]
 
       if first_letter_in_uppercase
-        word.to_s.gsub(/\/(.?)/) { '::' + Regexp.last_match[1].upcase }.gsub(/(^|_)(.)/) { Regexp.last_match[2].upcase }
+        word.to_s.gsub(%r{/(.?)}) { '::' + Regexp.last_match[1].upcase }.gsub(/(^|_)(.)/) { Regexp.last_match[2].upcase }
       else
         word.first + camelize(word)[1..-1]
       end
