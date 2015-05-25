@@ -6,11 +6,6 @@ gem 'yard'
 
 group :development do
   gem 'growl'
-  platforms :ruby_19, :ruby_20 do
-    gem 'guard'
-    gem 'guard-bundler'
-    gem 'guard-rspec'
-  end
   gem 'kramdown'
   gem 'plymouth', :platforms => [:ruby_19, :ruby_20, :ruby_21]
   gem 'pry'
