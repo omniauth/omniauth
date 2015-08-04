@@ -32,7 +32,7 @@ module OmniAuth
       end
 
       def session
-        last_request.env['rack.session']
+        last_request.env[OmniAuth.config.session_key]
       end
 
       def strategy
