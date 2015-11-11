@@ -90,7 +90,10 @@ describe OmniAuth do
 
     describe 'mock auth' do
       before do
-        OmniAuth.config.add_mock(:facebook, :uid => '12345', :info => {:name => 'Joe', :email => 'joe@example.com'})
+        @auth_hash = { :uid => '12345', :info => {:name => 'Joe', :email => 'joe@example.com'} }
+        @original_auth_hash = Marshal.load(Marshal.dump(@auth_hash))
+
+        OmniAuth.config.add_mock(:facebook, @auth_hash)
       end
       it 'default is AuthHash' do
         OmniAuth.configure do |config|
@@ -107,6 +110,11 @@ describe OmniAuth do
           expect(config.mock_auth[:facebook].uid).to eq('12345')
           expect(config.mock_auth[:facebook].info.name).to eq('Joe')
           expect(config.mock_auth[:facebook].info.email).to eq('joe@example.com')
+        end
+      end
+      it 'does not mutate given auth hash' do
+        OmniAuth.configure do |config|
+          expect(@auth_hash).to eq @original_auth_hash
         end
       end
     end
