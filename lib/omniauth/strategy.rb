@@ -483,6 +483,11 @@ module OmniAuth
 
   protected
 
+    def initialize_copy(orig)
+      super
+      @options = @options.dup
+    end
+
     def merge_stack(stack)
       stack.inject({}) do |a, e|
         a.merge!(e)
