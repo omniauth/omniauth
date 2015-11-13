@@ -545,24 +545,24 @@ describe OmniAuth::Strategy do
 
     context 'options mutation' do
       before do
-        @options = { :dup => true }
+        @options = {:dup => true}
       end
 
       context 'in request phase' do
         it 'does not affect original options' do
-          @options.merge!({
+          @options.merge!(
             :test_option => true,
-            :mutate_on_request => proc { |options| options.delete(:test_option) }
-          })
+            :mutate_on_request => proc { |options| options.delete(:test_option) },
+          )
           expect { strategy.call(make_env) }.to raise_error('Request Phase')
           expect(strategy.options).to have_key(:test_option)
         end
 
         it 'does not affect deep options' do
-          @options.merge!({
-            :deep_option => { :test_option => true },
-            :mutate_on_request => proc { |options| options[:deep_option].delete(:test_option) }
-          })
+          @options.merge!(
+            :deep_option => {:test_option => true},
+            :mutate_on_request => proc { |options| options[:deep_option].delete(:test_option) },
+          )
           expect { strategy.call(make_env) }.to raise_error('Request Phase')
           expect(strategy.options[:deep_option]).to have_key(:test_option)
         end
@@ -570,19 +570,19 @@ describe OmniAuth::Strategy do
 
       context 'in callback phase' do
         it 'does not affect original options' do
-          @options.merge!({
+          @options.merge!(
             :test_option => true,
-            :mutate_on_callback => proc { |options| options.delete(:test_option) }
-          })
+            :mutate_on_callback => proc { |options| options.delete(:test_option) },
+          )
           expect { strategy.call(make_env('/auth/test/callback', 'REQUEST_METHOD' => 'POST')) }.to raise_error('Callback Phase')
           expect(strategy.options).to have_key(:test_option)
         end
 
         it 'does not affect deep options' do
-          @options.merge!({
-            :deep_option => { :test_option => true },
-            :mutate_on_callback => proc { |options| options[:deep_option].delete(:test_option) }
-          })
+          @options.merge!(
+            :deep_option => {:test_option => true},
+            :mutate_on_callback => proc { |options| options[:deep_option].delete(:test_option) },
+          )
           expect { strategy.call(make_env('/auth/test/callback', 'REQUEST_METHOD' => 'POST')) }.to raise_error('Callback Phase')
           expect(strategy.options[:deep_option]).to have_key(:test_option)
         end
