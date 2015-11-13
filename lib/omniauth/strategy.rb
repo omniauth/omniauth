@@ -479,14 +479,15 @@ module OmniAuth
       OmniAuth.config.on_failure.call(env)
     end
 
+    def dup
+      super.tap do
+        @options = @options.dup
+      end
+    end
+
     class Options < Hashie::Mash; end
 
   protected
-
-    def initialize_copy(orig)
-      super
-      @options = @options.dup
-    end
 
     def merge_stack(stack)
       stack.inject({}) do |a, e|
