@@ -552,7 +552,7 @@ describe OmniAuth::Strategy do
         it 'does not affect original options' do
           @options.merge!(
             :test_option => true,
-            :mutate_on_request => proc { |options| options.delete(:test_option) },
+            :mutate_on_request => proc { |options| options.delete(:test_option) }
           )
           expect { strategy.call(make_env) }.to raise_error('Request Phase')
           expect(strategy.options).to have_key(:test_option)
@@ -561,7 +561,7 @@ describe OmniAuth::Strategy do
         it 'does not affect deep options' do
           @options.merge!(
             :deep_option => {:test_option => true},
-            :mutate_on_request => proc { |options| options[:deep_option].delete(:test_option) },
+            :mutate_on_request => proc { |options| options[:deep_option].delete(:test_option) }
           )
           expect { strategy.call(make_env) }.to raise_error('Request Phase')
           expect(strategy.options[:deep_option]).to have_key(:test_option)
@@ -572,7 +572,7 @@ describe OmniAuth::Strategy do
         it 'does not affect original options' do
           @options.merge!(
             :test_option => true,
-            :mutate_on_callback => proc { |options| options.delete(:test_option) },
+            :mutate_on_callback => proc { |options| options.delete(:test_option) }
           )
           expect { strategy.call(make_env('/auth/test/callback', 'REQUEST_METHOD' => 'POST')) }.to raise_error('Callback Phase')
           expect(strategy.options).to have_key(:test_option)
@@ -581,7 +581,7 @@ describe OmniAuth::Strategy do
         it 'does not affect deep options' do
           @options.merge!(
             :deep_option => {:test_option => true},
-            :mutate_on_callback => proc { |options| options[:deep_option].delete(:test_option) },
+            :mutate_on_callback => proc { |options| options[:deep_option].delete(:test_option) }
           )
           expect { strategy.call(make_env('/auth/test/callback', 'REQUEST_METHOD' => 'POST')) }.to raise_error('Callback Phase')
           expect(strategy.options[:deep_option]).to have_key(:test_option)
