@@ -607,7 +607,7 @@ describe OmniAuth::Strategy do
 
       it 'responds with a provider-specific hash if one is set' do
         OmniAuth.config.mock_auth[:test] = {
-          'uid' => 'abc',
+          'uid' => 'abc'
         }
 
         strategy.call make_env('/auth/test/callback')

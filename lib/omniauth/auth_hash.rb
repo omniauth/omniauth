@@ -40,7 +40,7 @@ module OmniAuth
       end
 
       def name?
-        !!name # rubocop:disable DoubleNegation
+        !!name
       end
       alias_method :valid?, :name?
 

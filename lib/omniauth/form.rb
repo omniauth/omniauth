@@ -1,5 +1,5 @@
 module OmniAuth
-  class Form # rubocop:disable ClassLength
+  class Form
     DEFAULT_CSS = File.read(File.expand_path('../form.css', __FILE__))
 
     attr_accessor :options
