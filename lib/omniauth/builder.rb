@@ -12,7 +12,7 @@ module OmniAuth
     end
 
     def rack14?
-      Rack.release.split('.')[1].to_i >= 4
+      Rack.release.start_with?('1.') && (Rack.release.split('.')[1].to_i >= 4)
     end
 
     def rack2?
