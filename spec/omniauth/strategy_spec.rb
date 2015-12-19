@@ -5,7 +5,7 @@ def make_env(path = '/auth/test', props = {})
     'REQUEST_METHOD' => 'GET',
     'PATH_INFO' => path,
     'rack.session' => {},
-    'rack.input' => StringIO.new('test=true'),
+    'rack.input' => StringIO.new('test=true')
   }.merge(props)
 end
 
@@ -331,7 +331,7 @@ describe OmniAuth::Strategy do
         it 'is turned into an env variable on the callback phase, containing full path' do
           env = {
             'rack.session' => {'omniauth.origin' => 'http://example.com/sub_uri/origin'},
-            'SCRIPT_NAME' => '/sub_uri',
+            'SCRIPT_NAME' => '/sub_uri'
           }
 
           expect { strategy.call(make_env('/auth/test/callback', env)) }.to raise_error('Callback Phase')

@@ -38,7 +38,7 @@ describe OmniAuth::AuthHash do
                                :first_name => 'Phillip',
                                :last_name => 'Fry',
                                :nickname => 'meatbag',
-                               :email => 'fry@planetexpress.com',
+                               :email => 'fry@planetexpress.com'
                              })
     end
 
