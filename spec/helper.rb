@@ -31,7 +31,7 @@ class ExampleStrategy
   option :name, 'test'
 
   def call(env)
-    self.call!(env)
+    options[:dup] ? super : self.call!(env)
   end
 
   def initialize(*args, &block)
@@ -40,6 +40,7 @@ class ExampleStrategy
   end
 
   def request_phase
+    options[:mutate_on_request].call(options) if options[:mutate_on_request]
     @fail = fail!(options[:failure]) if options[:failure]
     @last_env = env
     return @fail if @fail
@@ -47,6 +48,7 @@ class ExampleStrategy
   end
 
   def callback_phase
+    options[:mutate_on_callback].call(options) if options[:mutate_on_callback]
     @fail = fail!(options[:failure]) if options[:failure]
     @last_env = env
     return @fail if @fail
