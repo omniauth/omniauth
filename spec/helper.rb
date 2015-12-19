@@ -6,7 +6,7 @@ if RUBY_VERSION >= '1.9'
 
   SimpleCov.start do
     add_filter '/spec'
-    minimum_coverage(93.05)
+    minimum_coverage(92.93)
   end
 end
 

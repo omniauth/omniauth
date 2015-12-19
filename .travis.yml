@@ -18,9 +18,13 @@ rvm:
   - rbx-2
   - ruby-head
 matrix:
+  include:
+    - rvm: 2.2.2
+      gemfile: Gemfile.rack-master
   allow_failures:
     - rvm: jruby-head
     - rvm: rbx-2
     - rvm: ruby-head
+    - gemfile: Gemfile.rack-master
   fast_finish: true
 sudo: false
