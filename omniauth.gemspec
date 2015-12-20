@@ -5,7 +5,7 @@ require 'omniauth/version'
 
 Gem::Specification.new do |spec|
   spec.add_dependency 'hashie', ['>= 1.2', '< 4']
-  spec.add_dependency 'rack', ['>= 1.0', '< 2.0']
+  spec.add_dependency 'rack', ['>= 1.0', '< 3']
   spec.add_development_dependency 'bundler', '~> 1.0'
   spec.authors       = ['Michael Bleigh', 'Erik Michaels-Ober', 'Tom Milewski']
   spec.description   = 'A generalized Rack framework for multiple-provider authentication.'
