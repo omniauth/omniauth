@@ -161,7 +161,7 @@ Constraint][pvc] with two digits of precision. For example:
 [pvc]: http://docs.rubygems.org/read/chapter/16#page74
 
 ## License
-Copyright (c) 2010-2013 Michael Bleigh and Intridea, Inc. See [LICENSE][] for
+Copyright (c) 2010-2016 Michael Bleigh and Intridea, Inc. See [LICENSE][] for
 details.
 
 [license]: LICENSE.md
