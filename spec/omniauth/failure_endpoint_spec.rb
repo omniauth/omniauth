@@ -54,5 +54,11 @@ describe OmniAuth::FailureEndpoint do
       _, head, = *subject.call(env)
       expect(head['Location']).to be_include('&origin=%2Forigin-example')
     end
+
+    it 'includes the params from request if one is provided' do
+      env.merge! 'omniauth.params' => {'foo' => 'bar'}
+       _, head, = *subject.call(env)
+      expect(head['Location']).to be_include('foo=bar')
+    end
   end
 end
