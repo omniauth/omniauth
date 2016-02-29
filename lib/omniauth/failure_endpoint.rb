@@ -43,7 +43,7 @@ module OmniAuth
 
     def request_params_query_param
       return '' unless env['omniauth.params']
-      return "&#{URI.encode_www_form(env['omniauth.params'])}"
+      return "&#{Rack::Utils.build_query(env['omniauth.params'])}"
     end
   end
 end
