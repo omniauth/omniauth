@@ -17,7 +17,6 @@ module OmniAuth
         :before_request_phase   => nil,
         :before_callback_phase  => nil,
         :before_options_phase   => nil,
-        :form_css => Form::DEFAULT_CSS,
         :test_mode => false,
         :logger => default_logger,
         :allowed_request_methods => [:get, :post],
@@ -91,6 +90,6 @@ module OmniAuth
     end
 
     attr_writer :on_failure, :before_callback_phase, :before_options_phase, :before_request_phase
-    attr_accessor :failure_raise_out_environments, :path_prefix, :allowed_request_methods, :form_css, :test_mode, :mock_auth, :full_host, :camelizations, :logger
+    attr_accessor :failure_raise_out_environments, :path_prefix, :allowed_request_methods, :test_mode, :mock_auth, :full_host, :camelizations, :logger
   end
 end
