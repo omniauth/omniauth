@@ -42,7 +42,7 @@ module OmniAuth
       def name?
         !!name
       end
-      alias_method :valid?, :name?
+      alias valid? name?
 
       def to_hash
         hash = super

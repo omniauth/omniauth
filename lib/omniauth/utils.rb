@@ -1,6 +1,6 @@
 module OmniAuth
   module Utils
-    module_function
+  module_function
 
     def form_css
       "<style type='text/css'>#{OmniAuth.config.form_css}</style>"

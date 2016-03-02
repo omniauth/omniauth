@@ -9,14 +9,14 @@ module OmniAuth
     autoload :Developer, 'omniauth/strategies/developer'
   end
 
-  autoload :Builder,  'omniauth/builder'
+  autoload :Builder, 'omniauth/builder'
   autoload :Configuration, 'omniauth/configuration'
   autoload :Strategy, 'omniauth/strategy'
-  autoload :Test,     'omniauth/test'
-  autoload :Form,     'omniauth/form'
+  autoload :Test, 'omniauth/test'
+  autoload :Form, 'omniauth/form'
   autoload :AuthHash, 'omniauth/auth_hash'
   autoload :FailureEndpoint, 'omniauth/failure_endpoint'
-  autoload :Utils,    'omniauth/utils'
+  autoload :Utils, 'omniauth/utils'
 
   def self.strategies
     @strategies ||= []
