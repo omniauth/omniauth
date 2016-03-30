@@ -105,7 +105,7 @@ module OmniAuth
 
       def compile_stack(ancestors, method, context)
         stack = ancestors.inject([]) do |a, ancestor|
-          a << context.instance_eval(&ancestor.send(method)) if ancestor.respond_to?(method) && ancestor.send(method)
+          a << context.instance_eval(&ancestor.send(method)) if ancestor.respond_to?(method) && ancestor.send(method).class == Proc
           a
         end
         stack.reverse!
