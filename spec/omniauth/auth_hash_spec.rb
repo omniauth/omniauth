@@ -8,6 +8,11 @@ describe OmniAuth::AuthHash do
     expect(subject.info.first_name).to eq('Awesome')
   end
 
+  it 'does not try to parse `string` as InfoHash' do
+    subject.weird_field = { info: 'string' }
+    expect(subject.weird_field.info).to eq 'string'
+  end
+
   describe '#valid?' do
     subject { OmniAuth::AuthHash.new(:uid => '123', :provider => 'example', :info => {:name => 'Steven'}) }
 

@@ -20,7 +20,7 @@ module OmniAuth
     end
 
     def regular_writer(key, value)
-      if key.to_s == 'info' && !value.is_a?(InfoHash)
+      if key.to_s == 'info' && value.is_a?(::Hash) && !value.is_a?(InfoHash)
         value = InfoHash.new(value)
       end
       super
