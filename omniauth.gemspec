@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.description   = 'A generalized Rack framework for multiple-provider authentication.'
   spec.email         = ['michael@intridea.com', 'sferik@gmail.com', 'tmilewski@gmail.com']
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.start_with?('spec/') }
-  spec.homepage      = 'http://github.com/intridea/omniauth'
+  spec.homepage      = 'https://github.com/omniauth/omniauth'
   spec.licenses      = %w(MIT)
   spec.name          = 'omniauth'
   spec.require_paths = %w(lib)
