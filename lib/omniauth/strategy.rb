@@ -246,7 +246,11 @@ module OmniAuth
     end
 
     def on_path?(path)
-      current_path.casecmp(path) == 0
+      current_path.casecmp(clean_path(path)) == 0
+    end
+
+    def clean_path(path)
+      path.chomp('/') # strip trailing slash
     end
 
     def options_request?
