@@ -37,7 +37,7 @@ module OmniAuth
 
       def strategy
         error = NotImplementedError.new('Including specs must define #strategy')
-        fail(error)
+        raise error
       end
     end
   end

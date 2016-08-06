@@ -1,7 +1,5 @@
 module OmniAuth
   class Form
-    DEFAULT_CSS = File.read(File.expand_path('../form.css', __FILE__))
-
     attr_accessor :options
 
     def initialize(options = {})
@@ -70,7 +68,7 @@ module OmniAuth
       <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <title>#{title}</title>
-        #{css}
+        #{css_tag}
         #{header_info}
       </head>
       <body>
@@ -92,6 +90,10 @@ module OmniAuth
       self
     end
 
+    def default_css
+      @default_css ||= File.read(File.expand_path('../form.css', __FILE__))
+    end
+
     def to_html
       footer
       @html
@@ -104,8 +106,12 @@ module OmniAuth
 
   protected
 
+    def css_tag
+      "\n<style type='text/css'>#{css}</style>"
+    end
+
     def css
-      "\n<style type='text/css'>#{OmniAuth.config.form_css}</style>"
+      options[:css] || default_css
     end
   end
 end

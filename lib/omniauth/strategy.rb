@@ -140,7 +140,7 @@ module OmniAuth
       end
 
       # Make sure that all of the args have been dealt with, otherwise error out.
-      fail(ArgumentError.new("Received wrong number of arguments. #{args.inspect}")) unless args.empty?
+      raise(ArgumentError.new("Received wrong number of arguments. #{args.inspect}")) unless args.empty?
 
       yield options if block_given?
     end
@@ -172,7 +172,7 @@ module OmniAuth
     def call!(env) # rubocop:disable CyclomaticComplexity, PerceivedComplexity
       unless env['rack.session']
         error = OmniAuth::NoSessionError.new('You must provide a session to use OmniAuth.')
-        fail(error)
+        raise error
       end
 
       @env = env
@@ -310,7 +310,7 @@ module OmniAuth
     # perform any information gathering you need to be able to authenticate
     # the user in this phase.
     def request_phase
-      fail(NotImplementedError)
+      raise NotImplementedError
     end
 
     def uid
