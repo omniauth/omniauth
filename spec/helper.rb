@@ -45,7 +45,7 @@ class ExampleStrategy
     @fail = fail!(options[:failure]) if options[:failure]
     @last_env = env
     return @fail if @fail
-    fail('Request Phase')
+    raise('Request Phase')
   end
 
   def callback_phase
@@ -53,6 +53,6 @@ class ExampleStrategy
     @fail = fail!(options[:failure]) if options[:failure]
     @last_env = env
     return @fail if @fail
-    fail('Callback Phase')
+    raise('Callback Phase')
   end
 end
