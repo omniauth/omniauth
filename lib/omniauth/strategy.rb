@@ -246,7 +246,7 @@ module OmniAuth
     end
 
     def on_path?(path)
-      current_path.casecmp(path) == 0
+      current_path.casecmp(path).zero?
     end
 
     def options_request?
