@@ -12,7 +12,7 @@ end
 group :test do
   gem 'coveralls'
   gem 'hashie', '~> 2.0.5', :platforms => [:jruby_18, :ruby_18]
-  gem 'json', '>= 1.8.1', :platforms => [:jruby_18, :jruby_19, :ruby_18, :ruby_19]
+  gem 'json', '~> 1.8', :platforms => [:jruby_18, :jruby_19, :ruby_18, :ruby_19]
   gem 'mime-types', '~> 1.25', :platforms => [:jruby_18, :ruby_18]
   gem 'rack-test'
   gem 'rack', '~> 1.0', :platforms => [:jruby_18, :jruby_19, :ruby_18, :ruby_19, :ruby_20, :ruby_21]
