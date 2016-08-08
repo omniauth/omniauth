@@ -32,7 +32,7 @@ class ExampleStrategy
   option :name, 'test'
 
   def call(env)
-    options[:dup] ? super : self.call!(env)
+    options[:dup] ? super : call!(env)
   end
 
   def initialize(*args, &block)
