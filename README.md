@@ -5,7 +5,7 @@
 [![Dependency Status](http://img.shields.io/gemnasium/intridea/omniauth.svg)][gemnasium]
 [![Code Climate](http://img.shields.io/codeclimate/github/intridea/omniauth.svg)][codeclimate]
 [![Coverage Status](http://img.shields.io/coveralls/intridea/omniauth.svg)][coveralls]
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/intridea/omniauth/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+[![Security](https://hakiri.io/github/omniauth/omniauth/master.svg)](https://hakiri.io/github/omniauth/omniauth/master)
 
 [gem]: https://rubygems.org/gems/omniauth
 [travis]: http://travis-ci.org/intridea/omniauth
