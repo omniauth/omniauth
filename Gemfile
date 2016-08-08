@@ -18,7 +18,7 @@ group :test do
   gem 'rack', '~> 1.0', :platforms => [:jruby_18, :jruby_19, :ruby_18, :ruby_19, :ruby_20, :ruby_21]
   gem 'rest-client', '~> 1.6.0', :platforms => [:jruby_18, :ruby_18]
   gem 'rspec', '~> 3.0'
-  gem 'rubocop', '>= 0.25', :platforms => [:ruby_19, :ruby_20, :ruby_21, :ruby_22]
+  gem 'rubocop', '>= 0.25', :platforms => [:ruby_20, :ruby_21, :ruby_22]
   gem 'simplecov', '>= 0.9'
   gem 'tins', '~> 1.6.0', :platforms => [:jruby_18, :jruby_19, :ruby_18, :ruby_19]
 end
