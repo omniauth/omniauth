@@ -50,7 +50,7 @@ describe OmniAuth::FailureEndpoint do
     end
 
     it 'includes the origin (escaped) if one is provided' do
-      env.merge! 'omniauth.origin' => '/origin-example'
+      env['omniauth.origin'] = '/origin-example'
       _, head, = *subject.call(env)
       expect(head['Location']).to be_include('&origin=%2Forigin-example')
     end
