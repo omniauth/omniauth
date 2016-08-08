@@ -4,9 +4,6 @@ cache: bundler
 env:
   global:
     - JRUBY_OPTS="$JRUBY_OPTS --debug"
-gemfile:
-  - Gemfile
-  - Gemfile.rack-1.3.x
 language: ruby
 rvm:
   - jruby-18mode
@@ -21,13 +18,9 @@ rvm:
   - rbx-2
   - ruby-head
 matrix:
-  include:
-    - rvm: 2.2.2
-      gemfile: Gemfile.rack-master
   allow_failures:
     - rvm: jruby-head
     - rvm: rbx-2
     - rvm: ruby-head
-    - gemfile: Gemfile.rack-master
   fast_finish: true
 sudo: false
