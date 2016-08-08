@@ -155,7 +155,7 @@ describe OmniAuth::Strategy do
   end
 
   %w(request_phase).each do |abstract_method|
-    context "#{abstract_method}" do
+    context abstract_method.to_s do
       it 'raises a NotImplementedError' do
         strat = Class.new
         strat.send :include, OmniAuth::Strategy
