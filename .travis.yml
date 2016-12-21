@@ -6,14 +6,7 @@ env:
     - JRUBY_OPTS="$JRUBY_OPTS --debug"
 language: ruby
 rvm:
-  - jruby-19mode
   - jruby-9000
-  - 1.8.7
-  - 1.9.3
-  - 2.0.0
-  - 2.1.10
-  - 2.2.5
-  - 2.3.1
   - jruby-head
   - rbx
   - ruby-head
@@ -22,5 +15,11 @@ matrix:
     - rvm: jruby-head
     - rvm: rbx
     - rvm: ruby-head
+    - rvm: jruby-9000
   fast_finish: true
 sudo: false
+
+notifications:
+  email:
+    on_success: always # default: change
+    on_failure: never  # default: always
