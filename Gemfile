@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+# openssl 0.9.4+, CVE see https://hakiri.io/github/omniauth/omniauth/master
 gem 'jruby-openssl' '~> 0.9.4', :platforms => :jruby
 gem 'rake', '~> 10.5'
 gem 'yard'
