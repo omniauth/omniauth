@@ -18,3 +18,8 @@ matrix:
     - rvm: ruby-head
   fast_finish: true
 sudo: false
+
+notifications:
+  email:
+    on_success: always # default: change
+    on_failure: never  # default: always
