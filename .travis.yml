@@ -7,8 +7,7 @@ env:
 language: ruby
 rvm:
   - jruby-19mode
-#  - 1.9.3
-#  - 2.3.1
+  - jruby-9000
   - jruby-head
   - rbx
   - ruby-head
