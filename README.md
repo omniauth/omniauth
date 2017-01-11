@@ -113,6 +113,15 @@ The hash in question will look something like this:
 
 The `user_info` hash will automatically be populated with as much information about the user as OmniAuth was able to pull from the given API or authentication provider.
 
+**SSL Certificates**
+
+On some systems require specifying the SSL certificate path during initialization.  The following example uses the default Ubuntu path `/etc/ssl/certs`.
+
+     Rails.application.config.middleware.use
+       OmniAuth::Strategies::Facebook, 'APP_ID', 'APP_SECRET',
+         {:client_options => {:ssl => {:ca_path => "/etc/ssl/certs"}}}
+
+
 ## <a name="resources">Resources</a>
 The best place to find more information is the [OmniAuth Wiki](https://github.com/intridea/omniauth/wiki). Some specific information you might be interested in:
 
