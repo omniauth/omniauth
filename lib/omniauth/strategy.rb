@@ -198,7 +198,7 @@ module OmniAuth
       setup_phase
       log :info, 'Request phase initiated.'
       # store query params from the request url, extracted in the callback_phase
-      session['omniauth.params'] = request.params
+      session['omniauth.params'] = request.GET
       OmniAuth.config.before_request_phase.call(env) if OmniAuth.config.before_request_phase
       if options.form.respond_to?(:call)
         log :info, 'Rendering form from supplied Rack endpoint.'
@@ -265,7 +265,7 @@ module OmniAuth
     def mock_request_call
       setup_phase
 
-      session['omniauth.params'] = request.params
+      session['omniauth.params'] = request.GET
       OmniAuth.config.before_request_phase.call(env) if OmniAuth.config.before_request_phase
       if request.params['origin']
         @env['rack.session']['omniauth.origin'] = request.params['origin']
