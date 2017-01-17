@@ -685,11 +685,22 @@ describe OmniAuth::Strategy do
         expect(strategy.env['foobar']).to eq('baz')
       end
 
-      it 'sets omniauth.params on the request phase' do
+      it 'sets omniauth.params with query params on the request phase' do
         OmniAuth.config.mock_auth[:test] = {}
 
         strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'foo=bar'))
         expect(strategy.env['rack.session']['omniauth.params']).to eq('foo' => 'bar')
+      end
+
+      it 'does not set body parameters of POST request on the request phase' do
+        OmniAuth.config.mock_auth[:test] = {}
+
+        props = {
+          'REQUEST_METHOD' => 'POST',
+          'rack.input' => StringIO.new('foo=bar')
+        }
+        strategy.call(make_env('/auth/test', props))
+        expect(strategy.env['rack.session']['omniauth.params']).to eq({})
       end
 
       it 'executes request hook on the request phase' do
