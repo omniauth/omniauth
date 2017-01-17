@@ -1,5 +1,5 @@
 bundler_args: --without development
-before_install: gem install bundler
+before_install: gem update bundler
 cache: bundler
 env:
   global:
@@ -13,14 +13,13 @@ rvm:
   - 2.0.0
   - 2.1.10
   - 2.2.5
-  - 2.3.1
+  - 2.3.3
+  - 2.4.0
   - jruby-head
-  - rbx
   - ruby-head
 matrix:
   allow_failures:
     - rvm: jruby-head
-    - rvm: rbx
     - rvm: ruby-head
   fast_finish: true
 sudo: false

@@ -347,14 +347,9 @@ module OmniAuth
     #
     #   use MyStrategy, :skip_info => lambda{|uid| User.find_by_uid(uid)}
     def skip_info?
-      if options.skip_info?
-        if options.skip_info.respond_to?(:call)
-          return options.skip_info.call(uid)
-        else
-          return true
-        end
-      end
-      false
+      return false unless options.skip_info?
+      return true unless options.skip_info.respond_to?(:call)
+      options.skip_info.call(uid)
     end
 
     def callback_phase
