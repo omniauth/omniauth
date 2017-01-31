@@ -1,4 +1,4 @@
-require 'hashie/mash'
+require 'hashie'
 
 module OmniAuth
   # The AuthHash is a normalized schema returned by all OmniAuth
