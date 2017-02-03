@@ -1,4 +1,4 @@
-require 'hashie/mash'
+require 'omniauth/key_store'
 
 module OmniAuth
   class NoSessionError < StandardError; end
@@ -480,7 +480,7 @@ module OmniAuth
       end
     end
 
-    class Options < Hashie::Mash; end
+    class Options < OmniAuth::KeyStore; end
 
   protected
 
