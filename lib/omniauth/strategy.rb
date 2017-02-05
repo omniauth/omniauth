@@ -1,4 +1,4 @@
-require 'hashie/mash'
+require 'hashie'
 
 module OmniAuth
   class NoSessionError < StandardError; end
