@@ -15,7 +15,7 @@ group :test do
   gem 'mime-types', '~> 1.25', :platforms => [:jruby_18]
   gem 'rack', '>= 1.6.2', :platforms => [:jruby_18, :jruby_19, :ruby_19, :ruby_20, :ruby_21]
   gem 'rack-test'
-  gem 'rest-client', '~> 1.6.0', :platforms => [:jruby_18]
+  gem 'rest-client', '~> 1.8.0', :platforms => [:jruby_18]
   gem 'rspec', '~> 3.0'
   gem 'rubocop', '>= 0.25', :platforms => [:ruby_20, :ruby_21, :ruby_22, :ruby_23, :ruby_24]
   gem 'simplecov', '>= 0.9'
