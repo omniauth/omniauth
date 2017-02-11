@@ -13,11 +13,6 @@
 [codeclimate]: https://codeclimate.com/github/omniauth/omniauth
 [coveralls]: https://coveralls.io/r/omniauth/omniauth
 
-**OmniAuth 1.0 has several breaking changes from version 0.x. You can set
-the dependency to `~> 0.3.2` if you do not wish to make the more difficult
-upgrade. See [the wiki](https://github.com/omniauth/omniauth/wiki/Upgrading-to-1.0)
-for more information.**
-
 ## An Introduction
 OmniAuth is a library that standardizes multi-provider authentication for
 web applications. It was created to be powerful, flexible, and do as
@@ -143,7 +138,7 @@ your first stop if you are wondering about a more in-depth look at
 OmniAuth, how it works, and how to use it.
 
 ## Supported Ruby Versions
-OmniAuth is tested under 1.9.3, 2.0.0, 2.1.10, 2.2.5, 2.3.1, and JRuby.
+OmniAuth is tested under 2.1.10, 2.2.6, 2.3.3, 2.4.0, and JRuby.
 
 ## Versioning
 This library aims to adhere to [Semantic Versioning 2.0.0][semver]. Violations
