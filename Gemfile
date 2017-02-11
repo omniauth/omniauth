@@ -10,7 +10,7 @@ group :development do
 end
 
 group :test do
-  gem 'hashie', '~> 2.0.5', :platforms => [:jruby_18]
+  gem 'hashie', '~> 3.5.0', :platforms => [:jruby_18]
   gem 'json', '~> 2.0.3', :platforms => [:jruby_18, :jruby_19, :ruby_19]
   gem 'mime-types', '~> 3.1', :platforms => [:jruby_18]
   gem 'rack', '>= 1.6.2', :platforms => [:jruby_18, :jruby_19, :ruby_19, :ruby_20, :ruby_21]
