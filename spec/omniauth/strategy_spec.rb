@@ -598,7 +598,7 @@ describe OmniAuth::Strategy do
       end
 
       it "doesn't short circuit the request if request method is not allowed" do
-        response = strategy.call(make_env('/auth/test', 'REQUEST_METHOD' => 'DESTROY'))
+        response = strategy.call(make_env('/auth/test', 'REQUEST_METHOD' => 'DELETE'))
         expect(response[0]).to eq(404)
       end
 
