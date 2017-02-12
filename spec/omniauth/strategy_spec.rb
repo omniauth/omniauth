@@ -597,6 +597,11 @@ describe OmniAuth::Strategy do
         expect(response[1]['Location']).to eq('/auth/test/callback')
       end
 
+      it "doesn't short circuit the request if request method is not allowed" do
+        response = strategy.call(make_env('/auth/test', 'REQUEST_METHOD' => 'DESTROY'))
+        expect(response[0]).to eq(404)
+      end
+
       it 'is case insensitive on request path' do
         expect(strategy.call(make_env('/AUTH/Test'))[0]).to eq(302)
       end
