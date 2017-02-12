@@ -5,7 +5,9 @@ gem 'rake', '>= 12.0'
 gem 'yard', '>= 0.9'
 
 group :development do
+  gem 'benchmark-ips'
   gem 'kramdown'
+  gem 'memory_profiler'
   gem 'pry'
 end
 
