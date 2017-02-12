@@ -110,5 +110,25 @@ describe OmniAuth::AuthHash do
         expect(OmniAuth::AuthHash::InfoHash.new(:name => 'Awesome')).to be_valid
       end
     end
+
+    require 'hashie/version'
+    if Gem::Version.new(Hashie::VERSION) >= Gem::Version.new('3.5.1')
+      context 'with Hashie 3.5.1+' do
+        around(:each) do |example|
+          original_logger = Hashie.logger
+          example.run
+          Hashie.logger = original_logger
+        end
+
+        it 'does not log anything in Hashie 3.5.1+' do
+          logger = double('Logger')
+          expect(logger).not_to receive(:warn)
+
+          Hashie.logger = logger
+
+          subject.name = 'test'
+        end
+      end
+    end
   end
 end

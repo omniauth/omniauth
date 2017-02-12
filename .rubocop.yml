@@ -1,6 +1,9 @@
 Lint/HandleExceptions:
   Enabled: false
 
+Metrics/BlockLength:
+  Enabled: false
+
 Metrics/BlockNesting:
   Max: 2
 

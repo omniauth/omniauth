@@ -10,7 +10,7 @@ module OmniAuth
     #     include OmniAuth::Test::StrategyTestCase
     #     def strategy
     #       # return the parameters to a Rack::Builder map call:
-    #       [MyStrategy.new, :some, :configuration, :options => 'here']
+    #       [MyStrategy, :some, :configuration, :options => 'here']
     #     end
     #     setup do
     #       post '/auth/my_strategy/callback', :user => { 'name' => 'Dylan', 'id' => '445' }
@@ -37,7 +37,7 @@ module OmniAuth
 
       def strategy
         error = NotImplementedError.new('Including specs must define #strategy')
-        fail(error)
+        raise(error)
       end
     end
   end

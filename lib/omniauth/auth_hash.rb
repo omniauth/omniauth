@@ -1,11 +1,11 @@
-require 'hashie/mash'
+require 'omniauth/key_store'
 
 module OmniAuth
   # The AuthHash is a normalized schema returned by all OmniAuth
   # strategies. It maps as much user information as the provider
   # is able to provide into the InfoHash (stored as the `'info'`
   # key).
-  class AuthHash < Hashie::Mash
+  class AuthHash < OmniAuth::KeyStore
     def self.subkey_class
       Hashie::Mash
     end
@@ -26,7 +26,7 @@ module OmniAuth
       super
     end
 
-    class InfoHash < Hashie::Mash
+    class InfoHash < OmniAuth::KeyStore
       def self.subkey_class
         Hashie::Mash
       end
@@ -42,7 +42,7 @@ module OmniAuth
       def name?
         !!name
       end
-      alias_method :valid?, :name?
+      alias valid? name?
 
       def to_hash
         hash = super

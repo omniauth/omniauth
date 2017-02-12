@@ -1,22 +1,17 @@
 # OmniAuth: Standardized Multi-Provider Authentication
 
 [![Gem Version](http://img.shields.io/gem/v/omniauth.svg)][gem]
-[![Build Status](http://img.shields.io/travis/intridea/omniauth.svg)][travis]
-[![Dependency Status](http://img.shields.io/gemnasium/intridea/omniauth.svg)][gemnasium]
-[![Code Climate](http://img.shields.io/codeclimate/github/intridea/omniauth.svg)][codeclimate]
-[![Coverage Status](http://img.shields.io/coveralls/intridea/omniauth.svg)][coveralls]
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/intridea/omniauth/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+[![Build Status](http://img.shields.io/travis/omniauth/omniauth.svg)][travis]
+[![Dependency Status](http://img.shields.io/gemnasium/omniauth/omniauth.svg)][gemnasium]
+[![Code Climate](http://img.shields.io/codeclimate/github/omniauth/omniauth.svg)][codeclimate]
+[![Coverage Status](http://img.shields.io/coveralls/omniauth/omniauth.svg)][coveralls]
+[![Security](https://hakiri.io/github/omniauth/omniauth/master.svg)](https://hakiri.io/github/omniauth/omniauth/master)
 
 [gem]: https://rubygems.org/gems/omniauth
-[travis]: http://travis-ci.org/intridea/omniauth
-[gemnasium]: https://gemnasium.com/intridea/omniauth
-[codeclimate]: https://codeclimate.com/github/intridea/omniauth
-[coveralls]: https://coveralls.io/r/intridea/omniauth
-
-**OmniAuth 1.0 has several breaking changes from version 0.x. You can set
-the dependency to `~> 0.3.2` if you do not wish to make the more difficult
-upgrade. See [the wiki](https://github.com/intridea/omniauth/wiki/Upgrading-to-1.0)
-for more information.**
+[travis]: http://travis-ci.org/omniauth/omniauth
+[gemnasium]: https://gemnasium.com/omniauth/omniauth
+[codeclimate]: https://codeclimate.com/github/omniauth/omniauth
+[coveralls]: https://coveralls.io/r/omniauth/omniauth
 
 ## An Introduction
 OmniAuth is a library that standardizes multi-provider authentication for
@@ -27,7 +22,7 @@ have been created for everything from Facebook to LDAP.
 
 In order to use OmniAuth in your applications, you will need to leverage
 one or more strategies. These strategies are generally released
-individually as RubyGems, and you can see a [community maintained list](https://github.com/intridea/omniauth/wiki/List-of-Strategies)
+individually as RubyGems, and you can see a [community maintained list](https://github.com/omniauth/omniauth/wiki/List-of-Strategies)
 on the wiki for this project.
 
 One strategy, called `Developer`, is included with OmniAuth and provides
@@ -120,7 +115,7 @@ Authentication Hash which will contain information about the just
 authenticated user including a unique id, the strategy they just used
 for authentication, and personal details such as name and email address
 as available. For an in-depth description of what the authentication
-hash might contain, see the [Auth Hash Schema wiki page](https://github.com/intridea/omniauth/wiki/Auth-Hash-Schema).
+hash might contain, see the [Auth Hash Schema wiki page](https://github.com/omniauth/omniauth/wiki/Auth-Hash-Schema).
 
 Note that OmniAuth does not perform any actions beyond setting some
 environment information on the callback request. It is entirely up to
@@ -137,13 +132,13 @@ OmniAuth.config.logger = Rails.logger
 ```
 
 ## Resources
-The [OmniAuth Wiki](https://github.com/intridea/omniauth/wiki) has
+The [OmniAuth Wiki](https://github.com/omniauth/omniauth/wiki) has
 actively maintained in-depth documentation for OmniAuth. It should be
 your first stop if you are wondering about a more in-depth look at
 OmniAuth, how it works, and how to use it.
 
 ## Supported Ruby Versions
-OmniAuth is tested under 1.8.7, 1.9.3, 2.0.0, 2.1.0, JRuby, and Rubinius.
+OmniAuth is tested under 2.1.10, 2.2.6, 2.3.3, 2.4.0, and JRuby.
 
 ## Versioning
 This library aims to adhere to [Semantic Versioning 2.0.0][semver]. Violations
@@ -158,10 +153,10 @@ Constraint][pvc] with two digits of precision. For example:
     spec.add_dependency 'omniauth', '~> 1.0'
 
 [semver]: http://semver.org/
-[pvc]: http://docs.rubygems.org/read/chapter/16#page74
+[pvc]: http://guides.rubygems.org/patterns/#pessimistic-version-constraint
 
 ## License
-Copyright (c) 2010-2013 Michael Bleigh and Intridea, Inc. See [LICENSE][] for
+Copyright (c) 2010-2017 Michael Bleigh and Intridea, Inc. See [LICENSE][] for
 details.
 
 [license]: LICENSE.md

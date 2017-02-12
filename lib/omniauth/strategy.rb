@@ -1,4 +1,4 @@
-require 'hashie/mash'
+require 'omniauth/key_store'
 
 module OmniAuth
   class NoSessionError < StandardError; end
@@ -21,9 +21,9 @@ module OmniAuth
       # Returns an inherited set of default options set at the class-level
       # for each strategy.
       def default_options
-        return @default_options if instance_variable_defined?(:@default_options) && @default_options
+        # existing = superclass.default_options if superclass.respond_to?(:default_options)
         existing = superclass.respond_to?(:default_options) ? superclass.default_options : {}
-        @default_options = OmniAuth::Strategy::Options.new(existing)
+        @default_options ||= OmniAuth::Strategy::Options.new(existing)
       end
 
       # This allows for more declarative subclassing of strategies by allowing
@@ -88,9 +88,12 @@ module OmniAuth
       end
 
       %w(uid info extra credentials).each do |fetcher|
-        class_eval <<-RUBY
+        class_eval <<-RUBY, __FILE__, __LINE__ + 1
+          attr_reader :#{fetcher}_proc
+          private :#{fetcher}_proc
+
           def #{fetcher}(&block)
-            return @#{fetcher}_proc unless block_given?
+            return #{fetcher}_proc unless block_given?
             @#{fetcher}_proc = block
           end
 
@@ -132,7 +135,7 @@ module OmniAuth
       @options = self.class.default_options.dup
 
       options.deep_merge!(args.pop) if args.last.is_a?(Hash)
-      options.name ||= self.class.to_s.split('::').last.downcase
+      options[:name] ||= self.class.to_s.split('::').last.downcase
 
       self.class.args.each do |arg|
         break if args.empty?
@@ -140,7 +143,7 @@ module OmniAuth
       end
 
       # Make sure that all of the args have been dealt with, otherwise error out.
-      fail(ArgumentError.new("Received wrong number of arguments. #{args.inspect}")) unless args.empty?
+      raise(ArgumentError.new("Received wrong number of arguments. #{args.inspect}")) unless args.empty?
 
       yield options if block_given?
     end
@@ -172,7 +175,7 @@ module OmniAuth
     def call!(env) # rubocop:disable CyclomaticComplexity, PerceivedComplexity
       unless env['rack.session']
         error = OmniAuth::NoSessionError.new('You must provide a session to use OmniAuth.')
-        fail(error)
+        raise(error)
       end
 
       @env = env
@@ -198,7 +201,9 @@ module OmniAuth
       setup_phase
       log :info, 'Request phase initiated.'
       # store query params from the request url, extracted in the callback_phase
-      session['omniauth.params'] = request.params
+      session['omniauth.params'] = request.GET
+      # store query headers from the request url, extracted in the callback_phase
+      session['omniauth.headers'] = headers
       OmniAuth.config.before_request_phase.call(env) if OmniAuth.config.before_request_phase
       if options.form.respond_to?(:call)
         log :info, 'Rendering form from supplied Rack endpoint.'
@@ -223,6 +228,7 @@ module OmniAuth
       @env['omniauth.origin'] = session.delete('omniauth.origin')
       @env['omniauth.origin'] = nil if env['omniauth.origin'] == ''
       @env['omniauth.params'] = session.delete('omniauth.params') || {}
+      @env['omniauth.headers'] = session.delete('omniauth.headers') || {}
       OmniAuth.config.before_callback_phase.call(@env) if OmniAuth.config.before_callback_phase
       callback_phase
     end
@@ -234,8 +240,8 @@ module OmniAuth
     end
 
     def on_request_path?
-      if options.request_path.respond_to?(:call)
-        options.request_path.call(env)
+      if options[:request_path].respond_to?(:call)
+        options[:request_path].call(env)
       else
         on_path?(request_path)
       end
@@ -246,7 +252,7 @@ module OmniAuth
     end
 
     def on_path?(path)
-      current_path.casecmp(path) == 0
+      current_path.casecmp(path).zero?
     end
 
     def options_request?
@@ -257,7 +263,7 @@ module OmniAuth
     # in the event that OmniAuth has been configured to be
     # in test mode.
     def mock_call!(*)
-      return mock_request_call if on_request_path?
+      return mock_request_call if on_request_path? && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
       return mock_callback_call if on_callback_path?
       call_app!
     end
@@ -265,7 +271,8 @@ module OmniAuth
     def mock_request_call
       setup_phase
 
-      session['omniauth.params'] = request.params
+      session['omniauth.params'] = request.GET
+      session['omniauth.headers'] = headers
       OmniAuth.config.before_request_phase.call(env) if OmniAuth.config.before_request_phase
       if request.params['origin']
         @env['rack.session']['omniauth.origin'] = request.params['origin']
@@ -280,12 +287,14 @@ module OmniAuth
       setup_phase
       @env['omniauth.origin'] = session.delete('omniauth.origin')
       @env['omniauth.origin'] = nil if env['omniauth.origin'] == ''
+      @env['omniauth.params'] = session.delete('omniauth.params') || {}
+      @env['omniauth.headers'] = session.delete('omniauth.headers') || {}
+
       mocked_auth = OmniAuth.mock_auth_for(name.to_s)
       if mocked_auth.is_a?(Symbol)
         fail!(mocked_auth)
       else
         @env['omniauth.auth'] = mocked_auth
-        @env['omniauth.params'] = session.delete('omniauth.params') || {}
         OmniAuth.config.before_callback_phase.call(@env) if OmniAuth.config.before_callback_phase
         call_app!
       end
@@ -299,7 +308,7 @@ module OmniAuth
       if options[:setup].respond_to?(:call)
         log :info, 'Setup endpoint detected, running now.'
         options[:setup].call(env)
-      elsif options.setup?
+      elsif options[:setup]
         log :info, 'Calling through to underlying application for setup.'
         setup_env = env.merge('PATH_INFO' => setup_path, 'REQUEST_METHOD' => 'GET')
         call_app!(setup_env)
@@ -310,7 +319,7 @@ module OmniAuth
     # perform any information gathering you need to be able to authenticate
     # the user in this phase.
     def request_phase
-      fail(NotImplementedError)
+      raise(NotImplementedError)
     end
 
     def uid
@@ -347,14 +356,9 @@ module OmniAuth
     #
     #   use MyStrategy, :skip_info => lambda{|uid| User.find_by_uid(uid)}
     def skip_info?
-      if options.skip_info?
-        if options.skip_info.respond_to?(:call)
-          return options.skip_info.call(uid)
-        else
-          return true
-        end
-      end
-      false
+      return false unless options.skip_info?
+      return true unless options.skip_info.respond_to?(:call)
+      options.skip_info.call(uid)
     end
 
     def callback_phase
@@ -445,7 +449,7 @@ module OmniAuth
     end
 
     def name
-      options.name
+      options[:name]
     end
 
     def redirect(uri)
@@ -485,7 +489,7 @@ module OmniAuth
       end
     end
 
-    class Options < Hashie::Mash; end
+    class Options < OmniAuth::KeyStore; end
 
   protected
 
@@ -502,6 +506,11 @@ module OmniAuth
         request.env['HTTP_X_FORWARDED_SCHEME'] == 'https' ||
         (request.env['HTTP_X_FORWARDED_PROTO'] && request.env['HTTP_X_FORWARDED_PROTO'].split(',')[0] == 'https') ||
         request.env['rack.url_scheme'] == 'https'
+    end
+
+    def headers
+      headers = env.select { |key, _value| key.start_with? 'HTTP_' }
+      Hash[headers.map { |key, value| [key.sub(/^HTTP_/, ''), value] }]
     end
   end
 end

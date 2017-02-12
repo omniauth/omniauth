@@ -91,7 +91,7 @@ describe OmniAuth do
     describe 'mock auth' do
       before do
         @auth_hash = {:uid => '12345', :info => {:name => 'Joe', :email => 'joe@example.com'}}
-        @original_auth_hash = Marshal.load(Marshal.dump(@auth_hash))
+        @original_auth_hash = @auth_hash.dup
 
         OmniAuth.config.add_mock(:facebook, @auth_hash)
       end
