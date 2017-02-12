@@ -21,9 +21,9 @@ module OmniAuth
       # Returns an inherited set of default options set at the class-level
       # for each strategy.
       def default_options
-        return @default_options if instance_variable_defined?(:@default_options) && @default_options
+        # existing = superclass.default_options if superclass.respond_to?(:default_options)
         existing = superclass.respond_to?(:default_options) ? superclass.default_options : {}
-        @default_options = OmniAuth::Strategy::Options.new(existing)
+        @default_options ||= OmniAuth::Strategy::Options.new(existing)
       end
 
       # This allows for more declarative subclassing of strategies by allowing
