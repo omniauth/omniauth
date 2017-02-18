@@ -202,8 +202,6 @@ module OmniAuth
       log :info, 'Request phase initiated.'
       # store query params from the request url, extracted in the callback_phase
       session['omniauth.params'] = request.GET
-      # store query headers from the request url, extracted in the callback_phase
-      session['omniauth.headers'] = headers
       OmniAuth.config.before_request_phase.call(env) if OmniAuth.config.before_request_phase
       if options.form.respond_to?(:call)
         log :info, 'Rendering form from supplied Rack endpoint.'
@@ -228,7 +226,6 @@ module OmniAuth
       @env['omniauth.origin'] = session.delete('omniauth.origin')
       @env['omniauth.origin'] = nil if env['omniauth.origin'] == ''
       @env['omniauth.params'] = session.delete('omniauth.params') || {}
-      @env['omniauth.headers'] = session.delete('omniauth.headers') || {}
       OmniAuth.config.before_callback_phase.call(@env) if OmniAuth.config.before_callback_phase
       callback_phase
     end
@@ -272,7 +269,6 @@ module OmniAuth
       setup_phase
 
       session['omniauth.params'] = request.GET
-      session['omniauth.headers'] = headers
       OmniAuth.config.before_request_phase.call(env) if OmniAuth.config.before_request_phase
       if request.params['origin']
         @env['rack.session']['omniauth.origin'] = request.params['origin']
@@ -288,7 +284,6 @@ module OmniAuth
       @env['omniauth.origin'] = session.delete('omniauth.origin')
       @env['omniauth.origin'] = nil if env['omniauth.origin'] == ''
       @env['omniauth.params'] = session.delete('omniauth.params') || {}
-      @env['omniauth.headers'] = session.delete('omniauth.headers') || {}
 
       mocked_auth = OmniAuth.mock_auth_for(name.to_s)
       if mocked_auth.is_a?(Symbol)
@@ -506,11 +501,6 @@ module OmniAuth
         request.env['HTTP_X_FORWARDED_SCHEME'] == 'https' ||
         (request.env['HTTP_X_FORWARDED_PROTO'] && request.env['HTTP_X_FORWARDED_PROTO'].split(',')[0] == 'https') ||
         request.env['rack.url_scheme'] == 'https'
-    end
-
-    def headers
-      headers = env.select { |key, _value| key.start_with? 'HTTP_' }
-      Hash[headers.map { |key, value| [key.sub(/^HTTP_/, ''), value] }]
     end
   end
 end

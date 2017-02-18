@@ -708,13 +708,6 @@ describe OmniAuth::Strategy do
         expect(strategy.env['rack.session']['omniauth.params']).to eq({})
       end
 
-      it 'sets omniauth.headers on the request phase' do
-        OmniAuth.config.mock_auth[:test] = {}
-
-        strategy.call(make_env('/auth/test', 'HTTP_FOO' => 'bar'))
-        expect(strategy.env['rack.session']['omniauth.headers']).to eq('FOO' => 'bar')
-      end
-
       it 'executes request hook on the request phase' do
         OmniAuth.config.mock_auth[:test] = {}
         OmniAuth.config.before_request_phase do |env|
