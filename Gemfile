@@ -21,7 +21,7 @@ group :test do
   gem 'rest-client', '~> 2.0.0', :platforms => [:jruby_18]
   gem 'rspec', '~> 3.5.0'
   gem 'rubocop', '>= 0.47', :platforms => [:ruby_20, :ruby_21, :ruby_22, :ruby_23, :ruby_24]
-  gem 'simplecov', '>= 0.13'
+  # gem 'simplecov', '>= 0.12'
   gem 'tins', '~> 1.13.0', :platforms => [:jruby_18, :jruby_19, :ruby_19]
 end
 
