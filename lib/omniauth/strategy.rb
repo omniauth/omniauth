@@ -271,9 +271,9 @@ module OmniAuth
       session['omniauth.params'] = request.GET
       OmniAuth.config.before_request_phase.call(env) if OmniAuth.config.before_request_phase
       if request.params['origin']
-        @env['rack.session']['omniauth.origin'] = request.params['origin']
+        session['omniauth.origin'] = request.params['origin']
       elsif env['HTTP_REFERER'] && !env['HTTP_REFERER'].match(/#{request_path}$/)
-        @env['rack.session']['omniauth.origin'] = env['HTTP_REFERER']
+        session['omniauth.origin'] = env['HTTP_REFERER']
       end
 
       redirect(callback_url)
