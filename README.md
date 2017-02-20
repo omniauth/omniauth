@@ -122,6 +122,36 @@ environment information on the callback request. It is entirely up to
 you how you want to implement the particulars of your application's
 authentication flow.
 
+## Integrating OmniAuth Into Your Rails API
+The following middleware are (by default) included for session management in
+Rails applications. When using OmniAuth with a Rails API, you'll need to add 
+one of these required middleware back in:
+
+- `ActionDispatch::Session::CacheStore`
+- `ActionDispatch::Session::CookieStore`
+- `ActionDispatch::Session::MemCacheStore`
+
+The trick to adding these back in is that, by default, they are passed 
+`session_options` when added (including the session key), so you can't just add 
+a `session_store.rb` initializer, add `use ActionDispatch::Session::CookieStore` 
+and have sessions functioning as normal.
+
+To be clear: sessions may work, but your session options will be ignored 
+(i.e the session key will default to `_session_id`).  Instead of the 
+initializer, you'll have to set the relevant options somewhere
+before your middleware is built (like `application.rb`) and pass them to your 
+preferred middleware, like this:
+
+**application.rb:**
+
+```ruby
+config.session_store :cookie_store, key: '_interslice_session'
+config.middleware.use ActionDispatch::Cookies # Required for all session management
+config.middleware.use ActionDispatch::Session::CookieStore, config.session_options
+```
+
+(Thanks @mltsy)
+
 ## Logging
 OmniAuth supports a configurable logger. By default, OmniAuth will log
 to `STDOUT` but you can configure this using `OmniAuth.config.logger`:
