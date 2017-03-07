@@ -70,10 +70,10 @@ module OmniAuth
       <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <title>#{title}</title>
-        #{css}
         #{header_info}
       </head>
       <body>
+      #{css}
       <h1>#{title}</h1>
       <form method='post' #{"action='#{options[:url]}' " if options[:url]}noValidate='noValidate'>
       HTML
