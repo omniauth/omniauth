@@ -44,7 +44,7 @@ module OmniAuth
       end
       alias valid? name?
 
-      def to_hash
+      def to_hash(options = {})
         hash = super
         hash['name'] ||= name
         hash
