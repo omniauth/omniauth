@@ -164,7 +164,7 @@ OmniAuth.config.logger = Rails.logger
 ## Resources
 The [OmniAuth Wiki](https://github.com/omniauth/omniauth/wiki) has
 actively maintained in-depth documentation for OmniAuth. It should be
-your first stop if you are wondering about a more in-depth look at
+your first step if you are wondering about a more in-depth look at
 OmniAuth, how it works, and how to use it.
 
 ## Supported Ruby Versions
