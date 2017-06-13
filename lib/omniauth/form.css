@@ -56,7 +56,7 @@ input {
 }
 
 input#identifier, input#openid_url {
-  background: url(http://openid.net/login-bg.gif) no-repeat;
+  background: url(https://openid.net/images/login-bg.gif) no-repeat;
   background-position: 0 50%;
   padding-left: 18px;
 }

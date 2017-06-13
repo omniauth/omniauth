@@ -155,7 +155,7 @@ describe OmniAuth::Strategy do
   end
 
   %w(request_phase).each do |abstract_method|
-    context "#{abstract_method}" do
+    context abstract_method.to_s do
       it 'raises a NotImplementedError' do
         strat = Class.new
         strat.send :include, OmniAuth::Strategy
@@ -587,19 +587,15 @@ describe OmniAuth::Strategy do
 
       context 'in request phase' do
         it 'does not affect original options' do
-          @options.merge!(
-            :test_option => true,
-            :mutate_on_request => proc { |options| options.delete(:test_option) }
-          )
+          @options[:test_option] = true
+          @options[:mutate_on_request] = proc { |options| options.delete(:test_option) }
           expect { strategy.call(make_env) }.to raise_error('Request Phase')
           expect(strategy.options).to have_key(:test_option)
         end
 
         it 'does not affect deep options' do
-          @options.merge!(
-            :deep_option => {:test_option => true},
-            :mutate_on_request => proc { |options| options[:deep_option].delete(:test_option) }
-          )
+          @options[:deep_option] = {:test_option => true}
+          @options[:mutate_on_request] = proc { |options| options[:deep_option].delete(:test_option) }
           expect { strategy.call(make_env) }.to raise_error('Request Phase')
           expect(strategy.options[:deep_option]).to have_key(:test_option)
         end
@@ -607,19 +603,15 @@ describe OmniAuth::Strategy do
 
       context 'in callback phase' do
         it 'does not affect original options' do
-          @options.merge!(
-            :test_option => true,
-            :mutate_on_callback => proc { |options| options.delete(:test_option) }
-          )
+          @options[:test_option] = true
+          @options[:mutate_on_callback] = proc { |options| options.delete(:test_option) }
           expect { strategy.call(make_env('/auth/test/callback', 'REQUEST_METHOD' => 'POST')) }.to raise_error('Callback Phase')
           expect(strategy.options).to have_key(:test_option)
         end
 
         it 'does not affect deep options' do
-          @options.merge!(
-            :deep_option => {:test_option => true},
-            :mutate_on_callback => proc { |options| options[:deep_option].delete(:test_option) }
-          )
+          @options[:deep_option] = {:test_option => true}
+          @options[:mutate_on_callback] = proc { |options| options[:deep_option].delete(:test_option) }
           expect { strategy.call(make_env('/auth/test/callback', 'REQUEST_METHOD' => 'POST')) }.to raise_error('Callback Phase')
           expect(strategy.options[:deep_option]).to have_key(:test_option)
         end
@@ -640,6 +632,11 @@ describe OmniAuth::Strategy do
         response = strategy.call(make_env)
         expect(response[0]).to eq(302)
         expect(response[1]['Location']).to eq('/auth/test/callback')
+      end
+
+      it "doesn't short circuit the request if request method is not allowed" do
+        response = strategy.call(make_env('/auth/test', 'REQUEST_METHOD' => 'DELETE'))
+        expect(response[0]).to eq(404)
       end
 
       it 'is case insensitive on request path' do
@@ -730,11 +727,22 @@ describe OmniAuth::Strategy do
         expect(strategy.env['foobar']).to eq('baz')
       end
 
-      it 'sets omniauth.params on the request phase' do
+      it 'sets omniauth.params with query params on the request phase' do
         OmniAuth.config.mock_auth[:test] = {}
 
         strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'foo=bar'))
         expect(strategy.env['rack.session']['omniauth.params']).to eq('foo' => 'bar')
+      end
+
+      it 'does not set body parameters of POST request on the request phase' do
+        OmniAuth.config.mock_auth[:test] = {}
+
+        props = {
+          'REQUEST_METHOD' => 'POST',
+          'rack.input' => StringIO.new('foo=bar')
+        }
+        strategy.call(make_env('/auth/test', props))
+        expect(strategy.env['rack.session']['omniauth.params']).to eq({})
       end
 
       it 'executes request hook on the request phase' do

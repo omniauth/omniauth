@@ -22,7 +22,7 @@ module OmniAuth
     end
 
     def raise_out!
-      fail(env['omniauth.error'] || OmniAuth::Error.new(env['omniauth.error.type']))
+      raise(env['omniauth.error'] || OmniAuth::Error.new(env['omniauth.error.type']))
     end
 
     def redirect_to_failure
