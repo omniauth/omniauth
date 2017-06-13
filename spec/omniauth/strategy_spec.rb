@@ -496,6 +496,43 @@ describe OmniAuth::Strategy do
       end
     end
 
+    context 'with relative url root' do
+      let(:props) { { 'SCRIPT_NAME' => '/myapp' } }
+      it 'accepts the request' do
+        expect { strategy.call(make_env('/auth/test', props)) }.to raise_error('Request Phase')
+        expect(strategy.request_path).to eq('/myapp/auth/test')
+      end
+
+      it 'accepts the callback' do
+        expect { strategy.call(make_env('/auth/test/callback', props)) }.to raise_error('Callback Phase')
+      end
+
+      context 'callback_url' do
+        it 'redirects to the correctly prefixed callback' do
+          expect(strategy).to receive(:full_host).and_return('http://example.com')
+
+          expect { strategy.call(make_env('/auth/test', props)) }.to raise_error('Request Phase')
+
+          expect(strategy.callback_url).to eq('http://example.com/myapp/auth/test/callback')
+        end
+      end
+
+      context 'custom request' do
+        before do
+          @options = {:request_path => '/myapp/override', :callback_path => '/myapp/override/callback'}
+        end
+        it 'does not prefix a custom request path' do
+          expect(strategy).to receive(:full_host).and_return('http://example.com')
+
+          expect(strategy.request_path).to eq('/myapp/override')
+          expect { strategy.call(make_env('/override', props)) }.to raise_error('Request Phase')
+
+          expect(strategy.callback_url).to eq('http://example.com/myapp/override/callback')
+        end
+      end
+    end
+
+
     context 'request method restriction' do
       before do
         OmniAuth.config.allowed_request_methods = [:post]
