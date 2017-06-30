@@ -106,18 +106,18 @@ describe OmniAuth::Strategy do
     end
 
     it 'sets args to the specified argument if there is one' do
-      subject.args [:abc, :def]
-      expect(subject.args).to eq([:abc, :def])
+      subject.args %i[abc def]
+      expect(subject.args).to eq(%i[abc def])
     end
 
     it 'is inheritable' do
-      subject.args [:abc, :def]
+      subject.args %i[abc def]
       c = Class.new(subject)
-      expect(c.args).to eq([:abc, :def])
+      expect(c.args).to eq(%i[abc def])
     end
 
     it 'accepts corresponding options as default arg values' do
-      subject.args [:a, :b]
+      subject.args %i[a b]
       subject.option :a, '1'
       subject.option :b, '2'
 
@@ -130,7 +130,7 @@ describe OmniAuth::Strategy do
 
   context 'fetcher procs' do
     subject { fresh_strategy }
-    %w(uid info credentials extra).each do |fetcher|
+    %w[uid info credentials extra].each do |fetcher|
       describe ".#{fetcher}" do
         it 'sets and retrieve a proc' do
           proc = lambda { 'Hello' }
@@ -143,7 +143,7 @@ describe OmniAuth::Strategy do
 
   context 'fetcher stacks' do
     subject { fresh_strategy }
-    %w(uid info credentials extra).each do |fetcher|
+    %w[uid info credentials extra].each do |fetcher|
       describe ".#{fetcher}_stack" do
         it 'is an array of called ancestral procs' do
           fetchy = proc { 'Hello' }
@@ -154,7 +154,7 @@ describe OmniAuth::Strategy do
     end
   end
 
-  %w(request_phase).each do |abstract_method|
+  %w[request_phase].each do |abstract_method|
     context abstract_method.to_s do
       it 'raises a NotImplementedError' do
         strat = Class.new
@@ -208,7 +208,7 @@ describe OmniAuth::Strategy do
       end
 
       it 'sets options based on the arguments if they are supplied' do
-        subject.args [:abc, :def]
+        subject.args %i[abc def]
         s = subject.new app, 123, 456
         expect(s.options[:abc]).to eq(123)
         expect(s.options[:def]).to eq(456)
@@ -277,7 +277,7 @@ describe OmniAuth::Strategy do
     end
   end
 
-  %w(info credentials extra).each do |fetcher|
+  %w[info credentials extra].each do |fetcher|
     subject { fresh_strategy }
     it "is the current class's proc call if one exists" do
       subject.send(fetcher) { {:abc => 123} }
@@ -510,7 +510,7 @@ describe OmniAuth::Strategy do
       end
 
       after do
-        OmniAuth.config.allowed_request_methods = [:get, :post]
+        OmniAuth.config.allowed_request_methods = %i[get post]
       end
     end
 

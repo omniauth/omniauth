@@ -1,3 +1,12 @@
+Layout/AccessModifierIndentation:
+  EnforcedStyle: outdent
+
+Layout/DotPosition:
+  EnforcedStyle: trailing
+
+Layout/SpaceInsideHashLiteralBraces:
+  EnforcedStyle: no_space
+
 Lint/HandleExceptions:
   Enabled: false
 
@@ -22,9 +31,6 @@ Metrics/ParameterLists:
 Metrics/AbcSize:
   Enabled: false
 
-Style/AccessModifierIndentation:
-  EnforcedStyle: outdent
-
 Style/CollectionMethods:
   PreferredMethods:
     map:      'collect'
@@ -34,9 +40,6 @@ Style/CollectionMethods:
 
 Style/Documentation:
   Enabled: false
-
-Style/DotPosition:
-  EnforcedStyle: trailing
 
 Style/DoubleNegation:
   Enabled: false
@@ -55,6 +58,3 @@ Style/Lambda:
 
 Style/RaiseArgs:
   EnforcedStyle: compact
-
-Style/SpaceInsideHashLiteralBraces:
-  EnforcedStyle: no_space

@@ -1,4 +1,5 @@
 # coding: utf-8
+
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'omniauth/version'
@@ -13,9 +14,9 @@ Gem::Specification.new do |spec|
   spec.email         = ['michael@intridea.com', 'sferik@gmail.com', 'tmilewski@gmail.com']
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.start_with?('spec/') }
   spec.homepage      = 'https://github.com/omniauth/omniauth'
-  spec.licenses      = %w(MIT)
+  spec.licenses      = %w[MIT]
   spec.name          = 'omniauth'
-  spec.require_paths = %w(lib)
+  spec.require_paths = %w[lib]
   spec.required_rubygems_version = '>= 1.3.5'
   spec.required_ruby_version = '>= 2.1.9'
   spec.summary       = spec.description

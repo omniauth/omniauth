@@ -14,7 +14,7 @@ rescue LoadError
   end
 end
 
-task :default => [:spec, :rubocop]
+task :default => %i[spec rubocop]
 
 namespace :perf do
   task :setup do
