@@ -5,7 +5,7 @@ require 'omniauth/version'
 
 Gem::Specification.new do |spec|
   spec.add_dependency 'hashie', ['>= 3.4.6', '< 3.6.0']
-  spec.add_dependency 'rack', ['>= 1.6.2', '< 3']
+  spec.add_dependency 'rack', ['>= 1.4.0', '< 3']
   spec.add_development_dependency 'bundler', '~> 1.14'
   spec.add_development_dependency 'rake', '~> 12.0'
   spec.authors       = ['Michael Bleigh', 'Erik Michaels-Ober', 'Tom Milewski']
