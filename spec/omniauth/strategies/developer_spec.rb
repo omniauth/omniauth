@@ -69,5 +69,24 @@ describe OmniAuth::Strategies::Developer do
         expect(auth_hash.uid).to eq('User')
       end
     end
+
+    context 'behind mapping' do
+      let(:app) do
+        Rack::Builder.new do |b|
+          b.map '/api' do
+            b.use Rack::Session::Cookie, :secret => 'abc123'
+            b.use OmniAuth::Strategies::Developer
+            b.run lambda { |_env| [200, {}, ['Not Found']] }
+          end
+          b.run lambda { |_env| [200, {}, ['Not Found']] }
+        end.to_app
+      end
+
+      before(:each) { get '/auth/developer' }
+
+      it 'updates the action url to reflect it\'s relative position behind the mapping' do
+        expect(last_response.body).to be_include("action='/auth/developer/callback'")
+      end
+    end
   end
 end
