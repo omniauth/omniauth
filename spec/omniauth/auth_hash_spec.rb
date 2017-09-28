@@ -64,13 +64,13 @@ describe OmniAuth::AuthHash do
 
     it 'displays the nickname if no name, first, or last is available' do
       subject.info.name = nil
-      %w(first_name last_name).each { |k| subject.info[k] = nil }
+      %w[first_name last_name].each { |k| subject.info[k] = nil }
       expect(subject.info.name).to eq('meatbag')
     end
 
     it 'displays the email if no name, first, last, or nick is available' do
       subject.info.name = nil
-      %w(first_name last_name nickname).each { |k| subject.info[k] = nil }
+      %w[first_name last_name nickname].each { |k| subject.info[k] = nil }
       expect(subject.info.name).to eq('fry@planetexpress.com')
     end
   end

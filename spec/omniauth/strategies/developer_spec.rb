@@ -51,13 +51,13 @@ describe OmniAuth::Strategies::Developer do
       let(:app) do
         Rack::Builder.new do |b|
           b.use Rack::Session::Cookie, :secret => 'abc123'
-          b.use OmniAuth::Strategies::Developer, :fields => [:first_name, :last_name], :uid_field => :last_name
+          b.use OmniAuth::Strategies::Developer, :fields => %i[first_name last_name], :uid_field => :last_name
           b.run lambda { |_env| [200, {}, ['Not Found']] }
         end.to_app
       end
 
       before do
-        @options = {:uid_field => :last_name, :fields => [:first_name, :last_name]}
+        @options = {:uid_field => :last_name, :fields => %i[first_name last_name]}
         post '/auth/developer/callback', :first_name => 'Example', :last_name => 'User'
       end
 

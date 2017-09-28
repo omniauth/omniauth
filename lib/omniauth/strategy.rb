@@ -88,7 +88,7 @@ module OmniAuth
         (instance_variable_defined?(:@args) && @args) || existing
       end
 
-      %w(uid info extra credentials).each do |fetcher|
+      %w[uid info extra credentials].each do |fetcher|
         class_eval <<-RUBY, __FILE__, __LINE__ + 1
           attr_reader :#{fetcher}_proc
           private :#{fetcher}_proc
