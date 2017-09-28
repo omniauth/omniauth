@@ -41,7 +41,7 @@ module OmniAuth
         :form_css => Form::DEFAULT_CSS,
         :test_mode => false,
         :logger => default_logger,
-        :allowed_request_methods => [:get, :post],
+        :allowed_request_methods => %i[get post],
         :mock_auth => {:default => AuthHash.new('provider' => 'default', 'uid' => '1234', 'info' => {'name' => 'Example User'})}
       }
     end
@@ -141,7 +141,7 @@ module OmniAuth
     def deep_merge(hash, other_hash)
       target = hash.dup
 
-      other_hash.keys.each do |key|
+      other_hash.each_key do |key|
         if other_hash[key].is_a?(::Hash) && hash[key].is_a?(::Hash)
           target[key] = deep_merge(target[key], other_hash[key])
           next

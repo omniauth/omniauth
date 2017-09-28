@@ -14,6 +14,7 @@ module OmniAuth
       base.class_eval do
         option :setup, false
         option :skip_info, false
+        option :origin_param, 'origin'
       end
     end
 
@@ -87,7 +88,7 @@ module OmniAuth
         (instance_variable_defined?(:@args) && @args) || existing
       end
 
-      %w(uid info extra credentials).each do |fetcher|
+      %w[uid info extra credentials].each do |fetcher|
         class_eval <<-RUBY, __FILE__, __LINE__ + 1
           attr_reader :#{fetcher}_proc
           private :#{fetcher}_proc
@@ -200,21 +201,26 @@ module OmniAuth
     def request_call # rubocop:disable CyclomaticComplexity, MethodLength, PerceivedComplexity
       setup_phase
       log :info, 'Request phase initiated.'
+
       # store query params from the request url, extracted in the callback_phase
       session['omniauth.params'] = request.GET
       OmniAuth.config.before_request_phase.call(env) if OmniAuth.config.before_request_phase
+
       if options.form.respond_to?(:call)
         log :info, 'Rendering form from supplied Rack endpoint.'
         options.form.call(env)
       elsif options.form
         log :info, 'Rendering form from underlying application.'
         call_app!
+      elsif !options.origin_param
+        request_phase
       else
-        if request.params['origin']
-          env['rack.session']['omniauth.origin'] = request.params['origin']
+        if request.params[options.origin_param]
+          env['rack.session']['omniauth.origin'] = request.params[options.origin_param]
         elsif env['HTTP_REFERER'] && !env['HTTP_REFERER'].match(/#{request_path}$/)
           env['rack.session']['omniauth.origin'] = env['HTTP_REFERER']
         end
+
         request_phase
       end
     end
