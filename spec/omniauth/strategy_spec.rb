@@ -224,6 +224,13 @@ describe OmniAuth::Strategy do
       expect(instance).to receive(:dup).and_return(instance)
       instance.call('rack.session' => {})
     end
+
+    it 'raises NoSessionError if rack.session isn\'t set' do
+      klass = Class.new
+      klass.send :include, OmniAuth::Strategy
+      instance = klass.new(app)
+      expect { instance.call({}) }.to raise_error(OmniAuth::NoSessionError)
+    end
   end
 
   describe '#inspect' do
