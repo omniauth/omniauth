@@ -122,24 +122,50 @@ environment information on the callback request. It is entirely up to
 you how you want to implement the particulars of your application's
 authentication flow.
 
+## Configuring The `origin` Param
+The `origin` url parameter is typically used to inform where a user came from and where, should you choose to use it, they'd want to return to.
+
+There are three possible options:
+
+Default Flow:
+```ruby
+# /auth/twitter/?origin=[URL]
+# No change
+# If blank, `omniauth.origin` is set to HTTP_REFERER
+```
+
+Renaming Origin Param:
+```ruby
+# /auth/twitter/?return_to=[URL]
+# If blank, `omniauth.origin` is set to HTTP_REFERER
+provider :twitter, ENV['KEY'], ENV['SECRET'], origin_param: 'return_to'
+```
+
+Disabling Origin Param:
+```ruby
+# /auth/twitter
+# Origin handled externally, if need be. `omniauth.origin` is not set
+provider :twitter, ENV['KEY'], ENV['SECRET'], origin_param: false
+```
+
 ## Integrating OmniAuth Into Your Rails API
 The following middleware are (by default) included for session management in
-Rails applications. When using OmniAuth with a Rails API, you'll need to add 
+Rails applications. When using OmniAuth with a Rails API, you'll need to add
 one of these required middleware back in:
 
 - `ActionDispatch::Session::CacheStore`
 - `ActionDispatch::Session::CookieStore`
 - `ActionDispatch::Session::MemCacheStore`
 
-The trick to adding these back in is that, by default, they are passed 
-`session_options` when added (including the session key), so you can't just add 
-a `session_store.rb` initializer, add `use ActionDispatch::Session::CookieStore` 
+The trick to adding these back in is that, by default, they are passed
+`session_options` when added (including the session key), so you can't just add
+a `session_store.rb` initializer, add `use ActionDispatch::Session::CookieStore`
 and have sessions functioning as normal.
 
-To be clear: sessions may work, but your session options will be ignored 
-(i.e the session key will default to `_session_id`).  Instead of the 
+To be clear: sessions may work, but your session options will be ignored
+(i.e the session key will default to `_session_id`).  Instead of the
 initializer, you'll have to set the relevant options somewhere
-before your middleware is built (like `application.rb`) and pass them to your 
+before your middleware is built (like `application.rb`) and pass them to your
 preferred middleware, like this:
 
 **application.rb:**
