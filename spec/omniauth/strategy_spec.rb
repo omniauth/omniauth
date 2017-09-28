@@ -300,42 +300,60 @@ describe OmniAuth::Strategy do
     let(:strategy) { ExampleStrategy.new(app, @options || {}) }
 
     context 'omniauth.origin' do
-      it 'is set on the request phase' do
-        expect { strategy.call(make_env('/auth/test', 'HTTP_REFERER' => 'http://example.com/origin')) }.to raise_error('Request Phase')
-        expect(strategy.last_env['rack.session']['omniauth.origin']).to eq('http://example.com/origin')
+      context 'disabled' do
+        it 'does not set omniauth.origin' do
+          @options = { :origin_param => false }
+          expect { strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'return=/foo')) }.to raise_error('Request Phase')
+          expect(strategy.last_env['rack.session']['omniauth.origin']).to eq(nil)
+        end
       end
 
-      it 'is turned into an env variable on the callback phase' do
-        expect { strategy.call(make_env('/auth/test/callback', 'rack.session' => {'omniauth.origin' => 'http://example.com/origin'})) }.to raise_error('Callback Phase')
-        expect(strategy.last_env['omniauth.origin']).to eq('http://example.com/origin')
+      context 'custom' do
+        it 'sets from a custom param' do
+          @options = { :origin_param => 'return' }
+          expect { strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'return=/foo')) }.to raise_error('Request Phase')
+          expect(strategy.last_env['rack.session']['omniauth.origin']).to eq('/foo')
+        end
       end
 
-      it 'sets from the params if provided' do
-        expect { strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'origin=/foo')) }.to raise_error('Request Phase')
-        expect(strategy.last_env['rack.session']['omniauth.origin']).to eq('/foo')
-      end
-
-      it 'is set on the failure env' do
-        expect(OmniAuth.config).to receive(:on_failure).and_return(lambda { |env| env })
-        @options = {:failure => :forced_fail}
-        strategy.call(make_env('/auth/test/callback', 'rack.session' => {'omniauth.origin' => '/awesome'}))
-      end
-
-      context 'with script_name' do
-        it 'is set on the request phase, containing full path' do
-          env = {'HTTP_REFERER' => 'http://example.com/sub_uri/origin', 'SCRIPT_NAME' => '/sub_uri'}
-          expect { strategy.call(make_env('/auth/test', env)) }.to raise_error('Request Phase')
-          expect(strategy.last_env['rack.session']['omniauth.origin']).to eq('http://example.com/sub_uri/origin')
+      context 'default flow' do
+        it 'is set on the request phase' do
+          expect { strategy.call(make_env('/auth/test', 'HTTP_REFERER' => 'http://example.com/origin')) }.to raise_error('Request Phase')
+          expect(strategy.last_env['rack.session']['omniauth.origin']).to eq('http://example.com/origin')
         end
 
-        it 'is turned into an env variable on the callback phase, containing full path' do
-          env = {
-            'rack.session' => {'omniauth.origin' => 'http://example.com/sub_uri/origin'},
-            'SCRIPT_NAME' => '/sub_uri'
-          }
+        it 'is turned into an env variable on the callback phase' do
+          expect { strategy.call(make_env('/auth/test/callback', 'rack.session' => {'omniauth.origin' => 'http://example.com/origin'})) }.to raise_error('Callback Phase')
+          expect(strategy.last_env['omniauth.origin']).to eq('http://example.com/origin')
+        end
 
-          expect { strategy.call(make_env('/auth/test/callback', env)) }.to raise_error('Callback Phase')
-          expect(strategy.last_env['omniauth.origin']).to eq('http://example.com/sub_uri/origin')
+        it 'sets from the params if provided' do
+          expect { strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'origin=/foo')) }.to raise_error('Request Phase')
+          expect(strategy.last_env['rack.session']['omniauth.origin']).to eq('/foo')
+        end
+
+        it 'is set on the failure env' do
+          expect(OmniAuth.config).to receive(:on_failure).and_return(lambda { |env| env })
+          @options = {:failure => :forced_fail}
+          strategy.call(make_env('/auth/test/callback', 'rack.session' => {'omniauth.origin' => '/awesome'}))
+        end
+
+        context 'with script_name' do
+          it 'is set on the request phase, containing full path' do
+            env = {'HTTP_REFERER' => 'http://example.com/sub_uri/origin', 'SCRIPT_NAME' => '/sub_uri'}
+            expect { strategy.call(make_env('/auth/test', env)) }.to raise_error('Request Phase')
+            expect(strategy.last_env['rack.session']['omniauth.origin']).to eq('http://example.com/sub_uri/origin')
+          end
+
+          it 'is turned into an env variable on the callback phase, containing full path' do
+            env = {
+              'rack.session' => {'omniauth.origin' => 'http://example.com/sub_uri/origin'},
+              'SCRIPT_NAME' => '/sub_uri'
+            }
+
+            expect { strategy.call(make_env('/auth/test/callback', env)) }.to raise_error('Callback Phase')
+            expect(strategy.last_env['omniauth.origin']).to eq('http://example.com/sub_uri/origin')
+          end
         end
       end
     end
