@@ -689,14 +689,34 @@ describe OmniAuth::Strategy do
         expect(strategy.env['omniauth.error.type']).to eq(:invalid_credentials)
       end
 
-      it 'sets omniauth.origin on the request phase' do
-        strategy.call(make_env('/auth/test', 'HTTP_REFERER' => 'http://example.com/origin'))
-        expect(strategy.env['rack.session']['omniauth.origin']).to eq('http://example.com/origin')
-      end
+      context 'omniauth.origin' do
+        context 'disabled' do
+          it 'does not set omniauth.origin' do
+            @options = {:origin_param => false}
+            strategy.call(make_env('/auth/test', 'HTTP_REFERER' => 'http://example.com/origin'))
+            expect(strategy.env['rack.session']['omniauth.origin']).to be_nil
+          end
+        end
 
-      it 'sets omniauth.origin from the params if provided' do
-        strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'origin=/foo'))
-        expect(strategy.env['rack.session']['omniauth.origin']).to eq('/foo')
+        context 'default flow' do
+          it 'sets omniauth.origin to the HTTP_REFERER on the request phase by default' do
+            strategy.call(make_env('/auth/test', 'HTTP_REFERER' => 'http://example.com/origin'))
+            expect(strategy.env['rack.session']['omniauth.origin']).to eq('http://example.com/origin')
+          end
+
+          it 'sets omniauth.origin from the params if provided' do
+            strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'origin=/foo'))
+            expect(strategy.env['rack.session']['omniauth.origin']).to eq('/foo')
+          end
+        end
+
+        context 'custom' do
+          it 'sets omniauth.origin from a custom param' do
+            @options = {:origin_param => 'return'}
+            strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'return=/foo'))
+            expect(strategy.env['rack.session']['omniauth.origin']).to eq('/foo')
+          end
+        end
       end
 
       it 'turns omniauth.origin into an env variable on the callback phase' do
