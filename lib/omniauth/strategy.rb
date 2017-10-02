@@ -15,6 +15,7 @@ module OmniAuth
         option :setup, false
         option :skip_info, false
         option :origin_param, 'origin'
+        option :store_params, true
       end
     end
 
@@ -203,7 +204,7 @@ module OmniAuth
       log :info, 'Request phase initiated.'
 
       # store query params from the request url, extracted in the callback_phase
-      session['omniauth.params'] = request.GET
+      session['omniauth.params'] = request.GET if options.store_params
       OmniAuth.config.before_request_phase.call(env) if OmniAuth.config.before_request_phase
 
       if options.form.respond_to?(:call)
@@ -271,10 +272,10 @@ module OmniAuth
       call_app!
     end
 
-    def mock_request_call
+    def mock_request_call # rubocop:disable CyclomaticComplexity, PerceivedComplexity
       setup_phase
 
-      session['omniauth.params'] = request.GET
+      session['omniauth.params'] = request.GET if options.store_params
       OmniAuth.config.before_request_phase.call(env) if OmniAuth.config.before_request_phase
       if options.origin_param
         if request.params[options.origin_param]
