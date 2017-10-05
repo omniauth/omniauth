@@ -9,7 +9,7 @@ module OmniAuth
       options[:header_info] ||= ''
       self.options = options
 
-      @html = ''
+      @html = ''.dup
       @with_custom_button = false
       @footer = nil
       header(options[:title], options[:header_info])
