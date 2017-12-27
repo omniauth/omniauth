@@ -1,5 +1,7 @@
 bundler_args: --without development
-before_install: gem update bundler
+before_install:
+  - gem update --system
+  - gem update bundler
 cache: bundler
 env:
   global:
