@@ -1,3 +1,3 @@
 module OmniAuth
-  VERSION = '1.8.0'.freeze
+  VERSION = '1.8.1'.freeze
 end
