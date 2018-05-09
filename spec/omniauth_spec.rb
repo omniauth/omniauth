@@ -30,6 +30,7 @@ describe OmniAuth do
       @old_on_failure            = OmniAuth.config.on_failure
       @old_before_callback_phase = OmniAuth.config.before_callback_phase
       @old_before_options_phase  = OmniAuth.config.before_options_phase
+      @old_before_other_phase    = OmniAuth.config.before_other_phase
       @old_before_request_phase  = OmniAuth.config.before_request_phase
     end
 
@@ -39,6 +40,7 @@ describe OmniAuth do
         config.on_failure            = @old_on_failure
         config.before_callback_phase = @old_before_callback_phase
         config.before_options_phase  = @old_before_options_phase
+        config.before_other_phase    = @old_before_other_phase
         config.before_request_phase  = @old_before_request_phase
       end
     end
@@ -68,6 +70,15 @@ describe OmniAuth do
         end
       end
       expect(OmniAuth.config.before_options_phase.call).to eq('yoyo')
+    end
+
+    it 'is able to set hook on other_call' do
+      OmniAuth.configure do |config|
+        config.before_other_phase do
+          'yaya'
+        end
+      end
+      expect(OmniAuth.config.before_other_phase.call).to eq('yaya')
     end
 
     it 'is able to set hook on request_call' do

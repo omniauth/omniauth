@@ -186,7 +186,7 @@ module OmniAuth
       return options_call if on_auth_path? && options_request?
       return request_call if on_request_path? && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
       return callback_call if on_callback_path?
-      return other_phase if respond_to?(:other_phase)
+      return other_call if respond_to?(:other_phase)
       @app.call(env)
     end
 
@@ -234,6 +234,12 @@ module OmniAuth
       @env['omniauth.params'] = session.delete('omniauth.params') || {}
       OmniAuth.config.before_callback_phase.call(@env) if OmniAuth.config.before_callback_phase
       callback_phase
+    end
+
+    # Call other phase, if it exists, with hooks
+    def other_call
+      OmniAuth.config.before_other_phase.call(env) if OmniAuth.config.before_other_phase
+      other_phase
     end
 
     # Returns true if the environment recognizes either the
