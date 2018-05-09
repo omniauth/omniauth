@@ -1,6 +1,6 @@
 module OmniAuth
   class Form
-    DEFAULT_CSS = File.read(File.expand_path('../form.css', __FILE__))
+    DEFAULT_CSS = File.read(File.expand_path('form.css', __dir__))
 
     attr_accessor :options
 

@@ -862,36 +862,36 @@ describe OmniAuth::Strategy do
     end
   end
 
-  context "other phase" do
-    let(:app) { lambda { |env| [404, {}, ["Awesome"]] } }
+  context 'other phase' do
+    let(:app) { lambda { |_env| [404, {}, ['Awesome']] } }
 
     subject(:strategy) { ExampleStrategy.new(app) }
 
-    it "does nothing when there is no other phase" do
-      expect(strategy.call(make_env("/auth/test/other")).last).to eql(["Awesome"])
+    it 'does nothing when there is no other phase' do
+      expect(strategy.call(make_env('/auth/test/other')).last).to eql(['Awesome'])
     end
 
-    context "when an other phase is defined" do
+    context 'when an other phase is defined' do
       before do
         def strategy.other_phase
-          raise "Other Phase"
+          raise 'Other Phase'
         end
       end
 
-      it "calls the other phase" do
-        expect { strategy.call(make_env("/auth/test/other")) }.to raise_error("Other Phase")
+      it 'calls the other phase' do
+        expect { strategy.call(make_env('/auth/test/other')) }.to raise_error('Other Phase')
       end
 
-      context "and a before_other_phase" do
+      context 'and a before_other_phase' do
         before do
           OmniAuth.config.before_other_phase do |env|
-            env["foobar"] = "baz"
+            env['foobar'] = 'baz'
           end
         end
 
-        it "calls the before hook" do
-          expect { strategy.call(make_env("/auth/test/other")) }.to raise_error("Other Phase")
-          expect(strategy.env["foobar"]).to eql("baz")
+        it 'calls the before hook' do
+          expect { strategy.call(make_env('/auth/test/other')) }.to raise_error('Other Phase')
+          expect(strategy.env['foobar']).to eql('baz')
         end
 
         after do
