@@ -30,6 +30,7 @@ namespace :perf do
     def call_app(path = ENV['GET_PATH'] || '/')
       result = @app.get(path)
       raise "Did not succeed #{result.body}" unless result.status == 200
+
       result
     end
   end

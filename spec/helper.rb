@@ -48,6 +48,7 @@ class ExampleStrategy
     @fail = fail!(options[:failure]) if options[:failure]
     @last_env = env
     return @fail if @fail
+
     raise('Request Phase')
   end
 
@@ -56,6 +57,7 @@ class ExampleStrategy
     @fail = fail!(options[:failure]) if options[:failure]
     @last_env = env
     return @fail if @fail
+
     raise('Callback Phase')
   end
 end

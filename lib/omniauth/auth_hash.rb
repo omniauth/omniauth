@@ -36,6 +36,7 @@ module OmniAuth
         return "#{first_name} #{last_name}".strip if first_name? || last_name?
         return nickname if nickname?
         return email if email?
+
         nil
       end
 

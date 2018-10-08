@@ -41,6 +41,7 @@ module OmniAuth
 
     def options(options = false)
       return @options || {} if options == false
+
       @options = options
     end
 
