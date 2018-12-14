@@ -20,9 +20,7 @@ module OmniAuth
     end
 
     def regular_writer(key, value)
-      if key.to_s == 'info' && value.is_a?(::Hash) && !value.is_a?(InfoHash)
-        value = InfoHash.new(value)
-      end
+      value = InfoHash.new(value) if key.to_s == 'info' && value.is_a?(::Hash) && !value.is_a?(InfoHash)
       super
     end
 
@@ -36,6 +34,7 @@ module OmniAuth
         return "#{first_name} #{last_name}".strip if first_name? || last_name?
         return nickname if nickname?
         return email if email?
+
         nil
       end
 

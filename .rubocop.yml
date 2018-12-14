@@ -1,5 +1,11 @@
+AllCops:
+  TargetRubyVersion: 2.2
+
 Layout/AccessModifierIndentation:
   EnforcedStyle: outdent
+
+Layout/AlignHash:
+  Enabled: false
 
 Layout/DotPosition:
   EnforcedStyle: trailing
@@ -48,6 +54,9 @@ Style/EachWithObject:
   Enabled: false
 
 Style/Encoding:
+  Enabled: false
+
+Style/ExpandPathArguments:
   Enabled: false
 
 Style/HashSyntax:

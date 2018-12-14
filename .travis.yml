@@ -9,11 +9,10 @@ env:
 language: ruby
 rvm:
   - jruby-9000
-  - 2.1.10 # EOL Soon
-  - 2.2.6
-  - 2.3.3
-  - 2.4.0
-  - 2.5.0
+  - 2.2.9
+  - 2.3.5
+  - 2.4.4
+  - 2.5.3
   - jruby-head
   - ruby-head
 matrix:

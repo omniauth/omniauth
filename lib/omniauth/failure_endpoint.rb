@@ -33,11 +33,13 @@ module OmniAuth
 
     def strategy_name_query_param
       return '' unless env['omniauth.error.strategy']
+
       "&strategy=#{env['omniauth.error.strategy'].name}"
     end
 
     def origin_query_param
       return '' unless env['omniauth.origin']
+
       "&origin=#{Rack::Utils.escape(env['omniauth.origin'])}"
     end
   end
