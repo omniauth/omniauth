@@ -140,6 +140,7 @@ module OmniAuth
 
       self.class.args.each do |arg|
         break if args.empty?
+
         options[arg] = args.shift
       end
 
@@ -187,6 +188,7 @@ module OmniAuth
       return request_call if on_request_path? && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
       return callback_call if on_callback_path?
       return other_phase if respond_to?(:other_phase)
+
       @app.call(env)
     end
 
@@ -268,6 +270,7 @@ module OmniAuth
     def mock_call!(*)
       return mock_request_call if on_request_path? && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
       return mock_callback_call if on_callback_path?
+
       call_app!
     end
 
@@ -361,6 +364,7 @@ module OmniAuth
     def skip_info?
       return false unless options.skip_info?
       return true unless options.skip_info.respond_to?(:call)
+
       options.skip_info.call(uid)
     end
 
@@ -377,6 +381,7 @@ module OmniAuth
       if options[kind].respond_to?(:call)
         result = options[kind].call(env)
         return nil unless result.is_a?(String)
+
         result
       else
         options[kind]
@@ -401,7 +406,7 @@ module OmniAuth
       options[:setup_path] || "#{path_prefix}/#{name}/setup"
     end
 
-    CURRENT_PATH_REGEX = %r{/$}
+    CURRENT_PATH_REGEX = %r{/$}.freeze
     EMPTY_STRING       = ''.freeze
     def current_path
       @current_path ||= request.path_info.downcase.sub(CURRENT_PATH_REGEX, EMPTY_STRING)
