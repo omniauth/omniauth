@@ -489,34 +489,69 @@ describe OmniAuth::Strategy do
     end
 
     context 'custom prefix' do
-      before do
-        @options = {:path_prefix => '/wowzers'}
-      end
-
-      it 'uses a custom prefix for request' do
-        expect { strategy.call(make_env('/wowzers/test')) }.to raise_error('Request Phase')
-      end
-
-      it 'uses a custom prefix for callback' do
-        expect { strategy.call(make_env('/wowzers/test/callback')) }.to raise_error('Callback Phase')
-      end
-
-      context 'callback_url' do
-        it 'uses a custom prefix' do
-          expect(strategy).to receive(:full_host).and_return('http://example.com')
-
-          expect { strategy.call(make_env('/wowzers/test')) }.to raise_error('Request Phase')
-
-          expect(strategy.callback_url).to eq('http://example.com/wowzers/test/callback')
+      context 'path_prefix is a String' do
+        before do
+          @options = {:path_prefix => '/wowzers'}
         end
 
-        it 'preserves the query parameters' do
-          allow(strategy).to receive(:full_host).and_return('http://example.com')
-          begin
-            strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'id=5'))
-          rescue RuntimeError
+        it 'uses a custom prefix for request' do
+          expect { strategy.call(make_env('/wowzers/test')) }.to raise_error('Request Phase')
+        end
+
+        it 'uses a custom prefix for callback' do
+          expect { strategy.call(make_env('/wowzers/test/callback')) }.to raise_error('Callback Phase')
+        end
+
+        context 'callback_url' do
+          it 'uses a custom prefix' do
+            expect(strategy).to receive(:full_host).and_return('http://example.com')
+
+            expect { strategy.call(make_env('/wowzers/test')) }.to raise_error('Request Phase')
+
+            expect(strategy.callback_url).to eq('http://example.com/wowzers/test/callback')
           end
-          expect(strategy.callback_url).to eq('http://example.com/wowzers/test/callback?id=5')
+
+          it 'preserves the query parameters' do
+            allow(strategy).to receive(:full_host).and_return('http://example.com')
+            begin
+              strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'id=5'))
+            rescue RuntimeError
+            end
+            expect(strategy.callback_url).to eq('http://example.com/wowzers/test/callback?id=5')
+          end
+        end
+      end
+
+      context 'path_prefix is a Proc' do
+        before do
+          @options = {:path_prefix => -> { '/wowzers' } }
+        end
+
+        it 'uses a custom prefix for request' do
+          expect { strategy.call(make_env('/wowzers/test')) }.to raise_error('Request Phase')
+        end
+
+        it 'uses a custom prefix for callback' do
+          expect { strategy.call(make_env('/wowzers/test/callback')) }.to raise_error('Callback Phase')
+        end
+
+        context 'callback_url' do
+          it 'uses a custom prefix' do
+            expect(strategy).to receive(:full_host).and_return('http://example.com')
+
+            expect { strategy.call(make_env('/wowzers/test')) }.to raise_error('Request Phase')
+
+            expect(strategy.callback_url).to eq('http://example.com/wowzers/test/callback')
+          end
+
+          it 'preserves the query parameters' do
+            allow(strategy).to receive(:full_host).and_return('http://example.com')
+            begin
+              strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'id=5'))
+            rescue RuntimeError
+            end
+            expect(strategy.callback_url).to eq('http://example.com/wowzers/test/callback?id=5')
+          end
         end
       end
     end
