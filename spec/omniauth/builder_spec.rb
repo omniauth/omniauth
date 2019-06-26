@@ -3,7 +3,7 @@ require 'helper'
 describe OmniAuth::Builder do
   describe '#provider' do
     it 'translates a symbol to a constant' do
-      expect(OmniAuth::Strategies).to receive(:const_get).with('MyStrategy').and_return(Class.new)
+      expect(OmniAuth::Strategies).to receive(:const_get).with('MyStrategy', false).and_return(Class.new)
       OmniAuth::Builder.new(nil) do
         provider :my_strategy
       end
@@ -25,6 +25,16 @@ describe OmniAuth::Builder do
           provider :lorax
         end
       end.to raise_error(LoadError, 'Could not find matching strategy for :lorax. You may need to install an additional gem (such as omniauth-lorax).')
+    end
+
+    it "doesn't translate a symbol to a top-level constant" do
+      class MyStrategy; end
+
+      expect do
+        OmniAuth::Builder.new(nil) do
+          provider :my_strategy
+        end
+      end.to raise_error(LoadError, 'Could not find matching strategy for :my_strategy. You may need to install an additional gem (such as omniauth-my_strategy).')
     end
   end
 
