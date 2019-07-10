@@ -15,6 +15,7 @@ module OmniAuth
   autoload :Form,     'omniauth/form'
   autoload :AuthHash, 'omniauth/auth_hash'
   autoload :FailureEndpoint, 'omniauth/failure_endpoint'
+  autoload :AuthenticityCheck, 'omniauth/authenticity_check'
 
   def self.strategies
     @strategies ||= []

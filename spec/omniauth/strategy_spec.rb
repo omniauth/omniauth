@@ -769,6 +769,53 @@ describe OmniAuth::Strategy do
         expect(strategy.env['omniauth.params']).to eq('foo' => 'bar')
       end
 
+      context 'with authenticity validation' do
+        let(:token) { Rack::Protection::AuthenticityToken.random_token }
+
+        before do
+          OmniAuth.config.mock_auth[:test] = {}
+          OmniAuth.config.before_request_phase = OmniAuth::AuthenticityCheck.new
+        end
+
+        def token_env(session_token, request_token = nil, options = {})
+          request_token ||= session_token
+
+          options['REQUEST_METHOD'] ||= 'POST'
+          options['rack.session'] ||= {:csrf => session_token}
+          unless request_token.empty?
+            options['rack.input'] ||= StringIO.new(
+              URI.encode_www_form('authenticity_token' => request_token)
+            )
+          end
+
+          make_env('/auth/test', options)
+        end
+
+        it 'accepts a valid token' do
+          response = strategy.call(token_env(token))
+
+          expect(response.first).to eq(302)
+        end
+
+        it 'denies an invalid token' do
+          response = strategy.call(token_env(token, 'foo'))
+
+          expect(response.first).to eq(403)
+        end
+
+        it 'denies a missing token' do
+          response = strategy.call(token_env(token, ''))
+
+          expect(response.first).to eq(403)
+        end
+
+        it 'ignores tokens for GET requests' do
+          response = strategy.call(token_env(token, '', 'REQUEST_METHOD' => 'GET'))
+
+          expect(response.first).to eq(302)
+        end
+      end
+
       after do
         OmniAuth.config.test_mode = false
       end

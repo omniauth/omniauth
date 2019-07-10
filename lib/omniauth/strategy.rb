@@ -2,6 +2,7 @@ require 'omniauth/key_store'
 
 module OmniAuth
   class NoSessionError < StandardError; end
+  class InvalidSessionError < StandardError; end
   # The Strategy is the base unit of OmniAuth's ability to
   # wrangle multiple providers. Each strategy provided by
   # OmniAuth includes this mixin to gain the default functionality
@@ -190,6 +191,8 @@ module OmniAuth
       return other_phase if respond_to?(:other_phase)
 
       @app.call(env)
+    rescue OmniAuth::InvalidSessionError => e
+      [403, {'Content-Type' => 'text/plain'}, [e.message]]
     end
 
     # Responds to an OPTIONS request.
