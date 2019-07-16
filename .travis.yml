@@ -1,6 +1,8 @@
 bundler_args: --without development
 before_install:
   - gem install bundler --version 1.17.3
+install:
+  - bundle _1.17.3_ install --jobs=3 --retry=3
 cache: bundler
 env:
   global:
