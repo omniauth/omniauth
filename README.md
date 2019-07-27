@@ -122,6 +122,8 @@ environment information on the callback request. It is entirely up to
 you how you want to implement the particulars of your application's
 authentication flow.
 
+**Please note:** there is currently a CSRF vulnerability that affects OmniAuth (designated [CVE-2015-9284](https://nvd.nist.gov/vuln/detail/CVE-2015-9284)) that requires mitigation in application itself. More details on how to do this can be found in the [FAQ](https://github.com/omniauth/omniauth/wiki/FAQ#how-do-i-mitigate-cve-2015-9284).
+
 ## Configuring The `origin` Param
 The `origin` url parameter is typically used to inform where a user came from and where, should you choose to use it, they'd want to return to.
 
