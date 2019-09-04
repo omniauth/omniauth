@@ -2,14 +2,12 @@
 
 [![Gem Version](http://img.shields.io/gem/v/omniauth.svg)][gem]
 [![Build Status](http://img.shields.io/travis/omniauth/omniauth.svg)][travis]
-[![Dependency Status](http://img.shields.io/gemnasium/omniauth/omniauth.svg)][gemnasium]
 [![Code Climate](http://img.shields.io/codeclimate/github/omniauth/omniauth.svg)][codeclimate]
 [![Coverage Status](http://img.shields.io/coveralls/omniauth/omniauth.svg)][coveralls]
 [![Security](https://hakiri.io/github/omniauth/omniauth/master.svg)](https://hakiri.io/github/omniauth/omniauth/master)
 
 [gem]: https://rubygems.org/gems/omniauth
 [travis]: http://travis-ci.org/omniauth/omniauth
-[gemnasium]: https://gemnasium.com/omniauth/omniauth
 [codeclimate]: https://codeclimate.com/github/omniauth/omniauth
 [coveralls]: https://coveralls.io/r/omniauth/omniauth
 
