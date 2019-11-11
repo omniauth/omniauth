@@ -9,9 +9,17 @@ describe OmniAuth::Builder do
     it 'calls original when rack 1.4' do
       allow(Rack).to receive(:release).and_return('1.4.0')
 
-      expect(builder).to receive(:new).with(app).and_call_original
+      expect(builder).to receive(:new).with(app, &prok).and_call_original
 
-      builder.new(app)
+      builder.new(app, &prok)
+    end
+
+    it 'calls original when rack 2' do
+      allow(Rack).to receive(:release).and_return('2.0.0')
+
+      expect(builder).to receive(:new).with(app, &prok).and_call_original
+
+      builder.new(app, &prok)
     end
   end
 
@@ -66,9 +74,11 @@ describe OmniAuth::Builder do
     it 'passes the block to the config' do
       prok = proc {}
 
-      OmniAuth::Builder.new(nil).on_failure(&prok)
+      with_config_reset(:on_failure) do
+        OmniAuth::Builder.new(nil).on_failure(&prok)
 
-      expect(OmniAuth.config.on_failure).to eq(prok)
+        expect(OmniAuth.config.on_failure).to eq(prok)
+      end
     end
   end
 
@@ -76,9 +86,11 @@ describe OmniAuth::Builder do
     it 'passes the block to the config' do
       prok = proc {}
 
-      OmniAuth::Builder.new(nil).before_options_phase(&prok)
+      with_config_reset(:before_options_phase) do
+        OmniAuth::Builder.new(nil).before_options_phase(&prok)
 
-      expect(OmniAuth.config.before_options_phase).to eq(prok)
+        expect(OmniAuth.config.before_options_phase).to eq(prok)
+      end
     end
   end
 
@@ -86,9 +98,11 @@ describe OmniAuth::Builder do
     it 'passes the block to the config' do
       prok = proc {}
 
-      OmniAuth::Builder.new(nil).before_request_phase(&prok)
+      with_config_reset(:before_request_phase) do
+        OmniAuth::Builder.new(nil).before_request_phase(&prok)
 
-      expect(OmniAuth.config.before_request_phase).to eq(prok)
+        expect(OmniAuth.config.before_request_phase).to eq(prok)
+      end
     end
   end
 
@@ -96,9 +110,11 @@ describe OmniAuth::Builder do
     it 'passes the block to the config' do
       prok = proc {}
 
-      OmniAuth::Builder.new(nil).before_callback_phase(&prok)
+      with_config_reset(:before_callback_phase) do
+        OmniAuth::Builder.new(nil).before_callback_phase(&prok)
 
-      expect(OmniAuth.config.before_callback_phase).to eq(prok)
+        expect(OmniAuth.config.before_callback_phase).to eq(prok)
+      end
     end
   end
 
@@ -126,5 +142,11 @@ describe OmniAuth::Builder do
 
       expect(app).to have_received(:call).with(env)
     end
+  end
+
+  def with_config_reset(option)
+    old_config = OmniAuth.config.send(option)
+    yield
+    OmniAuth.config.send("#{option}=", old_config)
   end
 end
