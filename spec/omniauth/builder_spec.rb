@@ -1,28 +1,6 @@
 require 'helper'
 
 describe OmniAuth::Builder do
-  describe '#initialize' do
-    let(:app) { lambda { |_env| [200, {}, []] } }
-    let(:prok) { proc {} }
-    let(:builder) { OmniAuth::Builder }
-
-    it 'calls original when rack 1.4' do
-      allow(Rack).to receive(:release).and_return('1.4.0')
-
-      expect(builder).to receive(:new).with(app, &prok).and_call_original
-
-      builder.new(app, &prok)
-    end
-
-    it 'calls original when rack 2' do
-      allow(Rack).to receive(:release).and_return('2.0.0')
-
-      expect(builder).to receive(:new).with(app, &prok).and_call_original
-
-      builder.new(app, &prok)
-    end
-  end
-
   describe '#provider' do
     it 'translates a symbol to a constant' do
       expect(OmniAuth::Strategies).to receive(:const_get).with('MyStrategy').and_return(Class.new)
