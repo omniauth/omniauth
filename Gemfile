@@ -20,7 +20,7 @@ group :test do
   gem 'rack-test'
   gem 'rest-client', '~> 2.0.0', :platforms => [:jruby_18]
   gem 'rspec', '~> 3.5.0'
-  gem 'rubocop', '>= 0.58.2', '< 0.70.0', :platforms => %i[ruby_20 ruby_21 ruby_22 ruby_23 ruby_24]
+  gem 'rubocop', '>= 0.58.2', '< 0.69.0', :platforms => %i[ruby_20 ruby_21 ruby_22 ruby_23 ruby_24]
   gem 'tins', '~> 1.13.0', :platforms => %i[jruby_18 jruby_19 ruby_19]
 end
 
