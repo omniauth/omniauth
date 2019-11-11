@@ -1,6 +1,20 @@
 require 'helper'
 
 describe OmniAuth::Builder do
+  describe '#initialize' do
+    let(:app) { lambda { |_env| [200, {}, []] } }
+    let(:prok) { proc {} }
+    let(:builder) { OmniAuth::Builder }
+
+    it 'calls original when rack 1.4' do
+      allow(Rack).to receive(:release).and_return('1.4.0')
+
+      expect(builder).to receive(:new).with(app).and_call_original
+
+      builder.new(app)
+    end
+  end
+
   describe '#provider' do
     it 'translates a symbol to a constant' do
       expect(OmniAuth::Strategies).to receive(:const_get).with('MyStrategy').and_return(Class.new)
@@ -45,6 +59,72 @@ describe OmniAuth::Builder do
 
       b.options :foo => 'bar'
       b.provider k
+    end
+  end
+
+  describe '#on_failure' do
+    it 'passes the block to the config' do
+      prok = proc {}
+
+      OmniAuth::Builder.new(nil).on_failure(&prok)
+
+      expect(OmniAuth.config.on_failure).to eq(prok)
+    end
+  end
+
+  describe '#before_options_phase' do
+    it 'passes the block to the config' do
+      prok = proc {}
+
+      OmniAuth::Builder.new(nil).before_options_phase(&prok)
+
+      expect(OmniAuth.config.before_options_phase).to eq(prok)
+    end
+  end
+
+  describe '#before_request_phase' do
+    it 'passes the block to the config' do
+      prok = proc {}
+
+      OmniAuth::Builder.new(nil).before_request_phase(&prok)
+
+      expect(OmniAuth.config.before_request_phase).to eq(prok)
+    end
+  end
+
+  describe '#before_callback_phase' do
+    it 'passes the block to the config' do
+      prok = proc {}
+
+      OmniAuth::Builder.new(nil).before_callback_phase(&prok)
+
+      expect(OmniAuth.config.before_callback_phase).to eq(prok)
+    end
+  end
+
+  describe '#configure' do
+    it 'passes the block to the config' do
+      prok = proc {}
+      allow(OmniAuth).to receive(:configure).and_call_original
+
+      OmniAuth::Builder.new(nil).configure(&prok)
+
+      expect(OmniAuth).to have_received(:configure) do |&block|
+        expect(block).to eq(prok)
+      end
+    end
+  end
+
+  describe '#call' do
+    it 'passes env to to_app.call' do
+      app = lambda { |_env| [200, {}, []] }
+      builder = OmniAuth::Builder.new(app)
+      env = {'REQUEST_METHOD' => 'GET', 'PATH_INFO' => '/some/path'}
+      allow(app).to receive(:call).and_call_original
+
+      builder.call(env)
+
+      expect(app).to have_received(:call).with(env)
     end
   end
 end
