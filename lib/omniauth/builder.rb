@@ -11,14 +11,6 @@ module OmniAuth
       end
     end
 
-    def rack14?
-      Rack.release.start_with?('1.') && (Rack.release.split('.')[1].to_i >= 4)
-    end
-
-    def rack2?
-      Rack.release.start_with? '2.'
-    end
-
     def on_failure(&block)
       OmniAuth.config.on_failure = block
     end
@@ -62,6 +54,16 @@ module OmniAuth
 
     def call(env)
       to_app.call(env)
+    end
+
+  private
+
+    def rack14?
+      Rack.release.start_with?('1.') && (Rack.release.split('.')[1].to_i >= 4)
+    end
+
+    def rack2?
+      Rack.release.start_with? '2.'
     end
   end
 end
