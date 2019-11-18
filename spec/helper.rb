@@ -8,8 +8,7 @@ if RUBY_VERSION >= '1.9'
   ]
 
   SimpleCov.start do
-    add_filter '/spec/'
-    add_filter '/vendor/'
+    add_filter ['/spec/', '/vendor/', 'strategy_macros.rb']
     minimum_coverage(92.5)
   end
 end
