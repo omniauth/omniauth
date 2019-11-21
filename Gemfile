@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'jruby-openssl', '~> 0.9.19', :platforms => :jruby
 gem 'rake', '>= 12.0'
-gem 'yard', '>= 0.9.11'
+gem 'yard', '>= 0.9.20'
 
 group :development do
   gem 'benchmark-ips'
