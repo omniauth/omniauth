@@ -2,7 +2,7 @@
 
 [![Gem Version](http://img.shields.io/gem/v/omniauth.svg)][gem]
 [![Build Status](http://img.shields.io/travis/omniauth/omniauth.svg)][travis]
-[![Code Climate](http://img.shields.io/codeclimate/github/omniauth/omniauth.svg)][codeclimate]
+[![Maintainability](https://api.codeclimate.com/v1/badges/<CODE>/maintainability)](https://codeclimate.com/github/omniauth/omniauth/maintainability)
 [![Coverage Status](http://img.shields.io/coveralls/omniauth/omniauth.svg)][coveralls]
 [![Security](https://hakiri.io/github/omniauth/omniauth/master.svg)](https://hakiri.io/github/omniauth/omniauth/master)
 
