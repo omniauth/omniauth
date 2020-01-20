@@ -113,7 +113,7 @@ module OmniAuth
       end
     end
 
-    attr_reader :app, :env, :options, :response
+    attr_reader :app, :env, :options, :response, :session
 
     # Initializes the strategy by passing in the Rack endpoint,
     # the unique URL segment name for this strategy, and any
@@ -175,7 +175,7 @@ module OmniAuth
     #
     # @param env [Hash] The Rack environment.
     def call!(env) # rubocop:disable CyclomaticComplexity, PerceivedComplexity
-      unless env['rack.session']
+      if session_enabled? && !env['rack.session']
         error = OmniAuth::NoSessionError.new('You must provide a session to use OmniAuth.')
         raise(error)
       end
@@ -218,9 +218,9 @@ module OmniAuth
         request_phase
       else
         if request.params[options.origin_param]
-          env['rack.session']['omniauth.origin'] = request.params[options.origin_param]
+          session['omniauth.origin'] = request.params[options.origin_param]
         elsif env['HTTP_REFERER'] && !env['HTTP_REFERER'].match(/#{request_path}$/)
-          env['rack.session']['omniauth.origin'] = env['HTTP_REFERER']
+          session['omniauth.origin'] = env['HTTP_REFERER']
         end
 
         request_phase
@@ -447,9 +447,17 @@ module OmniAuth
     def script_name
       @env['SCRIPT_NAME'] || ''
     end
+      
+    def session_enabled?
+      OmniAuth.config.session
+    end
 
     def session
-      @env['rack.session']
+      if session_enabled?
+        @session = @env['rack.session']
+      else
+        @session ||= {}
+      end
     end
 
     def request
