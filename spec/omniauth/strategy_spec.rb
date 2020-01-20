@@ -305,7 +305,23 @@ describe OmniAuth::Strategy do
     end
 
     let(:strategy) { ExampleStrategy.new(app, @options || {}) }
-
+    
+    context 'session' do
+      context 'disabled' do
+        it 'is set on the request phase' do
+          @options = {:session => false}
+          expect { strategy.call(make_env('/auth/test', 'HTTP_REFERER' => 'http://example.com/origin')) }.to raise_error('Request Phase')
+          expect(strategy.last_env['rack.session']).to eq(nil)
+        end
+        
+        it 'is turned into an env variable on the callback phase' do
+          @options = {:session => false}
+          expect { strategy.call(make_env('/auth/test/callback', 'rack.session' => {'omniauth.origin' => 'http://example.com/origin'})) }.to raise_error('Callback Phase')
+          expect(strategy.last_env['omniauth.origin']).to eq(nil)
+        end
+      end
+    end
+    
     context 'omniauth.origin' do
       context 'disabled' do
         it 'does not set omniauth.origin' do
