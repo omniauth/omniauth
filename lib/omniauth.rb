@@ -42,7 +42,8 @@ module OmniAuth
         :test_mode => false,
         :logger => default_logger,
         :allowed_request_methods => %i[get post],
-        :mock_auth => {:default => AuthHash.new('provider' => 'default', 'uid' => '1234', 'info' => {'name' => 'Example User'})}
+        :mock_auth => {:default => AuthHash.new('provider' => 'default', 'uid' => '1234', 'info' => {'name' => 'Example User'})},
+        :session => true
       }
     end
 
@@ -112,7 +113,7 @@ module OmniAuth
     end
 
     attr_writer :on_failure, :before_callback_phase, :before_options_phase, :before_request_phase
-    attr_accessor :failure_raise_out_environments, :path_prefix, :allowed_request_methods, :form_css, :test_mode, :mock_auth, :full_host, :camelizations, :logger
+    attr_accessor :failure_raise_out_environments, :path_prefix, :allowed_request_methods, :form_css, :test_mode, :mock_auth, :full_host, :camelizations, :logger, :session
   end
 
   def self.config
