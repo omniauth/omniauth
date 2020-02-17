@@ -4,7 +4,6 @@
 [![Build Status](http://img.shields.io/travis/omniauth/omniauth.svg)][travis]
 [![Code Climate](http://img.shields.io/codeclimate/github/omniauth/omniauth.svg)][codeclimate]
 [![Coverage Status](http://img.shields.io/coveralls/omniauth/omniauth.svg)][coveralls]
-[![Security](https://hakiri.io/github/omniauth/omniauth/master.svg)](https://hakiri.io/github/omniauth/omniauth/master)
 
 [gem]: https://rubygems.org/gems/omniauth
 [travis]: http://travis-ci.org/omniauth/omniauth
