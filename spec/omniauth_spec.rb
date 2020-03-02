@@ -159,6 +159,11 @@ describe OmniAuth do
       it 'doesn\'t uppercase the first letter when passed false' do
         expect(OmniAuth::Utils.camelize('apple_jack', false)).to eq('appleJack')
       end
+
+      it 'replaces / with ::' do
+        expect(OmniAuth::Utils.camelize('apple_jack/cereal')).to eq('AppleJack::Cereal')
+        expect(OmniAuth::Utils.camelize('apple_jack/cereal', false)).to eq('appleJack::Cereal')
+      end
     end
   end
 end

@@ -88,7 +88,7 @@ describe OmniAuth::Strategy do
         '(test) Authentication failure! Some Issue encountered.'
       )
 
-      ExampleStrategy.new(app, :failure => "Some Issue").call(env)
+      ExampleStrategy.new(app, :failure => 'Some Issue').call(env)
     end
   end
 
