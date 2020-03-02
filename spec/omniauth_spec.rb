@@ -148,6 +148,10 @@ describe OmniAuth do
         OmniAuth.config.add_camelization('oauth', 'OAuth')
         expect(OmniAuth::Utils.camelize(:oauth)).to eq('OAuth')
       end
+
+      it 'doesn\'t uppercase the first letter when passed false' do
+        expect(OmniAuth::Utils.camelize('apple_jack', false)).to eq('appleJack')
+      end
     end
   end
 end

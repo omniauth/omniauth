@@ -159,7 +159,7 @@ module OmniAuth
       if first_letter_in_uppercase
         word.to_s.gsub(%r{/(.?)}) { '::' + Regexp.last_match[1].upcase }.gsub(/(^|_)(.)/) { Regexp.last_match[2].upcase }
       else
-        word.first + camelize(word)[1..-1]
+        camelize(word).tap { |w| w[0] = w[0].downcase }
       end
     end
   end
