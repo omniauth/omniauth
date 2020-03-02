@@ -242,7 +242,9 @@ describe OmniAuth::Strategy do
   describe '#redirect' do
     it 'uses javascript if :iframe is true' do
       response = ExampleStrategy.new(app, :iframe => true).redirect('http://abc.com')
-      expect(response.last.body.first).to be_include('top.location.href')
+      expected_body = "<script type='text/javascript' charset='utf-8'>top.location.href = 'http://abc.com';</script>"
+
+      expect(response.last).to include(expected_body)
     end
   end
 
@@ -653,8 +655,8 @@ describe OmniAuth::Strategy do
       end
 
       it 'maintains host and port' do
-        response = strategy.call(make_env('/auth/test', 'rack.url_scheme' => 'http', 'HTTP_HOST' => 'example.org', 'SERVER_PORT' => 3000))
-        expect(response[1]['Location']).to eq('http://example.org:3000/auth/test/callback')
+        response = strategy.call(make_env('/auth/test', 'rack.url_scheme' => 'http', 'SERVER_NAME' => 'example.org', 'SERVER_PORT' => 9292))
+        expect(response[1]['Location']).to eq('http://example.org:9292/auth/test/callback')
       end
 
       it 'maintains query string parameters' do
