@@ -45,7 +45,7 @@ class ExampleStrategy
 
   def request_phase
     options[:mutate_on_request].call(options) if options[:mutate_on_request]
-    @fail = fail!(options[:failure]) if options[:failure]
+    @fail = fail!(options[:failure], options[:failure_exception]) if options[:failure]
     @last_env = env
     return @fail if @fail
 
@@ -54,7 +54,7 @@ class ExampleStrategy
 
   def callback_phase
     options[:mutate_on_callback].call(options) if options[:mutate_on_callback]
-    @fail = fail!(options[:failure]) if options[:failure]
+    @fail = fail!(options[:failure], options[:failure_exception]) if options[:failure]
     @last_env = env
     return @fail if @fail
 

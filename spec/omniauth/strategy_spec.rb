@@ -32,6 +32,12 @@ describe OmniAuth::Strategy do
     end
   end
 
+  describe 'user_info' do
+    it 'should default to an empty hash' do
+      expect(fresh_strategy.new(app, :skip_info => true).user_info).to eq({})
+    end
+  end
+
   describe '.configure' do
     subject do
       c = Class.new
@@ -60,6 +66,29 @@ describe OmniAuth::Strategy do
       subject.configure :abc => {:def => 123}
       subject.configure :abc => {:hgi => 456}
       expect(subject.default_options['abc']).to eq('def' => 123, 'hgi' => 456)
+    end
+  end
+
+  describe '#fail!' do
+    it 'provides exception information when one is provided' do
+      env = make_env
+      exception = RuntimeError.new('No session!')
+
+      expect(OmniAuth.logger).to receive(:error).with(
+        "(test) Authentication failure! failed: #{exception.class}, #{exception.message}"
+      )
+
+      ExampleStrategy.new(app, :failure => :failed, :failure_exception => exception).call(env)
+    end
+
+    it 'provides a generic message when not provided an exception' do
+      env = make_env
+
+      expect(OmniAuth.logger).to receive(:error).with(
+        '(test) Authentication failure! Some Issue encountered.'
+      )
+
+      ExampleStrategy.new(app, :failure => "Some Issue").call(env)
     end
   end
 
