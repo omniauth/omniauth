@@ -173,19 +173,25 @@ describe OmniAuth::Strategy do
     end
     let(:instance) { subject.new(app) }
 
-    it 'calls through to uid and info' do
+    it 'calls through to uid, info, credentials, and extra' do
       expect(instance).to receive(:uid)
       expect(instance).to receive(:info)
+      expect(instance).to receive(:credentials).and_return(expires: true).once
+      expect(instance).to receive(:extra).and_return(something: 'else').once
       instance.auth_hash
     end
 
     it 'returns an AuthHash' do
       allow(instance).to receive(:uid).and_return('123')
       allow(instance).to receive(:info).and_return(:name => 'Hal Awesome')
+      allow(instance).to receive(:credentials).and_return(expires: true)
+      allow(instance).to receive(:extra).and_return(something: 'else')
       hash = instance.auth_hash
       expect(hash).to be_kind_of(OmniAuth::AuthHash)
       expect(hash.uid).to eq('123')
       expect(hash.info.name).to eq('Hal Awesome')
+      expect(hash.credentials.expires).to eq(true)
+      expect(hash.extra.something).to eq('else')
     end
   end
 

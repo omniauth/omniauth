@@ -347,8 +347,8 @@ module OmniAuth
     def auth_hash
       hash = AuthHash.new(:provider => name, :uid => uid)
       hash.info = info unless skip_info?
-      hash.credentials = credentials if credentials
-      hash.extra = extra if extra
+      (credentials_data = credentials) && hash.credentials = credentials_data
+      (extra_data = extra) && hash.extra = extra_data
       hash
     end
 
