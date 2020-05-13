@@ -1,4 +1,22 @@
+AllCops:
+  TargetRubyVersion: 2.2
+
+Layout/AccessModifierIndentation:
+  EnforcedStyle: outdent
+
+Layout/AlignHash:
+  Enabled: false
+
+Layout/DotPosition:
+  EnforcedStyle: trailing
+
+Layout/SpaceInsideHashLiteralBraces:
+  EnforcedStyle: no_space
+
 Lint/HandleExceptions:
+  Enabled: false
+
+Metrics/BlockLength:
   Enabled: false
 
 Metrics/BlockNesting:
@@ -16,8 +34,8 @@ Metrics/ParameterLists:
   Max: 4
   CountKeywordArgs: true
 
-Style/AccessModifierIndentation:
-  EnforcedStyle: outdent
+Metrics/AbcSize:
+  Enabled: false
 
 Style/CollectionMethods:
   PreferredMethods:
@@ -29,9 +47,6 @@ Style/CollectionMethods:
 Style/Documentation:
   Enabled: false
 
-Style/DotPosition:
-  EnforcedStyle: trailing
-
 Style/DoubleNegation:
   Enabled: false
 
@@ -39,6 +54,9 @@ Style/EachWithObject:
   Enabled: false
 
 Style/Encoding:
+  Enabled: false
+
+Style/ExpandPathArguments:
   Enabled: false
 
 Style/HashSyntax:
@@ -49,9 +67,3 @@ Style/Lambda:
 
 Style/RaiseArgs:
   EnforcedStyle: compact
-
-Style/SpaceInsideHashLiteralBraces:
-  EnforcedStyle: no_space
-
-Style/TrailingComma:
-  EnforcedStyleForMultiline: 'comma'

@@ -41,8 +41,8 @@ module OmniAuth
         :form_css => Form::DEFAULT_CSS,
         :test_mode => false,
         :logger => default_logger,
-        :allowed_request_methods => [:get, :post],
-        :mock_auth => {:default => AuthHash.new('provider' => 'default', 'uid' => '1234', 'info' => {'name' => 'Example User'})},
+        :allowed_request_methods => %i[get post],
+        :mock_auth => {:default => AuthHash.new('provider' => 'default', 'uid' => '1234', 'info' => {'name' => 'Example User'})}
       }
     end
 
@@ -82,19 +82,15 @@ module OmniAuth
       end
     end
 
-    def add_mock(provider, mock = {})
-      # Stringify keys recursively one level.
-      mock.keys.each do |key|
-        mock[key.to_s] = mock.delete(key)
-      end
-      mock.each_pair do |_key, val|
-        if val.is_a? Hash
-          val.keys.each do |subkey|
-            val[subkey.to_s] = val.delete(subkey)
-          end
-        else
-          next
-        end
+    def add_mock(provider, original = {})
+      # Create key-stringified new hash from given auth hash
+      mock = {}
+      original.each_pair do |key, val|
+        mock[key.to_s] = if val.is_a? Hash
+                           Hash[val.each_pair { |k, v| [k.to_s, v] }]
+                         else
+                           val
+                         end
       end
 
       # Merge with the default mock and ensure provider is correct.
@@ -136,7 +132,7 @@ module OmniAuth
   end
 
   module Utils
-    module_function
+  module_function # rubocop:disable Layout/IndentationWidth
 
     def form_css
       "<style type='text/css'>#{OmniAuth.config.form_css}</style>"
@@ -145,7 +141,7 @@ module OmniAuth
     def deep_merge(hash, other_hash)
       target = hash.dup
 
-      other_hash.keys.each do |key|
+      other_hash.each_key do |key|
         if other_hash[key].is_a?(::Hash) && hash[key].is_a?(::Hash)
           target[key] = deep_merge(target[key], other_hash[key])
           next
@@ -161,7 +157,7 @@ module OmniAuth
       return OmniAuth.config.camelizations[word.to_s] if OmniAuth.config.camelizations[word.to_s]
 
       if first_letter_in_uppercase
-        word.to_s.gsub(/\/(.?)/) { '::' + Regexp.last_match[1].upcase }.gsub(/(^|_)(.)/) { Regexp.last_match[2].upcase }
+        word.to_s.gsub(%r{/(.?)}) { '::' + Regexp.last_match[1].upcase }.gsub(/(^|_)(.)/) { Regexp.last_match[2].upcase }
       else
         word.first + camelize(word)[1..-1]
       end

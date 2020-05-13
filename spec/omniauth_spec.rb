@@ -90,7 +90,10 @@ describe OmniAuth do
 
     describe 'mock auth' do
       before do
-        OmniAuth.config.add_mock(:facebook, :uid => '12345', :info => {:name => 'Joe', :email => 'joe@example.com'})
+        @auth_hash = {:uid => '12345', :info => {:name => 'Joe', :email => 'joe@example.com'}}
+        @original_auth_hash = @auth_hash.dup
+
+        OmniAuth.config.add_mock(:facebook, @auth_hash)
       end
       it 'default is AuthHash' do
         OmniAuth.configure do |config|
@@ -109,6 +112,11 @@ describe OmniAuth do
           expect(config.mock_auth[:facebook].info.email).to eq('joe@example.com')
         end
       end
+      it 'does not mutate given auth hash' do
+        OmniAuth.configure do
+          expect(@auth_hash).to eq @original_auth_hash
+        end
+      end
     end
   end
 
@@ -122,7 +130,7 @@ describe OmniAuth do
   describe '::Utils' do
     describe '.deep_merge' do
       it 'combines hashes' do
-        expect(OmniAuth::Utils.deep_merge({'abc' => {'def' => 123}}, {'abc' => {'foo' => 'bar'}})).to eq('abc' => {'def' => 123, 'foo' => 'bar'})
+        expect(OmniAuth::Utils.deep_merge({'abc' => {'def' => 123}}, 'abc' => {'foo' => 'bar'})).to eq('abc' => {'def' => 123, 'foo' => 'bar'})
       end
     end
 
@@ -132,7 +140,7 @@ describe OmniAuth do
           'some_word' => 'SomeWord',
           'AnotherWord' => 'AnotherWord',
           'one' => 'One',
-          'three_words_now' => 'ThreeWordsNow',
+          'three_words_now' => 'ThreeWordsNow'
         }.each_pair { |k, v| expect(OmniAuth::Utils.camelize(k)).to eq(v) }
       end
 

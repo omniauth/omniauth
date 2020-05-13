@@ -1,33 +1,27 @@
 source 'https://rubygems.org'
 
-gem 'jruby-openssl', :platforms => :jruby
-gem 'rake'
-gem 'yard'
+gem 'jruby-openssl', '~> 0.9.19', :platforms => :jruby
+gem 'rake', '>= 12.0'
+gem 'yard', '>= 0.9.11'
 
 group :development do
-  gem 'growl'
-  platforms :ruby_19, :ruby_20 do
-    gem 'guard'
-    gem 'guard-bundler'
-    gem 'guard-rspec'
-  end
+  gem 'benchmark-ips'
   gem 'kramdown'
-  gem 'plymouth', :platforms => [:ruby_19, :ruby_20, :ruby_21]
+  gem 'memory_profiler'
   gem 'pry'
-  gem 'pry-debugger', :platforms => [:mri_19, :mri_20]
-  gem 'pry-byebug', :platforms => [:mri_21]
-  gem 'rb-fsevent'
 end
 
 group :test do
-  gem 'coveralls'
-  gem 'json', '>= 1.8.1', :platforms => [:jruby, :ruby_18, :ruby_19]
-  gem 'mime-types', '~> 1.25', :platforms => [:jruby, :ruby_18]
+  gem 'coveralls', :require => false
+  gem 'hashie', '>= 3.4.6', '~> 4.0.0', :platforms => [:jruby_18]
+  gem 'json', '~> 2.0.3', :platforms => %i[jruby_18 jruby_19 ruby_19]
+  gem 'mime-types', '~> 3.1', :platforms => [:jruby_18]
+  gem 'rack', '>= 2.0.6', :platforms => %i[jruby_18 jruby_19 ruby_19 ruby_20 ruby_21]
   gem 'rack-test'
-  gem 'rest-client', '~> 1.6.0', :platforms => [:jruby, :ruby_18]
-  gem 'rspec', '~> 3.0'
-  gem 'rubocop', '>= 0.25', :platforms => [:ruby_19, :ruby_20, :ruby_21]
-  gem 'simplecov', '>= 0.9'
+  gem 'rest-client', '~> 2.0.0', :platforms => [:jruby_18]
+  gem 'rspec', '~> 3.5.0'
+  gem 'rubocop', '>= 0.58.2', '< 0.69.0', :platforms => %i[ruby_20 ruby_21 ruby_22 ruby_23 ruby_24]
+  gem 'tins', '~> 1.13.0', :platforms => %i[jruby_18 jruby_19 ruby_19]
 end
 
 gemspec

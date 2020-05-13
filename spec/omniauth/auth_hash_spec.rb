@@ -8,6 +8,11 @@ describe OmniAuth::AuthHash do
     expect(subject.info.first_name).to eq('Awesome')
   end
 
+  it 'does not try to parse `string` as InfoHash' do
+    subject.weird_field = {:info => 'string'}
+    expect(subject.weird_field.info).to eq 'string'
+  end
+
   describe '#valid?' do
     subject { OmniAuth::AuthHash.new(:uid => '123', :provider => 'example', :info => {:name => 'Steven'}) }
 
@@ -38,7 +43,7 @@ describe OmniAuth::AuthHash do
                                :first_name => 'Phillip',
                                :last_name => 'Fry',
                                :nickname => 'meatbag',
-                               :email => 'fry@planetexpress.com',
+                               :email => 'fry@planetexpress.com'
                              })
     end
 
@@ -59,13 +64,13 @@ describe OmniAuth::AuthHash do
 
     it 'displays the nickname if no name, first, or last is available' do
       subject.info.name = nil
-      %w(first_name last_name).each { |k| subject.info[k] = nil }
+      %w[first_name last_name].each { |k| subject.info[k] = nil }
       expect(subject.info.name).to eq('meatbag')
     end
 
     it 'displays the email if no name, first, last, or nick is available' do
       subject.info.name = nil
-      %w(first_name last_name nickname).each { |k| subject.info[k] = nil }
+      %w[first_name last_name nickname].each { |k| subject.info[k] = nil }
       expect(subject.info.name).to eq('fry@planetexpress.com')
     end
   end
@@ -103,6 +108,26 @@ describe OmniAuth::AuthHash do
     describe '#valid?' do
       it 'is valid if there is a name' do
         expect(OmniAuth::AuthHash::InfoHash.new(:name => 'Awesome')).to be_valid
+      end
+    end
+
+    require 'hashie/version'
+    if Gem::Version.new(Hashie::VERSION) >= Gem::Version.new('3.5.1')
+      context 'with Hashie 3.5.1+' do
+        around(:each) do |example|
+          original_logger = Hashie.logger
+          example.run
+          Hashie.logger = original_logger
+        end
+
+        it 'does not log anything in Hashie 3.5.1+' do
+          logger = double('Logger')
+          expect(logger).not_to receive(:warn)
+
+          Hashie.logger = logger
+
+          subject.name = 'test'
+        end
       end
     end
   end

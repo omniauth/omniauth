@@ -2,11 +2,15 @@ if RUBY_VERSION >= '1.9'
   require 'simplecov'
   require 'coveralls'
 
-  SimpleCov.formatters = [SimpleCov::Formatter::HTMLFormatter, Coveralls::SimpleCov::Formatter]
+  SimpleCov.formatters = [
+    SimpleCov::Formatter::HTMLFormatter,
+    Coveralls::SimpleCov::Formatter
+  ]
 
   SimpleCov.start do
-    add_filter '/spec'
-    minimum_coverage(93.05)
+    add_filter ['/spec/', '/vendor/', 'strategy_macros.rb']
+    minimum_coverage(92.5)
+    maximum_coverage_drop(0.05)
   end
 end
 
@@ -31,7 +35,7 @@ class ExampleStrategy
   option :name, 'test'
 
   def call(env)
-    self.call!(env)
+    options[:dup] ? super : call!(env)
   end
 
   def initialize(*args, &block)
@@ -40,16 +44,20 @@ class ExampleStrategy
   end
 
   def request_phase
+    options[:mutate_on_request].call(options) if options[:mutate_on_request]
     @fail = fail!(options[:failure]) if options[:failure]
     @last_env = env
     return @fail if @fail
-    fail('Request Phase')
+
+    raise('Request Phase')
   end
 
   def callback_phase
+    options[:mutate_on_callback].call(options) if options[:mutate_on_callback]
     @fail = fail!(options[:failure]) if options[:failure]
     @last_env = env
     return @fail if @fail
-    fail('Callback Phase')
+
+    raise('Callback Phase')
   end
 end

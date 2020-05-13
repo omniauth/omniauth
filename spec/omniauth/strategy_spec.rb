@@ -5,7 +5,7 @@ def make_env(path = '/auth/test', props = {})
     'REQUEST_METHOD' => 'GET',
     'PATH_INFO' => path,
     'rack.session' => {},
-    'rack.input' => StringIO.new('test=true'),
+    'rack.input' => StringIO.new('test=true')
   }.merge(props)
 end
 
@@ -106,18 +106,18 @@ describe OmniAuth::Strategy do
     end
 
     it 'sets args to the specified argument if there is one' do
-      subject.args [:abc, :def]
-      expect(subject.args).to eq([:abc, :def])
+      subject.args %i[abc def]
+      expect(subject.args).to eq(%i[abc def])
     end
 
     it 'is inheritable' do
-      subject.args [:abc, :def]
+      subject.args %i[abc def]
       c = Class.new(subject)
-      expect(c.args).to eq([:abc, :def])
+      expect(c.args).to eq(%i[abc def])
     end
 
     it 'accepts corresponding options as default arg values' do
-      subject.args [:a, :b]
+      subject.args %i[a b]
       subject.option :a, '1'
       subject.option :b, '2'
 
@@ -130,7 +130,7 @@ describe OmniAuth::Strategy do
 
   context 'fetcher procs' do
     subject { fresh_strategy }
-    %w(uid info credentials extra).each do |fetcher|
+    %w[uid info credentials extra].each do |fetcher|
       describe ".#{fetcher}" do
         it 'sets and retrieve a proc' do
           proc = lambda { 'Hello' }
@@ -143,7 +143,7 @@ describe OmniAuth::Strategy do
 
   context 'fetcher stacks' do
     subject { fresh_strategy }
-    %w(uid info credentials extra).each do |fetcher|
+    %w[uid info credentials extra].each do |fetcher|
       describe ".#{fetcher}_stack" do
         it 'is an array of called ancestral procs' do
           fetchy = proc { 'Hello' }
@@ -154,8 +154,8 @@ describe OmniAuth::Strategy do
     end
   end
 
-  %w(request_phase).each do |abstract_method|
-    context "#{abstract_method}" do
+  %w[request_phase].each do |abstract_method|
+    context abstract_method.to_s do
       it 'raises a NotImplementedError' do
         strat = Class.new
         strat.send :include, OmniAuth::Strategy
@@ -208,7 +208,7 @@ describe OmniAuth::Strategy do
       end
 
       it 'sets options based on the arguments if they are supplied' do
-        subject.args [:abc, :def]
+        subject.args %i[abc def]
         s = subject.new app, 123, 456
         expect(s.options[:abc]).to eq(123)
         expect(s.options[:def]).to eq(456)
@@ -224,6 +224,13 @@ describe OmniAuth::Strategy do
       expect(instance).to receive(:dup).and_return(instance)
       instance.call('rack.session' => {})
     end
+
+    it 'raises NoSessionError if rack.session isn\'t set' do
+      klass = Class.new
+      klass.send :include, OmniAuth::Strategy
+      instance = klass.new(app)
+      expect { instance.call({}) }.to raise_error(OmniAuth::NoSessionError)
+    end
   end
 
   describe '#inspect' do
@@ -235,7 +242,9 @@ describe OmniAuth::Strategy do
   describe '#redirect' do
     it 'uses javascript if :iframe is true' do
       response = ExampleStrategy.new(app, :iframe => true).redirect('http://abc.com')
-      expect(response.last.body.first).to be_include('top.location.href')
+      expected_body = "<script type='text/javascript' charset='utf-8'>top.location.href = 'http://abc.com';</script>"
+
+      expect(response.last).to include(expected_body)
     end
   end
 
@@ -277,7 +286,7 @@ describe OmniAuth::Strategy do
     end
   end
 
-  %w(info credentials extra).each do |fetcher|
+  %w[info credentials extra].each do |fetcher|
     subject { fresh_strategy }
     it "is the current class's proc call if one exists" do
       subject.send(fetcher) { {:abc => 123} }
@@ -300,44 +309,61 @@ describe OmniAuth::Strategy do
     let(:strategy) { ExampleStrategy.new(app, @options || {}) }
 
     context 'omniauth.origin' do
-      it 'is set on the request phase' do
-        expect { strategy.call(make_env('/auth/test', 'HTTP_REFERER' => 'http://example.com/origin')) }.to raise_error('Request Phase')
-        expect(strategy.last_env['rack.session']['omniauth.origin']).to eq('http://example.com/origin')
+      context 'disabled' do
+        it 'does not set omniauth.origin' do
+          @options = {:origin_param => false}
+          expect { strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'return=/foo')) }.to raise_error('Request Phase')
+          expect(strategy.last_env['rack.session']['omniauth.origin']).to eq(nil)
+        end
       end
 
-      it 'is turned into an env variable on the callback phase' do
-        expect { strategy.call(make_env('/auth/test/callback', 'rack.session' => {'omniauth.origin' => 'http://example.com/origin'})) }.to raise_error('Callback Phase')
-        expect(strategy.last_env['omniauth.origin']).to eq('http://example.com/origin')
+      context 'custom' do
+        it 'sets from a custom param' do
+          @options = {:origin_param => 'return'}
+          expect { strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'return=/foo')) }.to raise_error('Request Phase')
+          expect(strategy.last_env['rack.session']['omniauth.origin']).to eq('/foo')
+        end
       end
 
-      it 'sets from the params if provided' do
-        expect { strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'origin=/foo')) }.to raise_error('Request Phase')
-        expect(strategy.last_env['rack.session']['omniauth.origin']).to eq('/foo')
-      end
-
-      it 'is set on the failure env' do
-        expect(OmniAuth.config).to receive(:on_failure).and_return(lambda { |env| env })
-        @options = {:failure => :forced_fail}
-        strategy.call(make_env('/auth/test/callback', 'rack.session' => {'omniauth.origin' => '/awesome'}))
-      end
-
-      context 'with script_name' do
-        it 'is set on the request phase, containing full path' do
-          env = {'HTTP_REFERER' => 'http://example.com/sub_uri/origin', 'SCRIPT_NAME' => '/sub_uri'}
-          expect { strategy.call(make_env('/auth/test', env)) }.to raise_error('Request Phase')
-          expect(strategy.last_env['rack.session']['omniauth.origin']).to eq('http://example.com/sub_uri/origin')
+      context 'default flow' do
+        it 'is set on the request phase' do
+          expect { strategy.call(make_env('/auth/test', 'HTTP_REFERER' => 'http://example.com/origin')) }.to raise_error('Request Phase')
+          expect(strategy.last_env['rack.session']['omniauth.origin']).to eq('http://example.com/origin')
         end
 
-        it 'is turned into an env variable on the callback phase, containing full path' do
-          env = {
-            'rack.session' => {'omniauth.origin' => 'http://example.com/sub_uri/origin'},
-            'SCRIPT_NAME' => '/sub_uri',
-          }
-
-          expect { strategy.call(make_env('/auth/test/callback', env)) }.to raise_error('Callback Phase')
-          expect(strategy.last_env['omniauth.origin']).to eq('http://example.com/sub_uri/origin')
+        it 'is turned into an env variable on the callback phase' do
+          expect { strategy.call(make_env('/auth/test/callback', 'rack.session' => {'omniauth.origin' => 'http://example.com/origin'})) }.to raise_error('Callback Phase')
+          expect(strategy.last_env['omniauth.origin']).to eq('http://example.com/origin')
         end
 
+        it 'sets from the params if provided' do
+          expect { strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'origin=/foo')) }.to raise_error('Request Phase')
+          expect(strategy.last_env['rack.session']['omniauth.origin']).to eq('/foo')
+        end
+
+        it 'is set on the failure env' do
+          expect(OmniAuth.config).to receive(:on_failure).and_return(lambda { |env| env })
+          @options = {:failure => :forced_fail}
+          strategy.call(make_env('/auth/test/callback', 'rack.session' => {'omniauth.origin' => '/awesome'}))
+        end
+
+        context 'with script_name' do
+          it 'is set on the request phase, containing full path' do
+            env = {'HTTP_REFERER' => 'http://example.com/sub_uri/origin', 'SCRIPT_NAME' => '/sub_uri'}
+            expect { strategy.call(make_env('/auth/test', env)) }.to raise_error('Request Phase')
+            expect(strategy.last_env['rack.session']['omniauth.origin']).to eq('http://example.com/sub_uri/origin')
+          end
+
+          it 'is turned into an env variable on the callback phase, containing full path' do
+            env = {
+              'rack.session' => {'omniauth.origin' => 'http://example.com/sub_uri/origin'},
+              'SCRIPT_NAME' => '/sub_uri'
+            }
+
+            expect { strategy.call(make_env('/auth/test/callback', env)) }.to raise_error('Callback Phase')
+            expect(strategy.last_env['omniauth.origin']).to eq('http://example.com/sub_uri/origin')
+          end
+        end
       end
     end
 
@@ -511,7 +537,7 @@ describe OmniAuth::Strategy do
       end
 
       after do
-        OmniAuth.config.allowed_request_methods = [:get, :post]
+        OmniAuth.config.allowed_request_methods = %i[get post]
       end
     end
 
@@ -544,6 +570,44 @@ describe OmniAuth::Strategy do
       end
     end
 
+    context 'options mutation' do
+      before do
+        @options = {:dup => true}
+      end
+
+      context 'in request phase' do
+        it 'does not affect original options' do
+          @options[:test_option] = true
+          @options[:mutate_on_request] = proc { |options| options.delete(:test_option) }
+          expect { strategy.call(make_env) }.to raise_error('Request Phase')
+          expect(strategy.options).to have_key(:test_option)
+        end
+
+        it 'does not affect deep options' do
+          @options[:deep_option] = {:test_option => true}
+          @options[:mutate_on_request] = proc { |options| options[:deep_option].delete(:test_option) }
+          expect { strategy.call(make_env) }.to raise_error('Request Phase')
+          expect(strategy.options[:deep_option]).to have_key(:test_option)
+        end
+      end
+
+      context 'in callback phase' do
+        it 'does not affect original options' do
+          @options[:test_option] = true
+          @options[:mutate_on_callback] = proc { |options| options.delete(:test_option) }
+          expect { strategy.call(make_env('/auth/test/callback', 'REQUEST_METHOD' => 'POST')) }.to raise_error('Callback Phase')
+          expect(strategy.options).to have_key(:test_option)
+        end
+
+        it 'does not affect deep options' do
+          @options[:deep_option] = {:test_option => true}
+          @options[:mutate_on_callback] = proc { |options| options[:deep_option].delete(:test_option) }
+          expect { strategy.call(make_env('/auth/test/callback', 'REQUEST_METHOD' => 'POST')) }.to raise_error('Callback Phase')
+          expect(strategy.options[:deep_option]).to have_key(:test_option)
+        end
+      end
+    end
+
     context 'test mode' do
       let(:app) do
         # In test mode, the underlying app shouldn't be called on request phase.
@@ -558,6 +622,11 @@ describe OmniAuth::Strategy do
         response = strategy.call(make_env)
         expect(response[0]).to eq(302)
         expect(response[1]['Location']).to eq('/auth/test/callback')
+      end
+
+      it "doesn't short circuit the request if request method is not allowed" do
+        response = strategy.call(make_env('/auth/test', 'REQUEST_METHOD' => 'DELETE'))
+        expect(response[0]).to eq(404)
       end
 
       it 'is case insensitive on request path' do
@@ -586,8 +655,8 @@ describe OmniAuth::Strategy do
       end
 
       it 'maintains host and port' do
-        response = strategy.call(make_env('/auth/test', 'rack.url_scheme' => 'http', 'HTTP_HOST' => 'example.org', 'SERVER_PORT' => 3000))
-        expect(response[1]['Location']).to eq('http://example.org:3000/auth/test/callback')
+        response = strategy.call(make_env('/auth/test', 'rack.url_scheme' => 'http', 'SERVER_NAME' => 'example.org', 'SERVER_PORT' => 9292))
+        expect(response[1]['Location']).to eq('http://example.org:9292/auth/test/callback')
       end
 
       it 'maintains query string parameters' do
@@ -608,7 +677,7 @@ describe OmniAuth::Strategy do
 
       it 'responds with a provider-specific hash if one is set' do
         OmniAuth.config.mock_auth[:test] = {
-          'uid' => 'abc',
+          'uid' => 'abc'
         }
 
         strategy.call make_env('/auth/test/callback')
@@ -622,14 +691,34 @@ describe OmniAuth::Strategy do
         expect(strategy.env['omniauth.error.type']).to eq(:invalid_credentials)
       end
 
-      it 'sets omniauth.origin on the request phase' do
-        strategy.call(make_env('/auth/test', 'HTTP_REFERER' => 'http://example.com/origin'))
-        expect(strategy.env['rack.session']['omniauth.origin']).to eq('http://example.com/origin')
-      end
+      context 'omniauth.origin' do
+        context 'disabled' do
+          it 'does not set omniauth.origin' do
+            @options = {:origin_param => false}
+            strategy.call(make_env('/auth/test', 'HTTP_REFERER' => 'http://example.com/origin'))
+            expect(strategy.env['rack.session']['omniauth.origin']).to be_nil
+          end
+        end
 
-      it 'sets omniauth.origin from the params if provided' do
-        strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'origin=/foo'))
-        expect(strategy.env['rack.session']['omniauth.origin']).to eq('/foo')
+        context 'default flow' do
+          it 'sets omniauth.origin to the HTTP_REFERER on the request phase by default' do
+            strategy.call(make_env('/auth/test', 'HTTP_REFERER' => 'http://example.com/origin'))
+            expect(strategy.env['rack.session']['omniauth.origin']).to eq('http://example.com/origin')
+          end
+
+          it 'sets omniauth.origin from the params if provided' do
+            strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'origin=/foo'))
+            expect(strategy.env['rack.session']['omniauth.origin']).to eq('/foo')
+          end
+        end
+
+        context 'custom' do
+          it 'sets omniauth.origin from a custom param' do
+            @options = {:origin_param => 'return'}
+            strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'return=/foo'))
+            expect(strategy.env['rack.session']['omniauth.origin']).to eq('/foo')
+          end
+        end
       end
 
       it 'turns omniauth.origin into an env variable on the callback phase' do
@@ -648,11 +737,22 @@ describe OmniAuth::Strategy do
         expect(strategy.env['foobar']).to eq('baz')
       end
 
-      it 'sets omniauth.params on the request phase' do
+      it 'sets omniauth.params with query params on the request phase' do
         OmniAuth.config.mock_auth[:test] = {}
 
         strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'foo=bar'))
         expect(strategy.env['rack.session']['omniauth.params']).to eq('foo' => 'bar')
+      end
+
+      it 'does not set body parameters of POST request on the request phase' do
+        OmniAuth.config.mock_auth[:test] = {}
+
+        props = {
+          'REQUEST_METHOD' => 'POST',
+          'rack.input' => StringIO.new('foo=bar')
+        }
+        strategy.call(make_env('/auth/test', props))
+        expect(strategy.env['rack.session']['omniauth.params']).to eq({})
       end
 
       it 'executes request hook on the request phase' do

@@ -1,5 +1,5 @@
 module OmniAuth
-  class Form # rubocop:disable ClassLength
+  class Form
     DEFAULT_CSS = File.read(File.expand_path('../form.css', __FILE__))
 
     attr_accessor :options
@@ -82,6 +82,7 @@ module OmniAuth
 
     def footer
       return self if @footer
+
       @html << "\n<button type='submit'>Connect</button>" unless @with_custom_button
       @html << <<-HTML
       </form>

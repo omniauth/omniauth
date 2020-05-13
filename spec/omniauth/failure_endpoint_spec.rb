@@ -34,24 +34,24 @@ describe OmniAuth::FailureEndpoint do
     end
 
     it 'is a redirect' do
-      status, _, _ = *subject.call(env)
+      status, = *subject.call(env)
       expect(status).to eq(302)
     end
 
     it 'includes the SCRIPT_NAME' do
-      _, head, _ = *subject.call(env.merge('SCRIPT_NAME' => '/random'))
+      _, head, = *subject.call(env.merge('SCRIPT_NAME' => '/random'))
       expect(head['Location']).to eq('/random/auth/failure?message=invalid_request&strategy=test')
     end
 
     it 'respects the configured path prefix' do
       allow(OmniAuth.config).to receive(:path_prefix).and_return('/boo')
-      _, head, _ = *subject.call(env)
+      _, head, = *subject.call(env)
       expect(head['Location']).to eq('/boo/failure?message=invalid_request&strategy=test')
     end
 
     it 'includes the origin (escaped) if one is provided' do
-      env.merge! 'omniauth.origin' => '/origin-example'
-      _, head, _ = *subject.call(env)
+      env['omniauth.origin'] = '/origin-example'
+      _, head, = *subject.call(env)
       expect(head['Location']).to be_include('&origin=%2Forigin-example')
     end
   end

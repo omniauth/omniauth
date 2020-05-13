@@ -1,20 +1,5 @@
 module OmniAuth
   class Builder < ::Rack::Builder
-    def initialize(app, &block)
-      @options = nil
-      if rack14?
-        super
-      else
-        @app = app
-        super(&block)
-        @ins << @app
-      end
-    end
-
-    def rack14?
-      Rack.release.split('.')[1].to_i >= 4
-    end
-
     def on_failure(&block)
       OmniAuth.config.on_failure = block
     end
@@ -36,7 +21,8 @@ module OmniAuth
     end
 
     def options(options = false)
-      return @options || {} if options == false
+      return @options ||= {} if options == false
+
       @options = options
     end
 
@@ -45,7 +31,7 @@ module OmniAuth
         middleware = klass
       else
         begin
-          middleware = OmniAuth::Strategies.const_get("#{OmniAuth::Utils.camelize(klass.to_s)}")
+          middleware = OmniAuth::Strategies.const_get(OmniAuth::Utils.camelize(klass.to_s).to_s)
         rescue NameError
           raise(LoadError.new("Could not find matching strategy for #{klass.inspect}. You may need to install an additional gem (such as omniauth-#{klass})."))
         end
