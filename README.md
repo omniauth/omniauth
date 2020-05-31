@@ -86,7 +86,7 @@ steps are necessary for your application. For example, in a Rails app I
 would add a line in my `routes.rb` file like this:
 
 ```ruby
-get '/auth/:provider/callback', to: 'sessions#create'
+post '/auth/:provider/callback', to: 'sessions#create'
 ```
 
 And I might then have a `SessionsController` with code that looks
@@ -94,6 +94,8 @@ something like this:
 
 ```ruby
 class SessionsController < ApplicationController
+  skip_before_action :verify_authenticity_token, only: :create unless Rails.env.production?
+
   def create
     @user = User.find_or_create_from_auth_hash(auth_hash)
     self.current_user = @user
