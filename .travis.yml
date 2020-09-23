@@ -24,5 +24,6 @@ matrix:
   allow_failures:
     - rvm: jruby-head
     - rvm: ruby-head
+    - rvm: truffleruby-head
   fast_finish: true
 sudo: false
