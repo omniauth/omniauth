@@ -19,9 +19,11 @@ rvm:
   - 2.7.1
   - jruby-head
   - ruby-head
+  - truffleruby-head
 matrix:
   allow_failures:
     - rvm: jruby-head
     - rvm: ruby-head
+    - rvm: truffleruby-head
   fast_finish: true
 sudo: false
