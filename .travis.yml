@@ -10,15 +10,6 @@ env:
     - JRUBY_OPTS="$JRUBY_OPTS --debug"
 language: ruby
 rvm:
-  - jruby-9000
-  - 2.2.9
-  - 2.3.5
-  - 2.4.4
-  - 2.5.3
-  - 2.6.6
-  - 2.7.1
-  - jruby-head
-  - ruby-head
   - truffleruby-head
 matrix:
   allow_failures:
