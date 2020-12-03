@@ -24,6 +24,7 @@ require 'omniauth'
 require 'omniauth/test'
 
 OmniAuth.config.logger = Logger.new('/dev/null')
+OmniAuth.config.request_validation_phase = nil
 
 RSpec.configure do |config|
   config.include Rack::Test::Methods

@@ -2,7 +2,7 @@ require 'helper'
 
 def make_env(path = '/auth/test', props = {})
   {
-    'REQUEST_METHOD' => 'GET',
+    'REQUEST_METHOD' => 'POST',
     'PATH_INFO' => path,
     'rack.session' => {},
     'rack.input' => StringIO.new('test=true')
@@ -524,20 +524,20 @@ describe OmniAuth::Strategy do
     end
 
     context 'request method restriction' do
-      before do
-        OmniAuth.config.allowed_request_methods = [:post]
+      before(:context) do
+        OmniAuth.config.allowed_request_methods = %i[put post]
       end
 
       it 'does not allow a request method of the wrong type' do
-        expect { strategy.call(make_env) }.not_to raise_error
+        expect { strategy.call(make_env('/auth/test', 'REQUEST_METHOD' => 'GET')) }.not_to raise_error
       end
 
       it 'allows a request method of the correct type' do
-        expect { strategy.call(make_env('/auth/test', 'REQUEST_METHOD' => 'POST')) }.to raise_error('Request Phase')
+        expect { strategy.call(make_env('/auth/test')) }.to raise_error('Request Phase')
       end
 
-      after do
-        OmniAuth.config.allowed_request_methods = %i[get post]
+      after(:context) do
+        OmniAuth.config.allowed_request_methods = %i[post]
       end
     end
 
@@ -548,7 +548,7 @@ describe OmniAuth::Strategy do
         end
 
         it 'sets the Allow header properly' do
-          expect(response[1]['Allow']).to eq('GET, POST')
+          expect(response[1]['Allow']).to eq('POST')
         end
       end
 
@@ -807,6 +807,50 @@ describe OmniAuth::Strategy do
       after do
         OmniAuth.config.full_host = nil
         OmniAuth.config.test_mode = false
+      end
+    end
+
+    context 'authenticity validation' do
+      let(:app) { lambda { |_env| [200, {}, ['reached our target']] } }
+      let(:strategy) { ExampleStrategy.new(app, :request_path => '/auth/test') }
+      before do
+        OmniAuth.config.request_validation_phase = OmniAuth::AuthenticityTokenProtection
+      end
+
+      context 'with default POST only request methods' do
+        let!(:csrf_token) { SecureRandom.base64(32) }
+        let(:escaped_token) { URI.encode_www_form_component(csrf_token, Encoding::UTF_8) }
+
+        it 'allows a request with matching authenticity_token' do
+          post_env = make_env('/auth/test', 'rack.session' => {:csrf => csrf_token}, 'rack.input' => StringIO.new("authenticity_token=#{escaped_token}"))
+          expect { strategy.call(post_env) }.to raise_error('Request Phase')
+        end
+
+        it 'does not allow a request without a matching authenticity token' do
+          post_env = make_env('/auth/test', 'rack.input' => StringIO.new("authenticity_token=#{escaped_token}"))
+          expect(strategy.call(post_env)[0]).to eq(302)
+          expect(strategy.call(post_env)[2]).to eq(['302 Moved'])
+        end
+      end
+
+      context 'with allowed GET' do
+        before(:context) do
+          @old_allowed_request_methods = OmniAuth.config.allowed_request_methods
+          OmniAuth.config.allowed_request_methods = %i[post get]
+        end
+
+        it 'allows a request without authenticity token' do
+          get_env = make_env('/auth/test', 'REQUEST_METHOD' => 'GET')
+          expect { strategy.call(get_env) }.to raise_error('Request Phase')
+        end
+
+        after(:context) do
+          OmniAuth.config.allowed_request_methods = @old_allowed_request_methods
+        end
+      end
+
+      after do
+        OmniAuth.config.request_validation_phase = nil
       end
     end
   end

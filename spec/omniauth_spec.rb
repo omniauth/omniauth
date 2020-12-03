@@ -26,20 +26,22 @@ describe OmniAuth do
     end
 
     before do
-      @old_path_prefix           = OmniAuth.config.path_prefix
-      @old_on_failure            = OmniAuth.config.on_failure
-      @old_before_callback_phase = OmniAuth.config.before_callback_phase
-      @old_before_options_phase  = OmniAuth.config.before_options_phase
-      @old_before_request_phase  = OmniAuth.config.before_request_phase
+      @old_path_prefix              = OmniAuth.config.path_prefix
+      @old_on_failure               = OmniAuth.config.on_failure
+      @old_before_callback_phase    = OmniAuth.config.before_callback_phase
+      @old_before_options_phase     = OmniAuth.config.before_options_phase
+      @old_before_request_phase     = OmniAuth.config.before_request_phase
+      @old_request_validation_phase = OmniAuth.config.request_validation_phase
     end
 
     after do
       OmniAuth.configure do |config|
-        config.path_prefix           = @old_path_prefix
-        config.on_failure            = @old_on_failure
-        config.before_callback_phase = @old_before_callback_phase
-        config.before_options_phase  = @old_before_options_phase
-        config.before_request_phase  = @old_before_request_phase
+        config.path_prefix              = @old_path_prefix
+        config.on_failure               = @old_on_failure
+        config.before_callback_phase    = @old_before_callback_phase
+        config.before_options_phase     = @old_before_options_phase
+        config.before_request_phase     = @old_before_request_phase
+        config.request_validation_phase = @old_request_validation_phase
       end
     end
 
@@ -86,6 +88,15 @@ describe OmniAuth do
         end
       end
       expect(OmniAuth.config.before_callback_phase.call).to eq('heyhey')
+    end
+
+    it 'is able to set request_validation_phase' do
+      OmniAuth.configure do |config|
+        config.request_validation_phase do
+          'validated'
+        end
+      end
+      expect(OmniAuth.config.request_validation_phase.call).to eq('validated')
     end
 
     describe 'mock auth' do

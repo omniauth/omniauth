@@ -180,6 +180,8 @@ module OmniAuth
         raise(error)
       end
 
+      warn_if_using_get
+
       @env = env
       @env['omniauth.strategy'] = self if on_auth_path?
 
@@ -190,6 +192,25 @@ module OmniAuth
       return other_phase if respond_to?(:other_phase)
 
       @app.call(env)
+    end
+
+    def warn_if_using_get
+      return unless OmniAuth.config.allowed_request_methods.include?(:get)
+      return if OmniAuth.config.silence_get_warning
+
+      log :warn, <<-WARN
+  You are using GET as an allowed request method for OmniAuth. This may leave
+  you open to CSRF attacks. As of v2.0.0, OmniAuth by default allows only POST
+  to its own routes. You should review the following resources to guide your
+  mitigation:
+  https://github.com/omniauth/omniauth/wiki/Resolving-CVE-2015-9284
+  https://github.com/omniauth/omniauth/issues/960
+  https://nvd.nist.gov/vuln/detail/CVE-2015-9284
+  https://github.com/omniauth/omniauth/pull/809
+
+  You can ignore this warning by setting:
+  OmniAuth.config.silence_get_warning = true
+      WARN
     end
 
     # Responds to an OPTIONS request.
@@ -206,6 +227,8 @@ module OmniAuth
 
       # store query params from the request url, extracted in the callback_phase
       session['omniauth.params'] = request.GET
+
+      OmniAuth.config.request_validation_phase.call(env) if OmniAuth.config.request_validation_phase
       OmniAuth.config.before_request_phase.call(env) if OmniAuth.config.before_request_phase
 
       if options.form.respond_to?(:call)
@@ -225,6 +248,8 @@ module OmniAuth
 
         request_phase
       end
+    rescue OmniAuth::AuthenticityError => e
+      fail!(:authenticity_error, e)
     end
 
     # Performs the steps necessary to run the callback phase of a strategy.
