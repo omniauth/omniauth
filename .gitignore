@@ -10,3 +10,4 @@ doc/*
 log/*
 measurement/*
 pkg/*
+.DS_Store

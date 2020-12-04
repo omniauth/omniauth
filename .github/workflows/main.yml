@@ -1,0 +1,19 @@
+name: Test OmniAuth
+
+on:
+  push:
+    branches: [ $default-branch ]
+  pull_request:
+    branches: [ $default-branch ]
+
+jobs:
+  test:
+    runs-on: 'ubuntu-18.04'
+    strategy:
+      matrix:
+        ruby: [2.4, 2.5, 2.6, 2.7]
+    steps:
+      - name: Install dependencies
+        run: bundle install
+      - name: Run tests
+        run: bundle exec rake
