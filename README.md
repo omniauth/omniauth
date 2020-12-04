@@ -94,7 +94,8 @@ something like this:
 
 ```ruby
 class SessionsController < ApplicationController
-  skip_before_action :verify_authenticity_token, only: :create unless Rails.env.production?
+  # If you're using a strategy that POSTs during callback, you'll need to skip the authenticity token check for the callback action only. 
+  skip_before_action :verify_authenticity_token, only: :create
 
   def create
     @user = User.find_or_create_from_auth_hash(auth_hash)
