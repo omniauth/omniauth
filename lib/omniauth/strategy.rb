@@ -193,7 +193,7 @@ module OmniAuth
         return callback_call if on_callback_path?
         return other_phase if respond_to?(:other_phase)
       rescue => ex
-        return fail! ex.message, ex
+        return fail!(ex.message, ex)
       end
 
       @app.call(env)
