@@ -26,7 +26,7 @@ module OmniAuth
       @options = options
     end
 
-    def provider(klass, *args, &block)
+    def provider(klass, *args, &block) # rubocop:disable Metrics/MethodLength
       if klass.is_a?(Class)
         middleware = klass
       else
@@ -38,19 +38,15 @@ module OmniAuth
       end
 
       args.last.is_a?(Hash) ? args.push(options.merge(args.pop)) : args.push(options)
+      allowed_paths = args.fetch(:allowed_paths, [])
 
-      # We need to create an instance of the middleware here so we can get its paths
-      middle = middleware.new(->(_env) { [200, [], ''] }, *args, &block)
-
-      map(middle.request_path) do
-        use middleware, *args, &block
-      end
-
-      map(middle.callback_path) do
-        use middleware, *args, &block
-      end
-
-      map(middle.setup_path) do
+      if allowed_paths.any?
+        allowed_paths.each do |path|
+          map(path) do
+            use middleware, *args, &block
+          end
+        end
+      else
         use middleware, *args, &block
       end
     end

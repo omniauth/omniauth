@@ -3,14 +3,14 @@ require 'helper'
 describe OmniAuth::Builder do
   describe '#provider' do
     it 'translates a symbol to a constant' do
-      expect(OmniAuth::Strategies).to receive(:const_get).with('MyStrategy').and_return(Class.new { |c| c.include OmniAuth::Strategy })
+      expect(OmniAuth::Strategies).to receive(:const_get).with('MyStrategy').and_return(Class.new)
       OmniAuth::Builder.new(nil) do
         provider :my_strategy
       end
     end
 
     it 'accepts a class' do
-      class ExampleClass; include OmniAuth::Strategy; end
+      class ExampleClass; end
 
       expect do
         OmniAuth::Builder.new(nil) do
@@ -30,24 +30,18 @@ describe OmniAuth::Builder do
 
   describe '#options' do
     it 'merges provided options in' do
-      k = Class.new { |c| c.include OmniAuth::Strategy }
+      k = Class.new
       b = OmniAuth::Builder.new(nil)
-      expect(b).to receive(:map) do |_args, &block|
-        expect(b).to receive(:use).with(k, :foo => 'bar', :baz => 'tik')
-        block.call
-      end.exactly(3).times
+      expect(b).to receive(:use).with(k, :foo => 'bar', :baz => 'tik')
 
       b.options :foo => 'bar'
       b.provider k, :baz => 'tik'
     end
 
     it 'adds an argument if no options are provided' do
-      k = Class.new { |c| c.include OmniAuth::Strategy }
+      k = Class.new
       b = OmniAuth::Builder.new(nil)
-      expect(b).to receive(:map) do |_args, &block|
-        expect(b).to receive(:use).with(k, :foo => 'bar')
-        block.call
-      end.exactly(3).times
+      expect(b).to receive(:use).with(k, :foo => 'bar')
 
       b.options :foo => 'bar'
       b.provider k
