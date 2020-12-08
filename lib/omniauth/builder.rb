@@ -39,6 +39,7 @@ module OmniAuth
 
       args.last.is_a?(Hash) ? args.push(options.merge(args.pop)) : args.push(options)
       allowed_paths = args.last.is_a?(Hash) ? args.last.fetch(:allowed_paths, []) : []
+      allowed_paths = [allowed_paths] if allowed_paths.is_a?(String)
 
       if allowed_paths.any?
         allowed_paths.each do |path|
