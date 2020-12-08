@@ -38,7 +38,19 @@ module OmniAuth
       end
 
       args.last.is_a?(Hash) ? args.push(options.merge(args.pop)) : args.push(options)
-      map('/auth') do
+
+      # We need to create an instance of the middleware here so we can get its paths
+      middle = middleware.new(->(_env) { [200, [], ''] }, *args, &block)
+
+      map(middle.request_path) do
+        use middleware, *args, &block
+      end
+
+      map(middle.callback_path) do
+        use middleware, *args, &block
+      end
+
+      map(middle.setup_path) do
         use middleware, *args, &block
       end
     end
