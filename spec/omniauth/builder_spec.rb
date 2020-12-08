@@ -32,7 +32,10 @@ describe OmniAuth::Builder do
     it 'merges provided options in' do
       k = Class.new
       b = OmniAuth::Builder.new(nil)
-      expect(b).to receive(:use).with(k, :foo => 'bar', :baz => 'tik')
+      expect(b).to receive(:map) do |_args, &block|
+        expect(b).to receive(:use).with(k, :foo => 'bar', :baz => 'tik')
+        block.call
+      end
 
       b.options :foo => 'bar'
       b.provider k, :baz => 'tik'
@@ -41,7 +44,10 @@ describe OmniAuth::Builder do
     it 'adds an argument if no options are provided' do
       k = Class.new
       b = OmniAuth::Builder.new(nil)
-      expect(b).to receive(:use).with(k, :foo => 'bar')
+      expect(b).to receive(:map) do |_args, &block|
+        expect(b).to receive(:use).with(k, :foo => 'bar')
+        block.call
+      end
 
       b.options :foo => 'bar'
       b.provider k

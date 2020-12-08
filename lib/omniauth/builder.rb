@@ -38,7 +38,9 @@ module OmniAuth
       end
 
       args.last.is_a?(Hash) ? args.push(options.merge(args.pop)) : args.push(options)
-      use middleware, *args, &block
+      map('/auth') do
+        use middleware, *args, &block
+      end
     end
 
     def call(env)
