@@ -370,11 +370,13 @@ module OmniAuth
     end
 
     def auth_hash
-      hash = AuthHash.new(:provider => name, :uid => uid)
-      hash.info = info unless skip_info?
-      hash.credentials = credentials if credentials
-      hash.extra = extra if extra
-      hash
+      credentials_data = credentials
+      extra_data = extra
+      AuthHash.new(:provider => name, :uid => uid).tap do |auth|
+        auth.info = info unless skip_info?
+        auth.credentials = credentials_data if credentials_data
+        auth.extra = extra_data if extra_data
+      end
     end
 
     # Determines whether or not user info should be retrieved. This
