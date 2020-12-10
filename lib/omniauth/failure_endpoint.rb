@@ -27,8 +27,17 @@ module OmniAuth
 
     def redirect_to_failure
       message_key = env['omniauth.error.type']
-      new_path = "#{env['SCRIPT_NAME']}#{OmniAuth.config.path_prefix}/failure?message=#{Rack::Utils.escape(message_key)}#{origin_query_param}#{strategy_name_query_param}"
+
+      new_path = "#{env['SCRIPT_NAME']}#{strategy_path_prefix}/failure?message=#{Rack::Utils.escape(message_key)}#{origin_query_param}#{strategy_name_query_param}"
       Rack::Response.new(['302 Moved'], 302, 'Location' => new_path).finish
+    end
+
+    def strategy_path_prefix
+      if env['omniauth.error.strategy']
+        env['omniauth.error.strategy'].path_prefix
+      else
+        OmniAuth.config.path_prefix
+      end
     end
 
     def strategy_name_query_param
