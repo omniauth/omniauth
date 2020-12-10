@@ -228,7 +228,7 @@ module OmniAuth
     # Performs the steps necessary to run the request phase of a strategy.
     def request_call # rubocop:disable CyclomaticComplexity, MethodLength, PerceivedComplexity
       setup_phase
-      log :info, 'Request phase initiated.'
+      log :debug, 'Request phase initiated.'
 
       # store query params from the request url, extracted in the callback_phase
       session['omniauth.params'] = request.GET
@@ -237,10 +237,10 @@ module OmniAuth
       OmniAuth.config.before_request_phase.call(env) if OmniAuth.config.before_request_phase
 
       if options.form.respond_to?(:call)
-        log :info, 'Rendering form from supplied Rack endpoint.'
+        log :debug, 'Rendering form from supplied Rack endpoint.'
         options.form.call(env)
       elsif options.form
-        log :info, 'Rendering form from underlying application.'
+        log :debug, 'Rendering form from underlying application.'
         call_app!
       elsif !options.origin_param
         request_phase
@@ -260,7 +260,7 @@ module OmniAuth
     # Performs the steps necessary to run the callback phase of a strategy.
     def callback_call
       setup_phase
-      log :info, 'Callback phase initiated.'
+      log :debug, 'Callback phase initiated.'
       @env['omniauth.origin'] = session.delete('omniauth.origin')
       @env['omniauth.origin'] = nil if env['omniauth.origin'] == ''
       @env['omniauth.params'] = session.delete('omniauth.params') || {}
@@ -342,10 +342,10 @@ module OmniAuth
     # underlying application. This will default to `/auth/:provider/setup`.
     def setup_phase
       if options[:setup].respond_to?(:call)
-        log :info, 'Setup endpoint detected, running now.'
+        log :debug, 'Setup endpoint detected, running now.'
         options[:setup].call(env)
       elsif options[:setup]
-        log :info, 'Calling through to underlying application for setup.'
+        log :debug, 'Calling through to underlying application for setup.'
         setup_env = env.merge('PATH_INFO' => setup_path, 'REQUEST_METHOD' => 'GET')
         call_app!(setup_env)
       end
