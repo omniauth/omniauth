@@ -121,14 +121,11 @@ describe OmniAuth::Builder do
 
   describe '#call' do
     it 'passes env to to_app.call' do
-      app = lambda { |_env| [200, {}, []] }
+      app = lambda { |env| [200, {}, env['CUSTOM_ENV_VALUE']] }
       builder = OmniAuth::Builder.new(app)
-      env = {'REQUEST_METHOD' => 'GET', 'PATH_INFO' => '/some/path'}
-      allow(app).to receive(:call).and_call_original
+      env = {'REQUEST_METHOD' => 'GET', 'PATH_INFO' => '/some/path', 'CUSTOM_ENV_VALUE' => 'VALUE'}
 
-      builder.call(env)
-
-      expect(app).to have_received(:call).with(env)
+      expect(builder.call(env)).to eq([200, {}, 'VALUE'])
     end
   end
 

@@ -20,6 +20,7 @@ end
 
 require 'rspec'
 require 'rack/test'
+require 'rack/freeze'
 require 'omniauth'
 require 'omniauth/test'
 
