@@ -10,7 +10,7 @@ describe OmniAuth::Strategies::Developer do
   end
 
   context 'request phase' do
-    before(:each) { get '/auth/developer' }
+    before(:each) { post '/auth/developer' }
 
     it 'displays a form' do
       expect(last_response.status).to eq(200)

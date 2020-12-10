@@ -25,6 +25,7 @@ RSpec.describe OmniAuth::KeyStore do
 
     it 'does not log anything to the console' do
       stub_const('Hashie::VERSION', version)
+      allow(OmniAuth::KeyStore).to receive(:respond_to?).with(:disable_warnings).and_return(false)
       OmniAuth::KeyStore.override_logging
       expect(logger).not_to receive(:info)
       OmniAuth::KeyStore.new(:id => 1234)

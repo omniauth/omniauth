@@ -1,16 +1,20 @@
 if RUBY_VERSION >= '1.9'
   require 'simplecov'
   require 'coveralls'
+  require 'simplecov-lcov'
+
+  SimpleCov::Formatter::LcovFormatter.config.report_with_single_file = true
 
   SimpleCov.formatters = [
     SimpleCov::Formatter::HTMLFormatter,
+    SimpleCov::Formatter::LcovFormatter,
     Coveralls::SimpleCov::Formatter
   ]
 
   SimpleCov.start do
     add_filter ['/spec/', '/vendor/', 'strategy_macros.rb']
     minimum_coverage(92.5)
-    maximum_coverage_drop(0.01)
+    maximum_coverage_drop(0.05)
   end
 end
 
@@ -20,6 +24,7 @@ require 'omniauth'
 require 'omniauth/test'
 
 OmniAuth.config.logger = Logger.new('/dev/null')
+OmniAuth.config.request_validation_phase = nil
 
 RSpec.configure do |config|
   config.include Rack::Test::Methods
@@ -45,7 +50,7 @@ class ExampleStrategy
 
   def request_phase
     options[:mutate_on_request].call(options) if options[:mutate_on_request]
-    @fail = fail!(options[:failure]) if options[:failure]
+    @fail = fail!(options[:failure], options[:failure_exception]) if options[:failure]
     @last_env = env
     return @fail if @fail
 
@@ -54,7 +59,7 @@ class ExampleStrategy
 
   def callback_phase
     options[:mutate_on_callback].call(options) if options[:mutate_on_callback]
-    @fail = fail!(options[:failure]) if options[:failure]
+    @fail = fail!(options[:failure], options[:failure_exception]) if options[:failure]
     @last_env = env
     return @fail if @fail
 

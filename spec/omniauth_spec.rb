@@ -26,20 +26,22 @@ describe OmniAuth do
     end
 
     before do
-      @old_path_prefix           = OmniAuth.config.path_prefix
-      @old_on_failure            = OmniAuth.config.on_failure
-      @old_before_callback_phase = OmniAuth.config.before_callback_phase
-      @old_before_options_phase  = OmniAuth.config.before_options_phase
-      @old_before_request_phase  = OmniAuth.config.before_request_phase
+      @old_path_prefix              = OmniAuth.config.path_prefix
+      @old_on_failure               = OmniAuth.config.on_failure
+      @old_before_callback_phase    = OmniAuth.config.before_callback_phase
+      @old_before_options_phase     = OmniAuth.config.before_options_phase
+      @old_before_request_phase     = OmniAuth.config.before_request_phase
+      @old_request_validation_phase = OmniAuth.config.request_validation_phase
     end
 
     after do
       OmniAuth.configure do |config|
-        config.path_prefix           = @old_path_prefix
-        config.on_failure            = @old_on_failure
-        config.before_callback_phase = @old_before_callback_phase
-        config.before_options_phase  = @old_before_options_phase
-        config.before_request_phase  = @old_before_request_phase
+        config.path_prefix              = @old_path_prefix
+        config.on_failure               = @old_on_failure
+        config.before_callback_phase    = @old_before_callback_phase
+        config.before_options_phase     = @old_before_options_phase
+        config.before_request_phase     = @old_before_request_phase
+        config.request_validation_phase = @old_request_validation_phase
       end
     end
 
@@ -88,6 +90,15 @@ describe OmniAuth do
       expect(OmniAuth.config.before_callback_phase.call).to eq('heyhey')
     end
 
+    it 'is able to set request_validation_phase' do
+      OmniAuth.configure do |config|
+        config.request_validation_phase do
+          'validated'
+        end
+      end
+      expect(OmniAuth.config.request_validation_phase.call).to eq('validated')
+    end
+
     describe 'mock auth' do
       before do
         @auth_hash = {:uid => '12345', :info => {:name => 'Joe', :email => 'joe@example.com'}}
@@ -128,6 +139,13 @@ describe OmniAuth do
   end
 
   describe '::Utils' do
+    describe 'form_css' do
+      it 'returns a style tag with the configured form_css' do
+        allow(OmniAuth).to receive(:config).and_return(double(:form_css => 'css.css'))
+        expect(OmniAuth::Utils.form_css).to eq "<style type='text/css'>css.css</style>"
+      end
+    end
+
     describe '.deep_merge' do
       it 'combines hashes' do
         expect(OmniAuth::Utils.deep_merge({'abc' => {'def' => 123}}, 'abc' => {'foo' => 'bar'})).to eq('abc' => {'def' => 123, 'foo' => 'bar'})
@@ -147,6 +165,15 @@ describe OmniAuth do
       it 'works in special cases that have been added' do
         OmniAuth.config.add_camelization('oauth', 'OAuth')
         expect(OmniAuth::Utils.camelize(:oauth)).to eq('OAuth')
+      end
+
+      it 'doesn\'t uppercase the first letter when passed false' do
+        expect(OmniAuth::Utils.camelize('apple_jack', false)).to eq('appleJack')
+      end
+
+      it 'replaces / with ::' do
+        expect(OmniAuth::Utils.camelize('apple_jack/cereal')).to eq('AppleJack::Cereal')
+        expect(OmniAuth::Utils.camelize('apple_jack/cereal', false)).to eq('appleJack::Cereal')
       end
     end
   end

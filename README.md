@@ -2,9 +2,8 @@
 
 [![Gem Version](http://img.shields.io/gem/v/omniauth.svg)][gem]
 [![Build Status](http://img.shields.io/travis/omniauth/omniauth.svg)][travis]
-[![Code Climate](http://img.shields.io/codeclimate/github/omniauth/omniauth.svg)][codeclimate]
+[![Code Climate](https://api.codeclimate.com/v1/badges/ffd33970723587806744/maintainability)][codeclimate]
 [![Coverage Status](http://img.shields.io/coveralls/omniauth/omniauth.svg)][coveralls]
-[![Security](https://hakiri.io/github/omniauth/omniauth/master.svg)](https://hakiri.io/github/omniauth/omniauth/master)
 
 [gem]: https://rubygems.org/gems/omniauth
 [travis]: http://travis-ci.org/omniauth/omniauth
@@ -32,8 +31,8 @@ development and easily swap in other strategies later.
 ## Getting Started
 Each OmniAuth strategy is a Rack Middleware. That means that you can use
 it the same way that you use any other Rack middleware. For example, to
-use the built-in Developer strategy in a Sinatra application I might do
-this:
+use the built-in Developer strategy in a Sinatra application you might
+do this:
 
 ```ruby
 require 'sinatra'
@@ -45,7 +44,7 @@ class MyApplication < Sinatra::Base
 end
 ```
 
-Because OmniAuth is built for *multi-provider* authentication, I may
+Because OmniAuth is built for *multi-provider* authentication, you may
 want to leave room to run multiple strategies. For this, the built-in
 `OmniAuth::Builder` class gives you an easy way to specify multiple
 strategies. Note that there is **no difference** between the following
@@ -82,18 +81,21 @@ environment of a request to `/auth/:provider/callback`. This hash
 contains as much information about the user as OmniAuth was able to
 glean from the utilized strategy. You should set up an endpoint in your
 application that matches to the callback URL and then performs whatever
-steps are necessary for your application. For example, in a Rails app I
-would add a line in my `routes.rb` file like this:
+steps are necessary for your application. For example, in a Rails app
+you would add a line in your `routes.rb` file like this:
 
 ```ruby
-get '/auth/:provider/callback', to: 'sessions#create'
+post '/auth/:provider/callback', to: 'sessions#create'
 ```
 
-And I might then have a `SessionsController` with code that looks
+And you might then have a `SessionsController` with code that looks
 something like this:
 
 ```ruby
 class SessionsController < ApplicationController
+  # If you're using a strategy that POSTs during callback, you'll need to skip the authenticity token check for the callback action only. 
+  skip_before_action :verify_authenticity_token, only: :create
+
   def create
     @user = User.find_or_create_from_auth_hash(auth_hash)
     self.current_user = @user
@@ -108,7 +110,7 @@ class SessionsController < ApplicationController
 end
 ```
 
-The `omniauth.auth` key in the environment hash gives me my
+The `omniauth.auth` key in the environment hash provides an
 Authentication Hash which will contain information about the just
 authenticated user including a unique id, the strategy they just used
 for authentication, and personal details such as name and email address
@@ -163,7 +165,7 @@ a `session_store.rb` initializer, add `use ActionDispatch::Session::CookieStore`
 and have sessions functioning as normal.
 
 To be clear: sessions may work, but your session options will be ignored
-(i.e the session key will default to `_session_id`).  Instead of the
+(i.e. the session key will default to `_session_id`).  Instead of the
 initializer, you'll have to set the relevant options somewhere
 before your middleware is built (like `application.rb`) and pass them to your
 preferred middleware, like this:
