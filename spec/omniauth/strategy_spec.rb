@@ -589,21 +589,26 @@ describe OmniAuth::Strategy do
     end
 
     context 'with relative url root' do
-      let(:props) { { 'SCRIPT_NAME' => '/myapp' } }
+      let(:props) { {'SCRIPT_NAME' => '/myapp'} }
       it 'accepts the request' do
-        expect { strategy.call(make_env('/auth/test', props)) }.to raise_error('Request Phase')
+        expect(strategy).to receive(:fail!).with('Request Phase', kind_of(StandardError))
+
+        strategy.call(make_env('/auth/test', props))
         expect(strategy.request_path).to eq('/myapp/auth/test')
       end
 
       it 'accepts the callback' do
-        expect { strategy.call(make_env('/auth/test/callback', props)) }.to raise_error('Callback Phase')
+        expect(strategy).to receive(:fail!).with('Callback Phase', kind_of(StandardError))
+
+        strategy.call(make_env('/auth/test/callback', props))
       end
 
       context 'callback_url' do
         it 'redirects to the correctly prefixed callback' do
           expect(strategy).to receive(:full_host).and_return('http://example.com')
+          expect(strategy).to receive(:fail!).with('Request Phase', kind_of(StandardError))
 
-          expect { strategy.call(make_env('/auth/test', props)) }.to raise_error('Request Phase')
+          strategy.call(make_env('/auth/test', props))
 
           expect(strategy.callback_url).to eq('http://example.com/myapp/auth/test/callback')
         end
@@ -615,9 +620,11 @@ describe OmniAuth::Strategy do
         end
         it 'does not prefix a custom request path' do
           expect(strategy).to receive(:full_host).and_return('http://example.com')
+          expect(strategy).to receive(:fail!).with('Request Phase', kind_of(StandardError))
 
           expect(strategy.request_path).to eq('/myapp/override')
-          expect { strategy.call(make_env('/override', props)) }.to raise_error('Request Phase')
+
+          strategy.call(make_env('/override', props))
 
           expect(strategy.callback_url).to eq('http://example.com/myapp/override/callback')
         end
