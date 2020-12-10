@@ -33,7 +33,7 @@ describe OmniAuth::Form do
 
   describe '#html' do
     it 'appends to the html body' do
-      form = OmniAuth::Form.build { @html = '<p></p>' }
+      form = OmniAuth::Form.build { @html = +'<p></p>' }
       form.html('<h1></h1>')
 
       expect(form.instance_variable_get(:@html)).to eq '<p></p><h1></h1>'

@@ -54,6 +54,21 @@ jobs:
       env:
         JRUBY_OPTS: --debug
       run: bundle exec rake
+  frozen-string-compat:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 2.6
+        bundler-cache: true
+    - name: Install dependencies
+      run: bundle install
+    - name: Run tests
+      env:
+        RUBYOPT: "--enable-frozen-string-literal"
+      run: bundle exec rake
   coveralls:
     runs-on: ubuntu-18.04
     steps:
@@ -61,7 +76,7 @@ jobs:
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: 2.5
+        ruby-version: 2.6
         bundler-cache: true
     - name: Install dependencies
       run: bundle install
