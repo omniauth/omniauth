@@ -508,7 +508,7 @@ describe OmniAuth::Strategy do
 
       it 'correctly reports the callback path when the custom callback path evaluator is truthy' do
         strategy_instance = ExampleStrategy.new(app, :callback_path => lambda { |env| env['PATH_INFO'] == '/auth/bish/bosh/callback' })
-        strategy_instance.should_receive(:fail!).with('Callback Phase', kind_of(StandardError))
+        expect(strategy_instance).to receive(:fail!).with('Callback Phase', kind_of(StandardError))
 
         strategy_instance.call(make_env('/auth/bish/bosh/callback'))
         expect(strategy_instance.callback_path).to eq('/auth/bish/bosh/callback')
@@ -979,7 +979,7 @@ describe OmniAuth::Strategy do
     end
 
     it 'calls fail! when encountering an unhandled exception' do
-      strategy.stub(:request_phase).and_raise(Errno::ECONNREFUSED)
+      allow(strategy).to receive(:request_phase).and_raise(Errno::ECONNREFUSED)
       expect(strategy).to receive(:fail!).with('Connection refused', kind_of(Errno::ECONNREFUSED))
       strategy.call(make_env)
     end
