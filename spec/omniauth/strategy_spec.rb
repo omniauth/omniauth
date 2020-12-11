@@ -885,6 +885,12 @@ describe OmniAuth::Strategy do
         expect(strategy.env['omniauth.params']).to eq('foo' => 'bar')
       end
 
+      it 'rescues errors in request_call' do
+        allow(strategy).to receive(:mock_request_call).and_raise(StandardError.new('Oh no'))
+        expect(strategy).to receive(:fail!).with('Oh no', kind_of(StandardError))
+        strategy.call(make_env)
+      end
+
       after do
         OmniAuth.config.test_mode = false
       end
