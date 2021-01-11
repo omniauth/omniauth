@@ -180,16 +180,42 @@ module OmniAuth
         raise(error)
       end
 
+      warn_if_using_get
+
       @env = env
       @env['omniauth.strategy'] = self if on_auth_path?
 
       return mock_call!(env) if OmniAuth.config.test_mode
-      return options_call if on_auth_path? && options_request?
-      return request_call if on_request_path? && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
-      return callback_call if on_callback_path?
-      return other_phase if respond_to?(:other_phase)
+
+      begin
+        return options_call if on_auth_path? && options_request?
+        return request_call if on_request_path? && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
+        return callback_call if on_callback_path?
+        return other_phase if respond_to?(:other_phase)
+      rescue StandardError => e
+        return fail!(e.message, e)
+      end
 
       @app.call(env)
+    end
+
+    def warn_if_using_get
+      return unless OmniAuth.config.allowed_request_methods.include?(:get)
+      return if OmniAuth.config.silence_get_warning
+
+      log :warn, <<-WARN
+  You are using GET as an allowed request method for OmniAuth. This may leave
+  you open to CSRF attacks. As of v2.0.0, OmniAuth by default allows only POST
+  to its own routes. You should review the following resources to guide your
+  mitigation:
+  https://github.com/omniauth/omniauth/wiki/Resolving-CVE-2015-9284
+  https://github.com/omniauth/omniauth/issues/960
+  https://nvd.nist.gov/vuln/detail/CVE-2015-9284
+  https://github.com/omniauth/omniauth/pull/809
+
+  You can ignore this warning by setting:
+  OmniAuth.config.silence_get_warning = true
+      WARN
     end
 
     # Responds to an OPTIONS request.
@@ -202,17 +228,19 @@ module OmniAuth
     # Performs the steps necessary to run the request phase of a strategy.
     def request_call # rubocop:disable CyclomaticComplexity, MethodLength, PerceivedComplexity
       setup_phase
-      log :info, 'Request phase initiated.'
+      log :debug, 'Request phase initiated.'
 
       # store query params from the request url, extracted in the callback_phase
       session['omniauth.params'] = request.GET
+
+      OmniAuth.config.request_validation_phase.call(env) if OmniAuth.config.request_validation_phase
       OmniAuth.config.before_request_phase.call(env) if OmniAuth.config.before_request_phase
 
       if options.form.respond_to?(:call)
-        log :info, 'Rendering form from supplied Rack endpoint.'
+        log :debug, 'Rendering form from supplied Rack endpoint.'
         options.form.call(env)
       elsif options.form
-        log :info, 'Rendering form from underlying application.'
+        log :debug, 'Rendering form from underlying application.'
         call_app!
       elsif !options.origin_param
         request_phase
@@ -225,12 +253,14 @@ module OmniAuth
 
         request_phase
       end
+    rescue OmniAuth::AuthenticityError => e
+      fail!(:authenticity_error, e)
     end
 
     # Performs the steps necessary to run the callback phase of a strategy.
     def callback_call
       setup_phase
-      log :info, 'Callback phase initiated.'
+      log :debug, 'Callback phase initiated.'
       @env['omniauth.origin'] = session.delete('omniauth.origin')
       @env['omniauth.origin'] = nil if env['omniauth.origin'] == ''
       @env['omniauth.params'] = session.delete('omniauth.params') || {}
@@ -268,8 +298,13 @@ module OmniAuth
     # in the event that OmniAuth has been configured to be
     # in test mode.
     def mock_call!(*)
-      return mock_request_call if on_request_path? && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
-      return mock_callback_call if on_callback_path?
+      begin
+        OmniAuth.config.request_validation_phase.call(env) if OmniAuth.config.request_validation_phase
+        return mock_request_call if on_request_path? && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
+        return mock_callback_call if on_callback_path?
+      rescue StandardError => e
+        return fail!(e.message, e)
+      end
 
       call_app!
     end
@@ -312,10 +347,10 @@ module OmniAuth
     # underlying application. This will default to `/auth/:provider/setup`.
     def setup_phase
       if options[:setup].respond_to?(:call)
-        log :info, 'Setup endpoint detected, running now.'
+        log :debug, 'Setup endpoint detected, running now.'
         options[:setup].call(env)
       elsif options[:setup]
-        log :info, 'Calling through to underlying application for setup.'
+        log :debug, 'Calling through to underlying application for setup.'
         setup_env = env.merge('PATH_INFO' => setup_path, 'REQUEST_METHOD' => 'GET')
         call_app!(setup_env)
       end
@@ -345,11 +380,13 @@ module OmniAuth
     end
 
     def auth_hash
-      hash = AuthHash.new(:provider => name, :uid => uid)
-      hash.info = info unless skip_info?
-      hash.credentials = credentials if credentials
-      hash.extra = extra if extra
-      hash
+      credentials_data = credentials
+      extra_data = extra
+      AuthHash.new(:provider => name, :uid => uid).tap do |auth|
+        auth.info = info unless skip_info?
+        auth.credentials = credentials_data if credentials_data
+        auth.extra = extra_data if extra_data
+      end
     end
 
     # Determines whether or not user info should be retrieved. This
@@ -389,7 +426,12 @@ module OmniAuth
     end
 
     def request_path
-      @request_path ||= options[:request_path].is_a?(String) ? options[:request_path] : "#{path_prefix}/#{name}"
+      @request_path ||=
+        if options[:request_path].is_a?(String)
+          options[:request_path]
+        else
+          "#{script_name}#{path_prefix}/#{name}"
+        end
     end
 
     def callback_path
@@ -397,7 +439,7 @@ module OmniAuth
         path = options[:callback_path] if options[:callback_path].is_a?(String)
         path ||= current_path if options[:callback_path].respond_to?(:call) && options[:callback_path].call(env)
         path ||= custom_path(:request_path)
-        path ||= "#{path_prefix}/#{name}/callback"
+        path ||= "#{script_name}#{path_prefix}/#{name}/callback"
         path
       end
     end
@@ -409,7 +451,7 @@ module OmniAuth
     CURRENT_PATH_REGEX = %r{/$}.freeze
     EMPTY_STRING       = ''.freeze
     def current_path
-      @current_path ||= request.path_info.downcase.sub(CURRENT_PATH_REGEX, EMPTY_STRING)
+      @current_path ||= request.path.downcase.sub(CURRENT_PATH_REGEX, EMPTY_STRING)
     end
 
     def query_string
@@ -441,7 +483,7 @@ module OmniAuth
     end
 
     def callback_url
-      full_host + script_name + callback_path + query_string
+      full_host + callback_path + query_string
     end
 
     def script_name
@@ -491,15 +533,14 @@ module OmniAuth
       OmniAuth.config.on_failure.call(env)
     end
 
-    def dup
-      super.tap do
-        @options = @options.dup
-      end
-    end
-
     class Options < OmniAuth::KeyStore; end
 
   protected
+
+    def initialize_copy(*args)
+      super
+      @options = @options.dup
+    end
 
     def merge_stack(stack)
       stack.inject({}) do |a, e|

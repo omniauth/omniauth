@@ -13,6 +13,10 @@ describe OmniAuth::AuthHash do
     expect(subject.weird_field.info).to eq 'string'
   end
 
+  it 'has a subkey_class' do
+    expect(OmniAuth::AuthHash.subkey_class).to eq Hashie::Mash
+  end
+
   describe '#valid?' do
     subject { OmniAuth::AuthHash.new(:uid => '123', :provider => 'example', :info => {:name => 'Steven'}) }
 
@@ -109,6 +113,10 @@ describe OmniAuth::AuthHash do
       it 'is valid if there is a name' do
         expect(OmniAuth::AuthHash::InfoHash.new(:name => 'Awesome')).to be_valid
       end
+    end
+
+    it 'has a subkey_class' do
+      expect(OmniAuth::AuthHash::InfoHash.subkey_class).to eq Hashie::Mash
     end
 
     require 'hashie/version'

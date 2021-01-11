@@ -15,6 +15,7 @@ module OmniAuth
   autoload :Form,     'omniauth/form'
   autoload :AuthHash, 'omniauth/auth_hash'
   autoload :FailureEndpoint, 'omniauth/failure_endpoint'
+  autoload :AuthenticityTokenProtection, 'omniauth/authenticity_token_protection'
 
   def self.strategies
     @strategies ||= []
@@ -29,20 +30,22 @@ module OmniAuth
       logger
     end
 
-    def self.defaults
+    def self.defaults # rubocop:disable MethodLength
       @defaults ||= {
         :camelizations => {},
         :path_prefix => '/auth',
         :on_failure => OmniAuth::FailureEndpoint,
         :failure_raise_out_environments => ['development'],
+        :request_validation_phase => OmniAuth::AuthenticityTokenProtection,
         :before_request_phase   => nil,
         :before_callback_phase  => nil,
         :before_options_phase   => nil,
         :form_css => Form::DEFAULT_CSS,
         :test_mode => false,
         :logger => default_logger,
-        :allowed_request_methods => %i[get post],
-        :mock_auth => {:default => AuthHash.new('provider' => 'default', 'uid' => '1234', 'info' => {'name' => 'Example User'})}
+        :allowed_request_methods => %i[post],
+        :mock_auth => {:default => AuthHash.new('provider' => 'default', 'uid' => '1234', 'info' => {'name' => 'Example User'})},
+        :silence_get_warning => false
       }
     end
 
@@ -71,6 +74,14 @@ module OmniAuth
         @before_options_phase = block
       else
         @before_options_phase
+      end
+    end
+
+    def request_validation_phase(&block)
+      if block_given?
+        @request_validation_phase = block
+      else
+        @request_validation_phase
       end
     end
 
@@ -111,8 +122,9 @@ module OmniAuth
       camelizations[name.to_s] = camelized.to_s
     end
 
-    attr_writer :on_failure, :before_callback_phase, :before_options_phase, :before_request_phase
-    attr_accessor :failure_raise_out_environments, :path_prefix, :allowed_request_methods, :form_css, :test_mode, :mock_auth, :full_host, :camelizations, :logger
+    attr_writer :on_failure, :before_callback_phase, :before_options_phase, :before_request_phase, :request_validation_phase
+    attr_accessor :failure_raise_out_environments, :path_prefix, :allowed_request_methods, :form_css,
+                  :test_mode, :mock_auth, :full_host, :camelizations, :logger, :silence_get_warning
   end
 
   def self.config
@@ -159,7 +171,7 @@ module OmniAuth
       if first_letter_in_uppercase
         word.to_s.gsub(%r{/(.?)}) { '::' + Regexp.last_match[1].upcase }.gsub(/(^|_)(.)/) { Regexp.last_match[2].upcase }
       else
-        word.first + camelize(word)[1..-1]
+        camelize(word).tap { |w| w[0] = w[0].downcase }
       end
     end
   end

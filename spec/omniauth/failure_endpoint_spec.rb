@@ -43,16 +43,27 @@ describe OmniAuth::FailureEndpoint do
       expect(head['Location']).to eq('/random/auth/failure?message=invalid_request&strategy=test')
     end
 
-    it 'respects the configured path prefix' do
+    it 'respects the globally configured path prefix' do
       allow(OmniAuth.config).to receive(:path_prefix).and_return('/boo')
       _, head, = *subject.call(env)
       expect(head['Location']).to eq('/boo/failure?message=invalid_request&strategy=test')
+    end
+
+    it 'respects the custom path prefix configured on the strategy' do
+      env['omniauth.error.strategy'] = ExampleStrategy.new({}, path_prefix: "/some/custom/path")
+      _, head, = *subject.call(env)
+      expect(head['Location']).to eq('/some/custom/path/failure?message=invalid_request&strategy=test')
     end
 
     it 'includes the origin (escaped) if one is provided' do
       env['omniauth.origin'] = '/origin-example'
       _, head, = *subject.call(env)
       expect(head['Location']).to be_include('&origin=%2Forigin-example')
+    end
+
+    it 'escapes the message key' do
+      _, head = *subject.call(env.merge('omniauth.error.type' => 'Connection refused!'))
+      expect(head['Location']).to be_include('message=Connection+refused%21')
     end
   end
 end
