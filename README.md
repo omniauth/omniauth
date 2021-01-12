@@ -198,7 +198,7 @@ your first stop if you are wondering about a more in-depth look at
 OmniAuth, how it works, and how to use it.
 
 ## Supported Ruby Versions
-OmniAuth is tested under 2.1.10, 2.2.6, 2.3.3, 2.4.0, 2.5.0, and JRuby.
+OmniAuth is tested under 2.5, 2.6, 2.7, truffleruby, and JRuby.
 
 ## Versioning
 This library aims to adhere to [Semantic Versioning 2.0.0][semver]. Violations
