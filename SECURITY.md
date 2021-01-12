@@ -10,6 +10,8 @@ currently being supported with security updates.
 | 2.0.x    | :white_check_mark: |
 | <= 1.9.1 | :x:                |
 
-## Reporting a Vulnerability
+## Security contact information
 
-Please report the presence of a security vulnerability in the form of an issue on this repo. Do not include any reproduction instructions, instead allow for a current maintainer to reach out with a direct line of communication to discuss before publicly disclosing. 
+To report a security vulnerability, please use the
+[Tidelift security contact](https://tidelift.com/security).
+Tidelift will coordinate the fix and disclosure.
