@@ -973,6 +973,19 @@ describe OmniAuth::Strategy do
         end
       end
 
+      context 'with custom allow_if proc' do
+        before do
+          OmniAuth.config.request_validation_phase = OmniAuth::AuthenticityTokenProtection.new(allow_if: ->(env) { true })
+        end
+
+        it 'allows a valid request' do
+          expect(strategy).to receive(:fail!).with('Request Phase', kind_of(StandardError))
+
+          post_env = make_env('/auth/test')
+          strategy.call(post_env)
+        end
+      end
+
       after do
         OmniAuth.config.request_validation_phase = nil
       end

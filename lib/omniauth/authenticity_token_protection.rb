@@ -18,6 +18,8 @@ module OmniAuth
       react env
     end
 
+    alias_method :call, :call!
+
   private
 
     def deny(_env)
