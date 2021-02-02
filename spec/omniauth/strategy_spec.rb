@@ -1001,6 +1001,26 @@ describe OmniAuth::Strategy do
       OmniAuth.config.test_mode = false
       expect(strategy.call(make_env).first).to eq 302
     end
+
+    context 'when in test mode and path not on request path' do
+      let(:path) { '/foo/bar' }
+
+      before do
+        OmniAuth.config.test_mode = true
+        OmniAuth.config.request_validation_phase = OmniAuth::AuthenticityTokenProtection
+        allow(OmniAuth::AuthenticityTokenProtection).to receive(:call).and_raise(OmniAuth::AuthenticityError)
+      end
+
+      it 'does not verify token' do
+        expect(strategy).not_to receive(:fail!)
+        strategy.call(make_env(path))
+      end
+
+      after do
+        OmniAuth.config.test_mode = false
+        OmniAuth.config.request_validation_phase = false
+      end
+    end
   end
 
   context 'setup phase' do
