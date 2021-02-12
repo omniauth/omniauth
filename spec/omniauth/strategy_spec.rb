@@ -629,6 +629,36 @@ describe OmniAuth::Strategy do
           expect(strategy.callback_url).to eq('http://example.com/myapp/override/callback')
         end
       end
+
+      context 'error during call_app!' do
+        class OtherPhaseStrategy < ExampleStrategy
+          def other_phase
+            call_app!
+          end
+        end
+        class AppError < StandardError; end
+        let(:app) { ->(_env) { raise(AppError.new('Some error in the app!')) } }
+        let(:strategy) { OtherPhaseStrategy.new(app) }
+
+        it 'raises the application error' do
+          expect { strategy.call(make_env('/some/path')) }.to raise_error(AppError, 'Some error in the app!')
+        end
+      end
+
+      context 'error during auth phase' do
+        class SomeStrategy < ExampleStrategy
+          def request_phase
+            raise AuthError.new('Some error in authentication')
+          end
+        end
+        class AuthError < StandardError; end
+        let(:strategy) { SomeStrategy.new(app) }
+
+        it 'passes the error to fail!()' do
+          expect(strategy).to receive(:fail!).with('Some error in authentication', kind_of(AuthError))
+          strategy.call(make_env('/auth/test', props))
+        end
+      end
     end
 
 

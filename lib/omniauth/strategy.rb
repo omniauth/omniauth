@@ -193,6 +193,8 @@ module OmniAuth
         return callback_call if on_callback_path?
         return other_phase if respond_to?(:other_phase)
       rescue StandardError => e
+        raise e if env.delete('omniauth.error.app')
+
         return fail!(e.message, e)
       end
 
@@ -302,6 +304,8 @@ module OmniAuth
         return mock_request_call if on_request_path? && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
         return mock_callback_call if on_callback_path?
       rescue StandardError => e
+        raise e if env.delete('omniauth.error.app')
+
         return fail!(e.message, e)
       end
 
@@ -462,6 +466,9 @@ module OmniAuth
 
     def call_app!(env = @env)
       @app.call(env)
+    rescue StandardError => e
+      env['omniauth.error.app'] = true
+      raise e
     end
 
     def full_host
