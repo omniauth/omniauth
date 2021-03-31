@@ -986,6 +986,9 @@ describe OmniAuth::Strategy do
       end
 
       context 'with allowed GET' do
+        let(:path) { '/auth/test' }
+        let(:get_env) { make_env(path, 'REQUEST_METHOD' => 'GET') }
+
         before(:context) do
           @old_allowed_request_methods = OmniAuth.config.allowed_request_methods
           OmniAuth.config.allowed_request_methods = %i[post get]
@@ -994,8 +997,25 @@ describe OmniAuth::Strategy do
         it 'allows a request without authenticity token' do
           expect(strategy).to receive(:fail!).with('Request Phase', kind_of(StandardError))
 
-          get_env = make_env('/auth/test', 'REQUEST_METHOD' => 'GET')
           strategy.call(get_env)
+        end
+
+        describe 'warning message logging' do
+          before { allow(strategy).to receive(:log) }
+
+          it 'logs warning message' do
+            strategy.call(get_env)
+            expect(strategy).to have_received(:log).with(:warn, a_string_matching('You are using GET as an allowed request method')).once
+          end
+
+          context 'when not login path is requested' do
+            let(:path) { '/example/path' }
+
+            it 'does not log warning message' do
+              strategy.call(get_env)
+              expect(strategy).not_to have_received(:log).with(:warn, a_string_matching('You are using GET as an allowed request method'))
+            end
+          end
         end
 
         after(:context) do
