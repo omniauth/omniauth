@@ -180,9 +180,10 @@ module OmniAuth
         raise(error)
       end
 
-      warn_if_using_get
-
       @env = env
+
+      warn_if_using_get_on_request_path
+
       @env['omniauth.strategy'] = self if on_auth_path?
 
       return mock_call!(env) if OmniAuth.config.test_mode
@@ -201,7 +202,8 @@ module OmniAuth
       @app.call(env)
     end
 
-    def warn_if_using_get
+    def warn_if_using_get_on_request_path
+      return unless on_request_path?
       return unless OmniAuth.config.allowed_request_methods.include?(:get)
       return if OmniAuth.config.silence_get_warning
 
