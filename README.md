@@ -10,7 +10,7 @@
 [codeclimate]: https://codeclimate.com/github/omniauth/omniauth
 [coveralls]: https://coveralls.io/r/omniauth/omniauth
 
-This is the documentation for the in-development branch of OmniAuth. You can view the documentation for our latest release v2.0.3 [here](https://github.com/omniauth/omniauth/tree/v2.0.3). 
+This is the documentation for the version [v2.0.4](https://github.com/omniauth/omniauth/tree/v2.0.4) of OmniAuth.
 
 ## An Introduction
 OmniAuth is a library that standardizes multi-provider authentication for
