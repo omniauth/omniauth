@@ -290,7 +290,9 @@ module OmniAuth
       on_path?(callback_path)
     end
 
+    # Compare paths, ignoring case and query params
     def on_path?(path)
+      path = path.to_s[/\A[^\?]*/]
       current_path.casecmp(path).zero?
     end
 
