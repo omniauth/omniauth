@@ -20,7 +20,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu, macos]
-        ruby: [2.5, 2.6, 2.7, head, debug, truffleruby, truffleruby-head]
+        ruby: [2.5, 2.6, 2.7, '3.0', head, debug, truffleruby, truffleruby-head]
     steps:
     - uses: actions/checkout@v2
     - name: Set up Ruby
