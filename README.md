@@ -127,13 +127,17 @@ authentication flow.
 **Please note:** there is currently a CSRF vulnerability which affects OmniAuth (designated [CVE-2015-9284](https://nvd.nist.gov/vuln/detail/CVE-2015-9284)) that requires mitigation at the application level. More details on how to do this can be found on the [Wiki](https://github.com/omniauth/omniauth/wiki/Resolving-CVE-2015-9284).
 
 ## Configuring The `origin` Param
-The `origin` url parameter is typically used to inform where a user came from and where, should you choose to use it, they'd want to return to.
+The `origin` parameter is typically used to inform where a user came from and where, should you 
+choose to use it, they'd want to return to. Providing your auth request is a POST request, the
+origin param can be defined as a query string in the url or as part of the request body using a
+hidden input.
 
-There are three possible options:
+There are three possible scenarios for the origin param:
 
 Default Flow:
 ```ruby
 # /auth/twitter/?origin=[URL]
+# OR [within request <form>] <input type="hidden" name="origin" value="URL">
 # No change
 # If blank, `omniauth.origin` is set to HTTP_REFERER
 ```
@@ -141,6 +145,7 @@ Default Flow:
 Renaming Origin Param:
 ```ruby
 # /auth/twitter/?return_to=[URL]
+# OR [within request <form>] <input type="hidden" name="return_to" value="URL">
 # If blank, `omniauth.origin` is set to HTTP_REFERER
 provider :twitter, ENV['KEY'], ENV['SECRET'], origin_param: 'return_to'
 ```
