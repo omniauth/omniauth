@@ -56,7 +56,10 @@ example that you might put into a Rails initializer at
 
 ```ruby
 Rails.application.config.middleware.use OmniAuth::Builder do
-  provider :developer unless Rails.env.production?
+  unless Rails.env.production?
+    provider :developer
+    OmniAuth.config.allowed_request_methods = [:get, :post]
+  end
   provider :twitter, ENV['TWITTER_KEY'], ENV['TWITTER_SECRET']
 end
 ```
