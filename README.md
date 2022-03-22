@@ -119,14 +119,14 @@ end
 Additional providers can be added here in the future. Next we wire it
 all up using routes, a controller and a login view.
 
-**routes.rb**:
+**config/routes.rb**:
 
 ```ruby
   get 'auth/:provider/callback', to: 'sessions#create'
   get '/login', to: 'sessions#new'
 ```
 
-**sessions_controller.rb**:
+**app/controllers/sessions_controller.rb**:
 ```ruby
 class SessionsController < ApplicationController
   def new
@@ -149,7 +149,7 @@ end
 
 Now if you visit `/login` and click the Login button, you should see the
 OmniAuth developer login screen. After submitting it, you are returned to your
-application at `Sessions#new`. The raise should now display all the Omniauth
+application at `Sessions#create`. The raise should now display all the Omniauth
 details you have available to integrate it into your own user management.
 
 If you want out of the box usermanagement, you should consider using Omniauth
