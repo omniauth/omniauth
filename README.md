@@ -1,12 +1,12 @@
 # OmniAuth: Standardized Multi-Provider Authentication
 
 [![Gem Version](http://img.shields.io/gem/v/omniauth.svg)][gem]
-[![Build Status](http://img.shields.io/travis/omniauth/omniauth.svg)][travis]
+[![Build Status](https://github.com/omniauth/omniauth/actions/workflows/main.yml/badge.svg)][githubactions]
 [![Code Climate](https://api.codeclimate.com/v1/badges/ffd33970723587806744/maintainability)][codeclimate]
 [![Coverage Status](http://img.shields.io/coveralls/omniauth/omniauth.svg)][coveralls]
 
 [gem]: https://rubygems.org/gems/omniauth
-[travis]: http://travis-ci.org/omniauth/omniauth
+[githubactions]: https://github.com/omniauth/omniauth/actions/workflows/main.yml
 [codeclimate]: https://codeclimate.com/github/omniauth/omniauth
 [coveralls]: https://coveralls.io/r/omniauth/omniauth
 
