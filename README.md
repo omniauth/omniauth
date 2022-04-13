@@ -83,34 +83,7 @@ environment of a request to `/auth/:provider/callback`. This hash
 contains as much information about the user as OmniAuth was able to
 glean from the utilized strategy. You should set up an endpoint in your
 application that matches to the callback URL and then performs whatever
-steps are necessary for your application. For example, in a Rails app
-you would add a line in your `routes.rb` file like this:
-
-```ruby
-post '/auth/:provider/callback', to: 'sessions#create'
-```
-
-And you might then have a `SessionsController` with code that looks
-something like this:
-
-```ruby
-class SessionsController < ApplicationController
-  # If you're using a strategy that POSTs during callback, you'll need to skip the authenticity token check for the callback action only. 
-  skip_before_action :verify_authenticity_token, only: :create
-
-  def create
-    @user = User.find_or_create_from_auth_hash(auth_hash)
-    self.current_user = @user
-    redirect_to '/'
-  end
-
-  protected
-
-  def auth_hash
-    request.env['omniauth.auth']
-  end
-end
-```
+steps are necessary for your application. 
 
 The `omniauth.auth` key in the environment hash provides an
 Authentication Hash which will contain information about the just
@@ -124,35 +97,67 @@ environment information on the callback request. It is entirely up to
 you how you want to implement the particulars of your application's
 authentication flow.
 
-**Please note:** there is currently a CSRF vulnerability which affects OmniAuth (designated [CVE-2015-9284](https://nvd.nist.gov/vuln/detail/CVE-2015-9284)) that requires mitigation at the application level. More details on how to do this can be found on the [Wiki](https://github.com/omniauth/omniauth/wiki/Resolving-CVE-2015-9284).
 
-## Configuring The `origin` Param
-The `origin` url parameter is typically used to inform where a user came from and where, should you choose to use it, they'd want to return to.
+## Rails (without Devise)
+To get started, add the following gems
 
-There are three possible options:
-
-Default Flow:
+**Gemfile**:
 ```ruby
-# /auth/twitter/?origin=[URL]
-# No change
-# If blank, `omniauth.origin` is set to HTTP_REFERER
+gem 'omniauth'
+gem "omniauth-rails_csrf_protection"
 ```
 
-Renaming Origin Param:
+Then insert OmniAuth as a middleware
+
+**config/initializers/omniauth.rb**:
 ```ruby
-# /auth/twitter/?return_to=[URL]
-# If blank, `omniauth.origin` is set to HTTP_REFERER
-provider :twitter, ENV['KEY'], ENV['SECRET'], origin_param: 'return_to'
+Rails.application.config.middleware.use OmniAuth::Builder do
+  provider :developer if Rails.env.development?
+end
 ```
 
-Disabling Origin Param:
+Additional providers can be added here in the future. Next we wire it
+all up using routes, a controller and a login view.
+
+**config/routes.rb**:
+
 ```ruby
-# /auth/twitter
-# Origin handled externally, if need be. `omniauth.origin` is not set
-provider :twitter, ENV['KEY'], ENV['SECRET'], origin_param: false
+  get 'auth/:provider/callback', to: 'sessions#create'
+  get '/login', to: 'sessions#new'
 ```
 
-## Integrating OmniAuth Into Your Rails API
+**app/controllers/sessions_controller.rb**:
+```ruby
+class SessionsController < ApplicationController
+  def new
+    render :new
+  end
+
+  def create
+    user_info = request.env['omniauth.auth']
+    raise user_info # Your own session management should be placed here.
+  end
+end
+```
+
+**app/views/sessions/new.html.erb**:
+```erb
+<%= form_tag('/auth/developer', method: 'post', data: {turbo: false}) do %>
+  <button type='submit'>Login with Developer</button>
+<% end %>
+```
+
+Now if you visit `/login` and click the Login button, you should see the
+OmniAuth developer login screen. After submitting it, you are returned to your
+application at `Sessions#create`. The raise should now display all the Omniauth
+details you have available to integrate it into your own user management.
+
+If you want out of the box usermanagement, you should consider using Omniauth
+through Devise. Please visit the [Devise Github page](https://github.com/heartcombo/devise#omniauth)
+for more information.
+
+
+## Rails API
 The following middleware are (by default) included for session management in
 Rails applications. When using OmniAuth with a Rails API, you'll need to add
 one of these required middleware back in:
@@ -191,6 +196,33 @@ to `STDOUT` but you can configure this using `OmniAuth.config.logger`:
 OmniAuth.config.logger = Rails.logger
 ```
 
+## Origin Param
+The `origin` url parameter is typically used to inform where a user came from
+and where, should you choose to use it, they'd want to return to.
+Omniauth supports the following settings which can be configured on a provider level:
+
+**Default**:
+```ruby
+provider :twitter, ENV['KEY'], ENV['SECRET']
+POST /auth/twitter/?origin=[URL]
+# If the `origin` parameter is blank, `omniauth.origin` is set to HTTP_REFERER
+```
+
+**Using a differently named origin parameter**:
+```ruby
+provider :twitter, ENV['KEY'], ENV['SECRET'], origin_param: 'return_to'
+POST /auth/twitter/?return_to=[URL]
+# If the `return_to` parameter is blank, `omniauth.origin` is set to HTTP_REFERER
+```
+
+**Disabled**:
+```ruby
+provider :twitter, ENV['KEY'], ENV['SECRET'], origin_param: false
+POST /auth/twitter
+# This means the origin should be handled by your own application. 
+# Note that `omniauth.origin` will always be blank.
+```
+
 ## Resources
 The [OmniAuth Wiki](https://github.com/omniauth/omniauth/wiki) has
 actively maintained in-depth documentation for OmniAuth. It should be
@@ -201,7 +233,11 @@ OmniAuth, how it works, and how to use it.
 
 Available as part of the Tidelift Subscription.
 
-The maintainers of OmniAuth and thousands of other packages are working with Tidelift to deliver commercial support and maintenance for the open source packages you use to build your applications. Save time, reduce risk, and improve code health, while paying the maintainers of the exact packages you use. [Learn more.](https://tidelift.com/subscription/pkg/rubygems-omniauth?utm_source=undefined&utm_medium=referral&utm_campaign=enterprise&utm_term=repo)
+The maintainers of OmniAuth and thousands of other packages are working with
+Tidelift to deliver commercial support and maintenance for the open source
+packages you use to build your applications. Save time, reduce risk, and
+improve code health, while paying the maintainers of the exact packages you use.
+[Learn more.](https://tidelift.com/subscription/pkg/rubygems-omniauth?utm_source=undefined&utm_medium=referral&utm_campaign=enterprise&utm_term=repo)
 
 ## Supported Ruby Versions
 OmniAuth is tested under 2.5, 2.6, 2.7, truffleruby, and JRuby.
