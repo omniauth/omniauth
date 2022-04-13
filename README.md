@@ -1,12 +1,16 @@
 # OmniAuth: Standardized Multi-Provider Authentication
 
 [![Gem Version](http://img.shields.io/gem/v/omniauth.svg)][gem]
-[![Build Status](https://github.com/omniauth/omniauth/actions/workflows/main.yml/badge.svg)][githubactions]
+[![Ruby](https://github.com/omniauth/omniauth/actions/workflows/main.yml/badge.svg)][githubactions]
+[![TruffleRuby](https://github.com/omniauth/omniauth/actions/workflows/truffle_ruby.yml/badge.svg)](githubactionstruffle)
+[![JRuby](https://github.com/omniauth/omniauth/actions/workflows/jruby.yml/badge.svg)](githubactionsjruby)
 [![Code Climate](https://api.codeclimate.com/v1/badges/ffd33970723587806744/maintainability)][codeclimate]
 [![Coverage Status](http://img.shields.io/coveralls/omniauth/omniauth.svg)][coveralls]
 
 [gem]: https://rubygems.org/gems/omniauth
 [githubactions]: https://github.com/omniauth/omniauth/actions/workflows/main.yml
+[githubactionstruffle]: https://github.com/omniauth/omniauth/actions/workflows/truffle_ruby.yml
+[githubactionsjruby]: https://github.com/omniauth/omniauth/actions/workflows/jruby.yml
 [codeclimate]: https://codeclimate.com/github/omniauth/omniauth
 [coveralls]: https://coveralls.io/r/omniauth/omniauth
 

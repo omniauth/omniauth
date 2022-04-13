@@ -1,4 +1,4 @@
-name: jruby
+name: JRuby
 on:
   push:
     branches: [ master ]
@@ -6,7 +6,7 @@ on:
     branches: [ master ]
 
 jobs:
-  test-jruby:
+  test:
     runs-on: ubuntu-18.04
     strategy:
       fail-fast: false
