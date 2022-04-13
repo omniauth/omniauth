@@ -1,0 +1,30 @@
+name: JRuby
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-18.04
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu, macos]
+        jruby: [jruby] # TODO: Add back jruby-head once we figure out why there's a bundler mismatch
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.jruby }}
+        bundler-cache: true
+    - name: Install dependencies
+      env:
+        JRUBY_OPTS: --debug
+      run: bundle install
+    - name: Run tests
+      env:
+        JRUBY_OPTS: --debug
+      run: bundle exec rake
