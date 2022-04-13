@@ -11,3 +11,4 @@ log/*
 measurement/*
 pkg/*
 .DS_Store
+.tool-versions
