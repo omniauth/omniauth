@@ -2,6 +2,7 @@ if RUBY_VERSION >= '1.9'
   require 'simplecov'
   require 'coveralls'
   require 'simplecov-lcov'
+  require 'debug'
 
   SimpleCov::Formatter::LcovFormatter.config.report_with_single_file = true
 
