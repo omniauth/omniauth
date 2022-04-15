@@ -4,6 +4,8 @@ gem 'jruby-openssl', '~> 0.10.5', platforms: :jruby
 gem 'rake', '>= 12.0'
 gem 'yard', '>= 0.9.11'
 
+gem 'debug' # デバッガ
+
 group :development do
   gem 'benchmark-ips'
   gem 'kramdown'
