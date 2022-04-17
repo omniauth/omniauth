@@ -82,8 +82,8 @@ describe OmniAuth do
     end
 
     it 'is able to set hook on callback_call' do
-      binding.b
       OmniAuth.configure do |config|
+        binding.b
         config.before_callback_phase do
           'heyhey'
         end
