@@ -24,3 +24,4 @@ module Omokawa
 end
 
 p Omokawa.config.hoge
+p Omokawa.config.fuga
