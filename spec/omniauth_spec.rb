@@ -8,7 +8,6 @@ describe OmniAuth do
           include OmniAuth::Strategy
         end
       end.to change(OmniAuth.strategies, :size).by(1)
-      binding.b
       expect(OmniAuth.strategies.last).to eq(ExampleStrategy)
     end
   end
