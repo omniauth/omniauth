@@ -83,7 +83,6 @@ describe OmniAuth do
 
     it 'is able to set hook on callback_call' do
       OmniAuth.configure do |config|
-        binding.b
         config.before_callback_phase do
           'heyhey'
         end
@@ -92,6 +91,7 @@ describe OmniAuth do
     end
 
     it 'is able to set request_validation_phase' do
+      binding.b
       OmniAuth.configure do |config|
         config.request_validation_phase do
           'validated'
