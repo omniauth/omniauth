@@ -91,7 +91,6 @@ describe OmniAuth do
     end
 
     it 'is able to set request_validation_phase' do
-      binding.b
       OmniAuth.configure do |config|
         config.request_validation_phase do
           'validated'
@@ -141,6 +140,7 @@ describe OmniAuth do
 
   describe '::Utils' do
     describe 'form_css' do
+      binding.b
       it 'returns a style tag with the configured form_css' do
         allow(OmniAuth).to receive(:config).and_return(double(:form_css => 'css.css'))
         expect(OmniAuth::Utils.form_css).to eq "<style type='text/css'>css.css</style>"
