@@ -172,9 +172,9 @@ describe OmniAuth do
       end
 
       it 'replaces / with ::' do
-        binding.b
         expect(OmniAuth::Utils.camelize('apple_jack/cereal')).to eq('AppleJack::Cereal')
         expect(OmniAuth::Utils.camelize('apple_jack/cereal', false)).to eq('appleJack::Cereal')
+        binding.b
       end
     end
   end
