@@ -21,6 +21,7 @@ describe OmniAuth::Strategy do
 
   describe '.default_options' do
     it 'is inherited from a parent class' do
+      binding.b
       superklass = Class.new
       superklass.send :include, OmniAuth::Strategy
       superklass.configure do |c|
