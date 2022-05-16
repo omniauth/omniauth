@@ -101,6 +101,13 @@ environment information on the callback request. It is entirely up to
 you how you want to implement the particulars of your application's
 authentication flow.
 
+## rack_csrf
+
+`omniauth` is not OOTB-compatible with [rack_csrf](https://github.com/baldowl/rack_csrf). In order to do so, the following code needs to be added to the application bootstrapping code:
+
+```ruby
+OmniAuth::AuthenticityTokenProtection.default_options(key: "csrf.token", authenticity_param: "_csrf")
+```
 
 ## Rails (without Devise)
 To get started, add the following gems
