@@ -103,11 +103,11 @@ authentication flow.
 
 ## Cross-Site Request Forgery (CSRF) protection
 
-OmniAuth protects against [CSRF attack](https://owasp.org/www-community/attacks/csrf) on HTTP request of the strategy request phase (`POST /auth/:provider`).
+OmniAuth protects against [CSRF attacks](https://owasp.org/www-community/attacks/csrf) during the request phase (`POST /auth/:provider`).
 
-It uses the [OmniAuth::AuthenticityTokenProtection](./lib/omniauth/authenticity_token_protection.rb) middleware which inherits from `Rack::Protection::AuthenticityToken` of the popular gem [rack-protection](https://rubygems.org/gems/rack-protection).
+It uses the [OmniAuth::AuthenticityTokenProtection](./lib/omniauth/authenticity_token_protection.rb) middleware that inherits from `Rack::Protection::AuthenticityToken` (gem [rack-protection](https://rubygems.org/gems/rack-protection)).
 
-If you need, you can pass custom options to `Rack::Protection::AuthenticityToken` like this:
+If needed, you can pass custom options to `Rack::Protection::AuthenticityToken` like this:
 
 ```ruby
 OmniAuth::AuthenticityTokenProtection.default_options(
@@ -116,9 +116,9 @@ OmniAuth::AuthenticityTokenProtection.default_options(
 )
 ```
 
-It's worth noting the `Rack::Protection::AuthenticityToken` encode/decode CSRF token in base64, in the case you are using a different mecanism you will need to use the `allow_if` option. 
+It's worth mentioning that `Rack::Protection::AuthenticityToken` encode/decode CSRF token in base64, in the case you are using a different approach you will need to use the `allow_if` option and implement the allow/deny logic yourself.
 
-See the [documentation](https://www.rubydoc.info/gems/rack-protection/Rack/Protection/AuthenticityToken).
+See the [documentation](https://www.rubydoc.info/gems/rack-protection/Rack/Protection/AuthenticityToken) for more details.
 
 ## Rails (without Devise)
 To get started, add the following gems
