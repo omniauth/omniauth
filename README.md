@@ -14,7 +14,7 @@
 [codeclimate]: https://codeclimate.com/github/omniauth/omniauth
 [coveralls]: https://coveralls.io/r/omniauth/omniauth
 
-This is the documentation for the in-development branch of OmniAuth. You can view the documentation for our latest release v2.1.0 [here](https://github.com/omniauth/omniauth/releases/tag/v2.1.0). 
+This is the documentation for the in-development branch of OmniAuth. You can view the documentation for our latest release v2.1.0 [here](https://github.com/omniauth/omniauth/releases/tag/v2.1.0).
 
 ## An Introduction
 OmniAuth is a library that standardizes multi-provider authentication for
@@ -87,7 +87,7 @@ environment of a request to `/auth/:provider/callback`. This hash
 contains as much information about the user as OmniAuth was able to
 glean from the utilized strategy. You should set up an endpoint in your
 application that matches to the callback URL and then performs whatever
-steps are necessary for your application. 
+steps are necessary for your application.
 
 The `omniauth.auth` key in the environment hash provides an
 Authentication Hash which will contain information about the just
@@ -133,20 +133,23 @@ all up using routes, a controller and a login view.
 **config/routes.rb**:
 
 ```ruby
-  get 'auth/:provider/callback', to: 'sessions#create'
+  post 'auth/:provider/callback', to: 'sessions#create'
   get '/login', to: 'sessions#new'
 ```
 
 **app/controllers/sessions_controller.rb**:
 ```ruby
 class SessionsController < ApplicationController
+  # If you're using a strategy that POSTs during callback, you'll need to skip the authenticity token check for the callback action only.
+  skip_before_action :verify_authenticity_token, only: :create
+
   def new
     render :new
   end
 
   def create
     user_info = request.env['omniauth.auth']
-    raise user_info # Your own session management should be placed here.
+    raise user_info.to_s # Your own session management should be placed here.
   end
 end
 ```
@@ -230,7 +233,7 @@ POST /auth/twitter/?return_to=[URL]
 ```ruby
 provider :twitter, ENV['KEY'], ENV['SECRET'], origin_param: false
 POST /auth/twitter
-# This means the origin should be handled by your own application. 
+# This means the origin should be handled by your own application.
 # Note that `omniauth.origin` will always be blank.
 ```
 
