@@ -1,4 +1,4 @@
-require 'rack-protection'
+require 'rack/protection'
 
 module OmniAuth
   class AuthenticityError < StandardError; end
