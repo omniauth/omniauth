@@ -116,7 +116,7 @@ OmniAuth::AuthenticityTokenProtection.default_options(
 )
 ```
 
-It's worth mentioning that `Rack::Protection::AuthenticityToken` encode/decode CSRF token in base64, in the case you are using a different approach you will need to use the `allow_if` option and implement the allow/deny logic yourself.
+It's worth mentioning that `Rack::Protection::AuthenticityToken` encodes/decodes the CSRF token in base64, in the case you are using a different approach you will need to use the `allow_if` option and implement the allow/deny logic yourself.
 
 See the [documentation](https://www.rubydoc.info/gems/rack-protection/Rack/Protection/AuthenticityToken) for more details.
 
