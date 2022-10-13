@@ -12,6 +12,7 @@ group :development do
 end
 
 group :test do
+  gem 'bake-test-external'
   gem 'coveralls_reborn', '~> 0.19.0', require: false
   gem 'hashie', '>= 3.4.6', '~> 4.0.0', platforms: [:jruby_18]
   gem 'json', '~> 2.3.0', platforms: %i[jruby_18 jruby_19 ruby_19]
