@@ -498,6 +498,7 @@ module OmniAuth
     end
 
     def script_name
+      return '' if @env.nil?
       @env['SCRIPT_NAME'] || ''
     end
 
