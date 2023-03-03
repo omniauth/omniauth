@@ -31,7 +31,7 @@ describe OmniAuth::Strategies::Developer do
 
     context 'with default options' do
       before do
-        post '/auth/developer/callback', :name => 'Example User', :email => 'user@example.com'
+        get '/auth/developer/callback', :name => 'Example User', :email => 'user@example.com'
       end
 
       it 'sets the name in the auth hash' do
@@ -58,7 +58,7 @@ describe OmniAuth::Strategies::Developer do
 
       before do
         @options = {:uid_field => :last_name, :fields => %i[first_name last_name]}
-        post '/auth/developer/callback', :first_name => 'Example', :last_name => 'User'
+        get '/auth/developer/callback', :first_name => 'Example', :last_name => 'User'
       end
 
       it 'sets info fields properly' do
