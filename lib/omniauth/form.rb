@@ -7,6 +7,7 @@ module OmniAuth
     def initialize(options = {})
       options[:title] ||= 'Authentication Info Required'
       options[:header_info] ||= ''
+      options[:method] ||= 'post'
       self.options = options
 
       @html = +'' # unary + string allows it to be mutable if strings are frozen
@@ -75,7 +76,7 @@ module OmniAuth
       </head>
       <body>
       <h1>#{title}</h1>
-      <form method='post' #{"action='#{options[:url]}' " if options[:url]}noValidate='noValidate'>
+      <form method='#{options[:method]}' #{"action='#{options[:url]}' " if options[:url]}noValidate='noValidate'>
       HTML
       self
     end
