@@ -20,6 +20,14 @@ describe OmniAuth::Form do
     it 'sets an H1 tag from the passed :title option' do
       expect(OmniAuth::Form.new(:title => 'Something Cool').to_html).to be_include('<h1>Something Cool</h1>')
     end
+
+    it 'sets the default form method to post' do
+      expect(OmniAuth::Form.new.to_html).to be_include("method='post'")
+    end
+
+    it 'sets the form method to the passed :method option' do
+      expect(OmniAuth::Form.new(:method => 'get').to_html).to be_include("method='get'")
+    end
   end
 
   describe '#password_field' do
