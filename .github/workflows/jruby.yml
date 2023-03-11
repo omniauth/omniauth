@@ -20,10 +20,8 @@ jobs:
       with:
         ruby-version: ${{ matrix.jruby }}
         bundler-cache: true
-    - name: Install dependencies
       env:
         JRUBY_OPTS: --debug
-      run: bundle install
     - name: Run tests
       env:
         JRUBY_OPTS: --debug
