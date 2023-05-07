@@ -35,7 +35,7 @@ module OmniAuth
       option :uid_field, :email
 
       def request_phase
-        form = OmniAuth::Form.new(:title => 'User Info', :url => callback_path)
+        form = OmniAuth::Form.new(:title => 'User Info', :url => callback_path, :method => 'get')
         options.fields.each do |field|
           form.text_field field.to_s.capitalize.tr('_', ' '), field.to_s
         end
