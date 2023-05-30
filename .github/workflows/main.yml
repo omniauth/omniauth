@@ -54,6 +54,8 @@ jobs:
         bundler-cache: true
     - name: Run tests
       run: bundle exec rake
+      env:
+        COVERAGE: true
     - name: Coveralls GitHub Action
       uses: coverallsapp/github-action@v2
       with:
