@@ -1,11 +1,4 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-# This workflow will download a prebuilt Ruby version, install dependencies and run tests with Rake
-# For more information see: https://github.com/marketplace/actions/setup-ruby-jruby-and-truffleruby
-
-name: Ruby
+name: CI
 
 on:
   push:
@@ -20,7 +13,21 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu, macos]
-        ruby: [2.5, 2.6, 2.7, '3.0', 3.1, 3.2, head, debug]
+        ruby:
+          - 2.5
+          - 2.6
+          - 2.7
+          - '3.0'
+          - 3.1
+          - 3.2
+          - head
+          - debug
+          - truffleruby
+          - truffleruby-head
+          - jruby
+          # - jruby-head TODO: Add back jruby-head once we figure out why there's a bundler mismatch
+    env:
+      JRUBY_OPTS: --debug
     steps:
     - uses: actions/checkout@v3
     - name: Set up Ruby
