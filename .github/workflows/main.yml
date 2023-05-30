@@ -15,7 +15,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-18.04
+    runs-on: ${{ matrix.os }}-latest
     strategy:
       fail-fast: false
       matrix:
@@ -28,12 +28,10 @@ jobs:
       with:
         ruby-version: ${{ matrix.ruby }}
         bundler-cache: true
-    - name: Install dependencies
-      run: bundle install
     - name: Run tests
       run: bundle exec rake
   frozen-string-compat:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Set up Ruby
@@ -41,14 +39,12 @@ jobs:
       with:
         ruby-version: 2.6
         bundler-cache: true
-    - name: Install dependencies
-      run: bundle install
     - name: Run tests
       env:
         RUBYOPT: "--enable-frozen-string-literal"
       run: bundle exec rake
   coveralls:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Set up Ruby
@@ -56,8 +52,6 @@ jobs:
       with:
         ruby-version: 2.6
         bundler-cache: true
-    - name: Install dependencies
-      run: bundle install
     - name: Run tests
       run: bundle exec rake
     - name: Coveralls GitHub Action
