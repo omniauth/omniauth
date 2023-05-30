@@ -14,6 +14,19 @@ on:
     branches: [ master ]
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 2.6
+        bundler-cache: true
+    - name: Set-up RuboCop Problem Matcher
+      uses: r7kamura/rubocop-problem-matchers-action@v1
+    - name: Run Rubocop
+      run: bundle exec rubocop
   test:
     runs-on: ${{ matrix.os }}-latest
     strategy:
