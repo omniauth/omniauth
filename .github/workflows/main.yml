@@ -55,7 +55,7 @@ jobs:
     - name: Run tests
       run: bundle exec rake
     - name: Coveralls GitHub Action
-      uses: coverallsapp/github-action@v1.1.2
+      uses: coverallsapp/github-action@v2
       with:
         github-token: ${{ secrets.github_token }}
         path-to-lcov: './coverage/lcov/omniauth.lcov'
