@@ -1,3 +1,7 @@
+# TODO: Fixed in https://github.com/rack/rack/pull/1610 for Rack 3
+if defined?(RUBY_ENGINE) && RUBY_ENGINE == "jruby"
+  require 'delegate'
+end
 require 'rack'
 require 'singleton'
 require 'logger'
