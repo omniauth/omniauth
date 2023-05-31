@@ -30,6 +30,14 @@ jobs:
         bundler-cache: true
     - name: Run tests
       run: bundle exec rake
+      env:
+        COVERAGE: true
+    - name: Coveralls GitHub Action
+      uses: coverallsapp/github-action@v2
+      with:
+        github-token: ${{ secrets.github_token }}
+        path-to-lcov: './coverage/lcov/omniauth.lcov'
+        flag-name: ${{ matrix.os }}-${{ matrix.ruby }}
   frozen-string-compat:
     runs-on: ubuntu-latest
     steps:
@@ -43,21 +51,11 @@ jobs:
       env:
         RUBYOPT: "--enable-frozen-string-literal"
       run: bundle exec rake
-  coveralls:
+  finish:
+    needs: test
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: 2.6
-        bundler-cache: true
-    - name: Run tests
-      run: bundle exec rake
-      env:
-        COVERAGE: true
-    - name: Coveralls GitHub Action
-      uses: coverallsapp/github-action@v2
-      with:
-        github-token: ${{ secrets.github_token }}
-        path-to-lcov: './coverage/lcov/omniauth.lcov'
+      - name: Close parallel build
+        uses: coverallsapp/github-action@v1
+        with:
+          parallel-finished: true
