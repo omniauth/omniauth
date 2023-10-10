@@ -29,7 +29,7 @@ module OmniAuth
       path_prefix = OmniAuth.config.path_prefix if path_prefix.nil?
 
       message_key = env['omniauth.error.type']
-      new_path = "#{env['SCRIPT_NAME']}#{path_prefix}/failure?message=#{message_key}#{origin_query_param}#{strategy_name_query_param}"
+      new_path = "#{env['SCRIPT_NAME']}#{path_prefix}/failure?message=#{Rack::Utils.escape(message_key)}#{origin_query_param}#{strategy_name_query_param}"
       Rack::Response.new(['302 Moved'], 302, 'Location' => new_path).finish
     end
 
