@@ -24,4 +24,5 @@ Gem::Specification.new do |spec|
   spec.summary       = spec.description
   spec.version       = OmniAuth::VERSION
   spec.metadata      = { 'rubygems_mfa_required' => 'true' }
+  spec.metadata['changelog_uri'] = spec.homepage + '/releases'
 end
