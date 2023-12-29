@@ -25,4 +25,21 @@ jobs:
     - name: Run tests
       env:
         JRUBY_OPTS: --debug
+        COVERAGE: true
       run: bundle exec rake
+    - name: Coveralls GitHub Action
+      if: matrix.os == 'ubuntu'
+      uses: coverallsapp/github-action@v2
+      with:
+        parallel: true
+        github-token: ${{ secrets.github_token }}
+        path-to-lcov: './coverage/lcov/omniauth.lcov'
+        flag-name: ${{ matrix.jruby }}
+  finish:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close parallel build
+        uses: coverallsapp/github-action@v1
+        with:
+          parallel-finished: true

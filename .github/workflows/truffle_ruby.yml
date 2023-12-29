@@ -22,3 +22,21 @@ jobs:
         bundler-cache: true
     - name: Run tests
       run: bundle exec rake
+      env:
+        COVERAGE: true
+    - name: Coveralls GitHub Action
+      if: matrix.os == 'ubuntu'
+      uses: coverallsapp/github-action@v2
+      with:
+        parallel: true
+        github-token: ${{ secrets.github_token }}
+        path-to-lcov: './coverage/lcov/omniauth.lcov'
+        flag-name: ${{ matrix.ruby }}
+  finish:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close parallel build
+        uses: coverallsapp/github-action@v1
+        with:
+          parallel-finished: true
