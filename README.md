@@ -134,13 +134,15 @@ all up using routes, a controller and a login view.
 **config/routes.rb**:
 
 ```ruby
-  get 'auth/:provider/callback', to: 'sessions#create'
+  post 'auth/:provider/callback', to: 'sessions#create'
   get '/login', to: 'sessions#new'
 ```
 
 **app/controllers/sessions_controller.rb**:
 ```ruby
 class SessionsController < ApplicationController
+  protect_from_forgery with: :null_session, only: [:create]
+
   def new
     render :new
   end
