@@ -3,17 +3,17 @@ require 'helper'
 describe OmniAuth::Builder do
   describe '#provider' do
     it 'translates a symbol to a constant' do
-      expect(OmniAuth::Strategies).to receive(:const_get).with('MyStrategy', false).and_return(Class.new)
-      OmniAuth::Builder.new(nil) do
+      expect(OmniAuth::Strategies).to receive(:const_get).with('MyStrategy', false).and_return(Struct.new :app)
+      OmniAuth::Builder.new(proc {}) do
         provider :my_strategy
       end
     end
 
     it 'accepts a class' do
-      class ExampleClass; end
+      ExampleClass = Struct.new :app
 
       expect do
-        OmniAuth::Builder.new(nil) do
+        OmniAuth::Builder.new(proc {}) do
           provider ::ExampleClass
         end
       end.not_to raise_error
@@ -21,7 +21,7 @@ describe OmniAuth::Builder do
 
     it "raises a helpful LoadError message if it can't find the class" do
       expect do
-        OmniAuth::Builder.new(nil) do
+        OmniAuth::Builder.new(proc {}) do
           provider :lorax
         end
       end.to raise_error(LoadError, 'Could not find matching strategy for :lorax. You may need to install an additional gem (such as omniauth-lorax).')
@@ -31,7 +31,7 @@ describe OmniAuth::Builder do
       class MyStrategy; end
 
       expect do
-        OmniAuth::Builder.new(nil) do
+        OmniAuth::Builder.new(proc {}) do
           provider :my_strategy
         end
       end.to raise_error(LoadError, 'Could not find matching strategy for :my_strategy. You may need to install an additional gem (such as omniauth-my_strategy).')
@@ -40,21 +40,25 @@ describe OmniAuth::Builder do
 
   describe '#options' do
     it 'merges provided options in' do
-      k = Class.new
-      b = OmniAuth::Builder.new(nil)
-      expect(b).to receive(:use).with(k, :foo => 'bar', :baz => 'tik')
+      k = Struct.new :app, :options
+      app = proc {}
+      expect(k).to receive(:new).with(app, :foo => 'bar', :baz => 'tik')
 
-      b.options :foo => 'bar'
-      b.provider k, :baz => 'tik'
+      OmniAuth::Builder.new(app) do
+        options :foo => 'bar'
+        provider k, :baz => 'tik'
+      end
     end
 
     it 'adds an argument if no options are provided' do
-      k = Class.new
-      b = OmniAuth::Builder.new(nil)
-      expect(b).to receive(:use).with(k, :foo => 'bar')
+      k = Struct.new :app, :options
+      app = proc {}
+      expect(k).to receive(:new).with(app, :foo => 'bar')
 
-      b.options :foo => 'bar'
-      b.provider k
+      OmniAuth::Builder.new(app) do
+        options :foo => 'bar'
+        provider k
+      end
     end
   end
 
@@ -63,7 +67,9 @@ describe OmniAuth::Builder do
       prok = proc {}
 
       with_config_reset(:on_failure) do
-        OmniAuth::Builder.new(nil).on_failure(&prok)
+        OmniAuth::Builder.new(proc {}) do
+          on_failure(&prok)
+        end
 
         expect(OmniAuth.config.on_failure).to eq(prok)
       end
@@ -75,7 +81,9 @@ describe OmniAuth::Builder do
       prok = proc {}
 
       with_config_reset(:before_options_phase) do
-        OmniAuth::Builder.new(nil).before_options_phase(&prok)
+        OmniAuth::Builder.new(proc {}) do
+          before_options_phase(&prok)
+        end
 
         expect(OmniAuth.config.before_options_phase).to eq(prok)
       end
@@ -87,7 +95,9 @@ describe OmniAuth::Builder do
       prok = proc {}
 
       with_config_reset(:before_request_phase) do
-        OmniAuth::Builder.new(nil).before_request_phase(&prok)
+        OmniAuth::Builder.new(proc {}) do
+          before_request_phase(&prok)
+        end
 
         expect(OmniAuth.config.before_request_phase).to eq(prok)
       end
@@ -99,7 +109,9 @@ describe OmniAuth::Builder do
       prok = proc {}
 
       with_config_reset(:before_callback_phase) do
-        OmniAuth::Builder.new(nil).before_callback_phase(&prok)
+        OmniAuth::Builder.new(proc {}) do
+          before_callback_phase(&prok)
+        end
 
         expect(OmniAuth.config.before_callback_phase).to eq(prok)
       end
@@ -111,7 +123,9 @@ describe OmniAuth::Builder do
       prok = proc {}
       allow(OmniAuth).to receive(:configure).and_call_original
 
-      OmniAuth::Builder.new(nil).configure(&prok)
+      OmniAuth::Builder.new(proc {}) do
+        configure(&prok)
+      end
 
       expect(OmniAuth).to have_received(:configure) do |&block|
         expect(block).to eq(prok)
