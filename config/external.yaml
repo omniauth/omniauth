@@ -1,0 +1,3 @@
+devise:
+  url: https://github.com/heartcombo/devise.git
+  command: bundle exec rake test

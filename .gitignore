@@ -12,3 +12,4 @@ measurement/*
 pkg/*
 .DS_Store
 .tool-versions
+external
