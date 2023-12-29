@@ -13,11 +13,12 @@ module OmniAuth
     autoload :Developer, 'omniauth/strategies/developer'
   end
 
-  autoload :Builder,  'omniauth/builder'
-  autoload :Strategy, 'omniauth/strategy'
-  autoload :Test,     'omniauth/test'
-  autoload :Form,     'omniauth/form'
-  autoload :AuthHash, 'omniauth/auth_hash'
+  autoload :AuthBuilder, 'omniauth/auth_builder'
+  autoload :Builder,     'omniauth/builder'
+  autoload :Strategy,    'omniauth/strategy'
+  autoload :Test,        'omniauth/test'
+  autoload :Form,        'omniauth/form'
+  autoload :AuthHash,    'omniauth/auth_hash'
   autoload :FailureEndpoint, 'omniauth/failure_endpoint'
   autoload :AuthenticityTokenProtection, 'omniauth/authenticity_token_protection'
 
