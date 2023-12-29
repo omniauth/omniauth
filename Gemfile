@@ -16,7 +16,9 @@ group :test do
   gem 'rack-test'
   gem 'rspec', '~> 3.5'
   gem 'rack-freeze'
-  gem 'rubocop', '>= 0.58.2', '< 0.69.0', platforms: %i[ruby_22 ruby_23 ruby_24]
+  gem 'rubocop', '~> 1.51', require: false
+  gem 'rubocop-rake', require: false
+  gem 'rubocop-rspec', require: false
   gem 'simplecov-lcov'
 end
 
