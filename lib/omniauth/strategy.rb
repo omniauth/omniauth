@@ -190,7 +190,7 @@ module OmniAuth
 
       begin
         return options_call if on_auth_path? && options_request?
-        return request_call if on_request_path? && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
+        return request_call if on_request_path? && request_method_allowed?
         return callback_call if on_callback_path?
         return other_phase if respond_to?(:other_phase)
       rescue StandardError => e
@@ -270,6 +270,14 @@ module OmniAuth
       @env['omniauth.params'] = session.delete('omniauth.params') || {}
       OmniAuth.config.before_callback_phase.call(@env) if OmniAuth.config.before_callback_phase
       callback_phase
+    end
+
+    def request_method_allowed?
+      method = request.request_method.downcase.to_sym
+      unless OmniAuth.config.allowed_request_methods.include?(method)
+        log :warn, "Request method #{method} not allowed"
+        false
+      end
     end
 
     # Returns true if the environment recognizes either the
