@@ -854,6 +854,11 @@ describe OmniAuth::Strategy do
             strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'origin=/foo'))
             expect(strategy.env['rack.session']['omniauth.origin']).to eq('/foo')
           end
+
+          it 'does not override omniauth.origin if already set' do
+            strategy.call(make_env('/auth/test', 'omniauth.origin' => '/foo'))
+            expect(strategy.env['omniauth.origin']).to eq('/foo')
+          end
         end
 
         context 'custom' do
