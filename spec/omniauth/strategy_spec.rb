@@ -854,11 +854,6 @@ describe OmniAuth::Strategy do
             strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'origin=/foo'))
             expect(strategy.env['rack.session']['omniauth.origin']).to eq('/foo')
           end
-
-          it 'does not override omniauth.origin if already set' do
-            strategy.call(make_env('/auth/test', 'omniauth.origin' => '/foo'))
-            expect(strategy.env['omniauth.origin']).to eq('/foo')
-          end
         end
 
         context 'custom' do
@@ -875,6 +870,14 @@ describe OmniAuth::Strategy do
 
         strategy.call(make_env('/auth/test/callback', 'rack.session' => {'omniauth.origin' => 'http://example.com/origin'}))
         expect(strategy.env['omniauth.origin']).to eq('http://example.com/origin')
+      end
+
+      it 'does not override omniauth.origin if already set on the callback phase' do
+        strategy.call(make_env('/auth/test/callback',
+          'rack.session' => {'omniauth.origin' => 'http://example.com/origin'},
+          'omniauth.origin' => '/foo'))
+        expect(strategy.env['omniauth.origin']).to eq('/foo')
+        expect(strategy.env['rack.session']['omniauth.origin']).to be_nil
       end
 
       it 'executes callback hook on the callback phase' do
