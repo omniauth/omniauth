@@ -872,6 +872,14 @@ describe OmniAuth::Strategy do
         expect(strategy.env['omniauth.origin']).to eq('http://example.com/origin')
       end
 
+      it 'does not override omniauth.origin if already set on the callback phase' do
+        strategy.call(make_env('/auth/test/callback',
+          'rack.session' => {'omniauth.origin' => 'http://example.com/origin'},
+          'omniauth.origin' => '/foo'))
+        expect(strategy.env['omniauth.origin']).to eq('/foo')
+        expect(strategy.env['rack.session']['omniauth.origin']).to be_nil
+      end
+
       it 'executes callback hook on the callback phase' do
         OmniAuth.config.mock_auth[:test] = {}
         OmniAuth.config.before_callback_phase do |env|

@@ -335,7 +335,9 @@ module OmniAuth
 
     def mock_callback_call
       setup_phase
-      @env['omniauth.origin'] = session.delete('omniauth.origin')
+
+      origin = session.delete('omniauth.origin')
+      @env['omniauth.origin'] ||= origin
       @env['omniauth.origin'] = nil if env['omniauth.origin'] == ''
       @env['omniauth.params'] = session.delete('omniauth.params') || {}
 
