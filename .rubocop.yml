@@ -1,19 +1,29 @@
+inherit_from: .rubocop_todo.yml
+
+require:
+  - rubocop-rake
+  - rubocop-rspec
+
 AllCops:
+  NewCops: enable # Opt-in to newly added rules
   TargetRubyVersion: 2.2
 
 Layout/AccessModifierIndentation:
   EnforcedStyle: outdent
 
-Layout/AlignHash:
-  Enabled: false
-
 Layout/DotPosition:
   EnforcedStyle: trailing
+
+Layout/HashAlignment:
+  Enabled: false
+
+Layout/LineLength:
+  Enabled: false
 
 Layout/SpaceInsideHashLiteralBraces:
   EnforcedStyle: no_space
 
-Lint/HandleExceptions:
+Lint/SuppressedException:
   Enabled: false
 
 Metrics/BlockLength:
@@ -21,10 +31,6 @@ Metrics/BlockLength:
 
 Metrics/BlockNesting:
   Max: 2
-
-Metrics/LineLength:
-  AllowURI: true
-  Enabled: false
 
 Metrics/MethodLength:
   CountComments: false

@@ -34,7 +34,7 @@ module OmniAuth
       logger
     end
 
-    def self.defaults # rubocop:disable MethodLength
+    def self.defaults # rubocop:disable Metrics/MethodLength
       @defaults ||= {
         :camelizations => {},
         :path_prefix => '/auth',
