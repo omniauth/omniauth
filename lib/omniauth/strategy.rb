@@ -15,6 +15,7 @@ module OmniAuth
         option :setup, false
         option :skip_info, false
         option :origin_param, 'origin'
+        option :allowed_request_methods, %i[post]
       end
     end
 
@@ -190,7 +191,7 @@ module OmniAuth
 
       begin
         return options_call if on_auth_path? && options_request?
-        return request_call if on_request_path? && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
+        return request_call if on_request_path? && method_allowed?
         return callback_call if on_callback_path?
         return other_phase if respond_to?(:other_phase)
       rescue StandardError => e
@@ -204,7 +205,7 @@ module OmniAuth
 
     def warn_if_using_get_on_request_path
       return unless on_request_path?
-      return unless OmniAuth.config.allowed_request_methods.include?(:get)
+      return unless method_allowed?
       return if OmniAuth.config.silence_get_warning
 
       log :warn, <<-WARN
@@ -225,7 +226,13 @@ module OmniAuth
     # Responds to an OPTIONS request.
     def options_call
       OmniAuth.config.before_options_phase.call(env) if OmniAuth.config.before_options_phase
-      verbs = OmniAuth.config.allowed_request_methods.collect(&:to_s).collect(&:upcase).join(', ')
+      verbs =
+        OmniAuth.config.allowed_request_methods
+        .concat(@options.allowed_request_methods)
+        .uniq
+        .collect(&:to_s)
+        .collect(&:upcase)
+        .join(', ')
       [200, {'Allow' => verbs}, []]
     end
 
@@ -298,12 +305,17 @@ module OmniAuth
       request.request_method == 'OPTIONS'
     end
 
+    def method_allowed?
+      method = request.request_method.downcase.to_sym
+      OmniAuth.config.allowed_request_methods.include?(method) || @options.allowed_request_methods.include?(method)
+    end
+
     # This is called in lieu of the normal request process
     # in the event that OmniAuth has been configured to be
     # in test mode.
     def mock_call!(*)
       begin
-        return mock_request_call if on_request_path? && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
+        return mock_request_call if on_request_path? && method_allowed?
         return mock_callback_call if on_callback_path?
       rescue StandardError => e
         raise e if env.delete('omniauth.error.app')
