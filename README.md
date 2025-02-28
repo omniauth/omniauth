@@ -116,7 +116,7 @@ To get started, add the following gems
 **Gemfile**:
 ```ruby
 gem 'omniauth'
-gem "omniauth-rails_csrf_protection"
+gem 'omniauth-rails_csrf_protection'
 ```
 
 Then insert OmniAuth as a middleware
