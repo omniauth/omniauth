@@ -33,6 +33,11 @@ jobs:
         bundler-cache: true
     - name: Run tests
       run: bundle exec rake
+    - name: Run Devise's tests
+      if: >-
+        matrix.ruby != 2.5 &&
+        matrix.ruby != 2.6
+      run: bundle exec bake test:external
   frozen-string-compat:
     runs-on: ubuntu-latest
     steps:
