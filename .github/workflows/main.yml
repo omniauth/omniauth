@@ -20,10 +20,18 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu, macos]
-        ruby: [2.5, 2.6, 2.7, '3.0', 3.1, 3.2, 3.3, head, debug]
+        ruby: ['2.5', '2.6', '2.7', '3.0', '3.1', '3.2', '3.3', '3.4', head, debug]
         exclude:
         - os: macos
-          ruby: 2.5
+          ruby: '2.5'
+        - os: macos
+          ruby: head
+        - os: macos
+          ruby: debug
+        - os: ubuntu
+          ruby: head
+        - os: ubuntu
+          ruby: debug
     steps:
     - uses: actions/checkout@v3
     - name: Set up Ruby
