@@ -12,6 +12,7 @@ group :development do
 end
 
 group :test do
+  gem 'cgi'
   gem 'coveralls_reborn', '~> 0.19.0', require: false
   gem 'rack-test'
   gem 'rspec', '~> 3.5'
