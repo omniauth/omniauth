@@ -9,6 +9,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'rack', '>= 2.2.3'
   spec.add_development_dependency 'bundler', '~> 2.0'
   spec.add_dependency 'rack-protection'
+  spec.add_dependency 'logger'
   spec.add_development_dependency 'rake', '~> 12.0'
   spec.authors       = ['Michael Bleigh', 'Erik Michaels-Ober', 'Tom Milewski']
   spec.description   = 'A generalized Rack framework for multiple-provider authentication.'
