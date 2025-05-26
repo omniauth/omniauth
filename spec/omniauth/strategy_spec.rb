@@ -663,21 +663,38 @@ describe OmniAuth::Strategy do
 
 
     context 'request method restriction' do
-      before(:context) do
-        OmniAuth.config.allowed_request_methods = %i[put post]
+      context 'global config' do
+        before(:context) do
+          OmniAuth.config.allowed_request_methods = %i[put post]
+        end
+
+        it 'does not allow a request method of the wrong type' do
+          expect { strategy.call(make_env('/auth/test', 'REQUEST_METHOD' => 'GET')) }.not_to raise_error
+        end
+
+        it 'allows a request method of the correct type' do
+          expect(strategy).to receive(:fail!).with('Request Phase', kind_of(StandardError))
+          strategy.call(make_env('/auth/test'))
+        end
+
+        after(:context) do
+          OmniAuth.config.allowed_request_methods = %i[post]
+        end
       end
 
-      it 'does not allow a request method of the wrong type' do
-        expect { strategy.call(make_env('/auth/test', 'REQUEST_METHOD' => 'GET')) }.not_to raise_error
-      end
+      context 'strategy config' do
+        before do
+          @options = { :allowed_request_methods => %i[get post] }
+        end
 
-      it 'allows a request method of the correct type' do
-        expect(strategy).to receive(:fail!).with('Request Phase', kind_of(StandardError))
-        strategy.call(make_env('/auth/test'))
-      end
+        it 'does not allow a request method of the wrong type' do
+          expect { strategy.call(make_env('/auth/test', 'REQUEST_METHOD' => 'PUT')) }.not_to raise_error
+        end
 
-      after(:context) do
-        OmniAuth.config.allowed_request_methods = %i[post]
+        it 'allows a request method of the correct type' do
+          expect(strategy).to receive(:fail!).with('Request Phase', kind_of(StandardError))
+          strategy.call(make_env('/auth/test', 'REQUEST_METHOD' => 'GET'))
+        end
       end
     end
 
