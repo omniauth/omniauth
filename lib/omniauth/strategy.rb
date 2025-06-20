@@ -483,7 +483,7 @@ module OmniAuth
 
     def fail!(message_key, exception = nil)
       env['omniauth.error'] = exception
-      env['omniauth.error.type'] = message_key.to_sym
+      env['omniauth.error.type'] = message_key&.to_sym || :unknown
       env['omniauth.error.strategy'] = self
 
       if exception
