@@ -315,8 +315,6 @@ module OmniAuth
     end
 
     def mock_request_call
-      setup_phase
-
       session['omniauth.params'] = request.GET
 
       OmniAuth.config.request_validation_phase.call(env) if OmniAuth.config.request_validation_phase
@@ -334,10 +332,7 @@ module OmniAuth
     end
 
     def mock_callback_call
-      setup_phase
-
-      origin = session.delete('omniauth.origin')
-      @env['omniauth.origin'] ||= origin
+      @env['omniauth.origin'] = session.delete('omniauth.origin')
       @env['omniauth.origin'] = nil if env['omniauth.origin'] == ''
       @env['omniauth.params'] = session.delete('omniauth.params') || {}
 
