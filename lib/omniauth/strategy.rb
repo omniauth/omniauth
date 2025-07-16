@@ -240,7 +240,7 @@ module OmniAuth
       OmniAuth.config.request_validation_phase.call(env) if OmniAuth.config.request_validation_phase
       OmniAuth.config.before_request_phase.call(env) if OmniAuth.config.before_request_phase
 
-      if options.form.respond_to?(:call)
+      result = if options.form.respond_to?(:call)
         log :debug, 'Rendering form from supplied Rack endpoint.'
         options.form.call(env)
       elsif options.form
@@ -256,6 +256,10 @@ module OmniAuth
         end
 
         request_phase
+      end
+      
+      result.tap do
+        OmniAuth.config.after_request_phase.call(env) if OmniAuth.config.after_request_phase
       end
     rescue OmniAuth::AuthenticityError => e
       fail!(:authenticity_error, e)
@@ -330,7 +334,11 @@ module OmniAuth
         end
       end
 
-      redirect(callback_url)
+      result = redirect(callback_url)
+
+      result.tap do
+        OmniAuth.config.after_request_phase.call(env) if OmniAuth.config.after_request_phase
+      end
     end
 
     def mock_callback_call
