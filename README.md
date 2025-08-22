@@ -154,9 +154,7 @@ end
 
 **app/views/sessions/new.html.erb**:
 ```erb
-<%= form_tag('/auth/developer', method: 'post', data: {turbo: false}) do %>
-  <button type='submit'>Login with Developer</button>
-<% end %>
+<%= button_to "Login with Developer", "/auth/developer", data: { turbo: false } %>
 ```
 
 Now if you visit `/login` and click the Login button, you should see the
