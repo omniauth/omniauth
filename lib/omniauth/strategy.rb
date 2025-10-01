@@ -6,7 +6,7 @@ module OmniAuth
   # wrangle multiple providers. Each strategy provided by
   # OmniAuth includes this mixin to gain the default functionality
   # necessary to be compatible with the OmniAuth library.
-  module Strategy # rubocop:disable ModuleLength
+  module Strategy # rubocop:disable Metrics/ModuleLength
     def self.included(base)
       OmniAuth.strategies << base
 
@@ -130,7 +130,7 @@ module OmniAuth
     #   will be passed through and set to the appropriate values.
     #
     # @yield [Options] Yields options to block for further configuration.
-    def initialize(app, *args, &block) # rubocop:disable UnusedMethodArgument
+    def initialize(app, *args, &block) # rubocop:disable Lint/UnusedMethodArgument
       @app = app
       @env = nil
       @options = self.class.default_options.dup
@@ -174,7 +174,7 @@ module OmniAuth
     # the request path is recognized.
     #
     # @param env [Hash] The Rack environment.
-    def call!(env) # rubocop:disable CyclomaticComplexity, PerceivedComplexity
+    def call!(env) # rubocop:disable Metrics/PerceivedComplexity
       unless env['rack.session']
         error = OmniAuth::NoSessionError.new('You must provide a session to use OmniAuth.')
         raise(error)
@@ -230,7 +230,7 @@ module OmniAuth
     end
 
     # Performs the steps necessary to run the request phase of a strategy.
-    def request_call # rubocop:disable CyclomaticComplexity, MethodLength, PerceivedComplexity
+    def request_call # rubocop:disable Metrics/PerceivedComplexity
       setup_phase
       log :debug, 'Request phase initiated.'
 
@@ -494,7 +494,7 @@ module OmniAuth
           uri.path = ''
           # sometimes the url is actually showing http inside rails because the
           # other layers (like nginx) have handled the ssl termination.
-          uri.scheme = 'https' if ssl? # rubocop:disable BlockNesting
+          uri.scheme = 'https' if ssl? # rubocop:disable Metrics/BlockNesting
           uri.to_s
         else ''
         end
