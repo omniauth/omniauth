@@ -94,6 +94,18 @@ describe OmniAuth::Builder do
     end
   end
 
+  describe '#after_request_phase' do
+    it 'passes the block to the config' do
+      prok = proc {}
+
+      with_config_reset(:after_request_phase) do
+        OmniAuth::Builder.new(nil).after_request_phase(&prok)
+
+        expect(OmniAuth.config.after_request_phase).to eq(prok)
+      end
+    end
+  end
+
   describe '#before_callback_phase' do
     it 'passes the block to the config' do
       prok = proc {}

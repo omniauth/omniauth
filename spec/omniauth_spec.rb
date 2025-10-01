@@ -31,6 +31,7 @@ describe OmniAuth do
       @old_before_callback_phase    = OmniAuth.config.before_callback_phase
       @old_before_options_phase     = OmniAuth.config.before_options_phase
       @old_before_request_phase     = OmniAuth.config.before_request_phase
+      @old_after_request_phase      = OmniAuth.config.after_request_phase
       @old_request_validation_phase = OmniAuth.config.request_validation_phase
     end
 
@@ -41,6 +42,7 @@ describe OmniAuth do
         config.before_callback_phase    = @old_before_callback_phase
         config.before_options_phase     = @old_before_options_phase
         config.before_request_phase     = @old_before_request_phase
+        config.after_request_phase      = @old_after_request_phase
         config.request_validation_phase = @old_request_validation_phase
       end
     end

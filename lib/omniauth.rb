@@ -42,6 +42,7 @@ module OmniAuth
         :failure_raise_out_environments => ['development'],
         :request_validation_phase => OmniAuth::AuthenticityTokenProtection,
         :before_request_phase   => nil,
+        :after_request_phase    => nil,
         :before_callback_phase  => nil,
         :before_options_phase   => nil,
         :form_css => Form::DEFAULT_CSS,
@@ -97,6 +98,14 @@ module OmniAuth
       end
     end
 
+    def after_request_phase(&block)
+      if block_given?
+        @after_request_phase = block
+      else
+        @after_request_phase
+      end
+    end
+
     def add_mock(provider, original = {})
       # Create key-stringified new hash from given auth hash
       mock = {}
@@ -126,7 +135,7 @@ module OmniAuth
       camelizations[name.to_s] = camelized.to_s
     end
 
-    attr_writer :on_failure, :before_callback_phase, :before_options_phase, :before_request_phase, :request_validation_phase
+    attr_writer :on_failure, :before_callback_phase, :before_options_phase, :before_request_phase, :after_request_phase, :request_validation_phase
     attr_accessor :failure_raise_out_environments, :path_prefix, :allowed_request_methods, :form_css,
                   :test_mode, :mock_auth, :full_host, :camelizations, :logger, :silence_get_warning
   end

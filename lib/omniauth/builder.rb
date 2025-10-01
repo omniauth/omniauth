@@ -12,6 +12,10 @@ module OmniAuth
       OmniAuth.config.before_request_phase = block
     end
 
+    def after_request_phase(&block)
+      OmniAuth.config.after_request_phase = block
+    end
+
     def before_callback_phase(&block)
       OmniAuth.config.before_callback_phase = block
     end

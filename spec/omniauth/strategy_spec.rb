@@ -916,6 +916,15 @@ describe OmniAuth::Strategy do
         expect(strategy.env['foobar']).to eq('baz')
       end
 
+      it 'executes after request hook on the request phase' do
+        OmniAuth.config.mock_auth[:test] = {}
+        OmniAuth.config.after_request_phase do |env|
+          env['after_request'] = 'executed'
+        end
+        strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'foo=bar'))
+        expect(strategy.env['after_request']).to eq('executed')
+      end
+
       it 'turns omniauth.params into an env variable on the callback phase' do
         OmniAuth.config.mock_auth[:test] = {}
 
