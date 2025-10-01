@@ -336,9 +336,8 @@ module OmniAuth
 
       result = redirect(callback_url)
 
-      result.tap do
-        OmniAuth.config.after_request_phase.call(env) if OmniAuth.config.after_request_phase
-      end
+      OmniAuth.config.after_request_phase.call(env) if OmniAuth.config.after_request_phase
+      result
     end
 
     def mock_callback_call
