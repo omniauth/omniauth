@@ -258,9 +258,8 @@ module OmniAuth
         request_phase
       end
       
-      result.tap do
-        OmniAuth.config.after_request_phase.call(env) if OmniAuth.config.after_request_phase
-      end
+      OmniAuth.config.after_request_phase.call(env) if OmniAuth.config.after_request_phase
+      result
     rescue OmniAuth::AuthenticityError => e
       fail!(:authenticity_error, e)
     end
