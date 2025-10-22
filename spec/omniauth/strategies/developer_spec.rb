@@ -3,7 +3,7 @@ require 'helper'
 describe OmniAuth::Strategies::Developer do
   let(:app) do
     Rack::Builder.new do |b|
-      b.use Rack::Session::Cookie, :secret => 'abc123'
+      b.use Rack::Session::Cookie, :secret => 'abc123' * 11
       b.use OmniAuth::Strategies::Developer
       b.run lambda { |_env| [200, {}, ['Not Found']] }
     end.to_app
@@ -50,7 +50,7 @@ describe OmniAuth::Strategies::Developer do
     context 'with custom options' do
       let(:app) do
         Rack::Builder.new do |b|
-          b.use Rack::Session::Cookie, :secret => 'abc123'
+          b.use Rack::Session::Cookie, :secret => 'abc123' * 11
           b.use OmniAuth::Strategies::Developer, :fields => %i[first_name last_name], :uid_field => :last_name
           b.run lambda { |_env| [200, {}, ['Not Found']] }
         end.to_app

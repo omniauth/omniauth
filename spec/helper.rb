@@ -16,6 +16,8 @@ end
 
 require 'rspec'
 require 'rack/test'
+require 'rack/session'
+require 'base64'
 require 'omniauth'
 require 'omniauth/test'
 
