@@ -116,7 +116,6 @@ To get started, add the following gems
 **Gemfile**:
 ```ruby
 gem 'omniauth'
-gem 'omniauth-rails_csrf_protection'
 ```
 
 Then insert OmniAuth as a middleware
@@ -126,6 +125,8 @@ Then insert OmniAuth as a middleware
 Rails.application.config.middleware.use OmniAuth::Builder do
   provider :developer if Rails.env.development?
 end
+
+OmniAuth.config.request_validation_phase = OmniAuth::AuthenticityTokenProtection.new(key: :_csrf_token)
 ```
 
 Additional providers can be added here in the future. Next we wire it
