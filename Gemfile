@@ -13,11 +13,11 @@ end
 
 group :test do
   gem 'cgi'
-  gem 'coveralls_reborn', '~> 0.19.0', require: false
   gem 'rack-test'
   gem 'rspec', '~> 3.5'
   gem 'rack-freeze'
   gem 'rubocop', '>= 0.58.2', '< 0.69.0', platforms: %i[ruby_22 ruby_23 ruby_24]
+  gem 'simplecov', '>= 1', require: false
   gem 'simplecov-lcov'
 end
 
