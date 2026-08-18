@@ -234,10 +234,11 @@ module OmniAuth
       setup_phase
       log :debug, 'Request phase initiated.'
 
+      OmniAuth.config.request_validation_phase.call(env) if OmniAuth.config.request_validation_phase
+
       # store query params from the request url, extracted in the callback_phase
       session['omniauth.params'] = request.GET
 
-      OmniAuth.config.request_validation_phase.call(env) if OmniAuth.config.request_validation_phase
       OmniAuth.config.before_request_phase.call(env) if OmniAuth.config.before_request_phase
 
       result = if options.form.respond_to?(:call)
@@ -320,9 +321,10 @@ module OmniAuth
     def mock_request_call
       setup_phase
 
+      OmniAuth.config.request_validation_phase.call(env) if OmniAuth.config.request_validation_phase
+
       session['omniauth.params'] = request.GET
 
-      OmniAuth.config.request_validation_phase.call(env) if OmniAuth.config.request_validation_phase
       OmniAuth.config.before_request_phase.call(env) if OmniAuth.config.before_request_phase
 
       if options.origin_param
