@@ -464,6 +464,16 @@ describe OmniAuth::Strategy do
         strategy.call(make_env('/AUTH/TeSt/CaLlBAck'))
       end
 
+      it 'runs the callback phase when the callback path has a format suffix' do
+        expect(strategy).to receive(:fail!).with('Callback Phase', kind_of(StandardError))
+        strategy.call(make_env('/auth/test/callback.json'))
+      end
+
+      it 'does not run the callback phase for a longer path that starts with the callback path' do
+        expect(strategy).not_to receive(:fail!)
+        strategy.call(make_env('/auth/test/callbacks'))
+      end
+
       it 'uses the default callback path' do
         expect(strategy).to receive(:fail!).with('Callback Phase', kind_of(StandardError))
         strategy.call(make_env('/auth/test/callback'))
@@ -870,6 +880,13 @@ describe OmniAuth::Strategy do
 
       it 'is case insensitive on callback path' do
         expect(strategy.call(make_env('/AUTH/TeSt/CaLlBAck')).first).to eq(strategy.call(make_env('/auth/test/callback')).first)
+      end
+
+      it 'sets omniauth.auth when the callback path has a format suffix' do
+        OmniAuth.config.mock_auth[:test] = {'uid' => 'abc'}
+
+        strategy.call(make_env('/auth/test/callback.json'))
+        expect(strategy.env['omniauth.auth']['uid']).to eq('abc')
       end
 
       it 'maintains host and port' do
