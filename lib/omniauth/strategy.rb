@@ -352,13 +352,10 @@ module OmniAuth
       @env['omniauth.params'] = session.delete('omniauth.params') || {}
 
       mocked_auth = OmniAuth.mock_auth_for(name.to_s)
-      if mocked_auth.is_a?(Symbol)
-        fail!(mocked_auth)
-      else
-        @env['omniauth.auth'] = mocked_auth
-        OmniAuth.config.before_callback_phase.call(@env) if OmniAuth.config.before_callback_phase
-        call_app!
-      end
+      failed = mocked_auth.is_a?(Symbol)
+      @env['omniauth.auth'] = mocked_auth unless failed
+      OmniAuth.config.before_callback_phase.call(@env) if OmniAuth.config.before_callback_phase
+      failed ? fail!(mocked_auth) : call_app!
     end
 
     # The setup phase looks for the `:setup` option to exist and,
