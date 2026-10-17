@@ -104,25 +104,33 @@ authentication flow.
 
 ## Cross-Site Request Forgery (CSRF) protection
 
-OmniAuth protects against [CSRF attacks](https://owasp.org/www-community/attacks/csrf) during the request phase (`POST /auth/:provider`).
+OmniAuth protects the request phase (`POST /auth/:provider`) against
+[CSRF attacks](https://owasp.org/www-community/attacks/csrf) by default.
+It uses [`OmniAuth::AuthenticityTokenProtection`](./lib/omniauth/authenticity_token_protection.rb),
+a subclass of `Rack::Protection::AuthenticityToken` from the
+[rack-protection](https://rubygems.org/gems/rack-protection) gem.
 
-It uses the [OmniAuth::AuthenticityTokenProtection](./lib/omniauth/authenticity_token_protection.rb) middleware that inherits from `Rack::Protection::AuthenticityToken` (gem [rack-protection](https://rubygems.org/gems/rack-protection)).
-
-If needed, you can pass custom options to `Rack::Protection::AuthenticityToken` like this:
+You can pass `Rack::Protection::AuthenticityToken` options to match how
+your app stores its token. For example, to work with
+[rack_csrf](https://github.com/baldowl/rack_csrf):
 
 ```ruby
 OmniAuth::AuthenticityTokenProtection.default_options(
-  key: "csrf.token", 
+  key: "csrf.token",
   authenticity_param: "_csrf"
 )
 ```
 
-It's worth mentioning that `Rack::Protection::AuthenticityToken` encodes/decodes the CSRF token in base64, in the case you are using a different approach you will need to use the `allow_if` option and implement the allow/deny logic yourself.
+`Rack::Protection::AuthenticityToken` expects Base64-encoded tokens. If
+your app handles CSRF tokens differently, use the `allow_if` option to
+implement your own check.
 
-See the [rack-protection documentation](https://www.rubydoc.info/gems/rack-protection/Rack/Protection/AuthenticityToken) for more details.
+For Rails, see [Rails (without Devise)](#rails-without-devise). For
+more options, see the
+[rack-protection documentation](https://www.rubydoc.info/gems/rack-protection/Rack/Protection/AuthenticityToken).
 
 ## Rails (without Devise)
-To get started, add the following gems
+To get started, add the gem
 
 **Gemfile**:
 ```ruby
@@ -139,6 +147,10 @@ end
 
 OmniAuth.config.request_validation_phase = OmniAuth::AuthenticityTokenProtection.new(key: :_csrf_token)
 ```
+
+The last line makes OmniAuth check the CSRF token Rails stores in the
+session (`_csrf_token`), so the request phase uses the same token as
+your forms.
 
 Additional providers can be added here in the future. Next we wire it
 all up using routes, a controller and a login view.
