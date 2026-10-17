@@ -1,14 +1,18 @@
-require 'simplecov'
-require 'simplecov-lcov'
+# Coverage is measured on CRuby only. SimpleCov 1.x needs Ruby 3.2+, and
+# JRuby and TruffleRuby count lines differently.
+if RUBY_ENGINE == 'ruby' && Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('3.2')
+  require 'simplecov'
+  require 'simplecov-lcov'
 
-SimpleCov::Formatter::LcovFormatter.config.report_with_single_file = true
+  SimpleCov::Formatter::LcovFormatter.config.report_with_single_file = true
 
-SimpleCov.formatters = [
-  SimpleCov::Formatter::HTMLFormatter,
-  SimpleCov::Formatter::LcovFormatter
-]
+  SimpleCov.formatters = [
+    SimpleCov::Formatter::HTMLFormatter,
+    SimpleCov::Formatter::LcovFormatter
+  ]
 
-SimpleCov.start 'strict'
+  SimpleCov.start 'strict'
+end
 
 require 'rspec'
 require 'rack/test'
