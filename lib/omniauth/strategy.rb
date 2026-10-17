@@ -250,9 +250,9 @@ module OmniAuth
         request_phase
       else
         if request.params[options.origin_param]
-          env['rack.session']['omniauth.origin'] = request.params[options.origin_param]
+          session['omniauth.origin'] = request.params[options.origin_param]
         elsif env['HTTP_REFERER'] && !env['HTTP_REFERER'].match(/#{request_path}$/)
-          env['rack.session']['omniauth.origin'] = env['HTTP_REFERER']
+          session['omniauth.origin'] = env['HTTP_REFERER']
         end
 
         request_phase
