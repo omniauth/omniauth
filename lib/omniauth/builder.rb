@@ -1,5 +1,13 @@
+require 'rack/builder'
+
 module OmniAuth
-  class Builder < ::Rack::Builder
+  module Builder
+    def self.new app, &block
+      builder = Rack::Builder.new(app).extend(self)
+      builder.instance_eval(&block) if block_given?
+      builder.to_app
+    end
+
     def on_failure(&block)
       OmniAuth.config.on_failure = block
     end
@@ -42,10 +50,6 @@ module OmniAuth
       end
 
       use middleware, *args, **options.merge(opts), &block
-    end
-
-    def call(env)
-      to_app.call(env)
     end
   end
 end
