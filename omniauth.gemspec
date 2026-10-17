@@ -19,7 +19,6 @@ Gem::Specification.new do |spec|
   spec.licenses      = %w[MIT]
   spec.name          = 'omniauth'
   spec.require_paths = %w[lib]
-  spec.required_rubygems_version = '>= 1.3.5'
   spec.required_ruby_version = '>= 2.5'
   spec.summary       = spec.description
   spec.version       = OmniAuth::VERSION
