@@ -155,6 +155,11 @@ describe OmniAuth::Strategy do
       expect(subject.new(nil, '3', '4').options.b).to eq '4'
       expect(subject.new(nil, nil, '4').options.a).to eq nil
     end
+
+    it 'raises an ArgumentError when given more arguments than declared' do
+      subject.args %i[a]
+      expect { subject.new(nil, '1', '2') }.to raise_error(ArgumentError, /wrong number of arguments/)
+    end
   end
 
   context 'fetcher procs' do
@@ -222,6 +227,15 @@ describe OmniAuth::Strategy do
       expect(hash.credentials.expires).to eq(true)
       expect(hash.extra.something).to eq('else')
     end
+
+    it 'omits info, credentials, and extra when they are skipped or empty' do
+      instance = subject.new(app, :skip_info => true)
+      allow(instance).to receive(:uid).and_return('123')
+      allow(instance).to receive(:credentials).and_return(nil)
+      allow(instance).to receive(:extra).and_return(nil)
+      hash = instance.auth_hash
+      expect(hash.keys).to match_array(%w[provider uid])
+    end
   end
 
   describe '#initialize' do
@@ -248,6 +262,10 @@ describe OmniAuth::Strategy do
         expect(s.options[:abc]).to eq(123)
         expect(s.options[:def]).to eq(456)
       end
+    end
+
+    it 'yields the options to a block if one is given' do
+      expect { |b| ExampleStrategy.new(app, &b) }.to yield_with_args(kind_of(OmniAuth::Strategy::Options))
     end
   end
 
@@ -379,6 +397,13 @@ describe OmniAuth::Strategy do
           expect(strategy.last_env['omniauth.origin']).to eq('http://example.com/origin')
         end
 
+        it 'is nil on the callback phase if the stored origin is blank' do
+          expect(strategy).to receive(:fail!).with('Callback Phase', kind_of(StandardError))
+          strategy.call(make_env('/auth/test/callback', 'rack.session' => {'omniauth.origin' => ''}))
+
+          expect(strategy.last_env['omniauth.origin']).to be_nil
+        end
+
         it 'sets from the params if provided' do
           expect(strategy).to receive(:fail!).with('Request Phase', kind_of(StandardError))
           strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'origin=/foo'))
@@ -504,6 +529,11 @@ describe OmniAuth::Strategy do
       it 'provides a custom callback path if request_path evals to a string' do
         strategy_instance = fresh_strategy.new(nil, :request_path => lambda { |_env| '/auth/boo/callback/22' })
         expect(strategy_instance.callback_path).to eq('/auth/boo/callback/22')
+      end
+
+      it 'uses the default callback path if request_path does not eval to a string' do
+        strategy_instance = ExampleStrategy.new(app, :request_path => lambda { |_env| true })
+        expect(strategy_instance.callback_path).to eq('/auth/test/callback')
       end
 
       it 'correctly reports the callback path when the custom callback path evaluator is truthy' do
@@ -681,6 +711,30 @@ describe OmniAuth::Strategy do
       end
     end
 
+    context 'phase hooks' do
+      after do
+        OmniAuth.config.before_request_phase = nil
+        OmniAuth.config.after_request_phase = nil
+        OmniAuth.config.before_callback_phase = nil
+      end
+
+      it 'calls the before and after request phase hooks' do
+        @options = {:form => lambda { |_env| [200, {}, ['form']] }}
+        OmniAuth.config.before_request_phase { |env| env['before_request'] = true }
+        OmniAuth.config.after_request_phase { |env| env['after_request'] = true }
+        env = make_env('/auth/test')
+        strategy.call(env)
+        expect(env).to include('before_request' => true, 'after_request' => true)
+      end
+
+      it 'calls the before callback phase hook' do
+        OmniAuth.config.before_callback_phase { |env| env['before_callback'] = true }
+        expect(strategy).to receive(:fail!).with('Callback Phase', kind_of(StandardError))
+        strategy.call(make_env('/auth/test/callback'))
+        expect(strategy.last_env['before_callback']).to be true
+      end
+    end
+
     context 'receiving an OPTIONS request' do
       shared_examples_for 'an OPTIONS request' do
         it 'responds with 200' do
@@ -706,6 +760,17 @@ describe OmniAuth::Strategy do
         it 'does not short-circuit the request' do
           env = make_env('/other', 'REQUEST_METHOD' => 'OPTIONS')
           expect(strategy.call(env)).to eq(app.call(env))
+        end
+      end
+
+      context 'with a before_options_phase hook' do
+        after { OmniAuth.config.before_options_phase = nil }
+
+        it 'calls the hook' do
+          OmniAuth.config.before_options_phase { |env| env['options_hook'] = true }
+          env = make_env('/auth/test', 'REQUEST_METHOD' => 'OPTIONS')
+          strategy.call(env)
+          expect(env['options_hook']).to be true
         end
       end
     end
@@ -932,6 +997,31 @@ describe OmniAuth::Strategy do
         expect(strategy.env['omniauth.params']).to eq('foo' => 'bar')
       end
 
+      it 'sets omniauth.origin to nil on the callback phase if the stored origin is blank' do
+        OmniAuth.config.mock_auth[:test] = {}
+
+        strategy.call(make_env('/auth/test/callback', 'rack.session' => {'omniauth.origin' => ''}))
+        expect(strategy.env['omniauth.origin']).to be_nil
+      end
+
+      it 'executes the request validation phase on the request phase' do
+        OmniAuth.config.request_validation_phase = lambda { |env| env['validated'] = true }
+        strategy.call(make_env)
+        expect(strategy.env['validated']).to be true
+      ensure
+        OmniAuth.config.request_validation_phase = nil
+      end
+
+      context 'when the app raises an error on the callback phase' do
+        let(:app) { lambda { |_env| raise(ArgumentError, 'app error') } }
+
+        it 're-raises the error instead of calling fail!' do
+          OmniAuth.config.mock_auth[:test] = {}
+          expect(strategy).not_to receive(:fail!)
+          expect { strategy.call(make_env('/auth/test/callback')) }.to raise_error(ArgumentError, 'app error')
+        end
+      end
+
       it 'rescues errors in request_call' do
         allow(strategy).to receive(:mock_request_call).and_raise(StandardError.new('Oh no'))
         expect(strategy).to receive(:fail!).with('Oh no', kind_of(StandardError))
@@ -940,6 +1030,9 @@ describe OmniAuth::Strategy do
 
       after do
         OmniAuth.config.test_mode = false
+        OmniAuth.config.before_callback_phase = nil
+        OmniAuth.config.before_request_phase = nil
+        OmniAuth.config.after_request_phase = nil
       end
     end
 
@@ -1027,6 +1120,20 @@ describe OmniAuth::Strategy do
 
           context 'when not login path is requested' do
             let(:path) { '/example/path' }
+
+            it 'does not log warning message' do
+              strategy.call(get_env)
+              expect(strategy).not_to have_received(:log).with(:warn, a_string_matching('You are using GET as an allowed request method'))
+            end
+          end
+
+          context 'when silence_get_warning is enabled' do
+            around do |example|
+              OmniAuth.config.silence_get_warning = true
+              example.run
+            ensure
+              OmniAuth.config.silence_get_warning = false
+            end
 
             it 'does not log warning message' do
               strategy.call(get_env)

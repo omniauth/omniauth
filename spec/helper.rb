@@ -8,11 +8,7 @@ SimpleCov.formatters = [
   SimpleCov::Formatter::LcovFormatter
 ]
 
-SimpleCov.start do
-  skip ['/spec/', '/vendor/', 'strategy_macros.rb']
-  minimum_coverage(92.5)
-  maximum_coverage_drop(0.05)
-end
+SimpleCov.start 'strict'
 
 require 'rspec'
 require 'rack/test'

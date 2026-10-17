@@ -30,6 +30,14 @@ RSpec.describe OmniAuth::KeyStore do
       expect(logger).not_to receive(:info)
       OmniAuth::KeyStore.new(:id => 1234)
     end
+
+    it 'defines a private no-op log_built_in_message' do
+      stub_const('Hashie::VERSION', version)
+      allow(OmniAuth::KeyStore).to receive(:respond_to?).with(:disable_warnings).and_return(false)
+      OmniAuth::KeyStore.override_logging
+      expect(OmniAuth::KeyStore.private_method_defined?(:log_built_in_message)).to be true
+      expect(OmniAuth::KeyStore.new.send(:log_built_in_message, :key)).to be_nil
+    end
   end
 
   context 'on Hashie 3.5.2+' do

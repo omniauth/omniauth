@@ -58,5 +58,24 @@ describe OmniAuth::Form do
 
       expect(form.to_html).to include expected
     end
+
+    it 'creates a fieldset without options' do
+      form = OmniAuth::Form.new
+      expected = "<fieldset>\n  <legend>legendary</legend>\n\n</fieldset>"
+
+      form.fieldset('legendary') {}
+
+      expect(form.to_html).to include expected
+    end
+  end
+
+  describe '#footer' do
+    it 'only adds the footer once' do
+      form = OmniAuth::Form.new
+      form.footer
+      form.footer
+
+      expect(form.to_html.scan('</form>').size).to eq 1
+    end
   end
 end
