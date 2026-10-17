@@ -20,8 +20,10 @@ namespace :perf do
   task :setup do
     require 'omniauth'
     require 'rack/test'
+    require 'rack/session'
+    require 'securerandom'
     app = Rack::Builder.new do |b|
-      b.use Rack::Session::Cookie, :secret => 'abc123'
+      b.use Rack::Session::Cookie, :secret => SecureRandom.hex(32)
       b.use OmniAuth::Strategies::Developer
       b.run lambda { |_env| [200, {}, ['Not Found']] }
     end.to_app

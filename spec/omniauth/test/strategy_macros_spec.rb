@@ -3,7 +3,8 @@ require 'helper'
 describe OmniAuth::Test::StrategyMacros, :type => :strategy do
   let(:app) do
     Rack::Builder.new do |b|
-      b.use Rack::Session::Cookie, :secret => 'abc123'
+      b.freeze_app
+      b.use Rack::Session::Cookie, :secret => SecureRandom.hex(32)
       b.use OmniAuth::Strategies::Developer
       b.run lambda { |_env| [200, {}, ['Not Found']] }
     end.to_app
