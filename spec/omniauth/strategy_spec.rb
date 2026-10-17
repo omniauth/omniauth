@@ -184,6 +184,15 @@ describe OmniAuth::Strategy do
           subject.send(fetcher, &fetchy)
           expect(subject.send("#{fetcher}_stack", subject.new(app))).to eq(['Hello'])
         end
+
+        it 'ignores ancestors that are not strategies but respond to the same method' do
+          unrelated = Module.new
+          unrelated.define_singleton_method(fetcher) { |_required_arg| raise 'should not be called' }
+          strategy_class = Class.new { include unrelated }
+          strategy_class.send(:include, OmniAuth::Strategy)
+          strategy_class.send(fetcher) { 'Hello' }
+          expect(strategy_class.send("#{fetcher}_stack", strategy_class.new(app))).to eq(['Hello'])
+        end
       end
     end
   end
