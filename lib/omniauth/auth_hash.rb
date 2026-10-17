@@ -43,9 +43,17 @@ module OmniAuth
       end
       alias valid? name?
 
+      # These return a subset of the info, which shouldn't gain a
+      # calculated name when converted with #to_hash.
+      %i[slice except select reject].select { |method| method_defined?(method) }.each do |method|
+        define_method(method) do |*args, &block|
+          super(*args, &block).tap { |subset| subset.instance_variable_set(:@subset, true) }
+        end
+      end
+
       def to_hash
         hash = super
-        hash['name'] ||= name
+        hash['name'] ||= name unless @subset
         hash
       end
     end
