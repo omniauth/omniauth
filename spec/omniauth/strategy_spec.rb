@@ -945,6 +945,16 @@ describe OmniAuth::Strategy do
         expect(strategy.env['rack.session']['omniauth.origin']).to be_nil
       end
 
+      it 'executes callback hook when a failure is mocked' do
+        OmniAuth.config.mock_auth[:test] = :invalid_credentials
+        OmniAuth.config.before_callback_phase do |env|
+          env['foobar'] = 'baz'
+        end
+        strategy.call(make_env('/auth/test/callback'))
+        expect(strategy.env['foobar']).to eq('baz')
+        expect(strategy.env['omniauth.error.type']).to eq(:invalid_credentials)
+      end
+
       it 'executes callback hook on the callback phase' do
         OmniAuth.config.mock_auth[:test] = {}
         OmniAuth.config.before_callback_phase do |env|
