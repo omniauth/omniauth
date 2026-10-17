@@ -291,7 +291,7 @@ module OmniAuth
     end
 
     def on_callback_path?
-      on_path?(callback_path)
+      on_path?(callback_path) || current_path.sub(FORMAT_EXTENSION_REGEX, EMPTY_STRING).casecmp(callback_path).zero?
     end
 
     def on_path?(path)
@@ -467,6 +467,7 @@ module OmniAuth
     end
 
     CURRENT_PATH_REGEX = %r{/$}.freeze
+    FORMAT_EXTENSION_REGEX = /\.\w+\z/.freeze
     EMPTY_STRING       = ''.freeze
     def current_path
       @current_path ||= request.path.downcase.sub(CURRENT_PATH_REGEX, EMPTY_STRING)
