@@ -119,6 +119,30 @@ describe OmniAuth::AuthHash do
       expect(OmniAuth::AuthHash::InfoHash.subkey_class).to eq Hashie::Mash
     end
 
+    describe 'subsets' do
+      let(:info) { OmniAuth::AuthHash::InfoHash.new(:email => 'fry@planetexpress.com', :nickname => 'meatbag') }
+
+      it 'does not add a calculated name to a slice' do
+        expect(info.slice(:email).to_hash).to eq('email' => 'fry@planetexpress.com')
+      end
+
+      it 'does not add a calculated name to an except', :if => ::Hash.method_defined?(:except) do
+        expect(info.except(:nickname).to_hash).to eq('email' => 'fry@planetexpress.com')
+      end
+
+      it 'does not add a calculated name to a select' do
+        expect(info.select { |key, _| key == 'email' }.to_hash).to eq('email' => 'fry@planetexpress.com')
+      end
+
+      it 'does not add a calculated name to a reject' do
+        expect(info.reject { |key, _| key == 'nickname' }.to_hash).to eq('email' => 'fry@planetexpress.com')
+      end
+
+      it 'still adds a calculated name to the full hash' do
+        expect(info.to_hash['name']).to eq('meatbag')
+      end
+    end
+
     require 'hashie/version'
     if Gem::Version.new(Hashie::VERSION) >= Gem::Version.new('3.5.1')
       context 'with Hashie 3.5.1+' do
