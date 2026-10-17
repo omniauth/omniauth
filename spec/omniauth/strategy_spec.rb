@@ -1093,6 +1093,25 @@ describe OmniAuth::Strategy do
           expect(strategy.call(post_env)[0]).to eq(302)
           expect(strategy.call(post_env)[2]).to eq(['302 Moved'])
         end
+
+        it 'does not overwrite omniauth.params when the authenticity token is invalid' do
+          session = {'omniauth.params' => {'legit' => '1'}}
+          post_env = make_env('/auth/test', 'QUERY_STRING' => 'evil=1', 'rack.session' => session)
+
+          expect(strategy.call(post_env)[0]).to eq(302)
+          expect(session['omniauth.params']).to eq('legit' => '1')
+        end
+
+        it 'does not overwrite omniauth.params in test mode when the authenticity token is invalid' do
+          OmniAuth.config.test_mode = true
+          session = {'omniauth.params' => {'legit' => '1'}}
+          post_env = make_env('/auth/test', 'QUERY_STRING' => 'evil=1', 'rack.session' => session)
+
+          expect(strategy.call(post_env)[0]).to eq(302)
+          expect(session['omniauth.params']).to eq('legit' => '1')
+        ensure
+          OmniAuth.config.test_mode = false
+        end
       end
 
       context 'with allowed GET' do
