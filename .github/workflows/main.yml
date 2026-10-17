@@ -16,6 +16,8 @@ on:
 jobs:
   test:
     runs-on: ${{ matrix.os }}-latest
+    # ruby-head can break for reasons outside OmniAuth, so don't fail the build on it.
+    continue-on-error: ${{ matrix.ruby == 'head' }}
     strategy:
       fail-fast: false
       matrix:
