@@ -106,7 +106,9 @@ module OmniAuth
 
       def compile_stack(ancestors, method, context)
         stack = ancestors.inject([]) do |a, ancestor|
-          a << context.instance_eval(&ancestor.send(method)) if ancestor.respond_to?(method) && ancestor.send(method)
+          # Only strategy classes define these blocks. Other ancestors may
+          # respond to the same names (e.g. a monkeypatched Object#info).
+          a << context.instance_eval(&ancestor.send(method)) if ancestor.is_a?(ClassMethods) && ancestor.send(method)
           a
         end
         stack.reverse!
