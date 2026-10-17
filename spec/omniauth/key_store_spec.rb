@@ -1,88 +1,24 @@
 require 'helper'
 
 RSpec.describe OmniAuth::KeyStore do
-  let(:logger) { double('Logger') }
-
   around(:each) do |example|
-    patched = monkey_patch_logger
-    example.run
-    remove_logger(patched)
-  end
-
-  context 'on Hashie < 3.5.0' do
-    let(:version) { '3.4.0' }
-
-    it 'does not log anything to the console' do
-      stub_const('Hashie::VERSION', version)
-      OmniAuth::KeyStore.override_logging
-      expect(logger).not_to receive(:info)
-      OmniAuth::KeyStore.new(:id => 1234)
-    end
-  end
-
-  context 'on Hashie 3.5.0 and 3.5.1' do
-    let(:version) { '3.5.0' }
-
-    it 'does not log anything to the console' do
-      stub_const('Hashie::VERSION', version)
-      allow(OmniAuth::KeyStore).to receive(:respond_to?).with(:disable_warnings).and_return(false)
-      OmniAuth::KeyStore.override_logging
-      expect(logger).not_to receive(:info)
-      OmniAuth::KeyStore.new(:id => 1234)
-    end
-
-    it 'defines a private no-op log_built_in_message' do
-      stub_const('Hashie::VERSION', version)
-      allow(OmniAuth::KeyStore).to receive(:respond_to?).with(:disable_warnings).and_return(false)
-      OmniAuth::KeyStore.override_logging
-      expect(OmniAuth::KeyStore.private_method_defined?(:log_built_in_message)).to be true
-      expect(OmniAuth::KeyStore.new.send(:log_built_in_message, :key)).to be_nil
-    end
-  end
-
-  context 'on Hashie 3.5.2+' do
-    let(:version) { '3.5.2' }
-
-    around(:each) do |example|
-      patching = monkey_patch_unreleased_interface
-      example.run
-      remove_monkey_patch(patching)
-    end
-
-    it 'does not log anything to the console' do
-      stub_const('Hashie::VERSION', version)
-      OmniAuth::KeyStore.override_logging
-      expect(logger).not_to receive(:info)
-      OmniAuth::KeyStore.new(:id => 1234)
-    end
-  end
-
-  def monkey_patch_unreleased_interface
-    return false if OmniAuth::KeyStore.class.respond_to?(:disable_warnings, true)
-
-    OmniAuth::KeyStore.define_singleton_method(:disable_warnings) {}
-    OmniAuth::KeyStore.define_singleton_method(:log_built_in_message) { |*| }
-
-    true
-  end
-
-  def monkey_patch_logger
-    return unless Hashie.respond_to?(:logger)
-
     original_logger = Hashie.logger
     Hashie.logger = logger
-    original_logger
+    example.run
+    Hashie.logger = original_logger
   end
 
-  def remove_logger(logger)
-    return unless logger
+  let(:logger) { double('Logger') }
 
-    Hashie.logger = logger
+  it 'does not warn when a key overrides a Mash method' do
+    expect(logger).not_to receive(:warn)
+    expect(logger).not_to receive(:info)
+    expect(OmniAuth::KeyStore.new(:count => 1234)['count']).to eq(1234)
   end
 
-  def remove_monkey_patch(perform)
-    return unless perform
-
-    OmniAuth::KeyStore.singleton_class.__send__(:remove_method, :disable_warnings)
+  it 'does not warn after override_logging is called again' do
+    OmniAuth::KeyStore.override_logging
+    expect(logger).not_to receive(:warn)
+    OmniAuth::KeyStore.new(:zip => '12345')
   end
 end

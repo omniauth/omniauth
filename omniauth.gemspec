@@ -5,12 +5,10 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'omniauth/version'
 
 Gem::Specification.new do |spec|
-  spec.add_dependency 'hashie', ['>= 3.4.6']
+  spec.add_dependency 'hashie', '>= 3.5.2'
   spec.add_dependency 'rack', '>= 2.2.3'
-  spec.add_development_dependency 'bundler', '>= 2.0'
-  spec.add_dependency 'rack-protection'
+  spec.add_dependency 'rack-protection', '>= 2.2.0'
   spec.add_dependency 'logger'
-  spec.add_development_dependency 'rake', '~> 13.4'
   spec.authors       = ['Michael Bleigh', 'Erik Michaels-Ober', 'Tom Milewski']
   spec.description   = 'A generalized Rack framework for multiple-provider authentication.'
   spec.email         = ['michael@intridea.com', 'sferik@gmail.com', 'tmilewski@gmail.com']
