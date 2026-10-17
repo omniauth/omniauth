@@ -102,13 +102,24 @@ environment information on the callback request. It is entirely up to
 you how you want to implement the particulars of your application's
 authentication flow.
 
-## rack_csrf
+## Cross-Site Request Forgery (CSRF) protection
 
-`omniauth` is not OOTB-compatible with [rack_csrf](https://github.com/baldowl/rack_csrf). In order to do so, the following code needs to be added to the application bootstrapping code:
+OmniAuth protects against [CSRF attacks](https://owasp.org/www-community/attacks/csrf) during the request phase (`POST /auth/:provider`).
+
+It uses the [OmniAuth::AuthenticityTokenProtection](./lib/omniauth/authenticity_token_protection.rb) middleware that inherits from `Rack::Protection::AuthenticityToken` (gem [rack-protection](https://rubygems.org/gems/rack-protection)).
+
+If needed, you can pass custom options to `Rack::Protection::AuthenticityToken` like this:
 
 ```ruby
-OmniAuth::AuthenticityTokenProtection.default_options(key: "csrf.token", authenticity_param: "_csrf")
+OmniAuth::AuthenticityTokenProtection.default_options(
+  key: "csrf.token", 
+  authenticity_param: "_csrf"
+)
 ```
+
+It's worth mentioning that `Rack::Protection::AuthenticityToken` encodes/decodes the CSRF token in base64, in the case you are using a different approach you will need to use the `allow_if` option and implement the allow/deny logic yourself.
+
+See the [rack-protection documentation](https://www.rubydoc.info/gems/rack-protection/Rack/Protection/AuthenticityToken) for more details.
 
 ## Rails (without Devise)
 To get started, add the following gems
