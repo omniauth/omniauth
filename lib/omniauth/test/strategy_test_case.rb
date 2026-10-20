@@ -20,7 +20,7 @@ module OmniAuth
       def app
         resp = app_response
         builder = Rack::Builder.new
-        builder.use(OmniAuth::Test::PhonySession)
+        builder.use(PhonySession)
         builder.use(*strategy)
         # @type var endpoint: ^(Rack::env) -> Rack::response
         endpoint = lambda { |env| [404, {'Content-Type' => 'text/plain'}, [resp || env.key?('omniauth.auth').to_s]] }
@@ -28,9 +28,7 @@ module OmniAuth
         builder.to_app
       end
 
-      def app_response
-        nil
-      end
+      def app_response; end
 
       def session
         last_request.env['rack.session']
