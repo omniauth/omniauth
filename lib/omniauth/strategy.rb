@@ -43,7 +43,7 @@ module OmniAuth
     #   will be passed through and set to the appropriate values.
     #
     # @yield [Options] Yields options to block for further configuration.
-    def initialize(app, *args, &block) # rubocop:disable UnusedMethodArgument
+    def initialize(app, *args)
       @app = app
       @env = nil
       @options = self.class.default_options.dup
