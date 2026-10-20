@@ -1,0 +1,26 @@
+# Mutation testing: https://github.com/mbj/mutant
+usage: opensource
+integration:
+  name: rspec
+includes:
+  - lib
+# OmniAuth autoloads most of its constants. Require every file so mutant
+# can find all subjects.
+requires:
+  - omniauth
+  - omniauth/auth_hash
+  - omniauth/authenticity_token_protection
+  - omniauth/builder
+  - omniauth/failure_endpoint
+  - omniauth/form
+  - omniauth/strategies/developer
+  - omniauth/strategy
+  - omniauth/test
+  - omniauth/test/phony_session
+  - omniauth/test/strategy_macros
+  - omniauth/test/strategy_test_case
+matcher:
+  subjects:
+    - OmniAuth*
+mutation:
+  operators: full

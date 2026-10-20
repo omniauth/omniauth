@@ -154,7 +154,7 @@ module OmniAuth
   end
 
   module Utils
-  module_function
+    extend self
 
     def form_css
       "<style type='text/css'>#{OmniAuth.config.form_css}</style>"

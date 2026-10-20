@@ -17,6 +17,8 @@ group :development do
   gem 'rubocop', '~> 1.92.0', :platforms => :mri if RUBY_VERSION >= '2.7'
   # Steep 2.1 needs Ruby 3.3+, so older Rubies skip the steep task.
   gem 'steep', '~> 2.1', :require => false, :platforms => :mri if RUBY_VERSION >= '3.3'
+  # Mutant 0.17 needs Ruby 3.3+, so older Rubies skip the mutant task.
+  gem 'mutant-rspec', '~> 0.17.0', :require => false, :platforms => :mri if RUBY_VERSION >= '3.3'
 end
 
 group :test do

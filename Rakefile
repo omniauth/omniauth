@@ -28,7 +28,20 @@ rescue LoadError
   end
 end
 
-task :default => %i[spec rubocop steep]
+begin
+  require 'mutant'
+
+  desc 'Run mutation tests with mutant'
+  task :mutant do
+    sh 'mutant run'
+  end
+rescue LoadError
+  task :mutant do
+    warn 'Skipping mutant: it is not installed. It needs CRuby 3.3 or later; run `bundle install` there.'
+  end
+end
+
+task :default => %i[spec rubocop steep mutant]
 
 namespace :perf do
   task :setup do

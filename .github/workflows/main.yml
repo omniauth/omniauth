@@ -94,6 +94,19 @@ jobs:
         bundler-cache: true
     - name: Type-check with Steep
       run: bundle exec rake steep
+  mutant:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        persist-credentials: false
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@824c0e29fdfc7d689c191c27acc969d2d04b7dd8 # v1.331.0
+      with:
+        ruby-version: '4.0'
+        bundler-cache: true
+    - name: Run mutation tests
+      run: bundle exec rake mutant
   frozen-string-compat:
     runs-on: ubuntu-latest
     steps:

@@ -1,6 +1,7 @@
 # Coverage is measured on CRuby only. SimpleCov 1.x needs Ruby 3.2+, and
-# JRuby and TruffleRuby count lines differently.
-if RUBY_ENGINE == 'ruby' && Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('3.2')
+# JRuby and TruffleRuby count lines differently. Mutant runs the specs
+# against mutated code, so coverage is skipped there too.
+if RUBY_ENGINE == 'ruby' && Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('3.2') && !defined?(Mutant)
   require 'simplecov'
   require 'simplecov-lcov'
 
