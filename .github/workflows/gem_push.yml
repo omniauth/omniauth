@@ -1,0 +1,40 @@
+# Releases the gem to RubyGems.org with trusted publishing, so no API key
+# is stored in the repository. Bump OmniAuth::VERSION and update
+# CHANGELOG.md on master first, then run this workflow from the Actions
+# tab. `rake release` tags the commit (vX.Y.Z), pushes the tag, and pushes
+# the gem along with a signed attestation of where it was built.
+name: Push Gem
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gem-push
+  cancel-in-progress: false
+
+jobs:
+  push:
+    if: github.repository == 'omniauth/omniauth' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    # Must match the environment in the RubyGems.org trusted publisher.
+    environment: release
+    permissions:
+      contents: write # push the release tag
+      id-token: write # exchange the GitHub OIDC token for a RubyGems.org API key
+    steps:
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        persist-credentials: false
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@824c0e29fdfc7d689c191c27acc969d2d04b7dd8 # v1.331.0
+      with:
+        ruby-version: '4.0'
+        # No cache, so a poisoned cache from another workflow can't reach a release.
+        bundler-cache: false
+    - name: Install dependencies
+      run: bundle install
+    - name: Release
+      uses: rubygems/release-gem@7f9650160c1a4e7989fdc9855807bdbd421d8b6b # v1.4.1
