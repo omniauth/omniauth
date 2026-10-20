@@ -109,7 +109,7 @@ module OmniAuth
       mock = {} #: Hash[String, untyped]
       original.each_pair do |key, val|
         mock[key.to_s] = if val.is_a? Hash
-                           val.collect { |k, v| [k.to_s, v] }.to_h
+                           val.transform_keys(&:to_s)
                          else
                            val
                          end
