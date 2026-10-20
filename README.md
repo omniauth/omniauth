@@ -231,8 +231,10 @@ OmniAuth.config.logger = Rails.logger
 ```
 
 ## Origin Param
-The `origin` url parameter is typically used to inform where a user came from
-and where, should you choose to use it, they'd want to return to.
+The `origin` parameter is typically used to inform where a user came from
+and where, should you choose to use it, they'd want to return to. Send it in
+the query string or, since the request phase is a POST, as a field in the
+request form, e.g. `<input type="hidden" name="origin" value="[URL]">`.
 Omniauth supports the following settings which can be configured on a provider level:
 
 **Default**:
