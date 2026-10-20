@@ -285,9 +285,8 @@ describe OmniAuth::Form do
       status, headers, body = OmniAuth::Form.new.to_response
 
       expect(status).to eq(200)
-      expect(headers.to_h.transform_keys(&:downcase)).to eq(
-        'content-type' => 'text/html', 'content-length' => html.bytesize.to_s
-      )
+      # Rack 3 also adds content-length; Rack 2 doesn't.
+      expect(headers['content-type']).to eq('text/html')
       expect(body.to_enum(:each).to_a.join).to eq(html)
     end
   end
