@@ -12,7 +12,7 @@ module OmniAuth
 
       def on_request_path?
         if options[:request_path].respond_to?(:call)
-          options[:request_path].call(env)
+          options.fetch(:request_path).call(env)
         else
           on_path?(request_path)
         end
@@ -32,7 +32,7 @@ module OmniAuth
 
       def custom_path(kind)
         if options[kind].respond_to?(:call)
-          result = options[kind].call(env)
+          result = options.fetch(kind).call(env)
           return nil unless result.is_a?(String)
 
           result
@@ -44,7 +44,7 @@ module OmniAuth
       def request_path
         @request_path ||=
           if options[:request_path].is_a?(String)
-            options[:request_path]
+            options.fetch(:request_path)
           else
             "#{script_name}#{path_prefix}/#{name}"
           end
@@ -106,12 +106,12 @@ module OmniAuth
         # in Rack 1.3.x, request.url explodes if scheme is nil
         return '' unless request.scheme && URI.parse(request.url).absolute?
 
-        uri = URI.parse(request.url.gsub(/\?.*$/, ''))
+        uri = URI.parse(request.url.sub(/\?.*/, ''))
         uri.path = ''
         # sometimes the url is actually showing http inside rails because the
         # other layers (like nginx) have handled the ssl termination.
         uri.scheme = 'https' if ssl?
-        uri.to_s
+        String(uri)
       end
 
       # Rack env values that mean the request came in over HTTPS.
@@ -124,8 +124,8 @@ module OmniAuth
 
       def ssl?
         # A proxy chain can list several protocols; the first is the client's.
-        forwarded_proto = request.env['HTTP_X_FORWARDED_PROTO'].to_s.split(',').first
-        forwarded_proto == 'https' || SSL_ENV_VALUES.any? { |key, value| request.env[key] == value }
+        forwarded_proto = env['HTTP_X_FORWARDED_PROTO'].to_s.split(',').first
+        forwarded_proto.eql?('https') || SSL_ENV_VALUES.any? { |key, value| env[key].eql?(value) }
       end
     end
   end
