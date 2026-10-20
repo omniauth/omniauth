@@ -82,16 +82,7 @@ module OmniAuth
         when Proc
           OmniAuth.config.full_host.call(env)
         else
-          # in Rack 1.3.x, request.url explodes if scheme is nil
-          if request.scheme && URI.parse(request.url).absolute?
-            uri = URI.parse(request.url.gsub(/\?.*$/, ''))
-            uri.path = ''
-            # sometimes the url is actually showing http inside rails because the
-            # other layers (like nginx) have handled the ssl termination.
-            uri.scheme = 'https' if ssl? # rubocop:disable BlockNesting
-            uri.to_s
-          else ''
-          end
+          full_host_from_request
         end
       end
 
@@ -105,6 +96,20 @@ module OmniAuth
       end
 
     protected
+
+      # The scheme, host, and port of the current request, or an empty
+      # string if the request URL isn't absolute.
+      def full_host_from_request
+        # in Rack 1.3.x, request.url explodes if scheme is nil
+        return '' unless request.scheme && URI.parse(request.url).absolute?
+
+        uri = URI.parse(request.url.gsub(/\?.*$/, ''))
+        uri.path = ''
+        # sometimes the url is actually showing http inside rails because the
+        # other layers (like nginx) have handled the ssl termination.
+        uri.scheme = 'https' if ssl?
+        uri.to_s
+      end
 
       # Rack env values that mean the request came in over HTTPS.
       SSL_ENV_VALUES = {
