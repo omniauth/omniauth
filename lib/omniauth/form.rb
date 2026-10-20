@@ -11,13 +11,11 @@ module OmniAuth
       self.options = options
 
       @html = +'' # unary + string allows it to be mutable if strings are frozen
-      @with_custom_button = false
-      @footer = nil
-      header(options[:title], options[:header_info])
+      header(options.fetch(:title), options.fetch(:header_info))
     end
 
     def self.build(options = {}, &block)
-      form = OmniAuth::Form.new(options)
+      form = Form.new(options)
       if block.arity.positive?
         yield form
       else
@@ -39,13 +37,11 @@ module OmniAuth
     def text_field(label, name)
       label_field(label, name)
       input_field('text', name)
-      self
     end
 
     def password_field(label, name)
       label_field(label, name)
       input_field('password', name)
-      self
     end
 
     def button(text)
@@ -58,7 +54,7 @@ module OmniAuth
     end
 
     def fieldset(legend, options = {}, &block)
-      @html << "\n<fieldset#{" style='#{options[:style]}'" if options[:style]}#{" id='#{options[:id]}'" if options[:id]}>\n  <legend>#{legend}</legend>\n"
+      @html << "\n<fieldset#{" style='#{options.fetch(:style)}'" if options[:style]}#{" id='#{options.fetch(:id)}'" if options[:id]}>\n  <legend>#{legend}</legend>\n"
       instance_eval(&block)
       @html << "\n</fieldset>"
       self
@@ -76,7 +72,7 @@ module OmniAuth
       </head>
       <body>
       <h1>#{title}</h1>
-      <form method='#{options[:method]}' #{"action='#{options[:url]}' " if options[:url]}noValidate='noValidate'>
+      <form method='#{options.fetch(:method)}' #{"action='#{options.fetch(:url)}' " if options[:url]}noValidate='noValidate'>
       HTML
       self
     end
