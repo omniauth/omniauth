@@ -23,7 +23,7 @@ module OmniAuth
 
         run_hook(:request_validation_phase)
 
-        session['omniauth.params'] = request.GET
+        session['omniauth.params'] = omniauth_params
 
         run_hook(:before_request_phase)
 

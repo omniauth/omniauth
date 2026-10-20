@@ -1009,10 +1009,17 @@ describe OmniAuth::Strategy do
           expect(OmniAuth.logger).to have_received(:debug).with('(test) Request phase initiated.')
         end
 
-        it 'stores the query params in the session' do
-          env = make_env('/auth/test', 'QUERY_STRING' => 'foo=bar')
+        it 'stores the query and form params in the session' do
+          env = make_env('/auth/test', 'QUERY_STRING' => 'foo=bar', 'rack.input' => StringIO.new('baz=qux'))
           strategy.call(env)
-          expect(env['rack.session']['omniauth.params']).to eq('foo' => 'bar')
+          expect(env['rack.session']['omniauth.params']).to eq('foo' => 'bar', 'baz' => 'qux')
+        end
+
+        # https://github.com/omniauth/omniauth/pull/867
+        it 'does not store the authenticity token in the session' do
+          env = make_env('/auth/test', 'rack.input' => StringIO.new('authenticity_token=secret&baz=qux'))
+          strategy.call(env)
+          expect(env['rack.session']['omniauth.params']).to eq('baz' => 'qux')
         end
 
         it 'runs the setup phase' do
@@ -1374,19 +1381,19 @@ describe OmniAuth::Strategy do
       it 'sets omniauth.params with query params on the request phase' do
         OmniAuth.config.mock_auth[:test] = {}
 
-        strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'foo=bar'))
+        strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'foo=bar', 'rack.input' => StringIO.new('')))
         expect(strategy.env['rack.session']['omniauth.params']).to eq('foo' => 'bar')
       end
 
-      it 'does not set body parameters of POST request on the request phase' do
+      it 'sets omniauth.params with form params but not the authenticity token on the request phase' do
         OmniAuth.config.mock_auth[:test] = {}
 
         props = {
           'REQUEST_METHOD' => 'POST',
-          'rack.input' => StringIO.new('foo=bar')
+          'rack.input' => StringIO.new('foo=bar&authenticity_token=secret')
         }
         strategy.call(make_env('/auth/test', props))
-        expect(strategy.env['rack.session']['omniauth.params']).to eq({})
+        expect(strategy.env['rack.session']['omniauth.params']).to eq('foo' => 'bar')
       end
 
       it 'executes request hook on the request phase' do

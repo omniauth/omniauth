@@ -291,6 +291,7 @@ module OmniAuth
       def redirect: (String uri) -> rack_response
       def fail!: (String | Symbol message_key, ?Exception? exception) -> rack_response
       def store_origin: () -> void
+      def omniauth_params: () -> Hash[String, untyped]
       def request_call?: () -> boolish
     end
 
@@ -474,6 +475,12 @@ module OmniAuth
     def request_call: () -> rack_response
 
     def request_response: () -> rack_response
+
+    AUTHENTICITY_PARAM: String
+
+    # The request phase's query and form params, minus the authenticity
+    # token, which the callback phase hands back as `omniauth.params`.
+    def omniauth_params: () -> Hash[String, untyped]
 
     def store_origin: () -> void
 

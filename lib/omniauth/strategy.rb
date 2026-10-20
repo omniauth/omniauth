@@ -161,8 +161,7 @@ module OmniAuth
       setup_phase
       log :debug, 'Request phase initiated.'
       run_hook(:request_validation_phase)
-      # store query params from the request url, extracted in the callback_phase
-      session['omniauth.params'] = request.GET
+      session['omniauth.params'] = omniauth_params
       run_hook(:before_request_phase)
       request_response.tap { run_hook(:after_request_phase) }
     rescue OmniAuth::AuthenticityError => e
@@ -182,6 +181,17 @@ module OmniAuth
         store_origin if options.origin_param
         request_phase
       end
+    end
+
+    # The authenticity token never goes into omniauth.params, so the app
+    # can't leak it by echoing the params back.
+    AUTHENTICITY_PARAM = 'authenticity_token'.freeze
+
+    # The params the app sent to the request phase, from both the query
+    # string and the form, which the callback phase hands back as
+    # env['omniauth.params'].
+    def omniauth_params
+      request.params.reject { |key, _| key.eql?(AUTHENTICITY_PARAM) }
     end
 
     # Remembers where the user came from (the origin param, or else the
