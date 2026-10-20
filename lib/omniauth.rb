@@ -1,5 +1,3 @@
-# TODO: Fixed in https://github.com/rack/rack/pull/1610 for Rack 3
-require 'delegate'
 require 'rack'
 require 'singleton'
 require 'logger'
