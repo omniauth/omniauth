@@ -17,8 +17,16 @@ group :development do
   gem 'rubocop', '~> 1.92.0', :platforms => :mri if RUBY_VERSION >= '2.7'
   # Steep 2.1 needs Ruby 3.3+, so older Rubies skip the steep task.
   gem 'steep', '~> 2.1', :require => false, :platforms => :mri if RUBY_VERSION >= '3.3'
-  # Mutant 0.17 needs Ruby 3.3+, so older Rubies skip the mutant task.
-  gem 'mutant-rspec', '~> 0.17.0', :require => false, :platforms => :mri if RUBY_VERSION >= '3.3'
+  # Mutant needs Ruby 3.3+, so older Rubies skip the mutant task. Until a
+  # release includes https://github.com/mbj/mutant/pull/1679, use the
+  # commit that merged it, so mutant can test OmniAuth::Utils's
+  # module_function methods.
+  if RUBY_VERSION >= '3.3'
+    git 'https://github.com/mbj/mutant.git', :ref => '25390f3c255e4cfb04177a8fd6c91ac6c5b83749', :glob => 'ruby/*.gemspec' do
+      gem 'mutant', :platforms => :mri
+      gem 'mutant-rspec', :require => false, :platforms => :mri
+    end
+  end
 end
 
 group :test do

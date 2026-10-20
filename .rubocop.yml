@@ -91,12 +91,6 @@ Style/Lambda:
   Enabled: false
 
 # Public APIs that take a positional boolean.
-# module_function copies each method onto the module, so a mutation of
-# the instance method would never reach OmniAuth::Utils.camelize and
-# friends. extend self keeps a single copy for mutant to test.
-Style/ModuleFunction:
-  EnforcedStyle: extend_self
-
 Style/OptionalBooleanParameter:
   AllowedMethods:
     - camelize
