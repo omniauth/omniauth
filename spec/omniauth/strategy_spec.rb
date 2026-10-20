@@ -19,6 +19,19 @@ describe OmniAuth::Strategy do
     c.send(:include, OmniAuth::Strategy)
   end
 
+  describe '.included' do
+    it 'registers the class as a strategy and sets up its default options' do
+      klass = Class.new
+      klass.send(:include, OmniAuth::Strategy)
+
+      expect(OmniAuth.strategies.last).to equal(klass)
+      expect(klass.singleton_class).to include(OmniAuth::Strategy::ClassMethods)
+      expect(klass.default_options.to_hash).to eq('setup' => false, 'skip_info' => false, 'origin_param' => 'origin')
+    ensure
+      OmniAuth.strategies.delete(klass)
+    end
+  end
+
   describe '.default_options' do
     it 'is inherited from a parent class' do
       superklass = Class.new
@@ -89,6 +102,43 @@ describe OmniAuth::Strategy do
       )
 
       ExampleStrategy.new(app, :failure => 'Some Issue').call(env)
+    end
+
+    context 'when called directly' do
+      let(:env) { make_env }
+      let(:strategy) { ExampleStrategy.new(app) }
+      let(:on_failure) { lambda { |env| [401, {}, [env['omniauth.error.type'].inspect]] } }
+
+      before do
+        allow(strategy).to receive(:env).and_return(env)
+        allow(OmniAuth.config).to receive(:on_failure).and_return(on_failure)
+      end
+
+      it 'records the failure in the env and returns the on_failure response' do
+        exception = RuntimeError.new('boom')
+
+        expect(strategy.fail!('invalid_credentials', exception)).to eq([401, {}, [':invalid_credentials']])
+        expect(env['omniauth.error']).to equal(exception)
+        expect(env['omniauth.error.type']).to eq(:invalid_credentials)
+        expect(env['omniauth.error.strategy']).to equal(strategy)
+      end
+
+      it 'does not require an exception' do
+        expect(strategy.fail!(:timeout)).to eq([401, {}, [':timeout']])
+        expect(env).to include('omniauth.error' => nil, 'omniauth.error.type' => :timeout)
+      end
+
+      it "logs the exception's message" do
+        exception_class = Class.new(StandardError) do
+          def message
+            'custom message'
+          end
+        end
+        stub_const('CustomError', exception_class)
+
+        expect(OmniAuth.logger).to receive(:error).with('(test) Authentication failure! oops: CustomError, custom message')
+        strategy.fail!(:oops, CustomError.new)
+      end
     end
   end
 
@@ -281,6 +331,73 @@ describe OmniAuth::Strategy do
     it 'yields the options to a block if one is given' do
       expect { |b| ExampleStrategy.new(app, &b) }.to yield_with_args(kind_of(OmniAuth::Strategy::Options))
     end
+
+    it 'stores the app' do
+      expect(ExampleStrategy.new(app).app).to equal(app)
+    end
+
+    # Avoids "instance variable @env not initialized" warnings on Ruby < 3.0
+    # when paths are computed before the strategy is called.
+    it 'initializes env to nil' do
+      strategy = ExampleStrategy.new(app)
+      expect(strategy.instance_variable_defined?(:@env)).to be true
+      expect(strategy.env).to be_nil
+    end
+
+    it 'does not change the default options of the class' do
+      klass = Class.new(ExampleStrategy)
+      klass.new(app, :abc => 123)
+      expect(klass.default_options).not_to have_key(:abc)
+    end
+
+    it 'merges a Hash subclass given as the last argument' do
+      options = OmniAuth::Strategy::Options.new(:abc => 123)
+      expect(ExampleStrategy.new(app, options).options.abc).to eq(123)
+    end
+
+    context 'name option' do
+      subject do
+        c = Class.new
+        c.send(:include, OmniAuth::Strategy)
+      end
+
+      it 'defaults to the downcased last segment of the class name' do
+        stub_const('OmniAuth::Strategies::MyProvider', subject)
+        expect(subject.new(app).options.name).to eq('myprovider')
+      end
+
+      it 'keeps a name given as an option' do
+        stub_const('OmniAuth::Strategies::MyProvider', subject)
+        expect(subject.new(app, :name => 'custom').options.name).to eq('custom')
+      end
+    end
+
+    context 'with declared args' do
+      subject do
+        c = Class.new
+        c.send(:include, OmniAuth::Strategy)
+      end
+
+      it 'takes options from a Hash after the arguments' do
+        subject.args %i[abc]
+        s = subject.new app, 123, :def => 456
+        expect(s.options[:abc]).to eq(123)
+        expect(s.options[:def]).to eq(456)
+      end
+
+      it 'keeps the default options for arguments that are not given' do
+        subject.args %i[a b]
+        subject.option :b, '2'
+        s = subject.new(app, '1')
+        expect(s.options.a).to eq('1')
+        expect(s.options.b).to eq('2')
+      end
+
+      it 'raises an ArgumentError naming the extra arguments' do
+        subject.args %i[a]
+        expect { subject.new(app, '1', '2', 3) }.to raise_error(ArgumentError, 'Received wrong number of arguments. ["2", 3]')
+      end
+    end
   end
 
   describe '#call' do
@@ -298,6 +415,29 @@ describe OmniAuth::Strategy do
       instance = klass.new(app)
       expect { instance.call({}) }.to raise_error(OmniAuth::NoSessionError)
     end
+
+    it 'raises NoSessionError with a helpful message if rack.session is nil' do
+      instance = ExampleStrategy.new(app)
+      expect { instance.call('rack.session' => nil) }.to raise_error(OmniAuth::NoSessionError, 'You must provide a session to use OmniAuth.')
+    end
+
+    it 'runs initialize_copy defined further up the ancestor chain when duplicating' do
+      parent = Class.new do
+        attr_reader :copied
+
+        def initialize_copy(other)
+          super
+          @copied = true
+        end
+      end
+      klass = Class.new(parent)
+      klass.send :include, OmniAuth::Strategy
+      instance = klass.new(app)
+
+      copy = instance.dup
+      expect(copy.copied).to be true
+      expect(copy.options).not_to equal(instance.options)
+    end
   end
 
   describe '#inspect' do
@@ -312,6 +452,24 @@ describe OmniAuth::Strategy do
       expected_body = "<script type='text/javascript' charset='utf-8'>top.location.href = 'http://abc.com';</script>"
 
       expect(response.last).to include(expected_body)
+    end
+
+    it 'renders the javascript redirect with a 200 status and no Location header' do
+      status, headers, body = ExampleStrategy.new(app, :iframe => true).redirect('http://abc.com')
+
+      expect(status).to eq(200)
+      expect(headers['Location']).to be_nil
+      expect(body.to_enum(:each).to_a.join).to eq("<script type='text/javascript' charset='utf-8'>top.location.href = 'http://abc.com';</script>")
+    end
+
+    [{}, {:iframe => false}].each do |options|
+      it "issues an HTTP redirect with options #{options.inspect}" do
+        status, headers, body = ExampleStrategy.new(app, options).redirect('http://abc.com')
+
+        expect(status).to eq(302)
+        expect(headers['Location']).to eq('http://abc.com')
+        expect(body.to_enum(:each).to_a.join).to eq('Redirecting to http://abc.com...')
+      end
     end
   end
 
@@ -328,6 +486,12 @@ describe OmniAuth::Strategy do
       allow(subject).to receive(:auth_hash).and_return('AUTH HASH')
       subject.callback_phase
       expect(env['omniauth.auth']).to eq('AUTH HASH')
+    end
+
+    it "returns the app's response" do
+      allow(subject).to receive(:env).and_return(make_env)
+      allow(subject).to receive(:auth_hash).and_return('AUTH HASH')
+      expect(subject.callback_phase).to eq(app.call(nil))
     end
   end
 
@@ -698,6 +862,15 @@ describe OmniAuth::Strategy do
         it 'raises the application error' do
           expect { strategy.call(make_env('/some/path')) }.to raise_error(AppError, 'Some error in the app!')
         end
+
+        it 'clears the app error flag before re-raising the error' do
+          env = make_env.merge('omniauth.error.app' => true)
+          allow(strategy).to receive(:env).and_return(env)
+          error = AppError.new('Some error in the app!')
+
+          expect { strategy.send(:handle_phase_error, error) }.to raise_error(error)
+          expect(env).not_to have_key('omniauth.error.app')
+        end
       end
 
       context 'error during auth phase' do
@@ -765,6 +938,184 @@ describe OmniAuth::Strategy do
         expect(strategy).to receive(:fail!).with('Callback Phase', kind_of(StandardError))
         strategy.call(make_env('/auth/test/callback'))
         expect(strategy.last_env['before_callback']).to be true
+      end
+    end
+
+    context 'phase details' do
+      let(:on_failure) { lambda { |env| [401, {}, [env['omniauth.error.type'].to_s]] } }
+
+      before do
+        allow(OmniAuth.config).to receive(:on_failure).and_return(on_failure)
+        allow(OmniAuth.logger).to receive(:debug)
+      end
+
+      it 'passes requests outside of its paths to the app with the env' do
+        app = lambda { |env| [200, {}, [env['PATH_INFO']]] }
+        env = make_env('/elsewhere')
+
+        expect(ExampleStrategy.new(app).call(env)).to eq([200, {}, ['/elsewhere']])
+        expect(env).not_to have_key('omniauth.strategy')
+      end
+
+      it 'sets omniauth.strategy on its own paths' do
+        env = make_env('/auth/test')
+        strategy.call(env)
+        expect(env['omniauth.strategy']).to equal(strategy)
+      end
+
+      it 'runs other_phase for requests outside of its paths when defined' do
+        klass = Class.new(ExampleStrategy) do
+          def other_phase
+            [200, {}, ['other phase']]
+          end
+        end
+        expect(klass.new(app).call(make_env('/elsewhere'))).to eq([200, {}, ['other phase']])
+      end
+
+      it 'passes the env to mock_call! in test mode' do
+        OmniAuth.config.test_mode = true
+        env = make_env('/elsewhere')
+        expect(strategy).to receive(:mock_call!).with(env).and_return(:mocked)
+        expect(strategy.call(env)).to eq(:mocked)
+      ensure
+        OmniAuth.config.test_mode = false
+      end
+
+      it 'does not warn about GET requests when only POST is allowed' do
+        allow(strategy).to receive(:log)
+        strategy.call(make_env)
+        expect(strategy).not_to have_received(:log).with(:warn, anything)
+      end
+
+      context 'on the request path' do
+        it 'logs the start of the request phase' do
+          strategy.call(make_env)
+          expect(OmniAuth.logger).to have_received(:debug).with('(test) Request phase initiated.')
+        end
+
+        it 'stores the query params in the session' do
+          env = make_env('/auth/test', 'QUERY_STRING' => 'foo=bar')
+          strategy.call(env)
+          expect(env['rack.session']['omniauth.params']).to eq('foo' => 'bar')
+        end
+
+        it 'runs the setup phase' do
+          @options = {:setup => lambda { |env| env['setup_ran'] = env['PATH_INFO'] }}
+          env = make_env
+          strategy.call(env)
+          expect(env['setup_ran']).to eq('/auth/test')
+        end
+
+        it 'fails with :authenticity_error when the request validation phase rejects the request' do
+          error = OmniAuth::AuthenticityError.new('bad token')
+          OmniAuth.config.request_validation_phase = lambda { |_env| raise error }
+          env = make_env
+
+          expect(strategy.call(env)).to eq([401, {}, ['authenticity_error']])
+          expect(env['omniauth.error']).to equal(error)
+        ensure
+          OmniAuth.config.request_validation_phase = nil
+        end
+
+        it 'renders a form from a Rack endpoint, passing it the env' do
+          @options = {:form => lambda { |env| [200, {}, [env['PATH_INFO']]] }}
+          expect(strategy.call(make_env)).to eq([200, {}, ['/auth/test']])
+          expect(OmniAuth.logger).to have_received(:debug).with('(test) Rendering form from supplied Rack endpoint.')
+        end
+
+        it 'renders a form from the app when :form is true' do
+          calls = []
+          app = lambda do |env|
+            calls << env['PATH_INFO']
+            [200, {}, ['app form']]
+          end
+          strategy = ExampleStrategy.new(app, :form => true)
+
+          expect(strategy.call(make_env)).to eq([200, {}, ['app form']])
+          expect(calls).to eq(['/auth/test'])
+          expect(OmniAuth.logger).to have_received(:debug).with('(test) Rendering form from underlying application.')
+        end
+
+        it 'returns the response of the app when :form is true' do
+          app = lambda { |env| [200, {}, ["form for #{env['PATH_INFO']}"]] }
+          strategy = ExampleStrategy.new(app, :form => true)
+          allow(strategy).to receive(:env).and_return(make_env)
+
+          expect(strategy.request_response).to eq([200, {}, ['form for /auth/test']])
+        end
+
+        it 'runs the request phase when :form is false' do
+          @options = {:form => false}
+          expect(strategy.call(make_env)).to eq([401, {}, ['Request Phase']])
+        end
+
+        it 'does not store the referer as the origin when origin_param is disabled' do
+          @options = {:origin_param => false}
+          env = make_env('/auth/test', 'HTTP_REFERER' => 'http://example.com/origin')
+          strategy.call(env)
+          expect(env['rack.session']).not_to have_key('omniauth.origin')
+        end
+
+        it 'does not store the referer as the origin when it is the request path' do
+          env = make_env('/auth/test', 'HTTP_REFERER' => 'http://example.com/auth/test')
+          strategy.call(env)
+          expect(env['rack.session']).not_to have_key('omniauth.origin')
+        end
+
+        it 'stores the referer as the origin when the origin param has no value' do
+          env = make_env('/auth/test', 'QUERY_STRING' => 'origin', 'HTTP_REFERER' => 'http://example.com/origin')
+          strategy.call(env)
+          expect(env['rack.session']['omniauth.origin']).to eq('http://example.com/origin')
+        end
+      end
+
+      context 'on the callback path' do
+        it 'logs the start of the callback phase' do
+          strategy.call(make_env('/auth/test/callback'))
+          expect(OmniAuth.logger).to have_received(:debug).with('(test) Callback phase initiated.')
+        end
+
+        it 'runs the setup phase' do
+          @options = {:setup => lambda { |env| env['setup_ran'] = env['PATH_INFO'] }}
+          env = make_env('/auth/test/callback')
+          strategy.call(env)
+          expect(env['setup_ran']).to eq('/auth/test/callback')
+        end
+
+        it 'moves omniauth.params from the session to the env' do
+          env = make_env('/auth/test/callback', 'rack.session' => {'omniauth.params' => {'foo' => 'bar'}})
+          strategy.call(env)
+          expect(env['omniauth.params']).to eq('foo' => 'bar')
+          expect(env['rack.session']).not_to have_key('omniauth.params')
+        end
+
+        it 'sets omniauth.params to an empty hash when none are stored' do
+          env = make_env('/auth/test/callback')
+          strategy.call(env)
+          expect(env['omniauth.params']).to eq({})
+        end
+
+        it 'moves omniauth.origin from the session to the env' do
+          env = make_env('/auth/test/callback', 'rack.session' => {'omniauth.origin' => '/origin'})
+          strategy.call(env)
+          expect(env['omniauth.origin']).to eq('/origin')
+          expect(env['rack.session']).not_to have_key('omniauth.origin')
+        end
+      end
+
+      context 'with several allowed request methods' do
+        around do |example|
+          old_methods = OmniAuth.config.allowed_request_methods
+          OmniAuth.config.allowed_request_methods = %i[get post]
+          example.run
+        ensure
+          OmniAuth.config.allowed_request_methods = old_methods
+        end
+
+        it 'lists them all in response to an OPTIONS request' do
+          response = strategy.call(make_env('/auth/test', 'REQUEST_METHOD' => 'OPTIONS'))
+          expect(response).to eq([200, {'Allow' => 'GET, POST'}, []])
+        end
       end
     end
 
@@ -1323,6 +1674,49 @@ describe OmniAuth::Strategy do
       it 'does not call through on a non-omniauth endpoint' do
         strategy.call(make_env('/somewhere/else'))
         expect(strategy.options[:awesome]).not_to eq('sauce')
+      end
+    end
+
+    context 'outside of test mode' do
+      let(:setup_requests) { [] }
+      let(:app) do
+        lambda do |env|
+          setup_requests << [env['PATH_INFO'], env['REQUEST_METHOD']] if env['PATH_INFO'].end_with?('/setup')
+          [404, {}, ['Awesome']]
+        end
+      end
+
+      before do
+        OmniAuth.config.test_mode = false
+        allow(OmniAuth.logger).to receive(:debug)
+      end
+
+      it 'calls the app with a GET to the setup path when options[:setup] is true' do
+        env = make_env('/auth/test')
+        ExampleStrategy.new(app, :setup => true).call(env)
+
+        expect(setup_requests).to eq([['/auth/test/setup', 'GET']])
+        expect(env['PATH_INFO']).to eq('/auth/test')
+        expect(env['REQUEST_METHOD']).to eq('POST')
+        expect(OmniAuth.logger).to have_received(:debug).with('(test) Calling through to underlying application for setup.')
+      end
+
+      it 'calls a setup endpoint with the env' do
+        setup = lambda { |env| env['setup_ran'] = true }
+        env = make_env('/auth/test')
+        ExampleStrategy.new(app, :setup => setup).call(env)
+
+        expect(env['setup_ran']).to be true
+        expect(OmniAuth.logger).to have_received(:debug).with('(test) Setup endpoint detected, running now.')
+      end
+
+      it 'skips setup when the :setup option is missing' do
+        strategy = ExampleStrategy.new(app)
+        strategy.options.delete(:setup)
+
+        expect(strategy).to receive(:fail!).with('Request Phase', kind_of(StandardError))
+        strategy.call(make_env('/auth/test'))
+        expect(setup_requests).to be_empty
       end
     end
 
