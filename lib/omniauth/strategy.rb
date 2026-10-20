@@ -165,15 +165,8 @@ module OmniAuth
       elsif options.form
         log :debug, 'Rendering form from underlying application.'
         call_app!
-      elsif !options.origin_param
-        request_phase
       else
-        if request.params[options.origin_param]
-          env['rack.session']['omniauth.origin'] = request.params[options.origin_param]
-        elsif env['HTTP_REFERER'] && !env['HTTP_REFERER'].match(/#{request_path}$/)
-          env['rack.session']['omniauth.origin'] = env['HTTP_REFERER']
-        end
-
+        store_origin if options.origin_param
         request_phase
       end
       
@@ -181,6 +174,16 @@ module OmniAuth
       result
     rescue OmniAuth::AuthenticityError => e
       fail!(:authenticity_error, e)
+    end
+
+    # Remembers where the user came from (the origin param, or else the
+    # referer) so the callback phase can send them back there.
+    def store_origin
+      if request.params[options.origin_param]
+        session['omniauth.origin'] = request.params[options.origin_param]
+      elsif env['HTTP_REFERER'] && !env['HTTP_REFERER'].match(/#{request_path}$/)
+        session['omniauth.origin'] = env['HTTP_REFERER']
+      end
     end
 
     # Performs the steps necessary to run the callback phase of a strategy.
