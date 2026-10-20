@@ -198,6 +198,8 @@ module OmniAuth
     def provider: (Class | String | Symbol klass, *untyped args, **untyped opts) ?{ (*untyped) -> void } -> void
 
     def call: (env) -> rack_response
+
+    @built_app: Rack::_Application?
   end
 
   # The default `on_failure` endpoint: raises in the configured

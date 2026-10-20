@@ -44,5 +44,11 @@ module OmniAuth
 
       use middleware, *args, **options.merge(opts), &block
     end
+
+    # Rack::Builder#call rebuilds the whole middleware stack on every
+    # request. Build it on the first request and reuse it after that.
+    def call(env)
+      (@built_app ||= to_app).call(env)
+    end
   end
 end

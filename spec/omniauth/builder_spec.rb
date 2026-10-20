@@ -195,6 +195,26 @@ describe OmniAuth::Builder do
 
       expect(builder.call(env)).to eq([200, {}, 'VALUE'])
     end
+
+    it 'builds the middleware stack once and reuses it' do
+      built = 0
+      middleware = Class.new do
+        define_method(:initialize) do |app, *_args, **_opts|
+          built += 1
+          @app = app
+        end
+
+        def call(env)
+          @app.call(env)
+        end
+      end
+      builder = OmniAuth::Builder.new(lambda { |_env| [200, {}, ['ok']] })
+      builder.provider middleware
+      env = {'REQUEST_METHOD' => 'GET', 'PATH_INFO' => '/'}
+
+      expect([builder.call(env), builder.call(env)]).to eq([[200, {}, ['ok']]] * 2)
+      expect(built).to eq(1)
+    end
   end
 
   def with_config_reset(option)
