@@ -122,10 +122,13 @@ module OmniAuth
         'rack.url_scheme' => 'https'
       }.freeze
 
+      # Reads request.env rather than env, so full_host and callback_url also
+      # work outside a Rack call, as when a strategy's tests stub #request.
       def ssl?
+        request_env = request.env
         # A proxy chain can list several protocols; the first is the client's.
-        forwarded_proto = env['HTTP_X_FORWARDED_PROTO'].to_s.split(',').first
-        forwarded_proto.eql?('https') || SSL_ENV_VALUES.any? { |key, value| env[key].eql?(value) }
+        forwarded_proto = request_env['HTTP_X_FORWARDED_PROTO'].to_s.split(',').first
+        forwarded_proto.eql?('https') || SSL_ENV_VALUES.any? { |key, value| request_env[key].eql?(value) }
       end
     end
   end

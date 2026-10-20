@@ -140,5 +140,27 @@ describe OmniAuth::Strategy, 'paths' do
       # Rack itself prefers HTTP_X_FORWARDED_PROTO over rack.url_scheme.
       expect(full_host_for('rack.url_scheme' => 'https', 'HTTP_X_FORWARDED_PROTO' => 'http')).to eq('https://my.host.net')
     end
+
+    # Strategy gems such as omniauth-facebook call full_host from specs
+    # that stub #request and never run the strategy through Rack.
+    context 'outside a Rack call, with a stubbed request' do
+      def full_host_with_stubbed_request(props)
+        strategy = ExampleStrategy.new(app)
+        allow(strategy).to receive(:request).and_return(Rack::Request.new(rack_env('/whatever', host_env(props))))
+        strategy.full_host
+      end
+
+      it 'uses the request scheme' do
+        expect(full_host_with_stubbed_request({})).to eq('http://my.host.net')
+      end
+
+      it 'switches to https when the request is SSL' do
+        expect(full_host_with_stubbed_request('HTTPS' => 'on', 'SERVER_PORT' => '443')).to eq('https://my.host.net')
+      end
+
+      it 'switches to https when a proxy forwarded HTTPS' do
+        expect(full_host_with_stubbed_request('HTTP_X_FORWARDED_PROTO' => 'https,http')).to eq('https://my.host.net')
+      end
+    end
   end
 end
