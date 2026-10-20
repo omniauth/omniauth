@@ -131,7 +131,7 @@ describe OmniAuth::AuthHash do
       end
 
       it 'does not add a calculated name to a select' do
-        expect(info.select { |key, _| key == 'email' }.to_hash).to eq('email' => 'fry@planetexpress.com')
+        expect(info.select { |_, value| value.include?('@') }.to_hash).to eq('email' => 'fry@planetexpress.com')
       end
 
       it 'does not add a calculated name to a reject' do

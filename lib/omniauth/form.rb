@@ -18,7 +18,7 @@ module OmniAuth
 
     def self.build(options = {}, &block)
       form = OmniAuth::Form.new(options)
-      if block.arity > 0
+      if block.arity.positive?
         yield form
       else
         form.instance_eval(&block)

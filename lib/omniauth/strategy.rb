@@ -304,7 +304,9 @@ module OmniAuth
     # with the Rack env. A hook set to nil or false is skipped.
     def run_hook(name)
       hook = OmniAuth.config.public_send(name)
-      hook.call(env) if hook
+      return unless hook # not hook&.call: a hook can be set to false
+
+      hook.call(env)
     end
 
     def initialize_copy(*args)

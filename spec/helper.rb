@@ -21,7 +21,7 @@ require 'securerandom'
 require 'omniauth'
 require 'omniauth/test'
 
-OmniAuth.config.logger = Logger.new('/dev/null')
+OmniAuth.config.logger = Logger.new(File::NULL)
 OmniAuth.config.request_validation_phase = nil
 
 RSpec.configure do |config|
@@ -49,7 +49,7 @@ class ExampleStrategy
   end
 
   def request_phase
-    options[:mutate_on_request].call(options) if options[:mutate_on_request]
+    options[:mutate_on_request]&.call(options)
     @fail = fail!(options[:failure], options[:failure_exception]) if options[:failure]
     @last_env = env
     return @fail if @fail
@@ -58,7 +58,7 @@ class ExampleStrategy
   end
 
   def callback_phase
-    options[:mutate_on_callback].call(options) if options[:mutate_on_callback]
+    options[:mutate_on_callback]&.call(options)
     @fail = fail!(options[:failure], options[:failure_exception]) if options[:failure]
     @last_env = env
     return @fail if @fail

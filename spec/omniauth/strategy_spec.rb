@@ -1058,7 +1058,7 @@ describe OmniAuth::Strategy do
       end
 
       context 'when the app raises an error on the callback phase' do
-        let(:app) { lambda { |_env| raise(ArgumentError, 'app error') } }
+        let(:app) { lambda { |_env| raise(ArgumentError.new('app error')) } }
 
         it 're-raises the error instead of calling fail!' do
           OmniAuth.config.mock_auth[:test] = {}

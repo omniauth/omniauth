@@ -72,17 +72,17 @@ module OmniAuth
 
       %w[uid info extra credentials].each do |fetcher|
         class_eval <<-RUBY, __FILE__, __LINE__ + 1
-          attr_reader :#{fetcher}_proc
-          private :#{fetcher}_proc
+          attr_reader :#{fetcher}_proc                                 # attr_reader :uid_proc
+          private :#{fetcher}_proc                                     # private :uid_proc
 
-          def #{fetcher}(&block)
-            return #{fetcher}_proc unless block_given?
-            @#{fetcher}_proc = block
-          end
+          def #{fetcher}(&block)                                       # def uid(&block)
+            return #{fetcher}_proc unless block_given?                 #   return uid_proc unless block_given?
+            @#{fetcher}_proc = block                                   #   @uid_proc = block
+          end                                                          # end
 
-          def #{fetcher}_stack(context)
-            compile_stack(self.ancestors, :#{fetcher}, context)
-          end
+          def #{fetcher}_stack(context)                                # def uid_stack(context)
+            compile_stack(self.ancestors, :#{fetcher}, context)        #   compile_stack(self.ancestors, :uid, context)
+          end                                                          # end
         RUBY
       end
 

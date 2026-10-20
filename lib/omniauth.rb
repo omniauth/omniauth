@@ -27,7 +27,7 @@ module OmniAuth
     include Singleton
 
     def self.default_logger
-      logger = Logger.new(STDOUT)
+      logger = Logger.new($stdout)
       logger.progname = 'omniauth'
       logger
     end
@@ -109,7 +109,7 @@ module OmniAuth
       mock = {}
       original.each_pair do |key, val|
         mock[key.to_s] = if val.is_a? Hash
-                           Hash[val.each_pair { |k, v| [k.to_s, v] }]
+                           val.collect { |k, v| [k.to_s, v] }.to_h
                          else
                            val
                          end
@@ -180,7 +180,7 @@ module OmniAuth
       return OmniAuth.config.camelizations[word.to_s] if OmniAuth.config.camelizations[word.to_s]
 
       if first_letter_in_uppercase
-        word.to_s.gsub(%r{/(.?)}) { '::' + Regexp.last_match[1].upcase }.gsub(/(^|_)(.)/) { Regexp.last_match[2].upcase }
+        word.to_s.gsub(%r{/(.?)}) { "::#{Regexp.last_match[1].upcase}" }.gsub(/(^|_)(.)/) { Regexp.last_match[2].upcase }
       else
         camelize(word).tap { |w| w[0] = w[0].downcase }
       end
