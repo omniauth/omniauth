@@ -259,6 +259,32 @@ POST /auth/twitter
 # Note that `omniauth.origin` will always be blank.
 ```
 
+## The Rack Environment
+OmniAuth passes information to your application in the Rack environment
+(`request.env` in Rails).
+
+On the callback request (`/auth/:provider/callback`):
+
+| Key | Value |
+| --- | --- |
+| `omniauth.auth` | The [Authentication Hash](https://github.com/omniauth/omniauth/wiki/Auth-Hash-Schema) for the user who just signed in. |
+| `omniauth.origin` | Where the user came from, if known (see [Origin Param](#origin-param)). |
+| `omniauth.params` | The params sent to the request phase (`/auth/:provider`), from both the query string and the form, except `authenticity_token`. An empty hash if there were none. |
+| `omniauth.strategy` | The strategy instance handling the request. Also set on the request phase and on the setup path. |
+
+When authentication fails, OmniAuth calls `OmniAuth.config.on_failure`
+with the environment, which also includes:
+
+| Key | Value |
+| --- | --- |
+| `omniauth.error` | The exception that caused the failure, if there was one. |
+| `omniauth.error.type` | A symbol describing the failure, such as `:invalid_credentials`. |
+| `omniauth.error.strategy` | The strategy instance that failed. |
+
+The default `on_failure` raises the error in development and otherwise
+redirects to `/auth/failure` with the `message`, `strategy`, and
+`origin` as query string parameters.
+
 ## Resources
 The [OmniAuth Wiki](https://github.com/omniauth/omniauth/wiki) has
 actively maintained in-depth documentation for OmniAuth. It should be
