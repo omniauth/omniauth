@@ -150,18 +150,22 @@ module OmniAuth
     end
 
     # Performs the steps necessary to run the request phase of a strategy.
-    def request_call # rubocop:disable CyclomaticComplexity, MethodLength, PerceivedComplexity
+    def request_call
       setup_phase
       log :debug, 'Request phase initiated.'
-
       run_hook(:request_validation_phase)
-
       # store query params from the request url, extracted in the callback_phase
       session['omniauth.params'] = request.GET
-
       run_hook(:before_request_phase)
+      request_response.tap { run_hook(:after_request_phase) }
+    rescue OmniAuth::AuthenticityError => e
+      fail!(:authenticity_error, e)
+    end
 
-      result = if options.form.respond_to?(:call)
+    # Renders the login form (from a Rack endpoint or the app itself) if
+    # one is configured, or else runs the strategy's request phase.
+    def request_response
+      if options.form.respond_to?(:call)
         log :debug, 'Rendering form from supplied Rack endpoint.'
         options.form.call(env)
       elsif options.form
@@ -171,11 +175,6 @@ module OmniAuth
         store_origin if options.origin_param
         request_phase
       end
-      
-      run_hook(:after_request_phase)
-      result
-    rescue OmniAuth::AuthenticityError => e
-      fail!(:authenticity_error, e)
     end
 
     # Remembers where the user came from (the origin param, or else the
