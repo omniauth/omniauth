@@ -25,8 +25,8 @@ module OmniAuth
   private
 
     def deny(_env)
-      OmniAuth.logger.send(:warn, "Attack prevented by #{self.class}")
-      raise AuthenticityError.new(options[:message])
+      OmniAuth.logger.warn("Attack prevented by #{self.class}")
+      raise AuthenticityError.new(options.fetch(:message))
     end
 
     alias default_reaction deny
