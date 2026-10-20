@@ -40,13 +40,13 @@ module OmniAuth
 
         origin = session.delete('omniauth.origin')
         env['omniauth.origin'] ||= origin
-        env['omniauth.origin'] = nil if env['omniauth.origin'] == ''
+        env['omniauth.origin'] = nil if env.fetch('omniauth.origin').eql?('')
         env['omniauth.params'] = session.delete('omniauth.params') || {}
 
-        mocked_auth = OmniAuth.mock_auth_for(name.to_s)
-        env['omniauth.auth'] = mocked_auth unless mocked_auth.is_a?(Symbol)
+        mocked_auth = OmniAuth.mock_auth_for(name)
+        env['omniauth.auth'] = mocked_auth unless mocked_auth.instance_of?(Symbol)
         run_hook(:before_callback_phase)
-        mocked_auth.is_a?(Symbol) ? fail!(mocked_auth) : call_app!
+        mocked_auth.instance_of?(Symbol) ? fail!(mocked_auth) : call_app!
       end
     end
   end
