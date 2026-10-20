@@ -69,8 +69,9 @@ module OmniAuth
 
     private
 
+      # Only whether @subset is defined matters, not its value.
       def subset(info)
-        info.instance_variable_set(:@subset, true)
+        info.instance_variable_set(:@subset, nil)
         info
       end
     end
