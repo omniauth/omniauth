@@ -10,20 +10,67 @@ describe OmniAuth::Strategies::Developer do
     end.to_app
   end
 
+  let(:form_head) do
+    [
+      '      <!DOCTYPE html>',
+      '      <html>',
+      '      <head>',
+      '        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">',
+      '        <title>User Info</title>',
+      '        ',
+      "<style type='text/css'>body { color: red; }</style>",
+      '        ',
+      '      </head>',
+      '      <body>',
+      '      <h1>User Info</h1>',
+      "      <form method='get' action='/auth/developer/callback' noValidate='noValidate'>\n"
+    ].join("\n")
+  end
+
+  def form_page(fields)
+    inputs = fields.collect do |label, name|
+      "\n<label for='#{name}'>#{label}:</label>\n<input type='text' id='#{name}' name='#{name}'/>"
+    end
+    "#{form_head}#{inputs.join}\n<button type='submit'>Sign In</button>      </form>\n      </body>\n      </html>\n"
+  end
+
   context 'request phase' do
-    before(:each) { post '/auth/developer' }
+    around do |example|
+      original_css = OmniAuth.config.form_css
+      OmniAuth.config.form_css = 'body { color: red; }'
+      example.run
+      OmniAuth.config.form_css = original_css
+    end
 
-    it 'displays a form' do
+    it 'displays a form with a text field for each of the fields' do
+      post '/auth/developer'
+
       expect(last_response.status).to eq(200)
-      expect(last_response.body).to be_include('<form')
+      expect(last_response.content_type).to eq('text/html')
+      expect(last_response.body).to eq(form_page([%w[Name name], %w[Email email]]))
     end
 
-    it 'has the callback as the action for the form' do
-      expect(last_response.body).to be_include("action='/auth/developer/callback'")
+    context 'with custom fields' do
+      let(:app) do
+        Rack::Builder.new do |b|
+          b.use Rack::Session::Cookie, :secret => SecureRandom.hex(32)
+          b.use OmniAuth::Strategies::Developer, :fields => %i[first_name last_name]
+          b.run lambda { |_env| [200, {}, ['Not Found']] }
+        end.to_app
+      end
+
+      it 'humanizes the labels' do
+        post '/auth/developer'
+
+        expect(last_response.body).to eq(form_page([['First name', 'first_name'], ['Last name', 'last_name']]))
+      end
     end
 
-    it 'has a text field for each of the fields' do
-      expect(last_response.body.scan('<input').size).to eq(2)
+    it 'uses OmniAuth::Form even if a strategy is named Form' do
+      stub_const('OmniAuth::Strategies::Form', Class.new)
+      post '/auth/developer'
+
+      expect(last_response.body).to eq(form_page([%w[Name name], %w[Email email]]))
     end
   end
 
