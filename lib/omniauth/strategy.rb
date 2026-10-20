@@ -57,7 +57,7 @@ module OmniAuth
       end
 
       # Make sure that all of the args have been dealt with, otherwise error out.
-      raise(ArgumentError.new("Received wrong number of arguments. #{args.inspect}")) unless args.empty?
+      raise(ArgumentError.new("Received wrong number of arguments. #{args}")) unless args.empty?
 
       yield options if block_given?
     end
@@ -72,7 +72,7 @@ module OmniAuth
     # @example
     #   log :warn, "This is a warning."
     def log(level, message)
-      OmniAuth.logger.send(level, "(#{name}) #{message}")
+      OmniAuth.logger.public_send(level, "(#{name}) #{message}")
     end
 
     # Duplicates this instance and runs #call! on it.
@@ -88,7 +88,7 @@ module OmniAuth
     # @param env [Hash] The Rack environment.
     def call!(env)
       unless env['rack.session']
-        error = OmniAuth::NoSessionError.new('You must provide a session to use OmniAuth.')
+        error = NoSessionError.new('You must provide a session to use OmniAuth.')
         raise(error)
       end
 
@@ -152,7 +152,7 @@ module OmniAuth
     # Responds to an OPTIONS request.
     def options_call
       run_hook(:before_options_phase)
-      verbs = OmniAuth.config.allowed_request_methods.collect(&:to_s).collect(&:upcase).join(', ')
+      verbs = OmniAuth.config.allowed_request_methods.collect(&:upcase).join(', ')
       [200, {'Allow' => verbs}, []]
     end
 
@@ -187,10 +187,12 @@ module OmniAuth
     # Remembers where the user came from (the origin param, or else the
     # referer) so the callback phase can send them back there.
     def store_origin
-      if request.params[options.origin_param]
-        session['omniauth.origin'] = request.params[options.origin_param]
-      elsif env['HTTP_REFERER'] && !env['HTTP_REFERER'].match(/#{request_path}$/)
-        session['omniauth.origin'] = env['HTTP_REFERER']
+      origin = request.params[options.origin_param]
+      referer = env['HTTP_REFERER']
+      if origin
+        session['omniauth.origin'] = origin
+      elsif referer && !referer.match?(/#{request_path}$/)
+        session['omniauth.origin'] = referer
       end
     end
 
@@ -198,15 +200,15 @@ module OmniAuth
     def callback_call
       setup_phase
       log :debug, 'Callback phase initiated.'
-      env['omniauth.origin'] = session.delete('omniauth.origin')
-      env['omniauth.origin'] = nil if env['omniauth.origin'] == ''
+      origin = session.delete('omniauth.origin')
+      env['omniauth.origin'] = (origin unless origin.eql?(''))
       env['omniauth.params'] = session.delete('omniauth.params') || {}
       run_hook(:before_callback_phase)
       callback_phase
     end
 
     def options_request?
-      request.request_method == 'OPTIONS'
+      request.request_method.eql?('OPTIONS')
     end
 
     # The setup phase looks for the `:setup` option to exist and,
@@ -214,10 +216,11 @@ module OmniAuth
     # `:setup` option or it will call out to the setup path of the
     # underlying application. This will default to `/auth/:provider/setup`.
     def setup_phase
-      if options[:setup].respond_to?(:call)
+      setup = options[:setup]
+      if setup.respond_to?(:call)
         log :debug, 'Setup endpoint detected, running now.'
-        options[:setup].call(env)
-      elsif options[:setup]
+        setup.call(env)
+      elsif setup
         log :debug, 'Calling through to underlying application for setup.'
         setup_env = env.merge('PATH_INFO' => setup_path, 'REQUEST_METHOD' => 'GET')
         call_app!(setup_env)
@@ -236,15 +239,15 @@ module OmniAuth
       call_app!
     end
 
-    def call_app!(env = self.env)
-      @app.call(env)
-    rescue StandardError => e
-      env['omniauth.error.app'] = true
-      raise e
+    def call_app!(app_env = env)
+      @app.call(app_env)
+    rescue StandardError
+      app_env['omniauth.error.app'] = true
+      raise
     end
 
     def session
-      env['rack.session']
+      env.fetch('rack.session')
     end
 
     def request
@@ -252,7 +255,7 @@ module OmniAuth
     end
 
     def name
-      options[:name]
+      options.fetch(:name)
     end
 
     def redirect(uri)
