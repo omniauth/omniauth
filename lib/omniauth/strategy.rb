@@ -176,7 +176,7 @@ module OmniAuth
     # the request path is recognized.
     #
     # @param env [Hash] The Rack environment.
-    def call!(env) # rubocop:disable CyclomaticComplexity, PerceivedComplexity
+    def call!(env)
       unless env['rack.session']
         error = OmniAuth::NoSessionError.new('You must provide a session to use OmniAuth.')
         raise(error)
@@ -190,18 +190,25 @@ module OmniAuth
 
       return mock_call!(env) if OmniAuth.config.test_mode
 
-      begin
-        return options_call if on_auth_path? && options_request?
-        return request_call if on_request_path? && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
-        return callback_call if on_callback_path?
-        return other_phase if respond_to?(:other_phase)
-      rescue StandardError => e
-        raise e if env.delete('omniauth.error.app')
+      phase_call || @app.call(env)
+    end
 
-        return fail!(e.message, e)
+    # Runs the phase that matches the current request, or returns nil
+    # if the request isn't for this strategy.
+    def phase_call
+      if on_auth_path? && options_request?
+        options_call
+      elsif on_request_path? && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
+        request_call
+      elsif on_callback_path?
+        callback_call
+      elsif respond_to?(:other_phase)
+        other_phase
       end
+    rescue StandardError => e
+      raise e if env.delete('omniauth.error.app')
 
-      @app.call(env)
+      fail!(e.message, e)
     end
 
     def warn_if_using_get_on_request_path
