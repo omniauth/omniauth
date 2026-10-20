@@ -21,4 +21,16 @@ RSpec.describe OmniAuth::KeyStore do
     expect(logger).not_to receive(:warn)
     OmniAuth::KeyStore.new(:zip => '12345')
   end
+
+  it 'disables warnings on a subclass that re-enabled them' do
+    subclass = Class.new(OmniAuth::KeyStore)
+    subclass.instance_variable_set(:@disable_warnings, false)
+    allow(logger).to receive(:warn)
+
+    subclass.new(:count => 1)
+    subclass.override_logging
+    subclass.new(:zip => '12345')
+
+    expect(logger).to have_received(:warn).once
+  end
 end

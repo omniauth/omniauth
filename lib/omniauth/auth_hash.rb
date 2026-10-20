@@ -16,12 +16,12 @@ module OmniAuth
     # valid info hash. See InfoHash#valid? for
     # more details there.
     def valid?
-      info = self.info
+      info = info()
       uid? && provider? && !info.nil? && info.valid?
     end
 
     def regular_writer(key, value)
-      value = InfoHash.new(value) if key.to_s == 'info' && value.is_a?(::Hash) && !value.is_a?(InfoHash)
+      value = InfoHash.new(value) if key.eql?('info') && value.is_a?(Hash) && !value.is_a?(InfoHash)
       super
     end
 
@@ -31,12 +31,11 @@ module OmniAuth
       end
 
       def name
-        return self[:name] if self[:name]
+        return fetch(:name) if self[:name]
         return "#{first_name} #{last_name}".strip if first_name? || last_name?
         return nickname if nickname?
-        return email if email?
 
-        nil
+        email if email?
       end
 
       def name?

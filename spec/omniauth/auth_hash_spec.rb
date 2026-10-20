@@ -8,6 +8,23 @@ describe OmniAuth::AuthHash do
     expect(subject.info.first_name).to eq('Awesome')
   end
 
+  it 'keeps a supplied InfoHash as is' do
+    info = OmniAuth::AuthHash::InfoHash.new(:name => 'Awesome')
+    subject.info = info
+    expect(subject.info).to equal(info)
+  end
+
+  it 'keeps a supplied InfoHash subclass as is' do
+    info = Class.new(OmniAuth::AuthHash::InfoHash).new(:name => 'Awesome')
+    subject.info = info
+    expect(subject.info).to equal(info)
+  end
+
+  it 'converts info written with a symbol key' do
+    subject[:info] = {:first_name => 'Awesome'}
+    expect(subject['info']).to be_instance_of(OmniAuth::AuthHash::InfoHash)
+  end
+
   it 'does not try to parse `string` as InfoHash' do
     subject.weird_field = {:info => 'string'}
     expect(subject.weird_field.info).to eq 'string'
@@ -21,7 +38,11 @@ describe OmniAuth::AuthHash do
     subject { OmniAuth::AuthHash.new(:uid => '123', :provider => 'example', :info => {:name => 'Steven'}) }
 
     it 'is valid with the right parameters' do
-      expect(subject).to be_valid
+      expect(subject.valid?).to be(true)
+    end
+
+    it 'requires an info hash' do
+      expect(OmniAuth::AuthHash.new(:uid => '123', :provider => 'example').valid?).to be(false)
     end
 
     it 'requires a uid' do
@@ -66,6 +87,12 @@ describe OmniAuth::AuthHash do
       expect(subject.info.name).to eq('Fry')
     end
 
+    it 'displays only the first name if the last name is not available' do
+      subject.info.name = nil
+      subject.info.last_name = nil
+      expect(subject.info.name).to eq('Phillip')
+    end
+
     it 'displays the nickname if no name, first, or last is available' do
       subject.info.name = nil
       %w[first_name last_name].each { |k| subject.info[k] = nil }
@@ -76,6 +103,17 @@ describe OmniAuth::AuthHash do
       subject.info.name = nil
       %w[first_name last_name nickname].each { |k| subject.info[k] = nil }
       expect(subject.info.name).to eq('fry@planetexpress.com')
+    end
+
+    it 'is nil if no name, first, last, nick, or email is available' do
+      %w[name first_name last_name nickname email].each { |k| subject.info[k] = nil }
+      expect(subject.info.name).to be_nil
+    end
+
+    it 'is nil if the email is false' do
+      %w[name first_name last_name nickname].each { |k| subject.info[k] = nil }
+      subject.info.email = false
+      expect(subject.info.name).to be_nil
     end
   end
 
@@ -111,7 +149,17 @@ describe OmniAuth::AuthHash do
   describe OmniAuth::AuthHash::InfoHash do
     describe '#valid?' do
       it 'is valid if there is a name' do
-        expect(OmniAuth::AuthHash::InfoHash.new(:name => 'Awesome')).to be_valid
+        expect(OmniAuth::AuthHash::InfoHash.new(:name => 'Awesome').valid?).to be(true)
+      end
+    end
+
+    describe '#name?' do
+      it 'is true if a name can be calculated' do
+        expect(OmniAuth::AuthHash::InfoHash.new(:first_name => 'Awesome').name?).to be(true)
+      end
+
+      it 'is false if no name can be calculated' do
+        expect(OmniAuth::AuthHash::InfoHash.new(:image => 'awesome.png').name?).to be(false)
       end
     end
 
