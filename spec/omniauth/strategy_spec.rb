@@ -1476,6 +1476,26 @@ describe OmniAuth::Strategy do
         expect(strategy.full_host).to eq('my.host.net')
       end
 
+      # https://github.com/omniauth/omniauth/issues/835
+      it 'prefers the full_host option to the config' do
+        OmniAuth.config.full_host = 'https://global.example.com'
+        strategy = ExampleStrategy.new(app, :full_host => 'https://strategy.example.com')
+        expect(strategy.full_host).to eq('https://strategy.example.com')
+      end
+
+      it 'runs a full_host option proc with the env' do
+        OmniAuth.config.full_host = 'https://global.example.com'
+        strategy = ExampleStrategy.new(app, :full_host => proc { |env| "https://#{env['HOST']}" })
+        strategy.call(make_env('/auth/test', 'HOST' => 'strategy.example.com'))
+        expect(strategy.full_host).to eq('https://strategy.example.com')
+      end
+
+      it 'uses the full_host option in the callback_url' do
+        strategy = ExampleStrategy.new(app, :full_host => 'https://strategy.example.com')
+        strategy.call(make_env('/auth/test'))
+        expect(strategy.callback_url).to eq('https://strategy.example.com/auth/test/callback')
+      end
+
       it "is based on the request if it's not a string nor a proc" do
         OmniAuth.config.full_host = nil
         strategy.call(make_env('/whatever', 'rack.url_scheme' => 'http', 'SERVER_NAME' => 'my.host.net', 'SERVER_PORT' => 80))

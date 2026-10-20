@@ -71,8 +71,11 @@ module OmniAuth
         request.query_string.empty? ? '' : "?#{request.query_string}"
       end
 
+      # The scheme and host for URLs such as callback_url: the strategy's
+      # :full_host option, else OmniAuth.config.full_host, else the
+      # request's. Either setting can be a string or a proc taking the env.
       def full_host
-        host = OmniAuth.config.full_host
+        host = options[:full_host] || OmniAuth.config.full_host
         case host
         when String then host
         when Proc then host.call(env)

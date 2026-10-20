@@ -230,6 +230,20 @@ to `STDOUT` but you can configure this using `OmniAuth.config.logger`:
 OmniAuth.config.logger = Rails.logger
 ```
 
+## Full Host
+OmniAuth builds the callback URL it sends to the provider from the
+request's scheme and host. If that's wrong (for example, behind a proxy
+that doesn't send `X-Forwarded-*` or `Forwarded` headers), set it
+yourself, either for every provider or for one, as a string or as a
+proc that takes the Rack env:
+
+```ruby
+OmniAuth.config.full_host = 'https://example.com'
+provider :twitter, ENV['KEY'], ENV['SECRET'], full_host: lambda { |env| "https://#{env['HTTP_HOST']}" }
+```
+
+A provider's `full_host` option takes precedence over `OmniAuth.config.full_host`.
+
 ## Origin Param
 The `origin` parameter is typically used to inform where a user came from
 and where, should you choose to use it, they'd want to return to. Send it in
