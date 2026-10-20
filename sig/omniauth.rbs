@@ -1,0 +1,585 @@
+module OmniAuth
+  VERSION: String
+
+  # A Rack environment.
+  type env = Rack::env
+
+  # A Rack response triplet.
+  type rack_response = Rack::response
+
+  # Anything that can be called with a Rack env: a proc, a lambda, or an
+  # object or class that responds to #call.
+  interface _EnvCallable
+    def call: (env) -> untyped
+  end
+
+  # A configuration hook. Hooks set to nil or false are skipped.
+  type hook = _EnvCallable | false | nil
+
+  class Error < StandardError
+  end
+
+  class NoSessionError < StandardError
+  end
+
+  class AuthenticityError < StandardError
+  end
+
+  self.@strategies: Array[Class]?
+
+  def self.strategies: () -> Array[Class]
+
+  def self.config: () -> Configuration
+
+  def self.configure: [T] () { (Configuration) -> T } -> T
+
+  def self.logger: () -> Logger
+
+  def self.mock_auth_for: (String | Symbol provider) -> (AuthHash | Symbol)
+
+  class Configuration
+    include Singleton
+
+    def self.instance: () -> Configuration
+
+    def self.default_logger: () -> Logger
+
+    self.@defaults: Hash[Symbol, untyped]?
+
+    def self.defaults: () -> Hash[Symbol, untyped]
+
+    def initialize: () -> void
+
+    # Each hook method sets the hook when given a block and returns it
+    # otherwise.
+    def on_failure: () { (env) -> untyped } -> Proc
+                  | () -> _EnvCallable
+
+    def before_callback_phase: () { (env) -> untyped } -> Proc
+                             | () -> hook
+
+    def before_options_phase: () { (env) -> untyped } -> Proc
+                            | () -> hook
+
+    def request_validation_phase: () { (env) -> untyped } -> Proc
+                                | () -> hook
+
+    def before_request_phase: () { (env) -> untyped } -> Proc
+                            | () -> hook
+
+    def after_request_phase: () { (env) -> untyped } -> Proc
+                           | () -> hook
+
+    def add_mock: (String | Symbol provider, ?Hash[String | Symbol, untyped] original) -> AuthHash
+
+    def add_camelization: (String | Symbol name, String | Symbol camelized) -> String
+
+    attr_writer on_failure: _EnvCallable
+    attr_writer before_callback_phase: hook
+    attr_writer before_options_phase: hook
+    attr_writer before_request_phase: hook
+    attr_writer after_request_phase: hook
+    attr_writer request_validation_phase: hook
+
+    attr_accessor failure_raise_out_environments: Array[String]
+    attr_accessor path_prefix: String
+    attr_accessor allowed_request_methods: Array[Symbol]
+    attr_accessor form_css: String
+    attr_accessor test_mode: bool
+    attr_accessor mock_auth: Hash[Symbol, AuthHash | Symbol]
+    attr_accessor full_host: String | ^(env) -> String | nil
+    attr_accessor camelizations: Hash[String, String]
+    attr_accessor logger: Logger
+    attr_accessor silence_get_warning: bool
+  end
+
+  module Utils
+    def self?.form_css: () -> String
+
+    def self?.deep_merge: (Hash[untyped, untyped] hash, Hash[untyped, untyped] other_hash) -> Hash[untyped, untyped]
+
+    def self?.camelize: (String | Symbol word, ?bool first_letter_in_uppercase) -> String
+  end
+
+  # Generic helper hash that allows method access on deeply nested keys.
+  class KeyStore < Hashie::Mash
+    def self.override_logging: () -> void
+  end
+
+  # The normalized schema returned by all OmniAuth strategies.
+  class AuthHash < KeyStore
+    def self.subkey_class: () -> singleton(Hashie::Mash)
+
+    def valid?: () -> bool
+
+    def regular_writer: (untyped key, untyped value) -> untyped
+
+    def provider: () -> String?
+    def provider?: () -> bool
+    def uid: () -> String?
+    def uid?: () -> bool
+    def info: () -> InfoHash?
+    def info?: () -> bool
+    def info=: (Hash[untyped, untyped]?) -> Hash[untyped, untyped]?
+    def credentials: () -> Hashie::Mash?
+    def credentials=: (Hash[untyped, untyped]?) -> Hash[untyped, untyped]?
+    def extra: () -> Hashie::Mash?
+    def extra=: (Hash[untyped, untyped]?) -> Hash[untyped, untyped]?
+
+    # The user's information, stored under the `info` key.
+    class InfoHash < KeyStore
+      def self.subkey_class: () -> singleton(Hashie::Mash)
+
+      # The name, or a fallback built from first and last name, nickname,
+      # or email.
+      def name: () -> String?
+      def name?: () -> bool
+      alias valid? name?
+
+      def first_name: () -> String?
+      def first_name?: () -> bool
+      def last_name: () -> String?
+      def last_name?: () -> bool
+      def nickname: () -> String?
+      def nickname?: () -> bool
+      def email: () -> String?
+      def email?: () -> bool
+
+      def slice: (*untyped keys) -> self
+      def except: (*untyped keys) -> self
+      def select: () { (String, untyped) -> boolish } -> self
+      def reject: () { (String, untyped) -> boolish } -> self
+
+      def to_hash: () -> Hash[String, untyped]
+
+      @subset: bool?
+
+      private
+
+      def subset: (self info) -> self
+    end
+  end
+
+  # Raises AuthenticityError unless the request has a valid CSRF token.
+  class AuthenticityTokenProtection < Rack::Protection::AuthenticityToken
+    def initialize: (?Hash[Symbol, untyped] options) -> void
+
+    def self.call: (env) -> void
+
+    def call!: (env) -> void
+
+    alias call call!
+
+    private
+
+    def deny: (env) -> bot
+
+    alias default_reaction deny
+  end
+
+  class Builder < Rack::Builder
+    def on_failure: () { (env) -> untyped } -> Proc
+
+    def before_options_phase: () { (env) -> untyped } -> Proc
+
+    def before_request_phase: () { (env) -> untyped } -> Proc
+
+    def after_request_phase: () { (env) -> untyped } -> Proc
+
+    def before_callback_phase: () { (env) -> untyped } -> Proc
+
+    def configure: [T] () { (Configuration) -> T } -> T
+
+    # Returns the options merged into every provider, or sets them.
+    def options: (?false | Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+
+    @options: Hash[Symbol, untyped]?
+
+    def provider: (Class | String | Symbol klass, *untyped args, **untyped opts) ?{ (*untyped) -> void } -> void
+
+    def call: (env) -> rack_response
+  end
+
+  # The default `on_failure` endpoint: raises in the configured
+  # environments and otherwise redirects to `/auth/failure`.
+  class FailureEndpoint
+    attr_reader env: env
+
+    def self.call: (env) -> rack_response
+
+    def initialize: (env) -> void
+
+    def call: () -> rack_response
+
+    def raise_out!: () -> bot
+
+    def redirect_to_failure: () -> rack_response
+
+    def strategy_path_prefix: () -> String
+
+    def strategy_name_query_param: () -> String
+
+    def origin_query_param: () -> String
+  end
+
+  # Builds the HTML form some strategies show in their request phase.
+  class Form
+    DEFAULT_CSS: String
+
+    attr_accessor options: Hash[Symbol, untyped]
+
+    def initialize: (?Hash[Symbol, untyped] options) -> void
+
+    def self.build: (?Hash[Symbol, untyped] options) { (Form) [self: Form] -> void } -> Form
+
+    def label_field: (String text, String target) -> self
+
+    def input_field: (String type, String name) -> self
+
+    def text_field: (String label, String name) -> self
+
+    def password_field: (String label, String name) -> self
+
+    def button: (String text) -> String
+
+    def html: (String html) -> String
+
+    def fieldset: (String legend, ?Hash[Symbol, untyped] options) { (Form) [self: Form] -> void } -> self
+
+    def header: (String title, String header_info) -> self
+
+    def footer: () -> self
+
+    def to_html: () -> String
+
+    def to_response: () -> rack_response
+
+    @html: String
+    @with_custom_button: bool
+    @footer: bool?
+
+    private
+
+    def css: () -> String
+  end
+
+  # The mixin every OmniAuth strategy includes.
+  module Strategy
+    include Fetchers
+    include Paths
+    include TestMode
+
+    def self.included: (Class & ClassMethods base) -> void
+
+    # Strategy extends the class that includes it with ClassMethods.
+    def class: () -> ClassMethods
+
+    def dup: () -> self
+
+    # The parts of Strategy that Fetchers, Paths, and TestMode rely on.
+    interface _Core
+      def class: () -> ClassMethods
+      def options: () -> Options
+      def env: () -> env
+      def request: () -> Rack::Request
+      def session: () -> Hash[String, untyped]
+      def name: () -> String
+      def setup_phase: () -> void
+      def call_app!: (?env env) -> rack_response
+      def redirect: (String uri) -> rack_response
+      def fail!: (String | Symbol message_key, ?Exception? exception) -> rack_response
+      def store_origin: () -> void
+      def request_call?: () -> boolish
+    end
+
+    module ClassMethods
+      @default_options: Options?
+      @args: Array[Symbol]?
+
+      def default_options: () -> Options
+
+      def configure: (?Hash[Symbol, untyped]? options) ?{ (Options) -> void } -> untyped
+
+      def option: (Symbol | String name, ?untyped value) -> untyped
+
+      def args: () -> Array[Symbol]
+              | (Array[Symbol] | Symbol args) -> nil
+
+      # The fetcher blocks run with the strategy instance as self.
+      def uid: () { () [self: Strategy] -> untyped } -> Proc
+             | () -> Proc?
+
+      def info: () { () [self: Strategy] -> Hash[untyped, untyped]? } -> Proc
+              | () -> Proc?
+
+      def extra: () { () [self: Strategy] -> Hash[untyped, untyped]? } -> Proc
+               | () -> Proc?
+
+      def credentials: () { () [self: Strategy] -> Hash[untyped, untyped]? } -> Proc
+                     | () -> Proc?
+
+      def uid_stack: (untyped context) -> Array[untyped]
+      def info_stack: (untyped context) -> Array[Hash[untyped, untyped]]
+      def extra_stack: (untyped context) -> Array[Hash[untyped, untyped]]
+      def credentials_stack: (untyped context) -> Array[Hash[untyped, untyped]]
+
+      def compile_stack: (Array[Module] ancestors, Symbol method, untyped context) -> Array[untyped]
+
+      # Defined by Module, which every strategy class is.
+      def ancestors: () -> Array[Module]
+      def superclass: () -> Class?
+      def name: () -> String?
+      def class_eval: (String code, ?String file, ?Integer line) -> untyped
+
+      private
+
+      attr_reader uid_proc: Proc?
+      attr_reader info_proc: Proc?
+      attr_reader extra_proc: Proc?
+      attr_reader credentials_proc: Proc?
+    end
+
+    # Options for a strategy instance: the class's default options merged
+    # with the ones passed to the strategy.
+    class Options < KeyStore
+      # Options OmniAuth reads itself. Strategies add their own.
+      def name: () -> String
+      # false, true (render the app's own form), or a Rack endpoint
+      def form: () -> untyped
+      def origin_param: () -> (String | false)
+      # A boolean, or something callable that takes the uid
+      def skip_info: () -> untyped
+      def skip_info?: () -> bool
+      def fields: () -> Array[Symbol]
+      def uid_field: () -> Symbol
+    end
+
+    # Builds the auth hash from the uid, info, credentials, and extra
+    # blocks a strategy declares with the class-level fetcher DSL.
+    module Fetchers : _Core
+      def uid: () -> untyped
+
+      def info: () -> Hash[untyped, untyped]
+
+      def credentials: () -> Hash[untyped, untyped]
+
+      def extra: () -> Hash[untyped, untyped]
+
+      def auth_hash: () -> AuthHash
+
+      def skip_info?: () -> boolish
+
+      private
+
+      def merge_stack: (Array[Hash[untyped, untyped]] stack) -> Hash[untyped, untyped]
+    end
+
+    # Works out the request, callback, and setup paths for a strategy and
+    # whether the current request is on one of them, plus the full URLs
+    # built from them.
+    module Paths : _Core
+      CURRENT_PATH_REGEX: Regexp
+      FORMAT_EXTENSION_REGEX: Regexp
+      EMPTY_STRING: String
+      SSL_ENV_VALUES: Hash[String, String]
+
+      def on_auth_path?: () -> boolish
+
+      def on_request_path?: () -> boolish
+
+      def on_callback_path?: () -> bool
+
+      def on_path?: (String path) -> bool
+
+      def path_prefix: () -> String
+
+      def custom_path: (Symbol kind) -> String?
+
+      def request_path: () -> String
+
+      def callback_path: () -> String
+
+      def setup_path: () -> String
+
+      def current_path: () -> String
+
+      def query_string: () -> String
+
+      def full_host: () -> String
+
+      def callback_url: () -> String
+
+      def script_name: () -> String
+
+      @env: env?
+      @request_path: String?
+      @callback_path: String?
+      @current_path: String?
+
+      private
+
+      def callback_path_option: () -> String?
+
+      def full_host_from_request: () -> String
+
+      def ssl?: () -> bool
+    end
+
+    # Runs the request and callback phases against OmniAuth.config.mock_auth
+    # instead of the provider when OmniAuth.config.test_mode is enabled.
+    module TestMode : _Core, Paths
+      def mock_call!: (*untyped) -> rack_response
+
+      def mock_request_call: () -> rack_response
+
+      def mock_callback_call: () -> rack_response
+
+      private
+
+      # Defined in Strategy.
+      def handle_phase_error: (StandardError error) -> rack_response
+      def run_hook: (Symbol name) -> void
+    end
+
+    attr_reader app: Rack::_Application
+    attr_reader env (): env
+    attr_reader options: Options
+    attr_reader response: untyped
+
+    def initialize: (Rack::_Application app, *untyped args) ?{ (Options) -> void } -> void
+
+    # Called with the Rack env; nil until then.
+    @env: env?
+
+    def inspect: () -> String
+
+    def log: (Symbol level, String message) -> void
+
+    def call: (env) -> rack_response
+
+    def call!: (env) -> rack_response
+
+    def phase_call: () -> rack_response?
+
+    def options_call?: () -> boolish
+
+    def request_call?: () -> boolish
+
+    def warn_if_using_get_on_request_path: () -> void
+
+    def options_call: () -> rack_response
+
+    def request_call: () -> rack_response
+
+    def request_response: () -> rack_response
+
+    def store_origin: () -> void
+
+    def callback_call: () -> rack_response
+
+    def options_request?: () -> bool
+
+    # Optional. A strategy can define this to handle requests to paths
+    # other than its request and callback paths.
+    def other_phase: () -> rack_response
+
+    def setup_phase: () -> void
+
+    def request_phase: () -> rack_response
+
+    def callback_phase: () -> rack_response
+
+    def call_app!: (?env env) -> rack_response
+
+    def session: () -> Hash[String, untyped]
+
+    def request: () -> Rack::Request
+
+    def name: () -> String
+
+    def redirect: (String uri) -> rack_response
+
+    def user_info: () -> Hash[untyped, untyped]
+
+    def fail!: (String | Symbol message_key, ?Exception? exception) -> rack_response
+
+    @app: Rack::_Application
+    @options: Options
+    @request: Rack::Request?
+
+    private
+
+    def handle_phase_error: (StandardError error) -> rack_response
+
+    def run_hook: (Symbol name) -> void
+
+    def initialize_copy: (*untyped) -> void
+  end
+
+  module Strategies
+    # A strategy for development that asks for a name and email.
+    class Developer
+      include Strategy
+      extend Strategy::ClassMethods
+
+      def request_phase: () -> rack_response
+    end
+  end
+
+  module Test
+    # A Rack middleware that keeps one session hash across requests.
+    class PhonySession
+      def initialize: (Rack::_Application app) -> void
+
+      def call: (env) -> rack_response
+
+      @app: Rack::_Application
+      @session: Hash[String, untyped]?
+    end
+
+    # RSpec macros for strategy specs, for example:
+    #
+    #   describe MyStrategy, type: :strategy do
+    #     sets_an_auth_hash
+    #   end
+    module StrategyMacros : _ExampleGroup
+      interface _ExampleGroup
+        def it: (String description) { () [self: _Example] -> void } -> void
+      end
+
+      # What the examples these macros define rely on: RSpec expectations
+      # and Rack::Test's last_request.
+      interface _Example
+        def expect: (untyped actual) -> untyped
+        def eq: (untyped expected) -> untyped
+        def be_kind_of: (Module expected) -> untyped
+        def last_request: () -> Rack::Request
+      end
+
+      def sets_an_auth_hash: () -> void
+
+      def sets_provider_to: (String provider) -> void
+
+      def sets_uid_to: (String uid) -> void
+
+      def sets_user_info_to: (Hash[untyped, untyped] user_info) -> void
+    end
+
+    # A test case helper that builds a Rack app around the strategy under
+    # test. The including test case must define #strategy and use
+    # Rack::Test.
+    module StrategyTestCase : _RackTest
+      interface _RackTest
+        def last_request: () -> Rack::Request
+      end
+
+      def app: () -> Rack::_Application
+
+      def app_response: () -> untyped
+
+      def session: () -> Hash[String, untyped]
+
+      def strategy: () -> Array[untyped]
+    end
+  end
+end

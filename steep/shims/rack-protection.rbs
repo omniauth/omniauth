@@ -1,0 +1,23 @@
+# Minimal types for the parts of rack-protection OmniAuth uses. These are
+# for Steep only and aren't shipped with the gem.
+module Rack
+  module Protection
+    class Base
+      attr_reader app: untyped
+      attr_reader options: Hash[Symbol, untyped]
+
+      def initialize: (untyped app, ?Hash[Symbol, untyped] options) -> void
+
+      def default_options: () -> Hash[Symbol, untyped]
+
+      def accepts?: (Hash[String, untyped] env) -> bool
+
+      def instrument: (Hash[String, untyped] env) -> void
+
+      def react: (Hash[String, untyped] env) -> untyped
+    end
+
+    class AuthenticityToken < Base
+    end
+  end
+end

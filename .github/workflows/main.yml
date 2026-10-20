@@ -65,6 +65,23 @@ jobs:
         bundler-cache: true
     - name: Run RuboCop
       run: bundle exec rake rubocop
+  steep:
+    name: steep (${{ matrix.ruby }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Steep needs Ruby 3.3 or later.
+        ruby: ['3.3', '3.4', '4.0']
+    steps:
+    - uses: actions/checkout@v7
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby }}
+        bundler-cache: true
+    - name: Type-check with Steep
+      run: bundle exec rake steep
   frozen-string-compat:
     runs-on: ubuntu-latest
     steps:

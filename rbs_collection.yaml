@@ -1,0 +1,14 @@
+# Download RBS for dependencies with `bundle exec rbs collection install`.
+sources:
+  - type: git
+    name: ruby/gem_rbs_collection
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    revision: main
+    repo_dir: gems
+
+path: .gem_rbs_collection
+
+gems:
+  # Development-only gems that Steep doesn't need types for.
+  - name: steep
+    ignore: true

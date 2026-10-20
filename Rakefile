@@ -14,7 +14,21 @@ rescue LoadError
   end
 end
 
-task :default => %i[spec rubocop]
+begin
+  require 'steep'
+
+  desc 'Type-check lib against sig/omniauth.rbs with Steep'
+  task :steep do
+    sh 'rbs collection install'
+    sh 'steep check'
+  end
+rescue LoadError
+  task :steep do
+    warn 'Skipping Steep: it is not installed. It needs CRuby 3.3 or later; run `bundle install` there.'
+  end
+end
+
+task :default => %i[spec rubocop steep]
 
 namespace :perf do
   task :setup do
