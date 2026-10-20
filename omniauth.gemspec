@@ -6,9 +6,9 @@ require 'omniauth/version'
 
 Gem::Specification.new do |spec|
   spec.add_dependency 'hashie', '>= 3.5.2'
+  spec.add_dependency 'logger'
   spec.add_dependency 'rack', '>= 2.2.3'
   spec.add_dependency 'rack-protection', '>= 2.2.0'
-  spec.add_dependency 'logger'
   spec.authors       = ['Michael Bleigh', 'Erik Michaels-Ober', 'Tom Milewski']
   spec.description   = 'A generalized Rack framework for multiple-provider authentication.'
   spec.email         = ['michael@intridea.com', 'sferik@gmail.com', 'tmilewski@gmail.com']
@@ -20,6 +20,6 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = '>= 2.5'
   spec.summary       = spec.description
   spec.version       = OmniAuth::VERSION
-  spec.metadata      = { 'rubygems_mfa_required' => 'true' }
+  spec.metadata      = {'rubygems_mfa_required' => 'true'}
   spec.metadata['changelog_uri'] = spec.homepage + '/releases'
 end

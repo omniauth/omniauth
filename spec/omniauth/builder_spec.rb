@@ -14,7 +14,7 @@ describe OmniAuth::Builder do
 
       expect do
         OmniAuth::Builder.new(nil) do
-          provider ::ExampleClass
+          provider ExampleClass
         end
       end.not_to raise_error
     end

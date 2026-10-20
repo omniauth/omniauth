@@ -2,6 +2,7 @@ require 'rack-protection'
 
 module OmniAuth
   class AuthenticityError < StandardError; end
+
   class AuthenticityTokenProtection < Rack::Protection::AuthenticityToken
     def initialize(options = {})
       @options = default_options.merge(options)
@@ -18,7 +19,7 @@ module OmniAuth
       react env
     end
 
-    alias_method :call, :call!
+    alias call call!
 
   private
 

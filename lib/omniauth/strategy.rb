@@ -6,6 +6,7 @@ require 'omniauth/strategy/test_mode'
 
 module OmniAuth
   class NoSessionError < StandardError; end
+
   # The Strategy is the base unit of OmniAuth's ability to
   # wrangle multiple providers. Each strategy provided by
   # OmniAuth includes this mixin to gain the default functionality

@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'jruby-openssl', '~> 0.10.5', platforms: :jruby
+gem 'jruby-openssl', '~> 0.10.5', :platforms => :jruby
 gem 'rake', '~> 13.4'
 gem 'yard', '>= 0.9.11'
 
@@ -20,7 +20,7 @@ group :test do
   gem 'rack-test'
   gem 'rspec', '~> 3.5'
   if RUBY_VERSION >= '3.2'
-    gem 'simplecov', '>= 1', require: false
+    gem 'simplecov', '>= 1', :require => false
     gem 'simplecov-lcov'
   end
 end

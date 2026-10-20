@@ -219,16 +219,16 @@ describe OmniAuth::Strategy do
     it 'calls through to uid, info, credentials, and extra' do
       expect(instance).to receive(:uid)
       expect(instance).to receive(:info)
-      expect(instance).to receive(:credentials).and_return(expires: true).once
-      expect(instance).to receive(:extra).and_return(something: 'else').once
+      expect(instance).to receive(:credentials).and_return(:expires => true).once
+      expect(instance).to receive(:extra).and_return(:something => 'else').once
       instance.auth_hash
     end
 
     it 'returns an AuthHash' do
       allow(instance).to receive(:uid).and_return('123')
       allow(instance).to receive(:info).and_return(:name => 'Hal Awesome')
-      allow(instance).to receive(:credentials).and_return(expires: true)
-      allow(instance).to receive(:extra).and_return(something: 'else')
+      allow(instance).to receive(:credentials).and_return(:expires => true)
+      allow(instance).to receive(:extra).and_return(:something => 'else')
       hash = instance.auth_hash
       expect(hash).to be_kind_of(OmniAuth::AuthHash)
       expect(hash.uid).to eq('123')
@@ -393,14 +393,14 @@ describe OmniAuth::Strategy do
 
       context 'default flow' do
         it 'is set on the request phase' do
-          expect(strategy).to receive(:fail!).with("Request Phase", kind_of(StandardError))
+          expect(strategy).to receive(:fail!).with('Request Phase', kind_of(StandardError))
           strategy.call(make_env('/auth/test', 'HTTP_REFERER' => 'http://example.com/origin'))
 
           expect(strategy.last_env['rack.session']['omniauth.origin']).to eq('http://example.com/origin')
         end
 
         it 'is turned into an env variable on the callback phase' do
-          expect(strategy).to receive(:fail!).with("Callback Phase", kind_of(StandardError))
+          expect(strategy).to receive(:fail!).with('Callback Phase', kind_of(StandardError))
           strategy.call(make_env('/auth/test/callback', 'rack.session' => {'omniauth.origin' => 'http://example.com/origin'}))
 
           expect(strategy.last_env['omniauth.origin']).to eq('http://example.com/origin')
@@ -685,6 +685,7 @@ describe OmniAuth::Strategy do
             call_app!
           end
         end
+
         class AppError < StandardError; end
         let(:app) { ->(_env) { raise(AppError.new('Some error in the app!')) } }
         let(:strategy) { OtherPhaseStrategy.new(app) }
@@ -700,6 +701,7 @@ describe OmniAuth::Strategy do
             raise AuthError.new('Some error in authentication')
           end
         end
+
         class AuthError < StandardError; end
         let(:strategy) { SomeStrategy.new(app) }
 
@@ -709,7 +711,6 @@ describe OmniAuth::Strategy do
         end
       end
     end
-
 
     context 'request method restriction' do
       before(:context) do
@@ -973,8 +974,8 @@ describe OmniAuth::Strategy do
 
       it 'does not override omniauth.origin if already set on the callback phase' do
         strategy.call(make_env('/auth/test/callback',
-          'rack.session' => {'omniauth.origin' => 'http://example.com/origin'},
-          'omniauth.origin' => '/foo'))
+                               'rack.session' => {'omniauth.origin' => 'http://example.com/origin'},
+                               'omniauth.origin' => '/foo'))
         expect(strategy.env['omniauth.origin']).to eq('/foo')
         expect(strategy.env['rack.session']['omniauth.origin']).to be_nil
       end
@@ -1119,7 +1120,7 @@ describe OmniAuth::Strategy do
           'HTTPS' => 'on',
           'HTTP_X_FORWARDED_SSL' => 'on',
           'HTTP_X_FORWARDED_SCHEME' => 'https',
-          'HTTP_X_FORWARDED_PROTO' => 'https',
+          'HTTP_X_FORWARDED_PROTO' => 'https'
         }.each do |header, value|
           it "is true when #{header} is #{value}" do
             expect(ssl_for(header => value)).to be true
@@ -1244,7 +1245,7 @@ describe OmniAuth::Strategy do
 
       context 'with custom allow_if proc' do
         before do
-          OmniAuth.config.request_validation_phase = OmniAuth::AuthenticityTokenProtection.new(allow_if: ->(env) { true })
+          OmniAuth.config.request_validation_phase = OmniAuth::AuthenticityTokenProtection.new(:allow_if => ->(_env) { true })
         end
 
         it 'allows a valid request' do

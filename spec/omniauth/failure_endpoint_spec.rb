@@ -5,7 +5,7 @@ describe OmniAuth::FailureEndpoint do
 
   context 'raise-out environment' do
     before do
-      @rack_env = ENV['RACK_ENV']
+      @rack_env = ENV.fetch('RACK_ENV', nil)
       ENV['RACK_ENV'] = 'test'
 
       @default = OmniAuth.config.failure_raise_out_environments
@@ -50,7 +50,7 @@ describe OmniAuth::FailureEndpoint do
     end
 
     it 'respects the custom path prefix configured on the strategy' do
-      env['omniauth.error.strategy'] = ExampleStrategy.new({}, path_prefix: "/some/custom/path")
+      env['omniauth.error.strategy'] = ExampleStrategy.new({}, :path_prefix => '/some/custom/path')
       _, head, = *subject.call(env)
       expect(head['Location']).to eq('/some/custom/path/failure?message=invalid_request&strategy=test')
     end

@@ -66,7 +66,7 @@ module OmniAuth
 
       CURRENT_PATH_REGEX = %r{/$}.freeze
       FORMAT_EXTENSION_REGEX = /\.\w+\z/.freeze
-      EMPTY_STRING       = ''.freeze
+      EMPTY_STRING = ''.freeze
       def current_path
         @current_path ||= request.path.downcase.sub(CURRENT_PATH_REGEX, EMPTY_STRING)
       end
@@ -92,6 +92,7 @@ module OmniAuth
 
       def script_name
         return '' if @env.nil?
+
         @env['SCRIPT_NAME'] || ''
       end
 

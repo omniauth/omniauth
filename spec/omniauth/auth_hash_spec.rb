@@ -84,7 +84,7 @@ describe OmniAuth::AuthHash do
     let(:hash) { subject.to_hash }
 
     it 'is a plain old hash' do
-      expect(hash.class).to eq(::Hash)
+      expect(hash.class).to eq(Hash)
     end
 
     it 'has string keys' do
@@ -94,7 +94,7 @@ describe OmniAuth::AuthHash do
     it 'converts an info hash as well' do
       subject.info = {:first_name => 'Example', :last_name => 'User'}
       expect(subject.info.class).to eq(OmniAuth::AuthHash::InfoHash)
-      expect(subject.to_hash['info'].class).to eq(::Hash)
+      expect(subject.to_hash['info'].class).to eq(Hash)
     end
 
     it 'supplies the calculated name in the converted hash' do
@@ -126,7 +126,7 @@ describe OmniAuth::AuthHash do
         expect(info.slice(:email).to_hash).to eq('email' => 'fry@planetexpress.com')
       end
 
-      it 'does not add a calculated name to an except', :if => ::Hash.method_defined?(:except) do
+      it 'does not add a calculated name to an except', :if => Hash.method_defined?(:except) do
         expect(info.except(:nickname).to_hash).to eq('email' => 'fry@planetexpress.com')
       end
 

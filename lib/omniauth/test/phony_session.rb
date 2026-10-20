@@ -6,7 +6,7 @@ module OmniAuth
       end
 
       def call(env)
-        @session ||= (env['rack.session'] || {})
+        @session ||= env['rack.session'] || {}
         env['rack.session'] = @session
         @app.call(env)
       end
