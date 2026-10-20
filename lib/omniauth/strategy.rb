@@ -144,7 +144,7 @@ module OmniAuth
 
     # Responds to an OPTIONS request.
     def options_call
-      OmniAuth.config.before_options_phase.call(env) if OmniAuth.config.before_options_phase
+      run_hook(:before_options_phase)
       verbs = OmniAuth.config.allowed_request_methods.collect(&:to_s).collect(&:upcase).join(', ')
       [200, {'Allow' => verbs}, []]
     end
@@ -154,12 +154,12 @@ module OmniAuth
       setup_phase
       log :debug, 'Request phase initiated.'
 
-      OmniAuth.config.request_validation_phase.call(env) if OmniAuth.config.request_validation_phase
+      run_hook(:request_validation_phase)
 
       # store query params from the request url, extracted in the callback_phase
       session['omniauth.params'] = request.GET
 
-      OmniAuth.config.before_request_phase.call(env) if OmniAuth.config.before_request_phase
+      run_hook(:before_request_phase)
 
       result = if options.form.respond_to?(:call)
         log :debug, 'Rendering form from supplied Rack endpoint.'
@@ -172,7 +172,7 @@ module OmniAuth
         request_phase
       end
       
-      OmniAuth.config.after_request_phase.call(env) if OmniAuth.config.after_request_phase
+      run_hook(:after_request_phase)
       result
     rescue OmniAuth::AuthenticityError => e
       fail!(:authenticity_error, e)
@@ -195,7 +195,7 @@ module OmniAuth
       @env['omniauth.origin'] = session.delete('omniauth.origin')
       @env['omniauth.origin'] = nil if env['omniauth.origin'] == ''
       @env['omniauth.params'] = session.delete('omniauth.params') || {}
-      OmniAuth.config.before_callback_phase.call(@env) if OmniAuth.config.before_callback_phase
+      run_hook(:before_callback_phase)
       callback_phase
     end
 
@@ -283,6 +283,13 @@ module OmniAuth
     class Options < OmniAuth::KeyStore; end
 
   protected
+
+    # Calls the named OmniAuth.config hook (such as :before_request_phase)
+    # with the Rack env. A hook set to nil or false is skipped.
+    def run_hook(name)
+      hook = OmniAuth.config.public_send(name)
+      hook.call(env) if hook
+    end
 
     def initialize_copy(*args)
       super

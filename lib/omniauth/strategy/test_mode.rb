@@ -22,17 +22,17 @@ module OmniAuth
       def mock_request_call
         setup_phase
 
-        OmniAuth.config.request_validation_phase.call(env) if OmniAuth.config.request_validation_phase
+        run_hook(:request_validation_phase)
 
         session['omniauth.params'] = request.GET
 
-        OmniAuth.config.before_request_phase.call(env) if OmniAuth.config.before_request_phase
+        run_hook(:before_request_phase)
 
         store_origin if options.origin_param
 
         result = redirect(callback_url)
 
-        OmniAuth.config.after_request_phase.call(env) if OmniAuth.config.after_request_phase
+        run_hook(:after_request_phase)
         result
       end
 
@@ -47,7 +47,7 @@ module OmniAuth
         mocked_auth = OmniAuth.mock_auth_for(name.to_s)
         failed = mocked_auth.is_a?(Symbol)
         @env['omniauth.auth'] = mocked_auth unless failed
-        OmniAuth.config.before_callback_phase.call(@env) if OmniAuth.config.before_callback_phase
+        run_hook(:before_callback_phase)
         failed ? fail!(mocked_auth) : call_app!
       end
     end

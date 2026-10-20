@@ -737,6 +737,14 @@ describe OmniAuth::Strategy do
         OmniAuth.config.before_callback_phase = nil
       end
 
+      it 'skips a hook that is set to false' do
+        OmniAuth.config.request_validation_phase = false
+        expect(strategy).to receive(:fail!).with('Request Phase', kind_of(StandardError))
+        strategy.call(make_env('/auth/test'))
+      ensure
+        OmniAuth.config.request_validation_phase = nil
+      end
+
       it 'calls the before and after request phase hooks' do
         @options = {:form => lambda { |_env| [200, {}, ['form']] }}
         OmniAuth.config.before_request_phase { |env| env['before_request'] = true }
