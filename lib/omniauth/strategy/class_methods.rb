@@ -67,8 +67,10 @@ module OmniAuth
           @args = args.is_a?(Array) ? args : [args]
           return
         end
+        return @args if instance_variable_defined?(:@args)
+
         parent = superclass
-        @args || (parent.is_a?(ClassMethods) ? parent.args : [])
+        parent.is_a?(ClassMethods) ? parent.args : []
       end
 
       %w[uid info extra credentials].each do |fetcher|

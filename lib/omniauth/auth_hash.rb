@@ -63,7 +63,7 @@ module OmniAuth
 
       def to_hash
         hash = super
-        hash['name'] ||= name unless @subset
+        hash['name'] ||= name unless instance_variable_defined?(:@subset)
         hash
       end
 
