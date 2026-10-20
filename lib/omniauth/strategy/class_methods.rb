@@ -6,7 +6,7 @@ module OmniAuth
       def default_options
         @default_options ||= begin
           parent = superclass
-          OmniAuth::Strategy::Options.new(parent.is_a?(ClassMethods) ? parent.default_options : nil)
+          Options.new((parent.default_options if parent.is_a?(ClassMethods)))
         end
       end
 
@@ -91,10 +91,10 @@ module OmniAuth
         stack = ancestors.inject([]) do |a, ancestor|
           # Only strategy classes define these blocks. Other ancestors may
           # respond to the same names (e.g. a monkeypatched Object#info).
-          a << context.instance_eval(&ancestor.send(method)) if ancestor.is_a?(ClassMethods) && ancestor.send(method)
+          a << context.instance_eval(&ancestor.public_send(method)) if ancestor.is_a?(ClassMethods) && ancestor.public_send(method)
           a
         end
-        stack.reverse!
+        stack.reverse
       end
     end
   end
