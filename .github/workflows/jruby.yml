@@ -25,4 +25,4 @@ jobs:
     - name: Run tests
       env:
         JRUBY_OPTS: --debug
-      run: bundle exec rake
+      run: bundle exec rake spec

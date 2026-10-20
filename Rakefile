@@ -10,7 +10,7 @@ begin
   RuboCop::RakeTask.new
 rescue LoadError
   task :rubocop do
-    warn 'RuboCop is disabled'
+    warn 'Skipping RuboCop: it is not installed. It needs CRuby 2.7 or later; run `bundle install` there.'
   end
 end
 

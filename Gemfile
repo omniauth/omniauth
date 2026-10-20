@@ -13,6 +13,8 @@ group :development do
   gem 'kramdown'
   gem 'memory_profiler'
   gem 'pry'
+  # RuboCop 1.92 needs Ruby 2.7+, so older Rubies skip the rubocop task.
+  gem 'rubocop', '~> 1.92.0', :platforms => :mri if RUBY_VERSION >= '2.7'
 end
 
 group :test do
