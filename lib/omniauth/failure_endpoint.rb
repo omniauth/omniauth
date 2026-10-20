@@ -22,7 +22,7 @@ module OmniAuth
     end
 
     def raise_out!
-      raise(env['omniauth.error'] || OmniAuth::Error.new(env['omniauth.error.type']))
+      raise(env['omniauth.error'] || Error.new(env['omniauth.error.type']))
     end
 
     def redirect_to_failure
@@ -34,7 +34,7 @@ module OmniAuth
 
     def strategy_path_prefix
       if env['omniauth.error.strategy']
-        env['omniauth.error.strategy'].path_prefix
+        env.fetch('omniauth.error.strategy').path_prefix
       else
         OmniAuth.config.path_prefix
       end
@@ -43,13 +43,13 @@ module OmniAuth
     def strategy_name_query_param
       return '' unless env['omniauth.error.strategy']
 
-      "&strategy=#{env['omniauth.error.strategy'].name}"
+      "&strategy=#{env.fetch('omniauth.error.strategy').name}"
     end
 
     def origin_query_param
       return '' unless env['omniauth.origin']
 
-      "&origin=#{Rack::Utils.escape(env['omniauth.origin'])}"
+      "&origin=#{Rack::Utils.escape(env.fetch('omniauth.origin'))}"
     end
   end
 end
