@@ -446,6 +446,22 @@ describe OmniAuth::Strategy do
     end
   end
 
+  describe '#session' do
+    it 'returns the rack session from the env' do
+      instance = fresh_strategy.new(app)
+      session = {'key' => 'value'}
+      allow(instance).to receive(:env).and_return('rack.session' => session)
+      expect(instance.session).to equal(session)
+    end
+
+    # Strategy gems call session in their own specs with a hand-built env.
+    it 'returns nil when the env has no session' do
+      instance = fresh_strategy.new(app)
+      allow(instance).to receive(:env).and_return({})
+      expect(instance.session).to be_nil
+    end
+  end
+
   describe '#redirect' do
     it 'uses javascript if :iframe is true' do
       response = ExampleStrategy.new(app, :iframe => true).redirect('http://abc.com')

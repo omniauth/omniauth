@@ -247,7 +247,7 @@ module OmniAuth
     end
 
     def session
-      env.fetch('rack.session')
+      env['rack.session']
     end
 
     def request
