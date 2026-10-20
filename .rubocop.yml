@@ -1,19 +1,41 @@
 AllCops:
-  TargetRubyVersion: 2.2
+  TargetRubyVersion: 2.5
+  NewCops: enable
+  SuggestExtensions: false
 
 Layout/AccessModifierIndentation:
   EnforcedStyle: outdent
 
-Layout/AlignHash:
-  Enabled: false
-
 Layout/DotPosition:
   EnforcedStyle: trailing
+
+Layout/HashAlignment:
+  Enabled: false
+
+Layout/LineLength:
+  Enabled: false
 
 Layout/SpaceInsideHashLiteralBraces:
   EnforcedStyle: no_space
 
-Lint/HandleExceptions:
+# Specs define helper classes inside describe blocks and pass empty
+# blocks to methods under test.
+Lint/ConstantDefinitionInBlock:
+  Exclude:
+    - 'spec/**/*'
+
+Lint/EmptyBlock:
+  Exclude:
+    - 'spec/**/*'
+
+Lint/EmptyClass:
+  Exclude:
+    - 'spec/**/*'
+
+Lint/SuppressedException:
+  Enabled: false
+
+Metrics/AbcSize:
   Enabled: false
 
 Metrics/BlockLength:
@@ -22,10 +44,6 @@ Metrics/BlockLength:
 Metrics/BlockNesting:
   Max: 2
 
-Metrics/LineLength:
-  AllowURI: true
-  Enabled: false
-
 Metrics/MethodLength:
   CountComments: false
   Max: 15
@@ -33,9 +51,6 @@ Metrics/MethodLength:
 Metrics/ParameterLists:
   Max: 4
   CountKeywordArgs: true
-
-Metrics/AbcSize:
-  Enabled: false
 
 Style/CollectionMethods:
   PreferredMethods:
@@ -59,11 +74,23 @@ Style/Encoding:
 Style/ExpandPathArguments:
   Enabled: false
 
+# The magic comment would freeze strings OmniAuth returns, which callers
+# may mutate. The frozen-string-compat CI job checks that OmniAuth itself
+# works with frozen string literals.
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
 Style/HashSyntax:
   EnforcedStyle: hash_rockets
 
 Style/Lambda:
   Enabled: false
+
+# Public APIs that take a positional boolean.
+Style/OptionalBooleanParameter:
+  AllowedMethods:
+    - camelize
+    - options
 
 Style/RaiseArgs:
   EnforcedStyle: compact

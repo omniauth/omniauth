@@ -10,7 +10,7 @@ module OmniAuth
   # wrangle multiple providers. Each strategy provided by
   # OmniAuth includes this mixin to gain the default functionality
   # necessary to be compatible with the OmniAuth library.
-  module Strategy # rubocop:disable ModuleLength
+  module Strategy # rubocop:disable Metrics/ModuleLength
     include Fetchers
     include Paths
     include TestMode
