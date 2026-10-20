@@ -1726,6 +1726,28 @@ describe OmniAuth::Strategy do
         expect(OmniAuth.logger).to have_received(:debug).with('(test) Setup endpoint detected, running now.')
       end
 
+      # Raising is how a setup phase stops the flow and shows the user an
+      # error: https://github.com/omniauth/omniauth/issues/900
+      it 'fails with the error raised by the setup route' do
+        app = lambda do |env|
+          raise(ArgumentError.new('no such tenant')) if env['PATH_INFO'] == '/auth/test/setup'
+
+          [404, {}, ['Awesome']]
+        end
+        strategy = ExampleStrategy.new(app, :setup => true)
+
+        expect(strategy).to receive(:fail!).with('no such tenant', kind_of(ArgumentError))
+        strategy.call(make_env('/auth/test'))
+      end
+
+      it 'fails with the error raised by a setup endpoint' do
+        setup = lambda { |_env| raise(ArgumentError.new('no such tenant')) }
+        strategy = ExampleStrategy.new(app, :setup => setup)
+
+        expect(strategy).to receive(:fail!).with('no such tenant', kind_of(ArgumentError))
+        strategy.call(make_env('/auth/test'))
+      end
+
       it 'skips setup when the :setup option is missing' do
         strategy = ExampleStrategy.new(app)
         strategy.options.delete(:setup)
