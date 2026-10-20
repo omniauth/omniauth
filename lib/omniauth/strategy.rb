@@ -107,9 +107,9 @@ module OmniAuth
     # Runs the phase that matches the current request, or returns nil
     # if the request isn't for this strategy.
     def phase_call
-      if on_auth_path? && options_request?
+      if options_call?
         options_call
-      elsif on_request_path? && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
+      elsif request_call?
         request_call
       elsif on_callback_path?
         callback_call
@@ -117,9 +117,17 @@ module OmniAuth
         other_phase
       end
     rescue StandardError => e
-      raise e if env.delete('omniauth.error.app')
+      handle_phase_error(e)
+    end
 
-      fail!(e.message, e)
+    # True for an OPTIONS request to the request or callback path.
+    def options_call?
+      on_auth_path? && options_request?
+    end
+
+    # True for a request to the request path with an allowed method.
+    def request_call?
+      on_request_path? && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
     end
 
     def warn_if_using_get_on_request_path
@@ -282,6 +290,14 @@ module OmniAuth
     class Options < OmniAuth::KeyStore; end
 
   protected
+
+    # Re-raises errors from the downstream app; reports anything else
+    # raised during a phase as an authentication failure.
+    def handle_phase_error(error)
+      raise error if env.delete('omniauth.error.app')
+
+      fail!(error.message, error)
+    end
 
     # Calls the named OmniAuth.config hook (such as :before_request_phase)
     # with the Rack env. A hook set to nil or false is skipped.

@@ -7,16 +7,15 @@ module OmniAuth
       # in the event that OmniAuth has been configured to be
       # in test mode.
       def mock_call!(*)
-        begin
-          return mock_request_call if on_request_path? && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
-          return mock_callback_call if on_callback_path?
-        rescue StandardError => e
-          raise e if env.delete('omniauth.error.app')
-
-          return fail!(e.message, e)
+        if request_call?
+          mock_request_call
+        elsif on_callback_path?
+          mock_callback_call
+        else
+          call_app!
         end
-
-        call_app!
+      rescue StandardError => e
+        handle_phase_error(e)
       end
 
       def mock_request_call
