@@ -5,6 +5,10 @@ on:
   pull_request:
     branches: [ master ]
 
+# The jobs only read the repository, so don't give them write access.
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ${{ matrix.os }}-latest
