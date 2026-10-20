@@ -1100,6 +1100,38 @@ describe OmniAuth::Strategy do
         expect(strategy.full_host).to eq('https://my.host.net')
       end
 
+      describe 'SSL detection' do
+        def ssl_for(headers)
+          fresh = ExampleStrategy.new(app)
+          fresh.call(make_env('/whatever', {'rack.url_scheme' => 'http'}.merge(headers)))
+          fresh.send(:ssl?)
+        end
+
+        {
+          'HTTPS' => 'on',
+          'HTTP_X_FORWARDED_SSL' => 'on',
+          'HTTP_X_FORWARDED_SCHEME' => 'https',
+          'HTTP_X_FORWARDED_PROTO' => 'https',
+        }.each do |header, value|
+          it "is true when #{header} is #{value}" do
+            expect(ssl_for(header => value)).to be true
+          end
+        end
+
+        it 'is true when rack.url_scheme is https' do
+          expect(ssl_for('rack.url_scheme' => 'https')).to be true
+        end
+
+        it 'uses the first value of a comma-separated HTTP_X_FORWARDED_PROTO' do
+          expect(ssl_for('HTTP_X_FORWARDED_PROTO' => 'https,http')).to be true
+          expect(ssl_for('HTTP_X_FORWARDED_PROTO' => 'http,https')).to be false
+        end
+
+        it 'is false for a plain HTTP request' do
+          expect(ssl_for({})).to be false
+        end
+      end
+
       after do
         OmniAuth.config.full_host = nil
         OmniAuth.config.test_mode = false

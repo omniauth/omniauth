@@ -578,12 +578,18 @@ module OmniAuth
       end
     end
 
+    # Rack env values that mean the request came in over HTTPS.
+    SSL_ENV_VALUES = {
+      'HTTPS' => 'on',
+      'HTTP_X_FORWARDED_SSL' => 'on',
+      'HTTP_X_FORWARDED_SCHEME' => 'https',
+      'rack.url_scheme' => 'https'
+    }.freeze
+
     def ssl?
-      request.env['HTTPS'] == 'on' ||
-        request.env['HTTP_X_FORWARDED_SSL'] == 'on' ||
-        request.env['HTTP_X_FORWARDED_SCHEME'] == 'https' ||
-        (request.env['HTTP_X_FORWARDED_PROTO'] && request.env['HTTP_X_FORWARDED_PROTO'].split(',')[0] == 'https') ||
-        request.env['rack.url_scheme'] == 'https'
+      # A proxy chain can list several protocols; the first is the client's.
+      forwarded_proto = request.env['HTTP_X_FORWARDED_PROTO'].to_s.split(',').first
+      forwarded_proto == 'https' || SSL_ENV_VALUES.any? { |key, value| request.env[key] == value }
     end
   end
 end
