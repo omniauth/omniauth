@@ -139,6 +139,11 @@ describe OmniAuth::Strategy do
       expect(subject.args).to eq(%i[abc def])
     end
 
+    it 'wraps a single argument in an array' do
+      subject.args :abc
+      expect(subject.args).to eq(%i[abc])
+    end
+
     it 'is inheritable' do
       subject.args %i[abc def]
       c = Class.new(subject)

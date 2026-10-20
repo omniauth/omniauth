@@ -48,10 +48,7 @@ module OmniAuth
       end
 
       info do
-        options.fields.inject({}) do |hash, field|
-          hash[field] = request.params[field.to_s]
-          hash
-        end
+        options.fields.collect { |field| [field, request.params[field.to_s]] }.to_h
       end
     end
   end

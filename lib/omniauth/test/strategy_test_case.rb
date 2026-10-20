@@ -18,13 +18,14 @@ module OmniAuth
     #   end
     module StrategyTestCase
       def app
-        strat = strategy
         resp = app_response
-        Rack::Builder.new do
-          use(OmniAuth::Test::PhonySession)
-          use(*strat)
-          run lambda { |env| [404, {'Content-Type' => 'text/plain'}, [resp || env.key?('omniauth.auth').to_s]] }
-        end.to_app
+        builder = Rack::Builder.new
+        builder.use(OmniAuth::Test::PhonySession)
+        builder.use(*strategy)
+        # @type var endpoint: ^(Rack::env) -> Rack::response
+        endpoint = lambda { |env| [404, {'Content-Type' => 'text/plain'}, [resp || env.key?('omniauth.auth').to_s]] }
+        builder.run(endpoint)
+        builder.to_app
       end
 
       def app_response

@@ -25,9 +25,10 @@ module OmniAuth
     end
 
     def options(options = false)
-      return @options ||= {} if options == false
-
-      @options = options
+      case options
+      when false then @options ||= {}
+      else @options = options
+      end
     end
 
     def provider(klass, *args, **opts, &block)

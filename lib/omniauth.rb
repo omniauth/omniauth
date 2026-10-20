@@ -106,7 +106,7 @@ module OmniAuth
 
     def add_mock(provider, original = {})
       # Create key-stringified new hash from given auth hash
-      mock = {}
+      mock = {} #: Hash[String, untyped]
       original.each_pair do |key, val|
         mock[key.to_s] = if val.is_a? Hash
                            val.collect { |k, v| [k.to_s, v] }.to_h
@@ -116,7 +116,8 @@ module OmniAuth
       end
 
       # Merge with the default mock and ensure provider is correct.
-      mock = mock_auth[:default].dup.merge(mock)
+      default = mock_auth[:default] #: AuthHash
+      mock = default.merge(mock)
       mock['provider'] = provider.to_s
 
       # Add it to the mocks.
@@ -180,9 +181,9 @@ module OmniAuth
       return OmniAuth.config.camelizations[word.to_s] if OmniAuth.config.camelizations[word.to_s]
 
       if first_letter_in_uppercase
-        word.to_s.gsub(%r{/(.?)}) { "::#{Regexp.last_match[1].upcase}" }.gsub(/(^|_)(.)/) { Regexp.last_match[2].upcase }
+        word.to_s.gsub(%r{/(.?)}) { "::#{Regexp.last_match(1).to_s.upcase}" }.gsub(/(^|_)(.)/) { Regexp.last_match(2).to_s.upcase }
       else
-        camelize(word).tap { |w| w[0] = w[0].downcase }
+        camelize(word).tap { |w| w[0] = w[0].to_s.downcase }
       end
     end
   end

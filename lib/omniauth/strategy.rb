@@ -20,11 +20,9 @@ module OmniAuth
       OmniAuth.strategies << base
 
       base.extend ClassMethods
-      base.class_eval do
-        option :setup, false
-        option :skip_info, false
-        option :origin_param, 'origin'
-      end
+      base.option :setup, false
+      base.option :skip_info, false
+      base.option :origin_param, 'origin'
     end
 
     attr_reader :app, :env, :options, :response
@@ -98,7 +96,7 @@ module OmniAuth
 
       warn_if_using_get_on_request_path
 
-      @env['omniauth.strategy'] = self if on_auth_path?
+      env['omniauth.strategy'] = self if on_auth_path?
 
       return mock_call!(env) if OmniAuth.config.test_mode
 
@@ -200,9 +198,9 @@ module OmniAuth
     def callback_call
       setup_phase
       log :debug, 'Callback phase initiated.'
-      @env['omniauth.origin'] = session.delete('omniauth.origin')
-      @env['omniauth.origin'] = nil if env['omniauth.origin'] == ''
-      @env['omniauth.params'] = session.delete('omniauth.params') || {}
+      env['omniauth.origin'] = session.delete('omniauth.origin')
+      env['omniauth.origin'] = nil if env['omniauth.origin'] == ''
+      env['omniauth.params'] = session.delete('omniauth.params') || {}
       run_hook(:before_callback_phase)
       callback_phase
     end
@@ -238,7 +236,7 @@ module OmniAuth
       call_app!
     end
 
-    def call_app!(env = @env)
+    def call_app!(env = self.env)
       @app.call(env)
     rescue StandardError => e
       env['omniauth.error.app'] = true
@@ -246,11 +244,11 @@ module OmniAuth
     end
 
     def session
-      @env['rack.session']
+      env['rack.session']
     end
 
     def request
-      @request ||= Rack::Request.new(@env)
+      @request ||= Rack::Request.new(env)
     end
 
     def name

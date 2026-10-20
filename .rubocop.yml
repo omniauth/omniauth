@@ -9,6 +9,10 @@ Layout/AccessModifierIndentation:
 Layout/DotPosition:
   EnforcedStyle: trailing
 
+# Allow Steep type annotations such as `x = {} #: Hash[String, untyped]`.
+Layout/LeadingCommentSpace:
+  AllowSteepAnnotation: true
+
 Layout/HashAlignment:
   Enabled: false
 

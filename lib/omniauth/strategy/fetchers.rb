@@ -48,10 +48,9 @@ module OmniAuth
     protected
 
       def merge_stack(stack)
-        stack.inject({}) do |a, e|
-          a.merge!(e)
-          a
-        end
+        merged = {} #: Hash[untyped, untyped]
+        stack.each { |hash| merged.merge!(hash) }
+        merged
       end
     end
   end

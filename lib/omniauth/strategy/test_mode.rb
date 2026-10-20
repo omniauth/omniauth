@@ -39,15 +39,14 @@ module OmniAuth
         setup_phase
 
         origin = session.delete('omniauth.origin')
-        @env['omniauth.origin'] ||= origin
-        @env['omniauth.origin'] = nil if env['omniauth.origin'] == ''
-        @env['omniauth.params'] = session.delete('omniauth.params') || {}
+        env['omniauth.origin'] ||= origin
+        env['omniauth.origin'] = nil if env['omniauth.origin'] == ''
+        env['omniauth.params'] = session.delete('omniauth.params') || {}
 
         mocked_auth = OmniAuth.mock_auth_for(name.to_s)
-        failed = mocked_auth.is_a?(Symbol)
-        @env['omniauth.auth'] = mocked_auth unless failed
+        env['omniauth.auth'] = mocked_auth unless mocked_auth.is_a?(Symbol)
         run_hook(:before_callback_phase)
-        failed ? fail!(mocked_auth) : call_app!
+        mocked_auth.is_a?(Symbol) ? fail!(mocked_auth) : call_app!
       end
     end
   end

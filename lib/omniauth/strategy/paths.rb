@@ -70,13 +70,11 @@ module OmniAuth
       end
 
       def full_host
-        case OmniAuth.config.full_host
-        when String
-          OmniAuth.config.full_host
-        when Proc
-          OmniAuth.config.full_host.call(env)
-        else
-          full_host_from_request
+        host = OmniAuth.config.full_host
+        case host
+        when String then host
+        when Proc then host.call(env)
+        else full_host_from_request
         end
       end
 
@@ -85,9 +83,10 @@ module OmniAuth
       end
 
       def script_name
-        return '' if @env.nil?
+        current_env = @env
+        return '' if current_env.nil?
 
-        @env['SCRIPT_NAME'] || ''
+        current_env['SCRIPT_NAME'] || ''
       end
 
     protected

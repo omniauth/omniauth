@@ -4,9 +4,10 @@ module OmniAuth
       # Returns an inherited set of default options set at the class-level
       # for each strategy.
       def default_options
-        # existing = superclass.default_options if superclass.respond_to?(:default_options)
-        existing = superclass.respond_to?(:default_options) ? superclass.default_options : {}
-        @default_options ||= OmniAuth::Strategy::Options.new(existing)
+        @default_options ||= begin
+          parent = superclass
+          OmniAuth::Strategy::Options.new(parent.is_a?(ClassMethods) ? parent.default_options : nil)
+        end
       end
 
       # This allows for more declarative subclassing of strategies by allowing
@@ -35,7 +36,7 @@ module OmniAuth
         if block_given?
           yield default_options
         else
-          default_options.deep_merge!(options)
+          default_options.deep_merge!(options || {})
         end
       end
 
@@ -63,11 +64,11 @@ module OmniAuth
       # the initializer in OmniAuth Strategies.
       def args(args = nil)
         if args
-          @args = Array(args)
+          @args = args.is_a?(Array) ? args : [args]
           return
         end
-        existing = superclass.respond_to?(:args) ? superclass.args : []
-        (instance_variable_defined?(:@args) && @args) || existing
+        parent = superclass
+        @args || (parent.is_a?(ClassMethods) ? parent.args : [])
       end
 
       %w[uid info extra credentials].each do |fetcher|

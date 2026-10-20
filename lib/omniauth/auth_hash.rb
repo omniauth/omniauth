@@ -16,7 +16,8 @@ module OmniAuth
     # valid info hash. See InfoHash#valid? for
     # more details there.
     def valid?
-      uid? && provider? && info? && info.valid?
+      info = self.info
+      uid? && provider? && !info.nil? && info.valid?
     end
 
     def regular_writer(key, value)
@@ -43,18 +44,35 @@ module OmniAuth
       end
       alias valid? name?
 
-      # These return a subset of the info, which shouldn't gain a
-      # calculated name when converted with #to_hash.
-      %i[slice except select reject].select { |method| method_defined?(method) }.each do |method|
-        define_method(method) do |*args, &block|
-          super(*args, &block).tap { |subset| subset.instance_variable_set(:@subset, true) }
-        end
+      # slice, except, select, and reject return a subset of the info,
+      # which shouldn't gain a calculated name when converted with #to_hash.
+      def slice(*keys)
+        subset(super)
+      end
+
+      def except(*keys)
+        subset(super)
+      end
+
+      def select(&block)
+        subset(super)
+      end
+
+      def reject(&block)
+        subset(super)
       end
 
       def to_hash
         hash = super
         hash['name'] ||= name unless @subset
         hash
+      end
+
+    private
+
+      def subset(info)
+        info.instance_variable_set(:@subset, true)
+        info
       end
     end
   end
