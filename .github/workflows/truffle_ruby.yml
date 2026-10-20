@@ -12,9 +12,13 @@ permissions:
 jobs:
   test:
     runs-on: ${{ matrix.os }}-latest
+    # truffleruby-head is unreleased and can break for reasons outside
+    # OmniAuth, so don't fail the build on it.
+    continue-on-error: ${{ matrix.ruby == 'truffleruby-head' }}
     strategy:
       fail-fast: false
       matrix:
+        # TruffleRuby doesn't support Windows.
         os: [ubuntu, macos]
         ruby: [truffleruby, truffleruby-head]
     steps:

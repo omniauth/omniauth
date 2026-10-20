@@ -12,10 +12,13 @@ permissions:
 jobs:
   test:
     runs-on: ${{ matrix.os }}-latest
+    # jruby-head is unreleased and can break for reasons outside OmniAuth, so
+    # don't fail the build on it.
+    continue-on-error: ${{ matrix.jruby == 'jruby-head' }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu, macos]
+        os: [ubuntu, macos, windows]
         jruby: [jruby, jruby-head]
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

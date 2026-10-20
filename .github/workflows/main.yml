@@ -20,16 +20,21 @@ permissions:
 jobs:
   test:
     runs-on: ${{ matrix.os }}-latest
-    # ruby-head can break for reasons outside OmniAuth, so don't fail the build on it.
-    continue-on-error: ${{ matrix.ruby == 'head' }}
+    # ruby-head and debug (a debug build of ruby-head) are unreleased and can
+    # break for reasons outside OmniAuth, so don't fail the build on them.
+    continue-on-error: ${{ matrix.ruby == 'head' || matrix.ruby == 'debug' }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu, macos]
+        os: [ubuntu, macos, windows]
         ruby: [2.5, 2.6, 2.7, '3.0', 3.1, 3.2, 3.3, 3.4, '4.0', head, debug]
         exclude:
+        # No Ruby 2.5 build for Apple silicon.
         - os: macos
           ruby: 2.5
+        # Debug builds aren't available on Windows.
+        - os: windows
+          ruby: debug
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
