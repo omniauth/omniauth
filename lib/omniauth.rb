@@ -163,23 +163,27 @@ module OmniAuth
     def deep_merge(hash, other_hash)
       target = hash.dup
 
-      other_hash.each_key do |key|
-        if other_hash[key].is_a?(::Hash) && hash[key].is_a?(::Hash)
-          target[key] = deep_merge(target[key], other_hash[key])
-          next
-        end
-
-        target[key] = other_hash[key]
+      other_hash.each_pair do |key, value|
+        current = hash[key]
+        target[key] = current.is_a?(Hash) && value.is_a?(Hash) ? deep_merge(current, value) : value
       end
 
       target
     end
 
     def camelize(word, first_letter_in_uppercase = true)
-      return OmniAuth.config.camelizations[word.to_s] if OmniAuth.config.camelizations[word.to_s]
+      camelized = OmniAuth.config.camelizations[word.to_s]
+      return camelized if camelized
 
       if first_letter_in_uppercase
-        word.to_s.gsub(%r{/(.?)}) { "::#{Regexp.last_match(1).to_s.upcase}" }.gsub(/(^|_)(.)/) { Regexp.last_match(2).to_s.upcase }
+        namespaced = word.to_s.gsub(%r{/(.?)}) do
+          char = Regexp.last_match(1) #: String
+          "::#{char.upcase}"
+        end
+        namespaced.gsub(/(\A|_)(.)/) do
+          char = Regexp.last_match(2) #: String
+          char.upcase
+        end
       else
         camelize(word).tap { |w| w[0] = w[0].to_s.downcase }
       end
