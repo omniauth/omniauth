@@ -1,4 +1,7 @@
 require 'omniauth/key_store'
+require 'omniauth/strategy/class_methods'
+require 'omniauth/strategy/paths'
+require 'omniauth/strategy/test_mode'
 
 module OmniAuth
   class NoSessionError < StandardError; end
@@ -7,6 +10,9 @@ module OmniAuth
   # OmniAuth includes this mixin to gain the default functionality
   # necessary to be compatible with the OmniAuth library.
   module Strategy # rubocop:disable ModuleLength
+    include Paths
+    include TestMode
+
     def self.included(base)
       OmniAuth.strategies << base
 
@@ -15,103 +21,6 @@ module OmniAuth
         option :setup, false
         option :skip_info, false
         option :origin_param, 'origin'
-      end
-    end
-
-    module ClassMethods
-      # Returns an inherited set of default options set at the class-level
-      # for each strategy.
-      def default_options
-        # existing = superclass.default_options if superclass.respond_to?(:default_options)
-        existing = superclass.respond_to?(:default_options) ? superclass.default_options : {}
-        @default_options ||= OmniAuth::Strategy::Options.new(existing)
-      end
-
-      # This allows for more declarative subclassing of strategies by allowing
-      # default options to be set using a simple configure call.
-      #
-      # @param options [Hash] If supplied, these will be the default options (deep-merged into the superclass's default options).
-      # @yield [Options] The options Mash that allows you to set your defaults as you'd like.
-      #
-      # @example Using a yield to configure the default options.
-      #
-      #   class MyStrategy
-      #     include OmniAuth::Strategy
-      #
-      #     configure do |c|
-      #       c.foo = 'bar'
-      #     end
-      #   end
-      #
-      # @example Using a hash to configure the default options.
-      #
-      #   class MyStrategy
-      #     include OmniAuth::Strategy
-      #     configure foo: 'bar'
-      #   end
-      def configure(options = nil)
-        if block_given?
-          yield default_options
-        else
-          default_options.deep_merge!(options)
-        end
-      end
-
-      # Directly declare a default option for your class. This is a useful from
-      # a documentation perspective as it provides a simple line-by-line analysis
-      # of the kinds of options your strategy provides by default.
-      #
-      # @param name [Symbol] The key of the default option in your configuration hash.
-      # @param value [Object] The value your object defaults to. Nil if not provided.
-      #
-      # @example
-      #
-      #   class MyStrategy
-      #     include OmniAuth::Strategy
-      #
-      #     option :foo, 'bar'
-      #     option
-      #   end
-      def option(name, value = nil)
-        default_options[name] = value
-      end
-
-      # Sets (and retrieves) option key names for initializer arguments to be
-      # recorded as. This takes care of 90% of the use cases for overriding
-      # the initializer in OmniAuth Strategies.
-      def args(args = nil)
-        if args
-          @args = Array(args)
-          return
-        end
-        existing = superclass.respond_to?(:args) ? superclass.args : []
-        (instance_variable_defined?(:@args) && @args) || existing
-      end
-
-      %w[uid info extra credentials].each do |fetcher|
-        class_eval <<-RUBY, __FILE__, __LINE__ + 1
-          attr_reader :#{fetcher}_proc
-          private :#{fetcher}_proc
-
-          def #{fetcher}(&block)
-            return #{fetcher}_proc unless block_given?
-            @#{fetcher}_proc = block
-          end
-
-          def #{fetcher}_stack(context)
-            compile_stack(self.ancestors, :#{fetcher}, context)
-          end
-        RUBY
-      end
-
-      def compile_stack(ancestors, method, context)
-        stack = ancestors.inject([]) do |a, ancestor|
-          # Only strategy classes define these blocks. Other ancestors may
-          # respond to the same names (e.g. a monkeypatched Object#info).
-          a << context.instance_eval(&ancestor.send(method)) if ancestor.is_a?(ClassMethods) && ancestor.send(method)
-          a
-        end
-        stack.reverse!
       end
     end
 
@@ -285,84 +194,8 @@ module OmniAuth
       callback_phase
     end
 
-    # Returns true if the environment recognizes either the
-    # request or callback path.
-    def on_auth_path?
-      on_request_path? || on_callback_path?
-    end
-
-    def on_request_path?
-      if options[:request_path].respond_to?(:call)
-        options[:request_path].call(env)
-      else
-        on_path?(request_path)
-      end
-    end
-
-    def on_callback_path?
-      on_path?(callback_path) || current_path.sub(FORMAT_EXTENSION_REGEX, EMPTY_STRING).casecmp(callback_path).zero?
-    end
-
-    def on_path?(path)
-      current_path.casecmp(path).zero?
-    end
-
     def options_request?
       request.request_method == 'OPTIONS'
-    end
-
-    # This is called in lieu of the normal request process
-    # in the event that OmniAuth has been configured to be
-    # in test mode.
-    def mock_call!(*)
-      begin
-        return mock_request_call if on_request_path? && OmniAuth.config.allowed_request_methods.include?(request.request_method.downcase.to_sym)
-        return mock_callback_call if on_callback_path?
-      rescue StandardError => e
-        raise e if env.delete('omniauth.error.app')
-
-        return fail!(e.message, e)
-      end
-
-      call_app!
-    end
-
-    def mock_request_call
-      setup_phase
-
-      OmniAuth.config.request_validation_phase.call(env) if OmniAuth.config.request_validation_phase
-
-      session['omniauth.params'] = request.GET
-
-      OmniAuth.config.before_request_phase.call(env) if OmniAuth.config.before_request_phase
-
-      if options.origin_param
-        if request.params[options.origin_param]
-          session['omniauth.origin'] = request.params[options.origin_param]
-        elsif env['HTTP_REFERER'] && !env['HTTP_REFERER'].match(/#{request_path}$/)
-          session['omniauth.origin'] = env['HTTP_REFERER']
-        end
-      end
-
-      result = redirect(callback_url)
-
-      OmniAuth.config.after_request_phase.call(env) if OmniAuth.config.after_request_phase
-      result
-    end
-
-    def mock_callback_call
-      setup_phase
-
-      origin = session.delete('omniauth.origin')
-      @env['omniauth.origin'] ||= origin
-      @env['omniauth.origin'] = nil if env['omniauth.origin'] == ''
-      @env['omniauth.params'] = session.delete('omniauth.params') || {}
-
-      mocked_auth = OmniAuth.mock_auth_for(name.to_s)
-      failed = mocked_auth.is_a?(Symbol)
-      @env['omniauth.auth'] = mocked_auth unless failed
-      OmniAuth.config.before_callback_phase.call(@env) if OmniAuth.config.before_callback_phase
-      failed ? fail!(mocked_auth) : call_app!
     end
 
     # The setup phase looks for the `:setup` option to exist and,
@@ -434,89 +267,11 @@ module OmniAuth
       call_app!
     end
 
-    def path_prefix
-      options[:path_prefix] || OmniAuth.config.path_prefix
-    end
-
-    def custom_path(kind)
-      if options[kind].respond_to?(:call)
-        result = options[kind].call(env)
-        return nil unless result.is_a?(String)
-
-        result
-      else
-        options[kind]
-      end
-    end
-
-    def request_path
-      @request_path ||=
-        if options[:request_path].is_a?(String)
-          options[:request_path]
-        else
-          "#{script_name}#{path_prefix}/#{name}"
-        end
-    end
-
-    def callback_path
-      @callback_path ||= begin
-        path = options[:callback_path] if options[:callback_path].is_a?(String)
-        path ||= current_path if options[:callback_path].respond_to?(:call) && options[:callback_path].call(env)
-        path ||= custom_path(:request_path)
-        path ||= "#{script_name}#{path_prefix}/#{name}/callback"
-        path
-      end
-    end
-
-    def setup_path
-      options[:setup_path] || "#{path_prefix}/#{name}/setup"
-    end
-
-    CURRENT_PATH_REGEX = %r{/$}.freeze
-    FORMAT_EXTENSION_REGEX = /\.\w+\z/.freeze
-    EMPTY_STRING       = ''.freeze
-    def current_path
-      @current_path ||= request.path.downcase.sub(CURRENT_PATH_REGEX, EMPTY_STRING)
-    end
-
-    def query_string
-      request.query_string.empty? ? '' : "?#{request.query_string}"
-    end
-
     def call_app!(env = @env)
       @app.call(env)
     rescue StandardError => e
       env['omniauth.error.app'] = true
       raise e
-    end
-
-    def full_host
-      case OmniAuth.config.full_host
-      when String
-        OmniAuth.config.full_host
-      when Proc
-        OmniAuth.config.full_host.call(env)
-      else
-        # in Rack 1.3.x, request.url explodes if scheme is nil
-        if request.scheme && URI.parse(request.url).absolute?
-          uri = URI.parse(request.url.gsub(/\?.*$/, ''))
-          uri.path = ''
-          # sometimes the url is actually showing http inside rails because the
-          # other layers (like nginx) have handled the ssl termination.
-          uri.scheme = 'https' if ssl? # rubocop:disable BlockNesting
-          uri.to_s
-        else ''
-        end
-      end
-    end
-
-    def callback_url
-      full_host + callback_path + query_string
-    end
-
-    def script_name
-      return '' if @env.nil?
-      @env['SCRIPT_NAME'] || ''
     end
 
     def session
@@ -576,20 +331,6 @@ module OmniAuth
         a.merge!(e)
         a
       end
-    end
-
-    # Rack env values that mean the request came in over HTTPS.
-    SSL_ENV_VALUES = {
-      'HTTPS' => 'on',
-      'HTTP_X_FORWARDED_SSL' => 'on',
-      'HTTP_X_FORWARDED_SCHEME' => 'https',
-      'rack.url_scheme' => 'https'
-    }.freeze
-
-    def ssl?
-      # A proxy chain can list several protocols; the first is the client's.
-      forwarded_proto = request.env['HTTP_X_FORWARDED_PROTO'].to_s.split(',').first
-      forwarded_proto == 'https' || SSL_ENV_VALUES.any? { |key, value| request.env[key] == value }
     end
   end
 end
