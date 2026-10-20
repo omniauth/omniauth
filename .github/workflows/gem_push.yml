@@ -1,28 +1,28 @@
-# Releases the gem to RubyGems.org with trusted publishing, so no API key
-# is stored in the repository. Bump OmniAuth::VERSION and update
-# CHANGELOG.md on master first, then run this workflow from the Actions
-# tab. `rake release` tags the commit (vX.Y.Z), pushes the tag, and pushes
-# the gem along with a signed attestation of where it was built.
+# Releases the gem to RubyGems.org with trusted publishing whenever a
+# version tag is pushed, so no API key is stored in the repository. Bump
+# OmniAuth::VERSION and update CHANGELOG.md, then tag that commit and push
+# the tag:
+#
+#   git tag -a v2.2.0 -m "Version 2.2.0" && git push origin v2.2.0
+#
+# The gem is pushed with a signed attestation of where it was built.
 name: Push Gem
 
 on:
-  workflow_dispatch:
+  push:
+    tags: [ 'v*' ]
 
 permissions:
   contents: read
 
-concurrency:
-  group: gem-push
-  cancel-in-progress: false
-
 jobs:
   push:
-    if: github.repository == 'omniauth/omniauth' && github.ref == 'refs/heads/master'
+    if: github.repository == 'omniauth/omniauth'
     runs-on: ubuntu-latest
-    # Must match the environment in the RubyGems.org trusted publisher.
+    # Must match the environment in the RubyGems.org trusted publisher. The
+    # environment only accepts deployments from v* tags.
     environment: release
     permissions:
-      contents: write # push the release tag
       id-token: write # exchange the GitHub OIDC token for a RubyGems.org API key
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -36,5 +36,14 @@ jobs:
         bundler-cache: false
     - name: Install dependencies
       run: bundle install
+    - name: Check that the tag matches OmniAuth::VERSION
+      run: |
+        version="v$(ruby -Ilib -romniauth/version -e 'print OmniAuth::VERSION')"
+        if [ "$version" != "$GITHUB_REF_NAME" ]; then
+          echo "::error::Tag $GITHUB_REF_NAME doesn't match OmniAuth::VERSION ($version)"
+          exit 1
+        fi
+    # Runs rake release. The tag already exists, so it skips tagging and
+    # git pushes and only builds and pushes the gem.
     - name: Release
       uses: rubygems/release-gem@7f9650160c1a4e7989fdc9855807bdbd421d8b6b # v1.4.1
