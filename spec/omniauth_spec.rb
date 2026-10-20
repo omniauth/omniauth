@@ -30,7 +30,9 @@ describe OmniAuth do
 
   describe '.configure' do
     it 'yields the configuration' do
-      expect { |b| OmniAuth.configure(&b) }.to yield_with_args(OmniAuth.config)
+      yielded = nil
+      OmniAuth.configure { |config| yielded = config }
+      expect(yielded).to be(OmniAuth.config)
     end
 
     it 'returns the block result' do
