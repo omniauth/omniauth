@@ -273,6 +273,23 @@ POST /auth/twitter
 # Note that `omniauth.origin` will always be blank.
 ```
 
+**Validate the origin before redirecting to it.** It comes from a request
+parameter or the `Referer` header, so anyone can set it to any URL.
+Redirecting to it unchecked (for example `redirect_to
+request.env['omniauth.origin']`) makes your app an open redirect. Only
+follow it if it's a path on your own site, and fall back to a default
+otherwise:
+
+```ruby
+# A local path: starts with one slash, not // or /\ (which browsers
+# treat as another host).
+origin = request.env['omniauth.origin'].to_s
+redirect_to(origin.match?(%r{\A/(?![/\\])}) ? origin : root_path)
+```
+
+The `Referer` fallback gives a full URL, which this check rejects. To
+accept those too, parse the URL and compare its host with your own.
+
 ## The Rack Environment
 OmniAuth passes information to your application in the Rack environment
 (`request.env` in Rails).
@@ -294,6 +311,9 @@ with the environment, which also includes:
 | `omniauth.error` | The exception that caused the failure, if there was one. |
 | `omniauth.error.type` | A symbol describing the failure, such as `:invalid_credentials`. |
 | `omniauth.error.strategy` | The strategy instance that failed. |
+
+`omniauth.origin` and `omniauth.params` come from the user's request, so
+treat them like any other request params and validate them before use.
 
 The default `on_failure` raises the error in development and otherwise
 redirects to `/auth/failure` with the `message`, `strategy`, and
@@ -335,7 +355,9 @@ improve code health, while paying the maintainers of the exact packages you use.
 [Learn more.](https://tidelift.com/subscription/pkg/rubygems-omniauth?utm_source=undefined&utm_medium=referral&utm_campaign=enterprise&utm_term=repo)
 
 ## Supported Ruby Versions
-OmniAuth is tested under 2.5, 2.6, 2.7, 3.0, 3.1, 3.2, truffleruby, and JRuby.
+OmniAuth requires Ruby 2.5 or later and Rack 2.2.8 or later, including Rack 3.
+It is tested on Ruby 2.5 through 4.0, with both Rack 2 and Rack 3, and on JRuby
+and TruffleRuby.
 
 ## Versioning
 This library aims to adhere to [Semantic Versioning 2.0.0][semver]. Violations
@@ -347,10 +369,10 @@ introduced with new major versions. As a result of this policy, you can (and
 should) specify a dependency on this gem using the [Pessimistic Version
 Constraint][pvc] with two digits of precision. For example:
 
-    spec.add_dependency 'omniauth', '~> 1.0'
+    spec.add_dependency 'omniauth', '~> 2.2'
 
-[semver]: http://semver.org/
-[pvc]: http://guides.rubygems.org/patterns/#pessimistic-version-constraint
+[semver]: https://semver.org/
+[pvc]: https://guides.rubygems.org/patterns/#pessimistic-version-constraint
 
 ## License
 Copyright (c) 2010-2017 Michael Bleigh and Intridea, Inc. See [LICENSE][] for
