@@ -1,7 +1,52 @@
 require 'helper'
 
 describe OmniAuth::Builder do
+  let(:recorder) do
+    Class.new do
+      attr_reader :app, :args, :opts, :block
+
+      def initialize(app, *args, **opts, &block)
+        @app = app
+        @args = args
+        @opts = opts
+        @block = block
+      end
+    end
+  end
+
   describe '#provider' do
+    it 'uses the strategy with the arguments, merged options and block' do
+      klass = recorder
+      inner = ->(_env) {}
+      prok = proc {}
+      middleware = OmniAuth::Builder.new do
+        options :foo => 'bar', :baz => 'tik'
+        provider klass, 'key', 'secret', :baz => 'tok', &prok
+        run inner
+      end.to_app
+
+      expect(middleware).to be_instance_of(klass)
+      expect(middleware.app).to equal(inner)
+      expect(middleware.args).to eq(%w[key secret])
+      expect(middleware.opts).to eq(:foo => 'bar', :baz => 'tok')
+      expect(middleware.block).to equal(prok)
+    end
+
+    it 'uses the strategy named by a symbol or string' do
+      stub_const('OmniAuth::Strategies::MyStrategy', recorder)
+      inner = ->(_env) {}
+      builder = OmniAuth::Builder.new(inner)
+      builder.provider :my_strategy
+      builder.provider 'my_strategy', :foo => 'bar'
+      middleware = builder.to_app
+
+      expect(middleware).to be_instance_of(recorder)
+      expect(middleware.opts).to eq({})
+      expect(middleware.app).to be_instance_of(recorder)
+      expect(middleware.app.opts).to eq(:foo => 'bar')
+      expect(middleware.app.app).to equal(inner)
+    end
+
     it 'translates a symbol to a constant' do
       expect(OmniAuth::Strategies).to receive(:const_get).with('MyStrategy', false).and_return(Class.new)
       OmniAuth::Builder.new(nil) do
@@ -39,6 +84,17 @@ describe OmniAuth::Builder do
   end
 
   describe '#options' do
+    it 'defaults to an empty hash' do
+      expect(OmniAuth::Builder.new(nil).options).to eq({})
+    end
+
+    it 'falls back to an empty hash after being set to nil' do
+      builder = OmniAuth::Builder.new(nil)
+      builder.options nil
+
+      expect(builder.options).to eq({})
+    end
+
     it 'merges provided options in' do
       k = Class.new
       b = OmniAuth::Builder.new(nil)

@@ -32,21 +32,17 @@ module OmniAuth
     end
 
     def provider(klass, *args, **opts, &block)
-      if klass.is_a?(Class)
+      if klass.instance_of?(Class)
         middleware = klass
       else
         begin
-          middleware = OmniAuth::Strategies.const_get(OmniAuth::Utils.camelize(klass.to_s).to_s, false)
+          middleware = Strategies.const_get(Utils.camelize(klass), false)
         rescue NameError
           raise(LoadError.new("Could not find matching strategy for #{klass.inspect}. You may need to install an additional gem (such as omniauth-#{klass})."))
         end
       end
 
       use middleware, *args, **options.merge(opts), &block
-    end
-
-    def call(env)
-      to_app.call(env)
     end
   end
 end
