@@ -53,11 +53,11 @@ module OmniAuth
         subset(super)
       end
 
-      def select(&block)
+      def select
         subset(super)
       end
 
-      def reject(&block)
+      def reject
         subset(super)
       end
 
