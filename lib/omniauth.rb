@@ -34,9 +34,9 @@ module OmniAuth
       @defaults ||= {
         :camelizations => {},
         :path_prefix => '/auth',
-        :on_failure => OmniAuth::FailureEndpoint,
+        :on_failure => FailureEndpoint,
         :failure_raise_out_environments => ['development'],
-        :request_validation_phase => OmniAuth::AuthenticityTokenProtection,
+        :request_validation_phase => AuthenticityTokenProtection,
         :before_request_phase   => nil,
         :after_request_phase    => nil,
         :before_callback_phase  => nil,
@@ -51,7 +51,7 @@ module OmniAuth
     end
 
     def initialize
-      self.class.defaults.each_pair { |k, v| send("#{k}=", v) }
+      self.class.defaults.each_pair { |k, v| public_send("#{k}=", v) }
     end
 
     def on_failure(&block)
@@ -114,7 +114,7 @@ module OmniAuth
       end
 
       # Merge with the default mock and ensure provider is correct.
-      default = mock_auth[:default] #: AuthHash
+      default = mock_auth.fetch(:default) #: AuthHash
       mock = default.merge(mock)
       mock['provider'] = provider.to_s
 
