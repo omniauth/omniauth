@@ -299,6 +299,25 @@ The default `on_failure` raises the error in development and otherwise
 redirects to `/auth/failure` with the `message`, `strategy`, and
 `origin` as query string parameters.
 
+## Session Cookies and SameSite
+OmniAuth keeps its state between the request and callback phases (for
+example the OAuth `state` parameter, `omniauth.origin`, and
+`omniauth.params`) in the Rack session. When the provider redirects or
+POSTs back to your callback from its own domain, the browser has to send
+your session cookie with that cross-site request, or the callback fails
+(often with a `csrf_detected` or invalid `state` error).
+
+- With `SameSite=Lax`, the default in Rails and in modern browsers, the
+  cookie is sent on top-level GET redirects back to your app, which covers
+  most OAuth and OpenID Connect flows.
+- With `SameSite=Strict`, it isn't, so the callback sees an empty session.
+  Use `Lax` for the session cookie, or make the callback a same-site
+  request by first answering it with a page that immediately reloads the
+  same URL (for example with `<meta http-equiv="refresh">`), after which
+  the browser sends the cookie.
+- Providers that POST to the callback (such as SAML's HTTP-POST binding or
+  OpenID Connect's `form_post` response mode) need `SameSite=None; Secure`.
+
 ## Resources
 The [OmniAuth Wiki](https://github.com/omniauth/omniauth/wiki) has
 actively maintained in-depth documentation for OmniAuth. It should be

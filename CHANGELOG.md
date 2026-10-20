@@ -16,7 +16,7 @@ versioned together, so those entries cover all of them.
 ### Added
 - Add a `full_host` option for each strategy, as a string or a proc that takes the Rack env. It takes precedence over `OmniAuth.config.full_host`. ([#835](https://github.com/omniauth/omniauth/issues/835))
 - Ship RBS type signatures for OmniAuth in `sig/`.
-- Document the Rack env keys OmniAuth sets, CSRF protection, and sending `origin` as a form field in the README. ([#909](https://github.com/omniauth/omniauth/issues/909), [#1075](https://github.com/omniauth/omniauth/pull/1075), [#1048](https://github.com/omniauth/omniauth/pull/1048))
+- Document the Rack env keys OmniAuth sets, CSRF protection, sending `origin` as a form field, and how `SameSite` session cookies affect the callback in the README. ([#909](https://github.com/omniauth/omniauth/issues/909), [#1075](https://github.com/omniauth/omniauth/pull/1075), [#1048](https://github.com/omniauth/omniauth/pull/1048), [#1149](https://github.com/omniauth/omniauth/issues/1149))
 - Add this changelog.
 
 ### Changed
