@@ -11,6 +11,8 @@ module OmniAuth
       self.options = options
 
       @html = +'' # unary + string allows it to be mutable if strings are frozen
+      @with_custom_button = false
+      @footer = nil
       header(options.fetch(:title), options.fetch(:header_info))
     end
 

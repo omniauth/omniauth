@@ -74,6 +74,15 @@ describe OmniAuth::Form do
   end
 
   describe '#initialize' do
+    # Avoids "instance variable not initialized" warnings on Ruby < 3.0.
+    it 'initializes the button and footer state' do
+      form = described_class.new
+      expect(form.instance_variable_defined?(:@with_custom_button)).to be true
+      expect(form.instance_variable_get(:@with_custom_button)).to be false
+      expect(form.instance_variable_defined?(:@footer)).to be true
+      expect(form.instance_variable_get(:@footer)).to be_nil
+    end
+
     it 'renders the default page' do
       expect(OmniAuth::Form.new.to_html).to eq(
         page("<form method='post' noValidate='noValidate'>", "\n<button type='submit'>Connect</button>")
