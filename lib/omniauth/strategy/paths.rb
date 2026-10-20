@@ -61,8 +61,10 @@ module OmniAuth
       CURRENT_PATH_REGEX = %r{/$}.freeze
       FORMAT_EXTENSION_REGEX = /\.\w+\z/.freeze
       EMPTY_STRING = ''.freeze
+      # Repeated slashes are collapsed, as Rails routing does, so a proxy
+      # that sends //auth/:provider still reaches the strategy.
       def current_path
-        @current_path ||= request.path.downcase.sub(CURRENT_PATH_REGEX, EMPTY_STRING)
+        @current_path ||= request.path.downcase.squeeze('/').sub(CURRENT_PATH_REGEX, EMPTY_STRING)
       end
 
       def query_string

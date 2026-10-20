@@ -91,6 +91,21 @@ describe OmniAuth::Strategy, 'paths' do
     end
   end
 
+  # https://github.com/omniauth/omniauth/issues/1079
+  context 'with repeated slashes in the request path' do
+    it 'collapses them in the current path' do
+      expect(strategy_after('//auth//test///callback//').current_path).to eq('/auth/test/callback')
+    end
+
+    it 'is on the request path' do
+      expect(strategy_after('//auth/test')).to be_on_request_path
+    end
+
+    it 'is on the callback path' do
+      expect(strategy_after('/auth//test/callback')).to be_on_callback_path
+    end
+  end
+
   it 'is on a callback path that itself ends in a format extension' do
     expect(strategy_after('/auth/test/done.html', :callback_path => '/auth/test/done.html')).to be_on_callback_path
   end
