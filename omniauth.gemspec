@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Michael Bleigh', 'Erik Michaels-Ober', 'Tom Milewski']
   spec.description   = 'A generalized Rack framework for multiple-provider authentication.'
   spec.email         = ['michael@intridea.com', 'sferik@gmail.com', 'tmilewski@gmail.com']
-  spec.files         = Dir['lib/**/*', 'sig/**/*.rbs', 'LICENSE.md', 'README.md', 'SECURITY.md']
+  spec.files         = Dir['lib/**/*', 'sig/**/*.rbs', 'CHANGELOG.md', 'LICENSE.md', 'README.md', 'SECURITY.md']
   spec.homepage      = 'https://github.com/omniauth/omniauth'
   spec.licenses      = %w[MIT]
   spec.name          = 'omniauth'
@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
   spec.summary       = spec.description
   spec.version       = OmniAuth::VERSION
   spec.metadata      = {
-    'changelog_uri' => "#{spec.homepage}/releases",
+    'changelog_uri' => "#{spec.homepage}/blob/master/CHANGELOG.md",
     'rubygems_mfa_required' => 'true'
   }
 end
