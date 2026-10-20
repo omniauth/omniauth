@@ -51,13 +51,7 @@ module OmniAuth
       end
 
       def callback_path
-        @callback_path ||= begin
-          path = options[:callback_path] if options[:callback_path].is_a?(String)
-          path ||= current_path if options[:callback_path].respond_to?(:call) && options[:callback_path].call(env)
-          path ||= custom_path(:request_path)
-          path ||= "#{script_name}#{path_prefix}/#{name}/callback"
-          path
-        end
+        @callback_path ||= callback_path_option || custom_path(:request_path) || "#{script_name}#{path_prefix}/#{name}/callback"
       end
 
       def setup_path
@@ -97,6 +91,15 @@ module OmniAuth
       end
 
     protected
+
+      # The :callback_path option: a string, or a lambda that returns true
+      # when the current path is the callback path.
+      def callback_path_option
+        option = options[:callback_path]
+        return option if option.is_a?(String)
+
+        current_path if option.respond_to?(:call) && option.call(env)
+      end
 
       # The scheme, host, and port of the current request, or an empty
       # string if the request URL isn't absolute.
