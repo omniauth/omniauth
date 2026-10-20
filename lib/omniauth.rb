@@ -155,7 +155,7 @@ module OmniAuth
   end
 
   module Utils
-  module_function # rubocop:disable Layout/IndentationWidth
+  module_function
 
     def form_css
       "<style type='text/css'>#{OmniAuth.config.form_css}</style>"
