@@ -1,5 +1,6 @@
-# Minimal types for the parts of rack-protection OmniAuth uses. These are
-# for Steep only and aren't shipped with the gem.
+# The methods of rack-protection's classes that OmniAuth uses. The classes
+# themselves are declared in sig/omniauth.rbs. These are for Steep only
+# and aren't shipped with the gem.
 module Rack
   module Protection
     class Base
@@ -15,9 +16,6 @@ module Rack
       def instrument: (Hash[String, untyped] env) -> void
 
       def react: (Hash[String, untyped] env) -> untyped
-    end
-
-    class AuthenticityToken < Base
     end
   end
 end

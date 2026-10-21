@@ -607,3 +607,15 @@ module OmniAuth
     end
   end
 end
+
+# rack-protection doesn't ship types, so declare the classes OmniAuth's
+# signatures build on.
+module Rack
+  module Protection
+    class Base
+    end
+
+    class AuthenticityToken < Base
+    end
+  end
+end

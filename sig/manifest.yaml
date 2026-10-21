@@ -1,0 +1,5 @@
+# Standard libraries these signatures refer to, which RBS loads for anyone
+# using them.
+dependencies:
+  - name: logger
+  - name: singleton
