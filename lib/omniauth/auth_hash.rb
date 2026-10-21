@@ -7,7 +7,7 @@ module OmniAuth
   # key).
   class AuthHash < OmniAuth::KeyStore
     def self.subkey_class
-      Hashie::Mash
+      KeyStore
     end
 
     # Tells you if this is considered to be a valid
@@ -20,14 +20,9 @@ module OmniAuth
       uid? && provider? && !info.nil? && info.valid?
     end
 
-    def regular_writer(key, value)
-      value = InfoHash.new(value) if key.eql?('info') && value.is_a?(Hash) && !value.is_a?(InfoHash)
-      super
-    end
-
     class InfoHash < OmniAuth::KeyStore
       def self.subkey_class
-        Hashie::Mash
+        KeyStore
       end
 
       def name
@@ -45,11 +40,8 @@ module OmniAuth
 
       # slice, except, select, and reject return a subset of the info,
       # which shouldn't gain a calculated name when converted with #to_hash.
+      # KeyStore#reject and #except use select, so they're covered too.
       def slice(*keys)
-        subset(super)
-      end
-
-      def except(*keys)
         subset(super)
       end
 
@@ -57,13 +49,9 @@ module OmniAuth
         subset(super)
       end
 
-      def reject
-        subset(super)
-      end
-
-      def to_hash
+      def to_hash(symbolize_keys: false)
         hash = super
-        hash['name'] ||= name unless instance_variable_defined?(:@subset)
+        hash[symbolize_keys ? :name : 'name'] ||= name unless instance_variable_defined?(:@subset)
         hash
       end
 
@@ -74,6 +62,15 @@ module OmniAuth
         info.instance_variable_set(:@subset, nil)
         info
       end
+    end
+
+  protected
+
+    # The info key holds an InfoHash, which can work out a name.
+    def convert_value(key, value)
+      return InfoHash.new(value) if key.eql?('info') && value.is_a?(Hash) && !value.is_a?(InfoHash)
+
+      super
     end
   end
 end

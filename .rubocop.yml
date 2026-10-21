@@ -36,6 +36,12 @@ Lint/EmptyClass:
   Exclude:
     - 'spec/**/*'
 
+# Hash#initialize only sets a default value or block, which KeyStore
+# doesn't support.
+Lint/MissingSuper:
+  AllowedParentClasses:
+    - Hash
+
 Lint/SuppressedException:
   Enabled: false
 
@@ -47,6 +53,11 @@ Metrics/BlockLength:
 
 Metrics/BlockNesting:
   Max: 2
+
+# KeyStore overrides much of Hash's API to convert keys and values.
+Metrics/ClassLength:
+  Exclude:
+    - 'lib/omniauth/key_store.rb'
 
 Metrics/MethodLength:
   CountComments: false

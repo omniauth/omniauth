@@ -102,17 +102,58 @@ module OmniAuth
   end
 
   # Generic helper hash that allows method access on deeply nested keys.
-  class KeyStore < Hashie::Mash
-    def self.override_logging: () -> void
+  class KeyStore < Hash[untyped, untyped]
+    # The class that nested hashes are converted to.
+    def self.subkey_class: () -> singleton(KeyStore)
+
+    def initialize: (?Hash[untyped, untyped]? source) -> void
+
+    def []: (untyped key) -> untyped
+    def []=: (untyped key, untyped value) -> untyped
+    alias store []=
+    def fetch: (untyped key, *untyped default) ?{ (untyped) -> untyped } -> untyped
+    def delete: (untyped key) ?{ (untyped) -> untyped } -> untyped
+    def key?: (untyped key) -> bool
+    alias has_key? key?
+    alias include? key?
+    alias member? key?
+    def dig: (untyped key, *untyped keys) -> untyped
+    def values_at: (*untyped keys) -> Array[untyped]
+
+    def update: (Hash[untyped, untyped] other) -> self
+    alias merge! update
+    def merge: (Hash[untyped, untyped] other) -> self
+    def deep_merge!: (Hash[untyped, untyped] other) -> self
+    alias deep_update deep_merge!
+    def deep_merge: (Hash[untyped, untyped] other) -> self
+
+    def select: () { (untyped, untyped) -> boolish } -> instance
+    def reject: () { (untyped, untyped) -> untyped } -> instance
+    def slice: (*untyped keys) -> instance
+    def except: (*untyped keys) -> instance
+
+    def to_hash: (?symbolize_keys: bool) -> Hash[untyped, untyped]
+
+    # `store.key`, `store.key = value`, and `store.key?`.
+    def method_missing: (Symbol method_name, ?untyped value) -> untyped
+    def respond_to_missing?: (Symbol method_name, bool include_private) -> bool
+
+    private
+
+    def initialize_copy: (KeyStore other) -> void
+
+    # Protected in Ruby.
+    def convert_key: (untyped key) -> untyped
+    def convert_value: (untyped key, untyped value) -> untyped
+    def plain_value: (untyped value, bool symbolize_keys) -> untyped
   end
 
   # The normalized schema returned by all OmniAuth strategies.
   class AuthHash < KeyStore
-    def self.subkey_class: () -> singleton(Hashie::Mash)
+    def self.subkey_class: () -> singleton(KeyStore)
 
     def valid?: () -> bool
 
-    def regular_writer: (untyped key, untyped value) -> untyped
 
     def provider: () -> String?
     def provider?: () -> bool
@@ -121,14 +162,14 @@ module OmniAuth
     def info: () -> InfoHash?
     def info?: () -> bool
     def info=: (Hash[untyped, untyped]?) -> Hash[untyped, untyped]?
-    def credentials: () -> Hashie::Mash?
+    def credentials: () -> KeyStore?
     def credentials=: (Hash[untyped, untyped]?) -> Hash[untyped, untyped]?
-    def extra: () -> Hashie::Mash?
+    def extra: () -> KeyStore?
     def extra=: (Hash[untyped, untyped]?) -> Hash[untyped, untyped]?
 
     # The user's information, stored under the `info` key.
     class InfoHash < KeyStore
-      def self.subkey_class: () -> singleton(Hashie::Mash)
+      def self.subkey_class: () -> singleton(KeyStore)
 
       # The name, or a fallback built from first and last name, nickname,
       # or email.
@@ -145,18 +186,16 @@ module OmniAuth
       def email: () -> String?
       def email?: () -> bool
 
-      def slice: (*untyped keys) -> self
-      def except: (*untyped keys) -> self
-      def select: () { (String, untyped) -> boolish } -> self
-      def reject: () { (String, untyped) -> boolish } -> self
+      def slice: (*untyped keys) -> instance
+      def select: () { (String, untyped) -> boolish } -> instance
 
-      def to_hash: () -> Hash[String, untyped]
+      def to_hash: (?symbolize_keys: bool) -> Hash[untyped, untyped]
 
       @subset: bool?
 
       private
 
-      def subset: (self info) -> self
+      def subset: (instance info) -> instance
     end
   end
 

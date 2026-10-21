@@ -31,7 +31,25 @@ describe OmniAuth::AuthHash do
   end
 
   it 'has a subkey_class' do
-    expect(OmniAuth::AuthHash.subkey_class).to eq Hashie::Mash
+    expect(OmniAuth::AuthHash.subkey_class).to eq OmniAuth::KeyStore
+  end
+
+  it 'converts other nested hashes into plain KeyStores' do
+    auth = OmniAuth::AuthHash.new(:credentials => {:token => 'abc'})
+    expect(auth.credentials).to be_instance_of(OmniAuth::KeyStore)
+  end
+
+  it 'converts a supplied KeyStore info into an InfoHash' do
+    subject.info = OmniAuth::KeyStore.new(:name => 'Awesome')
+    expect(subject.info).to be_instance_of(OmniAuth::AuthHash::InfoHash)
+  end
+
+  it 'keeps a nil info' do
+    expect(OmniAuth::AuthHash.new(:info => nil).info).to be_nil
+  end
+
+  it 'keeps an info that is not a hash' do
+    expect(OmniAuth::AuthHash.new(:info => 'none').info).to eq('none')
   end
 
   describe '#valid?' do
@@ -164,7 +182,7 @@ describe OmniAuth::AuthHash do
     end
 
     it 'has a subkey_class' do
-      expect(OmniAuth::AuthHash::InfoHash.subkey_class).to eq Hashie::Mash
+      expect(OmniAuth::AuthHash::InfoHash.subkey_class).to eq OmniAuth::KeyStore
     end
 
     describe 'subsets' do
@@ -189,25 +207,9 @@ describe OmniAuth::AuthHash do
       it 'still adds a calculated name to the full hash' do
         expect(info.to_hash['name']).to eq('meatbag')
       end
-    end
 
-    require 'hashie/version'
-    if Gem::Version.new(Hashie::VERSION) >= Gem::Version.new('3.5.1')
-      context 'with Hashie 3.5.1+' do
-        around(:each) do |example|
-          original_logger = Hashie.logger
-          example.run
-          Hashie.logger = original_logger
-        end
-
-        it 'does not log anything in Hashie 3.5.1+' do
-          logger = double('Logger')
-          expect(logger).not_to receive(:warn)
-
-          Hashie.logger = logger
-
-          subject.name = 'test'
-        end
+      it 'adds a calculated name under a symbol key when symbolizing keys' do
+        expect(info.to_hash(:symbolize_keys => true)).to eq(:email => 'fry@planetexpress.com', :nickname => 'meatbag', :name => 'meatbag')
       end
     end
   end
