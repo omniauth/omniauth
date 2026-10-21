@@ -16,6 +16,21 @@ describe OmniAuth::Strategy, 'class methods' do
     end
   end
 
+  context 'default_dispatch?' do
+    it 'looks the dispatch methods up once per class' do
+      expect(strategy_class).to receive(:instance_method).exactly(described_class::ClassMethods::DISPATCH_METHODS.size).times.and_call_original
+      expect(strategy_class.default_dispatch?).to be(true)
+      expect(strategy_class.default_dispatch?).to be(true)
+    end
+
+    it 'remembers a false answer too' do
+      overriding = Class.new(strategy_class) { define_method(:call!) { |env| super(env) } }
+      expect(overriding.default_dispatch?).to be(false)
+      expect(overriding).not_to receive(:instance_method)
+      expect(overriding.default_dispatch?).to be(false)
+    end
+  end
+
   context 'args' do
     it 'returns nil when setting args' do
       expect(strategy_class.args(%i[abc])).to be_nil

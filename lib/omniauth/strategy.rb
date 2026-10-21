@@ -75,9 +75,12 @@ module OmniAuth
       OmniAuth.logger.public_send(level, "(#{name}) #{message}")
     end
 
-    # Duplicates this instance and runs #call! on it.
+    # Duplicates this instance and runs #call! on it. A request that can't be
+    # the strategy's goes straight to the app instead, skipping the copy.
     # @param [Hash] The Rack environment.
     def call(env)
+      return @app.call(env) if passthrough?(env)
+
       dup.call!(env)
     end
 
@@ -323,6 +326,33 @@ module OmniAuth
     def initialize_copy(*args)
       super
       @options = @options.dup
+    end
+
+    # True when #call! would only hand env to the app: there's a session, the
+    # path alone decides, and env isn't on the strategy's paths. The
+    # strategy's own path methods check, on a copy that shares its options.
+    def passthrough?(env)
+      return false unless env['rack.session'] && dispatch_by_path?
+      return false if path_probe(env).on_auth_path?
+
+      true
+    end
+
+    # True when OmniAuth's own dispatch runs, with no test mode or
+    # other_phase, and no path lambdas, which would otherwise run twice on
+    # the strategy's own paths.
+    def dispatch_by_path?
+      self.class.default_dispatch? && !OmniAuth.config.test_mode && !respond_to?(:other_phase) &&
+        !options[:request_path].respond_to?(:call) && !options[:callback_path].respond_to?(:call)
+    end
+
+    # A copy like #dup makes, but sharing this instance's options, so the
+    # path methods can memoize on it instead of on this shared instance.
+    def path_probe(env)
+      probe = self.class.allocate
+      instance_variables.each { |ivar| probe.instance_variable_set(ivar, instance_variable_get(ivar)) }
+      probe.instance_variable_set(:@env, env)
+      probe
     end
   end
 end

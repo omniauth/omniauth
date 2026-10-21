@@ -1,6 +1,17 @@
 module OmniAuth
   module Strategy
     module ClassMethods
+      DISPATCH_METHODS = %i[call! phase_call options_call? request_call? on_auth_path?].freeze
+
+      # True when requests are dispatched by OmniAuth's own #call! and its
+      # phase checks, so #call can tell which ones would go to the app.
+      # They may live in Strategy or in a module it includes, like Paths.
+      def default_dispatch?
+        return @default_dispatch if instance_variable_defined?(:@default_dispatch)
+
+        @default_dispatch = DISPATCH_METHODS.all? { |m| Strategy.ancestors.include?(instance_method(m).owner) }
+      end
+
       # Returns an inherited set of default options set at the class-level
       # for each strategy.
       def default_options
