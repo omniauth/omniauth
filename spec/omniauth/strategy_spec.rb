@@ -401,12 +401,145 @@ describe OmniAuth::Strategy do
   end
 
   describe '#call' do
-    it 'duplicates and calls' do
+    it 'duplicates and calls on its own paths' do
       klass = Class.new
       klass.send :include, OmniAuth::Strategy
+      klass.option :name, 'dup_test'
       instance = klass.new(app)
       expect(instance).to receive(:dup).and_return(instance)
-      instance.call('rack.session' => {})
+      instance.call(make_env('/auth/dup_test/callback'))
+    end
+
+    context 'with requests that are not the strategy\'s' do
+      let(:klass) do
+        Class.new do
+          include OmniAuth::Strategy
+
+          option :name, 'pass'
+
+          def request_phase
+            [200, {}, ['request phase']]
+          end
+
+          def callback_phase
+            [200, {}, ['callback phase']]
+          end
+        end
+      end
+      let(:seen) { [] }
+      let(:inner) do
+        ->(env) {
+          seen << env
+          [200, {}, ['app']]
+        }
+      end
+
+      [{}, {:request_path => '/login'}, {:callback_path => '/login/done'}].each do |options|
+        it "sends them to the app without duplicating the strategy, given #{options}" do
+          instance = klass.new(inner, options)
+          expect(instance).not_to receive(:dup)
+          env = make_env('/trips/1', 'REQUEST_METHOD' => 'GET')
+          expect(instance.call(env)).to eq([200, {}, ['app']])
+          expect(seen).to eq([env])
+          expect(env).not_to have_key('omniauth.strategy')
+        end
+      end
+
+      it 'still raises NoSessionError when rack.session is nil' do
+        expect { klass.new(inner).call(make_env('/trips/1', 'rack.session' => nil)) }.to raise_error(OmniAuth::NoSessionError)
+      end
+
+      it 'leaves nothing memoized on the shared instance' do
+        instance = klass.new(inner)
+        instance.call(make_env('/trips/1', 'REQUEST_METHOD' => 'GET'))
+        expect(instance.instance_variables).to match_array(%i[@app @env @options])
+        expect(instance.instance_variable_get(:@env)).to be_nil
+      end
+
+      it 'answers every request the way dup.call! does' do
+        configs = [
+          {},
+          {:request_path => '/login', :callback_path => '/login/done'},
+          {:request_path => '/login'},
+          {:path_prefix => '/sso'}
+        ]
+        paths = ['/', '/trips/1', '/auth', '/auth/pass', '/auth/pass/', '/AUTH/Pass', '/auth//pass',
+                 '/auth/pass/callback', '/auth/pass/callback.json', '/auth/pass/callback/x', '/auth/passx',
+                 '/login', '/login/done', '/login/done.json', '/sso/pass', '/sso/pass/callback']
+        configs.product(paths, ['', '/mounted'], %w[GET POST OPTIONS]).each do |options, path, script_name, method|
+          path_info = path.delete_prefix(script_name)
+          instance = klass.new(inner, options)
+          env = make_env(path_info, 'SCRIPT_NAME' => script_name, 'REQUEST_METHOD' => method)
+          reference_env = make_env(path_info, 'SCRIPT_NAME' => script_name, 'REQUEST_METHOD' => method)
+
+          expect(instance.call(env)).to eq(instance.dup.call!(reference_env)), "#{options} #{script_name}#{path} #{method}"
+          expect(env.keys).to eq(reference_env.keys), "#{options} #{script_name}#{path} #{method}"
+        end
+      end
+
+      shared_examples 'duplicating the strategy' do |path = '/trips/1'|
+        it 'runs them through a copy of the strategy' do
+          expect(instance).to receive(:dup).and_call_original
+          instance.call(make_env(path, 'REQUEST_METHOD' => 'GET'))
+        end
+      end
+
+      context 'when the strategy matches paths itself' do
+        let(:instance) do
+          Class.new(klass) do
+            def on_callback_path?
+              current_path.end_with?('/sso')
+            end
+          end.new(inner)
+        end
+
+        it 'still reaches the strategy on them' do
+          expect(instance.call(make_env('/accounts/sso', 'REQUEST_METHOD' => 'GET'))).to eq([200, {}, ['callback phase']])
+        end
+      end
+
+      %i[call! phase_call options_call? request_call? on_auth_path?].each do |method_name|
+        context "when the strategy overrides ##{method_name}" do
+          let(:instance) do
+            Class.new(klass) { define_method(method_name) { |*args| super(*args) } }.new(inner)
+          end
+
+          include_examples 'duplicating the strategy'
+        end
+      end
+
+      context 'when the strategy has an other_phase' do
+        let(:instance) do
+          Class.new(klass) do
+            def other_phase
+              call_app!
+            end
+          end.new(inner)
+        end
+
+        include_examples 'duplicating the strategy'
+      end
+
+      %i[request_path callback_path].each do |option|
+        context "when :#{option} is a lambda" do
+          let(:instance) { klass.new(inner, option => ->(env) { env['PATH_INFO'] == '/x' }) }
+
+          include_examples 'duplicating the strategy'
+        end
+      end
+
+      context 'when test mode is on' do
+        let(:instance) { klass.new(inner) }
+
+        around do |example|
+          OmniAuth.config.test_mode = true
+          example.run
+        ensure
+          OmniAuth.config.test_mode = false
+        end
+
+        include_examples 'duplicating the strategy'
+      end
     end
 
     it 'raises NoSessionError if rack.session isn\'t set' do
