@@ -18,7 +18,7 @@ describe OmniAuth::Strategy, 'class methods' do
 
   context 'default_dispatch?' do
     it 'looks the dispatch methods up once per class' do
-      expect(strategy_class).to receive(:instance_method).exactly(described_class::ClassMethods::DISPATCH_METHODS.size).times.and_call_original
+      expect(strategy_class).to receive(:instance_method).exactly(5).times.and_call_original
       expect(strategy_class.default_dispatch?).to be(true)
       expect(strategy_class.default_dispatch?).to be(true)
     end

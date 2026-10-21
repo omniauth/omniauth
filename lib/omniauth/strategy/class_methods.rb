@@ -2,10 +2,14 @@ module OmniAuth
   module Strategy
     module ClassMethods
       DISPATCH_METHODS = %i[call! phase_call options_call? request_call? on_auth_path?].freeze
+      private_constant :DISPATCH_METHODS
 
       # True when requests are dispatched by OmniAuth's own #call! and its
       # phase checks, so #call can tell which ones would go to the app.
       # They may live in Strategy or in a module it includes, like Paths.
+      # Methods patched directly onto Strategy count as its own.
+      #
+      # @api private
       def default_dispatch?
         return @default_dispatch if instance_variable_defined?(:@default_dispatch)
 
