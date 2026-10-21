@@ -9,9 +9,9 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'logger'
   spec.add_dependency 'rack', '>= 2.2.8'
   spec.add_dependency 'rack-protection', '>= 2.2.0'
-  spec.authors       = ['Michael Bleigh', 'Erik Michaels-Ober', 'Tom Milewski']
+  spec.authors       = ['Erik Berlin', 'Michael Bleigh', 'Bobby McDonald', 'Tom Milewski']
   spec.description   = 'A generalized Rack framework for multiple-provider authentication.'
-  spec.email         = ['michael@intridea.com', 'sferik@gmail.com', 'tmilewski@gmail.com']
+  spec.email         = ['sferik@gmail.com', 'michael@intridea.com', 'bobbymcwho@gmail.com', 'tmilewski@gmail.com']
   spec.files         = Dir['lib/**/*', 'sig/**/*.rbs', 'CHANGELOG.md', 'LICENSE.md', 'README.md', 'SECURITY.md']
   spec.homepage      = 'https://github.com/omniauth/omniauth'
   spec.licenses      = %w[MIT]

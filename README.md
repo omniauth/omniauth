@@ -375,7 +375,7 @@ Constraint][pvc] with two digits of precision. For example:
 [pvc]: https://guides.rubygems.org/patterns/#pessimistic-version-constraint
 
 ## License
-Copyright (c) 2010-2017 Michael Bleigh and Intridea, Inc. See [LICENSE][] for
+Copyright (c) 2010-2026 Michael Bleigh and Intridea, Inc. See [LICENSE][] for
 details.
 
 [license]: LICENSE.md
