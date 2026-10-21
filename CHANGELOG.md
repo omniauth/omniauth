@@ -13,6 +13,8 @@ versioned together, so those entries cover all of them.
 
 ## [Unreleased]
 
+## [2.2.0] - 2026-10-22
+
 ### Added
 - Add a `full_host` option for each strategy, as a string or a proc that takes the Rack env. It takes precedence over `OmniAuth.config.full_host`. ([#835](https://github.com/omniauth/omniauth/issues/835))
 - Ship RBS type signatures for OmniAuth in `sig/`.
@@ -660,7 +662,8 @@ versioned together, so those entries cover all of them.
 ### Added
 - Initial release, made up of `oa-core` (`OmniAuth::Builder` and a Password strategy), `oa-oauth` (OAuth and OAuth 2.0 with Twitter, LinkedIn, Facebook and GitHub) and `oa-openid` (OpenID).
 
-[Unreleased]: https://github.com/omniauth/omniauth/compare/v2.1.4...HEAD
+[Unreleased]: https://github.com/omniauth/omniauth/compare/v2.2.0...HEAD
+[2.2.0]: https://github.com/omniauth/omniauth/compare/v2.1.4...v2.2.0
 [2.1.4]: https://github.com/omniauth/omniauth/compare/v2.1.3...v2.1.4
 [2.1.3]: https://github.com/omniauth/omniauth/compare/v2.1.2...v2.1.3
 [2.1.2]: https://github.com/omniauth/omniauth/compare/v2.1.1...v2.1.2
