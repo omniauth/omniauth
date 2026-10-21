@@ -1661,8 +1661,10 @@ describe OmniAuth::Strategy do
     end
 
     it 'calls fail! when encountering an unhandled exception' do
-      allow(strategy).to receive(:request_phase).and_raise(Errno::ECONNREFUSED)
-      expect(strategy).to receive(:fail!).with('Connection refused', kind_of(Errno::ECONNREFUSED))
+      error = Errno::ECONNREFUSED.new
+      allow(strategy).to receive(:request_phase).and_raise(error)
+      # The message comes from the OS, and Windows words it differently.
+      expect(strategy).to receive(:fail!).with(error.message, error)
       strategy.call(make_env)
     end
 
