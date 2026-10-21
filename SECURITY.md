@@ -13,6 +13,6 @@ currently being supported with security updates.
 
 ## Security contact information
 
-To report a security vulnerability, please use the
-[Tidelift security contact](https://tidelift.com/security).
-Tidelift will coordinate the fix and disclosure.
+To report a security vulnerability, please use GitHub's
+[private vulnerability reporting](https://github.com/omniauth/omniauth/security/advisories/new)
+rather than opening a public issue.
