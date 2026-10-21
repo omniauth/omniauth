@@ -301,6 +301,7 @@ module OmniAuth
       @default_dispatch: bool
 
       DISPATCH_METHODS: Array[Symbol]
+      COPY_METHODS: Array[Symbol]
 
       def default_dispatch?: () -> bool
 
@@ -525,6 +526,10 @@ module OmniAuth
     @options: Options
     @request: Rack::Request?
 
+    # Protected in Ruby, which RBS can't express: #call calls it on the
+    # copy from #path_probe.
+    def complete_copy: (Strategy original) -> void
+
     private
 
     def handle_phase_error: (StandardError error) -> rack_response
@@ -532,8 +537,6 @@ module OmniAuth
     def run_hook: (Symbol name) -> void
 
     def initialize_copy: (*untyped) -> void
-
-    def passthrough?: (env env) -> bool
 
     def dispatch_by_path?: () -> bool
 

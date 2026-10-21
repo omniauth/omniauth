@@ -2,18 +2,22 @@ module OmniAuth
   module Strategy
     module ClassMethods
       DISPATCH_METHODS = %i[call! phase_call options_call? request_call? on_auth_path?].freeze
-      private_constant :DISPATCH_METHODS
+      COPY_METHODS = %i[dup initialize_dup].freeze
+      private_constant :DISPATCH_METHODS, :COPY_METHODS
 
       # True when requests are dispatched by OmniAuth's own #call! and its
       # phase checks, so #call can tell which ones would go to the app.
       # They may live in Strategy or in a module it includes, like Paths.
-      # Methods patched directly onto Strategy count as its own.
+      # Methods patched directly onto Strategy count as its own. #dup and
+      # #initialize_dup must be Ruby's own too, since #call builds the copy
+      # without calling them.
       #
       # @api private
       def default_dispatch?
         return @default_dispatch if instance_variable_defined?(:@default_dispatch)
 
-        @default_dispatch = DISPATCH_METHODS.all? { |m| Strategy.ancestors.include?(instance_method(m).owner) }
+        @default_dispatch = DISPATCH_METHODS.all? { |m| Strategy.ancestors.include?(instance_method(m).owner) } &&
+                            COPY_METHODS.all? { |m| instance_method(m).owner.equal?(Kernel) }
       end
 
       # Returns an inherited set of default options set at the class-level

@@ -18,7 +18,7 @@ describe OmniAuth::Strategy, 'class methods' do
 
   context 'default_dispatch?' do
     it 'looks the dispatch methods up once per class' do
-      expect(strategy_class).to receive(:instance_method).exactly(5).times.and_call_original
+      expect(strategy_class).to receive(:instance_method).exactly(7).times.and_call_original
       expect(strategy_class.default_dispatch?).to be(true)
       expect(strategy_class.default_dispatch?).to be(true)
     end
@@ -27,6 +27,22 @@ describe OmniAuth::Strategy, 'class methods' do
       overriding = Class.new(strategy_class) { define_method(:call!) { |env| super(env) } }
       expect(overriding.default_dispatch?).to be(false)
       expect(overriding).not_to receive(:instance_method)
+      expect(overriding.default_dispatch?).to be(false)
+    end
+
+    it 'is false when the strategy overrides #dup' do
+      overriding = Class.new(strategy_class) { define_method(:dup) { super() } }
+      expect(overriding.default_dispatch?).to be(false)
+    end
+
+    it 'is false when a parent class overrides #dup' do
+      parent = Class.new { define_method(:dup) { super() } }
+      klass = Class.new(parent) { include OmniAuth::Strategy }
+      expect(klass.default_dispatch?).to be(false)
+    end
+
+    it 'is false when the strategy overrides #initialize_dup' do
+      overriding = Class.new(strategy_class) { define_method(:initialize_dup) { |other| super(other) } }
       expect(overriding.default_dispatch?).to be(false)
     end
   end

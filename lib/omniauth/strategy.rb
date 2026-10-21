@@ -79,9 +79,13 @@ module OmniAuth
     # the strategy's goes straight to the app instead, skipping the copy.
     # @param [Hash] The Rack environment.
     def call(env)
-      return @app.call(env) if passthrough?(env)
+      return dup.call!(env) unless env['rack.session'] && dispatch_by_path?
 
-      dup.call!(env)
+      probe = path_probe(env)
+      return @app.call(env) unless probe.on_auth_path?
+
+      probe.complete_copy(self)
+      probe.call!(env)
     end
 
     # The logic for dispatching any additional actions that need
@@ -328,16 +332,6 @@ module OmniAuth
       @options = @options.dup
     end
 
-    # True when #call! would only hand env to the app: there's a session, the
-    # path alone decides, and env isn't on the strategy's paths. The
-    # strategy's own path methods check, on a copy that shares its options.
-    def passthrough?(env)
-      return false unless env['rack.session'] && dispatch_by_path?
-      return false if path_probe(env).on_auth_path?
-
-      true
-    end
-
     # True when OmniAuth's own dispatch runs, with no test mode or
     # other_phase, and no path lambdas, which would otherwise run twice on
     # the strategy's own paths.
@@ -348,11 +342,18 @@ module OmniAuth
 
     # A copy like #dup makes, but sharing this instance's options, so the
     # path methods can memoize on it instead of on this shared instance.
+    # On the strategy's own paths, #call finishes it into the real copy.
     def path_probe(env)
       probe = self.class.allocate
       instance_variables.each { |ivar| probe.instance_variable_set(ivar, instance_variable_get(ivar)) }
       probe.instance_variable_set(:@env, env)
       probe
+    end
+
+    # Finishes a copy from #path_probe into the one #dup makes, keeping the
+    # paths it memoized. #dup would run initialize_copy, so this does too.
+    def complete_copy(original)
+      initialize_copy(original)
     end
   end
 end

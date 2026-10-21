@@ -401,13 +401,69 @@ describe OmniAuth::Strategy do
   end
 
   describe '#call' do
-    it 'duplicates and calls on its own paths' do
+    it 'calls a copy with its own options on its own paths' do
       klass = Class.new
       klass.send :include, OmniAuth::Strategy
       klass.option :name, 'dup_test'
       instance = klass.new(app)
-      expect(instance).to receive(:dup).and_return(instance)
+      env = make_env('/auth/dup_test/callback')
+      instance.call(env)
+      copy = env['omniauth.strategy']
+      expect(copy).to be_a(klass)
+      expect(copy).not_to equal(instance)
+      expect(copy.options).not_to equal(instance.options)
+    end
+
+    it 'calls an overridden #dup on its own paths and on other paths' do
+      klass = Class.new
+      klass.send :include, OmniAuth::Strategy
+      klass.option :name, 'dup_test'
+      klass.class_eval do
+        attr_reader :dups
+
+        def dup
+          (@dups ||= []) << :dup
+          super
+        end
+      end
+      instance = klass.new(app)
       instance.call(make_env('/auth/dup_test/callback'))
+      instance.call(make_env('/elsewhere'))
+      expect(instance.dups).to eq(%i[dup dup])
+    end
+
+    it 'runs an overridden #initialize_dup on its own paths and on other paths' do
+      klass = Class.new
+      klass.send :include, OmniAuth::Strategy
+      klass.option :name, 'dup_test'
+      originals = []
+      klass.send(:define_method, :initialize_dup) do |other|
+        originals << other
+        super(other)
+      end
+      instance = klass.new(app)
+      instance.call(make_env('/auth/dup_test/callback'))
+      instance.call(make_env('/elsewhere'))
+      expect(originals).to eq([instance, instance])
+    end
+
+    it 'runs initialize_copy defined further up the ancestor chain on its own paths' do
+      parent = Class.new do
+        attr_reader :copied
+
+        def initialize_copy(other)
+          super
+          @copied = true
+        end
+      end
+      klass = Class.new(parent)
+      klass.send :include, OmniAuth::Strategy
+      klass.option :name, 'dup_test'
+      instance = klass.new(app)
+      env = make_env('/auth/dup_test/callback')
+      instance.call(env)
+      expect(env['omniauth.strategy'].copied).to be true
+      expect(instance.copied).to be_nil
     end
 
     context 'with requests that are not the strategy\'s' do
@@ -438,6 +494,7 @@ describe OmniAuth::Strategy do
         it "sends them to the app without duplicating the strategy, given #{options}" do
           instance = klass.new(inner, options)
           expect(instance).not_to receive(:dup)
+          expect(instance.options).not_to receive(:dup)
           env = make_env('/trips/1', 'REQUEST_METHOD' => 'GET')
           expect(instance.call(env)).to eq([200, {}, ['app']])
           expect(seen).to eq([env])
@@ -481,6 +538,7 @@ describe OmniAuth::Strategy do
         it 'runs them through a copy of the strategy' do
           expect(instance).to receive(:dup).and_call_original
           instance.call(make_env(path, 'REQUEST_METHOD' => 'GET'))
+          expect(seen.size).to eq(1)
         end
       end
 
