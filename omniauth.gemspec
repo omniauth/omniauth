@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Erik Berlin', 'Michael Bleigh', 'Bobby McDonald', 'Tom Milewski']
   spec.description   = 'A generalized Rack framework for multiple-provider authentication.'
   spec.email         = ['sferik@gmail.com', 'michael@intridea.com', 'bobbymcwho@gmail.com', 'tmilewski@gmail.com']
-  spec.files         = Dir['lib/**/*', 'sig/**/*.rbs', 'sig/manifest.yaml', 'CHANGELOG.md', 'LICENSE.md', 'README.md', 'SECURITY.md']
+  spec.files         = Dir['lib/**/*', 'sig/**/*.rbs', 'sig/manifest.yaml', 'LICENSE.md', 'README.md', 'SECURITY.md']
   spec.homepage      = 'https://github.com/omniauth/omniauth'
   spec.licenses      = %w[MIT]
   spec.name          = 'omniauth'
