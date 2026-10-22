@@ -34,7 +34,9 @@ jobs:
     - name: Set up Ruby
       uses: ruby/setup-ruby@824c0e29fdfc7d689c191c27acc969d2d04b7dd8 # v1.331.0
       with:
-        ruby-version: '4.0'
+        # Sigstore signing fails on Ruby 4.0, whose json 3 rejects options
+        # that protobug 0.1.0 passes to JSON.parse. Use 3.4 until it's fixed.
+        ruby-version: '3.4'
         # No cache, so a poisoned cache from another workflow can't reach a release.
         bundler-cache: false
     - name: Install dependencies
