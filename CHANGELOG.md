@@ -13,8 +13,13 @@ versioned together, so those entries cover all of them.
 
 ## [Unreleased]
 
+## [2.3.0] - 2026-10-22
+
 ### Added
 - Let strategies keep the origin and params of several sign-ins in progress at once, for example in several tabs, so each callback gets its own instead of the latest sign-in's. A strategy opts in by calling `remember_sign_in` in its request phase with a value the provider sends back, such as OAuth 2.0's state, and overriding `callback_sign_in_key`. The latest 5 are stored in `session['omniauth.sign_ins']`, and `omniauth.origin` and `omniauth.params` still hold the latest one. See [the README](README.md#several-sign-ins-at-once). ([omniauth-oauth2#195](https://github.com/omniauth/omniauth-oauth2/issues/195))
+
+### Changed
+- The gem no longer includes `CHANGELOG.md`, which was about half its size. Its `changelog_uri` links to the changelog on GitHub.
 
 ## [2.2.0] - 2026-10-22
 
@@ -665,7 +670,8 @@ versioned together, so those entries cover all of them.
 ### Added
 - Initial release, made up of `oa-core` (`OmniAuth::Builder` and a Password strategy), `oa-oauth` (OAuth and OAuth 2.0 with Twitter, LinkedIn, Facebook and GitHub) and `oa-openid` (OpenID).
 
-[Unreleased]: https://github.com/omniauth/omniauth/compare/v2.2.0...HEAD
+[Unreleased]: https://github.com/omniauth/omniauth/compare/v2.3.0...HEAD
+[2.3.0]: https://github.com/omniauth/omniauth/compare/v2.2.0...v2.3.0
 [2.2.0]: https://github.com/omniauth/omniauth/compare/v2.1.4...v2.2.0
 [2.1.4]: https://github.com/omniauth/omniauth/compare/v2.1.3...v2.1.4
 [2.1.3]: https://github.com/omniauth/omniauth/compare/v2.1.2...v2.1.3
