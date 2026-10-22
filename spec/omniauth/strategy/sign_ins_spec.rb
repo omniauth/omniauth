@@ -1,4 +1,5 @@
 require 'helper'
+require 'json'
 
 # A strategy whose provider sends the request phase's key param back to the
 # callback, the way an OAuth 2.0 provider sends back the state.
