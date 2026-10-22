@@ -21,6 +21,7 @@ describe OmniAuth::Configuration do
         :request_validation_phase => OmniAuth::AuthenticityTokenProtection,
         :before_request_phase => nil,
         :after_request_phase => nil,
+        :allowed_hosts => nil,
         :before_callback_phase => nil,
         :before_options_phase => nil,
         :form_css => OmniAuth::Form::DEFAULT_CSS,

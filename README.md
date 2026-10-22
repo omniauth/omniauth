@@ -232,17 +232,34 @@ OmniAuth.config.logger = Rails.logger
 
 ## Full Host
 OmniAuth builds the callback URL it sends to the provider from the
-request's scheme and host. If that's wrong (for example, behind a proxy
-that doesn't send `X-Forwarded-*` or `Forwarded` headers), set it
-yourself, either for every provider or for one, as a string or as a
-proc that takes the Rack env:
+request's scheme and host. The host comes from the `Host` header, or
+from `X-Forwarded-Host` or `Forwarded` when present, and a client can
+forge any of them. A forged host sends the provider a `redirect_uri` on
+someone else's site, so unless your app or a proxy in front of it
+checks the host (as Rails does with `config.hosts`), tell OmniAuth which
+host to use.
+
+The simplest way is to set the host yourself, either for every provider
+or for one, as a string or as a proc that takes the Rack env. A proc
+shouldn't return a host taken from the request without checking it.
 
 ```ruby
 OmniAuth.config.full_host = 'https://example.com'
-provider :twitter, ENV['KEY'], ENV['SECRET'], full_host: lambda { |env| "https://#{env['HTTP_HOST']}" }
+provider :twitter, ENV['KEY'], ENV['SECRET'], full_host: 'https://admin.example.com'
 ```
 
 A provider's `full_host` option takes precedence over `OmniAuth.config.full_host`.
+
+If your app serves several hosts, list them instead. A string matches
+the whole host, ignoring case, and a regexp must match the whole host.
+A request on any other host fails with `invalid_host`.
+
+```ruby
+OmniAuth.config.allowed_hosts = ['example.com', /[a-z0-9-]+\.example\.com/]
+```
+
+Until one of these is set, OmniAuth logs a warning at the start of every
+request phase.
 
 ## Origin Param
 The `origin` parameter is typically used to inform where a user came from

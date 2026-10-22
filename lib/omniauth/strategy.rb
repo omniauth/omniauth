@@ -1,6 +1,7 @@
 require 'omniauth/key_store'
 require 'omniauth/strategy/class_methods'
 require 'omniauth/strategy/fetchers'
+require 'omniauth/strategy/hosts'
 require 'omniauth/strategy/paths'
 require 'omniauth/strategy/test_mode'
 
@@ -13,6 +14,7 @@ module OmniAuth
   # necessary to be compatible with the OmniAuth library.
   module Strategy # rubocop:disable Metrics/ModuleLength
     include Fetchers
+    include Hosts
     include Paths
     include TestMode
 
@@ -163,6 +165,9 @@ module OmniAuth
     def request_call
       setup_phase
       log :debug, 'Request phase initiated.'
+      warn_if_using_request_host
+      return invalid_host! unless allowed_host?
+
       run_hook(:request_validation_phase)
       session['omniauth.params'] = omniauth_params
       run_hook(:before_request_phase)
@@ -213,6 +218,8 @@ module OmniAuth
     def callback_call
       setup_phase
       log :debug, 'Callback phase initiated.'
+      return invalid_host! unless allowed_host?
+
       origin = session.delete('omniauth.origin')
       env['omniauth.origin'] = (origin unless origin.eql?(''))
       env['omniauth.params'] = session.delete('omniauth.params') || {}

@@ -1133,7 +1133,7 @@ describe OmniAuth::Strategy do
       it 'does not warn about GET requests when only POST is allowed' do
         allow(strategy).to receive(:log)
         strategy.call(make_env)
-        expect(strategy).not_to have_received(:log).with(:warn, anything)
+        expect(strategy).not_to have_received(:log).with(:warn, /GET/)
       end
 
       context 'on the request path' do

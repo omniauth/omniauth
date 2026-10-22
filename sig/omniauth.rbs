@@ -91,6 +91,7 @@ module OmniAuth
     attr_accessor camelizations: Hash[String, String]
     attr_accessor logger: Logger
     attr_accessor silence_get_warning: bool
+    attr_accessor allowed_hosts: Array[String | Regexp]?
   end
 
   module Utils
@@ -268,6 +269,7 @@ module OmniAuth
   # The mixin every OmniAuth strategy includes.
   module Strategy
     include Fetchers
+    include Hosts
     include Paths
     include TestMode
 
@@ -286,6 +288,7 @@ module OmniAuth
       def request: () -> Rack::Request
       def session: () -> Hash[String, untyped]
       def name: () -> String
+      def log: (Symbol level, String message) -> void
       def setup_phase: () -> void
       def call_app!: (?env env) -> rack_response
       def redirect: (String uri) -> rack_response
@@ -356,6 +359,7 @@ module OmniAuth
     class Options < KeyStore
       # Options OmniAuth reads itself. Strategies add their own.
       def name: () -> String
+      def log: (Symbol level, String message) -> void
       # false, true (render the app's own form), or a Rack endpoint
       def form: () -> untyped
       def origin_param: () -> (String | false)
@@ -435,6 +439,19 @@ module OmniAuth
       def full_host_from_request: () -> String
 
       def ssl?: () -> bool
+    end
+
+    # Guards against forged hosts in callback URLs.
+    module Hosts : _Core, Paths
+      private
+
+      def allowed_host?: () -> bool
+
+      def full_host_set?: () -> bool
+
+      def warn_if_using_request_host: () -> void
+
+      def invalid_host!: () -> rack_response
     end
 
     # Runs the request and callback phases against OmniAuth.config.mock_auth

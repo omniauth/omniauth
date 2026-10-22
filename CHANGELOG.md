@@ -36,6 +36,7 @@ versioned together, so those entries cover all of them.
 - Avoid "instance variable not initialized" warnings on Ruby before 3.0.
 
 ### Security
+- Guard against forged hosts in callback URLs. Unless a `full_host` is set, OmniAuth builds the callback URL it sends to the provider from the request's `Host`, `X-Forwarded-Host`, or `Forwarded` header, which a client can forge. The new `OmniAuth.config.allowed_hosts`, a list of strings and regexps, makes the request and callback phases fail with `invalid_host` unless the request's host matches one of them. Until `full_host` or `allowed_hosts` is set, the request phase logs a warning. The README's `full_host` example, which copied the `Host` header, is fixed. ([GHSA-m27g-v28p-f9fx](https://github.com/omniauth/omniauth/security/advisories/GHSA-m27g-v28p-f9fx), CVE-2026-63183)
 - Run `request_validation_phase` before writing `omniauth.params` to the session, so a cross-site POST rejected by the authenticity check can no longer store attacker-controlled params. ([#1162](https://github.com/omniauth/omniauth/pull/1162))
 
 ## [2.1.4] - 2025-10-01
