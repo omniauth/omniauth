@@ -13,6 +13,9 @@ versioned together, so those entries cover all of them.
 
 ## [Unreleased]
 
+### Fixed
+- `remember_sign_in` no longer raises `KeyError` when called outside the request phase, before `omniauth.params` is stored, as when a provider gem's specs call `authorize_params` directly.
+
 ## [2.3.0] - 2026-10-22
 
 ### Added

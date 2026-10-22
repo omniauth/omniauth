@@ -21,7 +21,7 @@ module OmniAuth
 
         sign_ins = remembered_sign_ins
         sign_ins.delete(key)
-        sign_ins[key] = {'origin' => session['omniauth.origin'], 'params' => session.fetch('omniauth.params')}
+        sign_ins[key] = {'origin' => session['omniauth.origin'], 'params' => session['omniauth.params']}
         session['omniauth.sign_ins'] = sign_ins.to_a.last(MAX_REMEMBERED_SIGN_INS).to_h
       end
 

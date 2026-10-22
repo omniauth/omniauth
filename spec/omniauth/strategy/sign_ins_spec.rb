@@ -100,6 +100,13 @@ describe OmniAuth::Strategy, 'sign-ins' do
     expect(finish('a')).to eq([nil, {'key' => 'a'}])
   end
 
+  it 'remembers a sign-in outside the request phase, as when a strategy calls it directly' do
+    env = Rack::MockRequest.env_for('http://app.example/', 'rack.session' => session)
+    strategy.instance_variable_set(:@env, env)
+    strategy.remember_sign_in('a')
+    expect(session['omniauth.sign_ins']).to eq('a' => {'origin' => nil, 'params' => nil})
+  end
+
   it 'gives a nil origin for a remembered empty origin' do
     start('a', '')
     expect(finish('a').first).to be_nil
