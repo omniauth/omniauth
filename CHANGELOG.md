@@ -13,6 +13,8 @@ versioned together, so those entries cover all of them.
 
 ## [Unreleased]
 
+## [2.3.1] - 2026-10-22
+
 ### Fixed
 - `remember_sign_in` no longer raises `KeyError` when called outside the request phase, before `omniauth.params` is stored, as when a provider gem's specs call `authorize_params` directly.
 
@@ -673,7 +675,8 @@ versioned together, so those entries cover all of them.
 ### Added
 - Initial release, made up of `oa-core` (`OmniAuth::Builder` and a Password strategy), `oa-oauth` (OAuth and OAuth 2.0 with Twitter, LinkedIn, Facebook and GitHub) and `oa-openid` (OpenID).
 
-[Unreleased]: https://github.com/omniauth/omniauth/compare/v2.3.0...HEAD
+[Unreleased]: https://github.com/omniauth/omniauth/compare/v2.3.1...HEAD
+[2.3.1]: https://github.com/omniauth/omniauth/compare/v2.3.0...v2.3.1
 [2.3.0]: https://github.com/omniauth/omniauth/compare/v2.2.0...v2.3.0
 [2.2.0]: https://github.com/omniauth/omniauth/compare/v2.1.4...v2.2.0
 [2.1.4]: https://github.com/omniauth/omniauth/compare/v2.1.3...v2.1.4
