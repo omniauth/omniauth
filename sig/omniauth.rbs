@@ -271,6 +271,7 @@ module OmniAuth
     include Fetchers
     include Hosts
     include Paths
+    include SignIns
     include TestMode
 
     def self.included: (Class & ClassMethods base) -> void
@@ -452,6 +453,29 @@ module OmniAuth
       def warn_if_using_request_host: () -> void
 
       def invalid_host!: () -> rack_response
+    end
+
+    # Keeps the origin and params of several sign-ins in progress at once.
+    # A strategy opts in by calling remember_sign_in in its request phase
+    # and overriding callback_sign_in_key.
+    module SignIns : _Core
+      MAX_REMEMBERED_SIGN_INS: Integer
+
+      # Remembers the current request phase's origin and params under key,
+      # which the provider sends back to the callback.
+      def remember_sign_in: (String key) -> void
+
+      # The key the callback sends back, or nil for a strategy that doesn't
+      # remember sign-ins.
+      def callback_sign_in_key: () -> String?
+
+      private
+
+      # The "origin" and "params" for this callback, removed from the
+      # session.
+      def recall_sign_in: () -> Hash[String, untyped]
+
+      def remembered_sign_ins: () -> Hash[String, Hash[String, untyped]]
     end
 
     # Runs the request and callback phases against OmniAuth.config.mock_auth

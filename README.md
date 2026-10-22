@@ -355,6 +355,35 @@ your session cookie with that cross-site request, or the callback fails
 - Providers that POST to the callback (such as SAML's HTTP-POST binding or
   OpenID Connect's `form_post` response mode) need `SameSite=None; Secure`.
 
+## Several Sign-Ins at Once
+By default the session holds one `omniauth.origin` and `omniauth.params`,
+so if a user starts a second sign-in before the first finishes (in another
+tab, for example), the first one's callback gets the second one's origin
+and params.
+
+A strategy can keep them apart when its provider sends a value from the
+request phase back to the callback, such as OAuth 2.0's `state`. Its
+request phase calls `remember_sign_in` with that value, and it overrides
+`callback_sign_in_key` to return the value from the callback:
+
+```ruby
+def request_phase
+  state = SecureRandom.hex(24)
+  remember_sign_in(state)
+  redirect authorize_url(state)
+end
+
+def callback_sign_in_key
+  request.params['state']
+end
+```
+
+OmniAuth then stores the origin and params of the latest 5 sign-ins under
+their keys in `session['omniauth.sign_ins']`, and gives each callback its
+own. It still sets `omniauth.origin` and `omniauth.params` in the session
+for the latest sign-in, and falls back to them when a callback's key isn't
+remembered.
+
 ## Resources
 The [OmniAuth Wiki](https://github.com/omniauth/omniauth/wiki) has
 actively maintained in-depth documentation for OmniAuth. It should be

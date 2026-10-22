@@ -13,6 +13,9 @@ versioned together, so those entries cover all of them.
 
 ## [Unreleased]
 
+### Added
+- Let strategies keep the origin and params of several sign-ins in progress at once, for example in several tabs, so each callback gets its own instead of the latest sign-in's. A strategy opts in by calling `remember_sign_in` in its request phase with a value the provider sends back, such as OAuth 2.0's state, and overriding `callback_sign_in_key`. The latest 5 are stored in `session['omniauth.sign_ins']`, and `omniauth.origin` and `omniauth.params` still hold the latest one. See [the README](README.md#several-sign-ins-at-once). ([omniauth-oauth2#195](https://github.com/omniauth/omniauth-oauth2/issues/195))
+
 ## [2.2.0] - 2026-10-22
 
 ### Added

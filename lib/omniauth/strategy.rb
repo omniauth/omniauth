@@ -3,6 +3,7 @@ require 'omniauth/strategy/class_methods'
 require 'omniauth/strategy/fetchers'
 require 'omniauth/strategy/hosts'
 require 'omniauth/strategy/paths'
+require 'omniauth/strategy/sign_ins'
 require 'omniauth/strategy/test_mode'
 
 module OmniAuth
@@ -16,6 +17,7 @@ module OmniAuth
     include Fetchers
     include Hosts
     include Paths
+    include SignIns
     include TestMode
 
     def self.included(base)
@@ -220,9 +222,10 @@ module OmniAuth
       log :debug, 'Callback phase initiated.'
       return invalid_host! unless allowed_host?
 
-      origin = session.delete('omniauth.origin')
+      sign_in = recall_sign_in
+      origin = sign_in.fetch('origin')
       env['omniauth.origin'] = (origin unless origin.eql?(''))
-      env['omniauth.params'] = session.delete('omniauth.params') || {}
+      env['omniauth.params'] = sign_in.fetch('params') || {}
       run_hook(:before_callback_phase)
       callback_phase
     end
