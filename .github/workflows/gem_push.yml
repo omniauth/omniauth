@@ -1,9 +1,12 @@
 # Releases the gem to RubyGems.org with trusted publishing whenever a
 # version tag is pushed, so no API key is stored in the repository. Bump
-# OmniAuth::VERSION and update CHANGELOG.md, then tag that commit and push
-# the tag:
+# OmniAuth::VERSION, update CHANGELOG.md and commit, then tag the commit
+# and push it:
 #
-#   git tag -a v2.2.0 -m "Version 2.2.0" && git push origin v2.2.0
+#   bundle exec rake release
+#
+# Run locally, that task only tags and pushes (see the Rakefile). This
+# workflow runs it again to build and push the gem.
 #
 # The gem is pushed with a signed attestation of where it was built.
 name: Push Gem
