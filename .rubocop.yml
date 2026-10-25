@@ -1,4 +1,11 @@
+inherit_mode:
+  merge:
+    - Include
+
 AllCops:
+  # .duel.rb is a dotfile, which RuboCop leaves out unless it's included.
+  Include:
+    - '.duel.rb'
   TargetRubyVersion: 2.5
   NewCops: enable
   SuggestExtensions: false

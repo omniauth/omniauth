@@ -1,0 +1,65 @@
+name: Perf
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+  schedule:
+    - cron: "0 4 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write # to comment on a pull request with the report
+
+jobs:
+  duel:
+    name: Duel
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0 # the baseline comes from history, tags included
+          persist-credentials: false
+      # Duel requires Ruby 3.4 or later.
+      - uses: ruby/setup-ruby@824c0e29fdfc7d689c191c27acc969d2d04b7dd8 # v1.331.0
+        with:
+          ruby-version: "3.4"
+          bundler-cache: true
+      # Against the main branch for a pull request, what was there before
+      # for a push, and the last release on a schedule (slow creep). Duel
+      # adds its report to the job's summary, and writes it to duel.md for
+      # the comment.
+      - name: Compare
+        env:
+          DUEL_BASE: ${{ github.event_name == 'schedule' && 'last-release' || github.event_name == 'push' && github.event.before || '' }}
+          # (Run by hand, it compares anyway: with nothing changed, the code
+          # with itself, which checks the setup.)
+          DUEL_FORCE: ${{ github.event_name == 'workflow_dispatch' && '1' || '' }}
+        run: |
+          # (A branch's first push, or one that rewrote history, has no
+          # commit before it here to compare against.)
+          if [ "$GITHUB_EVENT_NAME" = push ] && ! git cat-file -e "$DUEL_BASE^{commit}" 2>/dev/null; then
+            echo "::notice::No commit before this push to compare against"
+            exit 0
+          fi
+          bundle exec duel --markdown "$RUNNER_TEMP/duel.md"
+      # The report, as a comment on the pull request: one comment, updated
+      # on every push. (A pull request from a fork gets no comment, as its
+      # token can't write one: the job's summary has the report.)
+      - name: Comment on the pull request
+        if: ${{ !cancelled() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          [ -f "$RUNNER_TEMP/duel.md" ] || exit 0
+          marker="<!-- duel -->"
+          { echo "$marker"; cat "$RUNNER_TEMP/duel.md"; } > "$RUNNER_TEMP/comment.md"
+          ids=$(gh api --paginate "repos/$GITHUB_REPOSITORY/issues/$PR/comments" \
+            --jq ".[] | select(.user.login == \"github-actions[bot]\" and (.body | startswith(\"$marker\"))) | .id")
+          if [ -n "$ids" ]; then
+            gh api --method PATCH "repos/$GITHUB_REPOSITORY/issues/comments/${ids%%$'\n'*}" -F body=@"$RUNNER_TEMP/comment.md" > /dev/null
+          else
+            gh api --method POST "repos/$GITHUB_REPOSITORY/issues/$PR/comments" -F body=@"$RUNNER_TEMP/comment.md" > /dev/null
+          fi

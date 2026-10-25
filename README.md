@@ -6,6 +6,7 @@
 [![JRuby](https://github.com/omniauth/omniauth/actions/workflows/jruby.yml/badge.svg)][githubactionsjruby]
 [![Maintainability](https://qlty.sh/gh/omniauth/projects/omniauth/maintainability.svg)][qlty]
 [![Coverage Status](http://img.shields.io/coveralls/omniauth/omniauth.svg)][coveralls]
+[![Duel](https://raw.githubusercontent.com/sferik/duel-ruby/main/assets/badge.svg)](https://github.com/sferik/duel-ruby)
 
 [gem]: https://rubygems.org/gems/omniauth
 [githubactions]: https://github.com/omniauth/omniauth/actions/workflows/main.yml

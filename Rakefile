@@ -93,3 +93,10 @@ namespace :perf do
     report.pretty_print
   end
 end
+
+begin
+  require 'duel/rake_task'
+  Duel::RakeTask.new
+rescue LoadError
+  # Duel requires Ruby 3.4 or later
+end

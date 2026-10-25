@@ -15,3 +15,4 @@ pkg/*
 .DS_Store
 .tool-versions
 .mutant/
+tmp/
