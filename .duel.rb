@@ -10,4 +10,8 @@ Duel.configure do |c|
   # The library each version's workers require (from the gemspec, unless
   # this says otherwise).
   # c.library = "omniauth"
+
+  # Compare a change to the benchmarks, this file or the Perf workflow
+  # too, not only to lib/ and ext/.
+  c.watch += %w[duel .duel.rb .github/workflows/perf.yml]
 end
