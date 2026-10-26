@@ -17,6 +17,11 @@ jobs:
   duel:
     name: Duel
     runs-on: ubuntu-latest
+    # Whether the Comment job comments (post, change or none), and the
+    # run's status (passed, failed or neutral), from Duel.
+    outputs:
+      comment: ${{ steps.compare.outputs.comment }}
+      status: ${{ steps.compare.outputs.status }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -29,9 +34,11 @@ jobs:
           bundler-cache: true
       # Against the main branch for a pull request, what was there before
       # for a push, and the last release on a schedule (slow creep). Duel
-      # adds its report to the job's summary, and writes it to duel.md for
-      # the comment.
+      # adds its report to the job's summary, writes it to duel.md for the
+      # comment, and sets the step's outputs to say whether to comment, as
+      # c.comment in .duel.rb says, whatever the outcome.
       - name: Compare
+        id: compare
         env:
           DUEL_BASE: ${{ github.event_name == 'schedule' && 'last-release' || github.event_name == 'push' && github.event.before || '' }}
           # (Run by hand, it compares anyway: with nothing changed, the code
@@ -55,15 +62,17 @@ jobs:
           if-no-files-found: ignore # none when Duel didn't get to compare
           retention-days: 1
 
-  # The report, as a comment on the pull request: one comment, updated on
-  # every push. This job checks nothing out and runs none of the branch's
-  # code, so it alone can write. (A pull request from a fork gets no
-  # comment, as its token can't write one: the Duel job's summary has the
-  # report.)
+  # The report, as a new comment on the pull request, when Duel says to:
+  # always (post), or only when its last comment's status differs from
+  # this run's (change), so the latest comment is never stale. It never
+  # edits or deletes a comment. This job checks nothing out and runs none
+  # of the branch's code, so it alone can write. (A pull request from a
+  # fork gets no comment, as its token can't write one: the Duel job's
+  # summary has the report.)
   comment:
     name: Comment
     needs: duel
-    if: ${{ !cancelled() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository }}
+    if: ${{ !cancelled() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && (needs.duel.outputs.comment == 'post' || needs.duel.outputs.comment == 'change') }}
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write # to comment on the pull request with the report
@@ -80,13 +89,15 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           PR: ${{ github.event.pull_request.number }}
+          COMMENT: ${{ needs.duel.outputs.comment }}
+          STATUS: ${{ needs.duel.outputs.status }}
         run: |
-          marker="<!-- duel -->"
-          { echo "$marker"; cat "$RUNNER_TEMP/report/duel.md"; } > "$RUNNER_TEMP/comment.md"
-          ids=$(gh api --paginate "repos/$GITHUB_REPOSITORY/issues/$PR/comments" \
-            --jq ".[] | select(.user.login == \"github-actions[bot]\" and (.body | startswith(\"$marker\"))) | .id")
-          if [ -n "$ids" ]; then
-            gh api --method PATCH "repos/$GITHUB_REPOSITORY/issues/comments/${ids%%$'\n'*}" -F body=@"$RUNNER_TEMP/comment.md" > /dev/null
-          else
+          marker="<!-- duel"
+          # The first line of the last comment Duel posted here: its marker,
+          # with its status (none in Duel 0.1.0's, which counts as another).
+          last=$(gh api --paginate "repos/$GITHUB_REPOSITORY/issues/$PR/comments" \
+            --jq ".[] | select(.user.login == \"github-actions[bot]\") | .body | split(\"\n\")[0] | rtrimstr(\"\r\") | select(startswith(\"$marker status=\") or . == \"$marker -->\")" | tail -n 1)
+          if [ "$COMMENT" = post ] || { [ -n "$last" ] && [ "$last" != "$marker status=$STATUS -->" ]; }; then
+            { echo "$marker status=$STATUS -->"; cat "$RUNNER_TEMP/report/duel.md"; } > "$RUNNER_TEMP/comment.md"
             gh api --method POST "repos/$GITHUB_REPOSITORY/issues/$PR/comments" -F body=@"$RUNNER_TEMP/comment.md" > /dev/null
           fi

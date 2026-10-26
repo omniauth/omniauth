@@ -25,7 +25,7 @@ group :development do
   # Duel requires Ruby 3.4 or later. It profiles a regression with
   # StackProf, which runs on CRuby only.
   if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('3.4')
-    gem 'duel'
+    gem 'duel', '>= 0.1.1'
     gem 'stackprof', :platforms => :mri
   end
 end
