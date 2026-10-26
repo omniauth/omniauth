@@ -8,9 +8,10 @@ on:
     - cron: "0 4 * * *"
   workflow_dispatch:
 
+# The Duel job runs the branch's code (its benchmarks too), so it only
+# reads. Commenting is the Comment job's, which runs none of it.
 permissions:
   contents: read
-  pull-requests: write # to comment on a pull request with the report
 
 jobs:
   duel:
@@ -44,18 +45,44 @@ jobs:
             exit 0
           fi
           bundle exec duel --markdown "$RUNNER_TEMP/duel.md"
-      # The report, as a comment on the pull request: one comment, updated
-      # on every push. (A pull request from a fork gets no comment, as its
-      # token can't write one: the job's summary has the report.)
+      # The report, for the Comment job.
+      - name: Keep the report
+        if: ${{ !cancelled() && github.event_name == 'pull_request' }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: duel-report
+          path: ${{ runner.temp }}/duel.md
+          if-no-files-found: ignore # none when Duel didn't get to compare
+          retention-days: 1
+
+  # The report, as a comment on the pull request: one comment, updated on
+  # every push. This job checks nothing out and runs none of the branch's
+  # code, so it alone can write. (A pull request from a fork gets no
+  # comment, as its token can't write one: the Duel job's summary has the
+  # report.)
+  comment:
+    name: Comment
+    needs: duel
+    if: ${{ !cancelled() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write # to comment on the pull request with the report
+    steps:
+      - name: Get the report
+        id: report
+        continue-on-error: true # there's none when the Duel job failed before comparing
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: duel-report
+          path: ${{ runner.temp }}/report
       - name: Comment on the pull request
-        if: ${{ !cancelled() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository }}
+        if: steps.report.outcome == 'success'
         env:
           GH_TOKEN: ${{ github.token }}
           PR: ${{ github.event.pull_request.number }}
         run: |
-          [ -f "$RUNNER_TEMP/duel.md" ] || exit 0
           marker="<!-- duel -->"
-          { echo "$marker"; cat "$RUNNER_TEMP/duel.md"; } > "$RUNNER_TEMP/comment.md"
+          { echo "$marker"; cat "$RUNNER_TEMP/report/duel.md"; } > "$RUNNER_TEMP/comment.md"
           ids=$(gh api --paginate "repos/$GITHUB_REPOSITORY/issues/$PR/comments" \
             --jq ".[] | select(.user.login == \"github-actions[bot]\" and (.body | startswith(\"$marker\"))) | .id")
           if [ -n "$ids" ]; then
