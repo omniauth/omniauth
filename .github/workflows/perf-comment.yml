@@ -1,0 +1,59 @@
+name: Perf comment
+
+# Duel's report, as a new comment on the pull request, when Duel says to:
+# always (post), or only when its last comment's status differs from the
+# run's (change), so the latest comment is never stale. It never edits or
+# deletes a comment. It runs once the Perf workflow has, with this
+# repository's own workflow and a token that can write, so a pull request
+# from a fork gets a comment too. It checks nothing out and runs none of
+# the pull request's code, and of what the Duel job kept (where that code
+# ran), it trusts only what that job could have said: the pull request's
+# number, if it names the pull request the run compared, and the comment
+# and the status, if they're ones Duel says. (The workflow must be on the
+# default branch before it runs at all.)
+on:
+  workflow_run:
+    workflows: ["Perf"]
+    types: [completed]
+
+permissions: {}
+
+jobs:
+  comment:
+    name: Comment
+    if: ${{ github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion != 'cancelled' }}
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read # to get the report from the Perf run
+      pull-requests: write # to comment on the pull request with the report
+    steps:
+      - name: Get the report
+        id: report
+        continue-on-error: true # there's none when the Duel job failed before comparing
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: duel-report
+          path: ${{ runner.temp }}/report
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+      - name: Comment on the pull request
+        if: steps.report.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          said() { grep -xE "$1=($2)" "$RUNNER_TEMP/report/comment.env" | tail -n 1 | cut -d= -f2; }
+          PR=$(said pr '[0-9]+')
+          COMMENT=$(said comment 'post|change')
+          STATUS=$(said status 'passed|failed|neutral')
+          [ -n "$PR" ] && [ -n "$COMMENT" ] && [ -n "$STATUS" ] || exit 0
+          [ "$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR" --jq .head.sha)" = "$HEAD_SHA" ] || exit 0
+          marker="<!-- duel"
+          # The first line of the last comment Duel posted here: its marker,
+          # with its status (none in Duel 0.1.0's, which counts as another).
+          last=$(gh api --paginate "repos/$GITHUB_REPOSITORY/issues/$PR/comments" \
+            --jq ".[] | select(.user.login == \"github-actions[bot]\") | .body | split(\"\n\")[0] | rtrimstr(\"\r\") | select(startswith(\"$marker status=\") or . == \"$marker -->\")" | tail -n 1)
+          if [ "$COMMENT" = post ] || { [ -n "$last" ] && [ "$last" != "$marker status=$STATUS -->" ]; }; then
+            { echo "$marker status=$STATUS -->"; cat "$RUNNER_TEMP/report/duel.md"; } > "$RUNNER_TEMP/comment.md"
+            gh api --method POST "repos/$GITHUB_REPOSITORY/issues/$PR/comments" -F body=@"$RUNNER_TEMP/comment.md" > /dev/null
+          fi

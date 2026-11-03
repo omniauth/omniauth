@@ -2,26 +2,39 @@ name: Perf
 
 on:
   pull_request:
+  merge_group: # (a merge queue's)
   push:
-    branches: [master]
+    branches: [master] # (and any other branch to guard, a stable one, say)
   schedule:
     - cron: "0 4 * * *"
   workflow_dispatch:
 
+# A pull request's newer push cancels its run, if that's still going, as
+# only its newest commit's result counts. Every other run (a push's, say)
+# runs to the end, so that each push is compared.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 # The Duel job runs the branch's code (its benchmarks too), so it only
-# reads. Commenting is the Comment job's, which runs none of it.
+# reads. Commenting on a commit is the Comment on the commit job's, which
+# runs none of it, and commenting on a pull request is the Perf comment
+# workflow's.
 permissions:
   contents: read
+  pull-requests: read # for the pull request's labels (see c.accept_label)
 
 jobs:
   duel:
     name: Duel
     runs-on: ubuntu-latest
-    # Whether the Comment job comments (post, change or none), and the
-    # run's status (passed, failed or neutral), from Duel.
+    # Whether to comment (post, change or none), the run's status (passed,
+    # failed or neutral), and whether to mark a push passed (true, or
+    # nothing), from Duel.
     outputs:
       comment: ${{ steps.compare.outputs.comment }}
       status: ${{ steps.compare.outputs.status }}
+      passed: ${{ steps.compare.outputs.passed }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -32,50 +45,80 @@ jobs:
         with:
           ruby-version: "3.4"
           bundler-cache: true
-      # Against the main branch for a pull request, what was there before
-      # for a push, and the last release on a schedule (slow creep). Duel
-      # adds its report to the job's summary, writes it to duel.md for the
-      # comment, and sets the step's outputs to say whether to comment, as
-      # c.comment in .duel.rb says, whatever the outcome.
+      # The labels of the pull request (or for a push, of the one that
+      # merged it), for c.accept_label in .duel.rb, as a JSON array. They're
+      # read as the job runs, so after adding the label, run it again.
+      - name: Find the pull request's labels
+        id: labels
+        if: github.event_name == 'pull_request' || github.event_name == 'merge_group' || github.event_name == 'push'
+        continue-on-error: true # (without them, nothing's accepted)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          QUEUED: ${{ github.event.merge_group.head_ref }}
+        run: |
+          # (In a merge queue, the last pull request queued, which the queue's
+          # branch names: gh-readonly-queue/main/pr-123-<sha>.)
+          if [ -n "$QUEUED" ]; then
+            PR=${QUEUED##*/pr-}
+            PR=${PR%%-*}
+          fi
+          if [ -n "$PR" ]; then
+            labels=$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR/labels" --jq '[.[].name]')
+          else
+            labels=$(gh api "repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/pulls" --jq '[.[0].labels[]?.name]')
+          fi
+          echo "labels=$labels" >> "$GITHUB_OUTPUT"
+      # Against the branch it targets for a pull request, the queue's base
+      # for a merge queue, what was there before for a push (or as
+      # c.push_base in .duel.rb says, the last commit Duel passed), and the
+      # last release on a schedule (slow creep). Duel adds its report to
+      # the job's summary, writes it to duel.md for the comment, and sets
+      # the step's outputs to say whether to comment, as c.comment in
+      # .duel.rb says, whatever the outcome.
       - name: Compare
         id: compare
         env:
-          DUEL_BASE: ${{ github.event_name == 'schedule' && 'last-release' || github.event_name == 'push' && github.event.before || '' }}
+          DUEL_BASE: ${{ github.event_name == 'schedule' && 'last-release' || github.event_name == 'push' && github.event.before || github.event_name == 'merge_group' && github.event.merge_group.base_sha || '' }}
           # (Run by hand, it compares anyway: with nothing changed, the code
           # with itself, which checks the setup.)
           DUEL_FORCE: ${{ github.event_name == 'workflow_dispatch' && '1' || '' }}
-        run: |
-          # (A branch's first push, or one that rewrote history, has no
-          # commit before it here to compare against.)
-          if [ "$GITHUB_EVENT_NAME" = push ] && ! git cat-file -e "$DUEL_BASE^{commit}" 2>/dev/null; then
-            echo "::notice::No commit before this push to compare against"
-            exit 0
-          fi
-          bundle exec duel --markdown "$RUNNER_TEMP/duel.md"
-      # The report, for the Comment job.
-      - name: Keep the report
+          DUEL_LABELS: ${{ steps.labels.outputs.labels }}
+        run: bundle exec duel --markdown "$RUNNER_TEMP/duel/duel.md"
+      # For a pull request, what Duel said, for the Perf comment workflow,
+      # which can't see this job's outputs.
+      - name: Say whether to comment
         if: ${{ !cancelled() && github.event_name == 'pull_request' }}
+        env:
+          PR: ${{ github.event.pull_request.number }}
+          COMMENT: ${{ steps.compare.outputs.comment }}
+          STATUS: ${{ steps.compare.outputs.status }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/duel"
+          printf 'pr=%s\ncomment=%s\nstatus=%s\n' "$PR" "$COMMENT" "$STATUS" > "$RUNNER_TEMP/duel/comment.env"
+      # The report, for the comments.
+      - name: Keep the report
+        if: ${{ !cancelled() && (github.event_name == 'pull_request' || github.event_name == 'push') }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: duel-report
-          path: ${{ runner.temp }}/duel.md
+          path: ${{ runner.temp }}/duel/
           if-no-files-found: ignore # none when Duel didn't get to compare
           retention-days: 1
 
-  # The report, as a new comment on the pull request, when Duel says to:
-  # always (post), or only when its last comment's status differs from
-  # this run's (change), so the latest comment is never stale. It never
-  # edits or deletes a comment. This job checks nothing out and runs none
-  # of the branch's code, so it alone can write. (A pull request from a
-  # fork gets no comment, as its token can't write one: the Duel job's
-  # summary has the report.)
-  comment:
-    name: Comment
+  # The report, as a new comment on a pushed commit, which notifies its
+  # author, when Duel says to, as for a pull request (see the Perf comment
+  # workflow). It does only where a regression in a push passes, with
+  # c.fail_on = :pull_requests in .duel.rb, so the comment says what the
+  # check doesn't. Its last comment is the last one on any commit. This
+  # job checks nothing out and runs none of the code.
+  commit-comment:
+    name: Comment on the commit
     needs: duel
-    if: ${{ !cancelled() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && (needs.duel.outputs.comment == 'post' || needs.duel.outputs.comment == 'change') }}
+    if: ${{ !cancelled() && github.event_name == 'push' && (needs.duel.outputs.comment == 'post' || needs.duel.outputs.comment == 'change') }}
     runs-on: ubuntu-latest
     permissions:
-      pull-requests: write # to comment on the pull request with the report
+      contents: write # to comment on the commit with the report
     steps:
       - name: Get the report
         id: report
@@ -84,20 +127,40 @@ jobs:
         with:
           name: duel-report
           path: ${{ runner.temp }}/report
-      - name: Comment on the pull request
+      - name: Comment on the commit
         if: steps.report.outcome == 'success'
         env:
           GH_TOKEN: ${{ github.token }}
-          PR: ${{ github.event.pull_request.number }}
           COMMENT: ${{ needs.duel.outputs.comment }}
           STATUS: ${{ needs.duel.outputs.status }}
         run: |
           marker="<!-- duel"
-          # The first line of the last comment Duel posted here: its marker,
-          # with its status (none in Duel 0.1.0's, which counts as another).
-          last=$(gh api --paginate "repos/$GITHUB_REPOSITORY/issues/$PR/comments" \
-            --jq ".[] | select(.user.login == \"github-actions[bot]\") | .body | split(\"\n\")[0] | rtrimstr(\"\r\") | select(startswith(\"$marker status=\") or . == \"$marker -->\")" | tail -n 1)
+          last=$(gh api --paginate "repos/$GITHUB_REPOSITORY/comments" \
+            --jq ".[] | select(.user.login == \"github-actions[bot]\") | .body | split(\"\n\")[0] | rtrimstr(\"\r\") | select(startswith(\"$marker status=\"))" | tail -n 1)
           if [ "$COMMENT" = post ] || { [ -n "$last" ] && [ "$last" != "$marker status=$STATUS -->" ]; }; then
             { echo "$marker status=$STATUS -->"; cat "$RUNNER_TEMP/report/duel.md"; } > "$RUNNER_TEMP/comment.md"
-            gh api --method POST "repos/$GITHUB_REPOSITORY/issues/$PR/comments" -F body=@"$RUNNER_TEMP/comment.md" > /dev/null
+            gh api --method POST "repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/comments" -F body=@"$RUNNER_TEMP/comment.md" > /dev/null
           fi
+
+  # With c.push_base = :last_passed in .duel.rb, a push is compared with
+  # the last commit Duel passed, which a branch marks (each branch pushed
+  # has its own), so slowdowns too small for any one push to fail add up
+  # until they fail one. This job moves the branch to a push that passed
+  # (or makes it). It checks nothing out and runs none of the code. To
+  # accept a regression, move the branch yourself (for main, git push
+  # origin main:duel/passed/main).
+  passed:
+    name: Mark the commit passed
+    needs: duel
+    if: ${{ !cancelled() && github.event_name == 'push' && needs.duel.outputs.passed == 'true' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # to move the branch
+    steps:
+      - name: Move the branch to the commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: duel/passed/${{ github.ref_name }}
+        run: |
+          gh api --method PATCH "repos/$GITHUB_REPOSITORY/git/refs/heads/$BRANCH" -f sha="$GITHUB_SHA" -F force=true > /dev/null 2>&1 ||
+            gh api --method POST "repos/$GITHUB_REPOSITORY/git/refs" -f ref="refs/heads/$BRANCH" -f sha="$GITHUB_SHA" > /dev/null
