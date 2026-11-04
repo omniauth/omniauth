@@ -146,7 +146,8 @@ jobs:
   # the last commit Duel passed, which a branch marks (each branch pushed
   # has its own), so slowdowns too small for any one push to fail add up
   # until they fail one. This job moves the branch to a push that passed
-  # (or makes it). It checks nothing out and runs none of the code. To
+  # (or makes it), but never back: where a newer push's run moved it
+  # first, it stays. It checks nothing out and runs none of the code. To
   # accept a regression, move the branch yourself (for main, git push
   # origin main:duel/passed/main).
   passed:
@@ -162,5 +163,84 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           BRANCH: duel/passed/${{ github.ref_name }}
         run: |
-          gh api --method PATCH "repos/$GITHUB_REPOSITORY/git/refs/heads/$BRANCH" -f sha="$GITHUB_SHA" -F force=true > /dev/null 2>&1 ||
-            gh api --method POST "repos/$GITHUB_REPOSITORY/git/refs" -f ref="refs/heads/$BRANCH" -f sha="$GITHUB_SHA" > /dev/null
+          # (Git can't make a branch where another's name is a folder of its
+          # name: a branch named duel blocks duel/passed/main. If one does,
+          # this names it.)
+          blocked() {
+            prefix=$BRANCH
+            while [ "${prefix%/*}" != "$prefix" ]; do
+              prefix=${prefix%/*}
+              if gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/$prefix" > /dev/null 2>&1; then
+                echo "::error::The branch $prefix keeps Duel from making $BRANCH, as Git can't have both. Delete it (git push origin --delete $prefix), or rename it."
+              fi
+            done
+            exit 1
+          }
+          # (Forward: GitHub moves it only where it's behind the push.)
+          gh api --method PATCH "repos/$GITHUB_REPOSITORY/git/refs/heads/$BRANCH" -f sha="$GITHUB_SHA" > /dev/null 2>&1 && exit 0
+          at=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/$BRANCH" --jq .object.sha 2>/dev/null) || at=
+          if [ -z "$at" ]; then
+            gh api --method POST "repos/$GITHUB_REPOSITORY/git/refs" -f ref="refs/heads/$BRANCH" -f sha="$GITHUB_SHA" > /dev/null || blocked
+            exit 0
+          fi
+          compared=$(gh api "repos/$GITHUB_REPOSITORY/compare/$GITHUB_SHA...$at" --jq .status)
+          case "$compared" in
+            # (A newer push's run moved it, or this one's did, run again.)
+            ahead | identical) ;;
+            # (History rewritten, a force push's, say: moved anyway.)
+            diverged | behind) gh api --method PATCH "repos/$GITHUB_REPOSITORY/git/refs/heads/$BRANCH" -f sha="$GITHUB_SHA" -F force=true > /dev/null ;;
+            *) echo "::error::Couldn't compare $BRANCH with this push: $compared" && exit 1 ;;
+          esac
+
+  # Duel's badge, for the README: green (perf guarded) or red (perf
+  # regressed), as the last push to the default branch that Duel compared
+  # left it. It's red where the Duel job failed or found a regression,
+  # even one that passed (with c.fail_on = :pull_requests in .duel.rb). A
+  # push with nothing to compare leaves it as it was, and so does a run
+  # for an older push than the badge's. This job writes the badge, alone,
+  # to a branch of its own, which the README shows:
+  #
+  #   [![Duel](https://raw.githubusercontent.com/omniauth/omniauth/duel/badge/badge.svg)](https://github.com/sferik/duel-ruby)
+  #
+  # It checks nothing out and runs none of the code.
+  badge:
+    name: Update the badge
+    needs: duel
+    if: ${{ !cancelled() && github.event_name == 'push' && github.ref_name == github.event.repository.default_branch && (needs.duel.result == 'failure' || needs.duel.outputs.status == 'passed' || needs.duel.outputs.status == 'failed') }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # to move the badge's branch
+    steps:
+      - name: Update the badge
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: duel/badge
+          RESULT: ${{ needs.duel.result }}
+          STATUS: ${{ needs.duel.outputs.status }}
+          BADGES: https://raw.githubusercontent.com/sferik/duel-ruby/main/assets
+        run: |
+          # (Git can't make a branch where another's name is a folder of its
+          # name: a branch named duel blocks duel/passed/main. If one does,
+          # this names it.)
+          blocked() {
+            prefix=$BRANCH
+            while [ "${prefix%/*}" != "$prefix" ]; do
+              prefix=${prefix%/*}
+              if gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/$prefix" > /dev/null 2>&1; then
+                echo "::error::The branch $prefix keeps Duel from making $BRANCH, as Git can't have both. Delete it (git push origin --delete $prefix), or rename it."
+              fi
+            done
+            exit 1
+          }
+          # (Where the badge is a newer push's, that push's run has the say.
+          # Its commit names the push.)
+          last=$(gh api "repos/$GITHUB_REPOSITORY/commits/$BRANCH" --jq .commit.message 2>/dev/null | sed -n 's/^Duel.s badge, for \([0-9a-f]*\)$/\1/p') || true
+          if [ -n "$last" ] && [ "$(gh api "repos/$GITHUB_REPOSITORY/compare/$GITHUB_SHA...$last" --jq .status 2>/dev/null)" = ahead ]; then exit 0; fi
+          badge="badge.svg"
+          if [ "$RESULT" = failure ] || [ "$STATUS" = failed ]; then badge="badge-regressed.svg"; fi
+          curl -fsSL "$BADGES/$badge" -o "$RUNNER_TEMP/badge.svg"
+          tree=$(jq -n --rawfile svg "$RUNNER_TEMP/badge.svg" '{tree: [{path: "badge.svg", mode: "100644", type: "blob", content: $svg}]}' |
+            gh api --method POST "repos/$GITHUB_REPOSITORY/git/trees" --input - --jq .sha)
+          commit=$(gh api --method POST "repos/$GITHUB_REPOSITORY/git/commits" -f message="Duel's badge, for $GITHUB_SHA" -f tree="$tree" --jq .sha)
+          gh api --method PATCH "repos/$GITHUB_REPOSITORY/git/refs/heads/$BRANCH" -f sha="$commit" -F force=true > /dev/null 2>&1 ||
+            gh api --method POST "repos/$GITHUB_REPOSITORY/git/refs" -f ref="refs/heads/$BRANCH" -f sha="$commit" > /dev/null || blocked
