@@ -611,6 +611,34 @@ describe OmniAuth::Strategy do
       expect(body.to_enum(:each).to_a.join).to eq("<script type='text/javascript' charset='utf-8'>top.location.href = 'http://abc.com';</script>")
     end
 
+    context 'when :iframe is true and the URI contains JavaScript metacharacters' do
+      backslash = 92.chr
+
+      it 'escapes a single quote so it cannot break out of the string literal' do
+        body = ExampleStrategy.new(app, :iframe => true).redirect("x';alert(document.cookie)//").last.to_enum(:each).to_a.join
+
+        # The payload quote must not close the href string literal...
+        expect(body).not_to include("top.location.href = 'x';")
+        # ...it is emitted as ' instead.
+        expect(body).to include("x#{backslash}u0027;alert(document.cookie)//")
+      end
+
+      it 'escapes angle brackets so the value cannot terminate the inline script element' do
+        body = ExampleStrategy.new(app, :iframe => true).redirect('</script><img src=x onerror=alert(1)>').last.to_enum(:each).to_a.join
+
+        expect(body).not_to include('<img')
+        expect(body.scan('</script>').length).to eq(1) # only the template's own closing tag
+        expect(body).to include("#{backslash}u003c/script#{backslash}u003e")
+      end
+
+      it 'escapes CR/LF so they cannot split the script content' do
+        body = ExampleStrategy.new(app, :iframe => true).redirect("a\r\nb").last.to_enum(:each).to_a.join
+
+        expect(body.lines.length).to eq(1)
+        expect(body).to include("a#{backslash}u000d#{backslash}u000ab")
+      end
+    end
+
     [{}, {:iframe => false}].each do |options|
       it "issues an HTTP redirect with options #{options.inspect}" do
         status, headers, body = ExampleStrategy.new(app, options).redirect('http://abc.com')

@@ -285,7 +285,7 @@ module OmniAuth
       r = Rack::Response.new
 
       if options[:iframe]
-        r.write("<script type='text/javascript' charset='utf-8'>top.location.href = '#{uri}';</script>")
+        r.write("<script type='text/javascript' charset='utf-8'>top.location.href = '#{escape_javascript(uri)}';</script>")
       else
         r.write("Redirecting to #{uri}...")
         r.redirect(uri)
@@ -315,6 +315,31 @@ module OmniAuth
     class Options < OmniAuth::KeyStore; end
 
   protected
+
+    # Codepoints that must never appear raw inside the inline <script> redirect:
+    # the quote characters and backslash (which would break the JavaScript
+    # string literal), the ampersand and angle brackets (so a value containing
+    # "</script>" cannot close the element), and the U+2028/U+2029 line
+    # separators (valid JavaScript line terminators that would break the string
+    # literal). Any ASCII control character is escaped as well.
+    ESCAPED_CODEPOINTS = [0x22, 0x26, 0x27, 0x3C, 0x3E, 0x5C, 0x2028, 0x2029].freeze
+
+    # Encodes a value so it is safe to interpolate into the single-quoted
+    # JavaScript string literal emitted by #redirect when the :iframe option is
+    # set. Each dangerous character is rewritten as a numeric \uXXXX escape,
+    # which the browser reads back as that character inside the string literal
+    # rather than as markup or JavaScript syntax.
+    def escape_javascript(value)
+      backslash = 92.chr
+      value.to_s.each_char.map do |char|
+        code = char.ord
+        if code < 0x20 || ESCAPED_CODEPOINTS.include?(code)
+          backslash + format('u%04x', code)
+        else
+          char
+        end
+      end.join
+    end
 
     # Re-raises errors from the downstream app; reports anything else
     # raised during a phase as an authentication failure.

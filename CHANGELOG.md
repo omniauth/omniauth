@@ -13,6 +13,9 @@ versioned together, so those entries cover all of them.
 
 ## [Unreleased]
 
+### Security
+- `Strategy#redirect` now escapes the target URI before interpolating it into the inline `<script>` emitted when the `:iframe` option is enabled. Previously the URI was written verbatim, so a value containing a quote, `</script>`, or a line terminator could break out of the JavaScript string literal and execute in the application's origin (CWE-116/79). Hardening only; the normal (non-iframe) redirect path and ordinary URLs are unaffected.
+
 ## [2.3.1] - 2026-10-22
 
 ### Fixed
