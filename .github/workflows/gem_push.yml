@@ -32,7 +32,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Ruby
-      uses: ruby/setup-ruby@7f797815d8adceb1c412e7abefdd1ab4abc47a5f # v1.335.0
+      uses: ruby/setup-ruby@b3aaceaef7e0ee231b499e7b5f49c03fc1d32199 # v1.338.0
       with:
         # Sigstore signing fails on Ruby 4.0, whose json 3 rejects options
         # that protobug 0.1.0 passes to JSON.parse. Use 3.4 until it's fixed.
