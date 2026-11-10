@@ -209,9 +209,9 @@ module OmniAuth
     def store_origin
       origin = request.params[options.origin_param]
       referer = env['HTTP_REFERER']
-      if origin
+      if origin && allowed_redirect_uri?(origin)
         session['omniauth.origin'] = origin
-      elsif referer && !referer.match?(/#{request_path}$/)
+      elsif referer && !referer.match?(/#{request_path}$/) && allowed_redirect_uri?(referer)
         session['omniauth.origin'] = referer
       end
     end
@@ -283,11 +283,14 @@ module OmniAuth
 
     def redirect(uri)
       r = Rack::Response.new
+      r['content-type'] = 'text/html'
 
-      if options[:iframe]
+      # A disallowed scheme (javascript:, data:, ...) never reaches the inline
+      # script; it falls through to the 302, where a Location header is inert.
+      if options[:iframe] && allowed_redirect_uri?(uri)
         r.write("<script type='text/javascript' charset='utf-8'>top.location.href = '#{escape_javascript(uri)}';</script>")
       else
-        r.write("Redirecting to #{uri}...")
+        r.write("Redirecting to #{Rack::Utils.escape_html(uri)}...")
         r.redirect(uri)
       end
 
@@ -322,9 +325,26 @@ module OmniAuth
     private_constant :JAVASCRIPT_UNSAFE
 
     # Rewrites each unsafe character as a \uXXXX escape, which the browser
-    # decodes back to that character inside the string literal.
+    # decodes back to that character inside the string literal. Bytes that are
+    # already valid UTF-8 are kept as-is; any other encoding is transcoded so a
+    # non-UTF-8 charset isn't corrupted into a different redirect target.
     def escape_javascript(value)
-      String.new(value, :encoding => Encoding::UTF_8).scrub.gsub(JAVASCRIPT_UNSAFE) { |char| format('\\u%04x', char.ord) }
+      string = value.to_s
+      utf8 = string.dup.force_encoding(Encoding::UTF_8)
+      utf8 = string.encode(Encoding::UTF_8, :invalid => :replace) unless utf8.valid_encoding?
+      utf8.gsub(JAVASCRIPT_UNSAFE) { |char| format('\\u%04x', char.ord) }
+    end
+
+    # A redirect target is only safe to write into the inline script when it
+    # has no scheme (a relative or protocol-relative path) or an http(s) one.
+    # Escaping cannot neutralize a javascript:/data:/vbscript: URI, since none
+    # of its characters are unsafe, so it would still run in the app's origin.
+    def allowed_redirect_uri?(uri)
+      # Browsers drop tab/newline/CR anywhere and trim leading control bytes
+      # and spaces before reading the scheme, so mirror that before matching.
+      normalized = uri.to_s.scrub.gsub(/[\t\r\n]/, '').sub(/\A[\x00-\x20]+/, '')
+      scheme = normalized[/\A([a-z][a-z0-9+.-]*):/i, 1]
+      scheme.nil? || %w[http https].include?(scheme.downcase)
     end
 
     # Re-raises errors from the downstream app; reports anything else
