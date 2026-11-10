@@ -612,30 +612,46 @@ describe OmniAuth::Strategy do
     end
 
     context 'when :iframe is true and the URI contains JavaScript metacharacters' do
-      backslash = 92.chr
+      def iframe_redirect_body(uri)
+        ExampleStrategy.new(app, :iframe => true).redirect(uri).last.to_enum(:each).to_a.join
+      end
 
       it 'escapes a single quote so it cannot break out of the string literal' do
-        body = ExampleStrategy.new(app, :iframe => true).redirect("x';alert(document.cookie)//").last.to_enum(:each).to_a.join
+        body = iframe_redirect_body("x';alert(document.cookie)//")
 
-        # The payload quote must not close the href string literal...
         expect(body).not_to include("top.location.href = 'x';")
-        # ...it is emitted as ' instead.
-        expect(body).to include("x#{backslash}u0027;alert(document.cookie)//")
+        expect(body).to include('x\\u0027;alert(document.cookie)//')
       end
 
       it 'escapes angle brackets so the value cannot terminate the inline script element' do
-        body = ExampleStrategy.new(app, :iframe => true).redirect('</script><img src=x onerror=alert(1)>').last.to_enum(:each).to_a.join
+        body = iframe_redirect_body('</script><img src=x onerror=alert(1)>')
 
         expect(body).not_to include('<img')
-        expect(body.scan('</script>').length).to eq(1) # only the template's own closing tag
-        expect(body).to include("#{backslash}u003c/script#{backslash}u003e")
+        expect(body.scan('</script>').length).to eq(1)
+        expect(body).to include('\\u003c/script\\u003e')
       end
 
       it 'escapes CR/LF so they cannot split the script content' do
-        body = ExampleStrategy.new(app, :iframe => true).redirect("a\r\nb").last.to_enum(:each).to_a.join
+        body = iframe_redirect_body("a\r\nb")
 
         expect(body.lines.length).to eq(1)
-        expect(body).to include("a#{backslash}u000d#{backslash}u000ab")
+        expect(body).to include('a\\u000d\\u000ab')
+      end
+
+      it 'escapes every ASCII control character but leaves a space alone' do
+        expect(iframe_redirect_body("a\x1f b")).to include("'a\\u001f b'")
+      end
+
+      it 'escapes U+2028 and U+2029 line separators' do
+        expect(iframe_redirect_body("a\u2028b\u2029c")).to include("'a\\u2028b\\u2029c'")
+      end
+
+      it 'escapes a binary-encoded URI' do
+        expect(iframe_redirect_body("a'\u2028".b)).to include("'a\\u0027\\u2028'")
+      end
+
+      it 'replaces invalid UTF-8 instead of failing the request' do
+        expect(iframe_redirect_body("a\xff'")).to include("'a\u{fffd}\\u0027'")
       end
     end
 

@@ -568,6 +568,10 @@ module OmniAuth
 
     private
 
+    JAVASCRIPT_UNSAFE: Regexp
+
+    def escape_javascript: (String value) -> String
+
     def handle_phase_error: (StandardError error) -> rack_response
 
     def run_hook: (Symbol name) -> void
