@@ -572,6 +572,8 @@ module OmniAuth
 
     def escape_javascript: (String value) -> String
 
+    def allowed_redirect_uri?: (String uri) -> bool
+
     def handle_phase_error: (StandardError error) -> rack_response
 
     def run_hook: (Symbol name) -> void

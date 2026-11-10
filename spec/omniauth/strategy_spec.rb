@@ -608,7 +608,25 @@ describe OmniAuth::Strategy do
 
       expect(status).to eq(200)
       expect(headers['Location']).to be_nil
+      expect(headers['content-type']).to eq('text/html')
       expect(body.to_enum(:each).to_a.join).to eq("<script type='text/javascript' charset='utf-8'>top.location.href = 'http://abc.com';</script>")
+    end
+
+    context 'when :iframe is true and the URI scheme cannot be safely escaped' do
+      it 'never writes a javascript: URI into the inline script' do
+        status, _, body = ExampleStrategy.new(app, :iframe => true).redirect('javascript:alert(document.cookie)')
+        rendered = body.to_enum(:each).to_a.join
+
+        expect(rendered).not_to include('<script')
+        expect(rendered).not_to include('top.location.href')
+        expect(status).to eq(302)
+      end
+
+      it 'routes a data: URI through the inert 302 instead of the script' do
+        status, = ExampleStrategy.new(app, :iframe => true).redirect('data:text/html,<script>alert(1)</script>')
+
+        expect(status).to eq(302)
+      end
     end
 
     context 'when :iframe is true and the URI contains JavaScript metacharacters' do
@@ -653,6 +671,22 @@ describe OmniAuth::Strategy do
       it 'replaces invalid UTF-8 instead of failing the request' do
         expect(iframe_redirect_body("a\xff'")).to include("'a\u{fffd}\\u0027'")
       end
+
+      it 'transcodes a non-UTF-8 URI instead of corrupting its bytes' do
+        expect(iframe_redirect_body((+"caf\xe9").force_encoding('ISO-8859-1'))).to include("'café'")
+      end
+
+      it 'accepts a URI object without raising' do
+        body = ExampleStrategy.new(app, :iframe => true).redirect(URI('http://abc.com')).last.to_enum(:each).to_a.join
+
+        expect(body).to include("top.location.href = 'http://abc.com'")
+      end
+
+      it 'escapes a value that is only coercible through to_s' do
+        escaped = ExampleStrategy.new(app).send(:escape_javascript, double(:to_s => "x'"))
+
+        expect(escaped).to eq('x\\u0027')
+      end
     end
 
     [{}, {:iframe => false}].each do |options|
@@ -661,8 +695,64 @@ describe OmniAuth::Strategy do
 
         expect(status).to eq(302)
         expect(headers['Location']).to eq('http://abc.com')
+        expect(headers['content-type']).to eq('text/html')
         expect(body.to_enum(:each).to_a.join).to eq('Redirecting to http://abc.com...')
       end
+    end
+
+    context 'when the non-iframe redirect body contains HTML metacharacters' do
+      it 'HTML-escapes the URI so the 302 body cannot inject markup' do
+        _, _, body = ExampleStrategy.new(app).redirect('http://abc.com/?a=<script>alert(1)</script>&b="x"')
+        rendered = body.to_enum(:each).to_a.join
+
+        expect(rendered).not_to include('<script>')
+        expect(rendered).to include('&lt;script&gt;')
+      end
+    end
+  end
+
+  describe '#allowed_redirect_uri?' do
+    def allowed?(uri)
+      ExampleStrategy.new(app).send(:allowed_redirect_uri?, uri)
+    end
+
+    it 'allows a relative path, which has no scheme' do
+      expect(allowed?('/foo/bar')).to be(true)
+    end
+
+    it 'allows http and https, case-insensitively' do
+      expect(allowed?('http://abc.com')).to be(true)
+      expect(allowed?('https://abc.com')).to be(true)
+      expect(allowed?('HTTP://abc.com')).to be(true)
+    end
+
+    it 'rejects a javascript: scheme' do
+      expect(allowed?('javascript:alert(1)')).to be(false)
+    end
+
+    it 'rejects a scheme regardless of case' do
+      expect(allowed?('JAVASCRIPT:alert(1)')).to be(false)
+    end
+
+    it 'rejects any single-character scheme that is not http(s)' do
+      expect(allowed?('a:payload')).to be(false)
+    end
+
+    it 'rejects a scheme hidden behind leading whitespace' do
+      expect(allowed?(' javascript:alert(1)')).to be(false)
+      expect(allowed?('  javascript:alert(1)')).to be(false)
+    end
+
+    it 'rejects a scheme split by tabs, newlines, or carriage returns' do
+      expect(allowed?("ja\nva\rscript:alert(1)")).to be(false)
+    end
+
+    it 'reads the scheme through to_s without requiring a String' do
+      expect(allowed?(double(:to_s => 'javascript:alert(1)'))).to be(false)
+    end
+
+    it 'does not raise on an invalid UTF-8 byte sequence' do
+      expect(allowed?((+"a\xff").force_encoding('UTF-8'))).to be(true)
     end
   end
 
@@ -779,6 +869,12 @@ describe OmniAuth::Strategy do
           expect(strategy).to receive(:fail!).with('Request Phase', kind_of(StandardError))
           strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'origin=/foo'))
           expect(strategy.last_env['rack.session']['omniauth.origin']).to eq('/foo')
+        end
+
+        it 'does not store an origin param whose scheme could execute as script' do
+          expect(strategy).to receive(:fail!).with('Request Phase', kind_of(StandardError))
+          strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'origin=javascript:alert(document.cookie)'))
+          expect(strategy.last_env['rack.session']).not_to have_key('omniauth.origin')
         end
 
         it 'is set on the failure env' do
@@ -1266,6 +1362,12 @@ describe OmniAuth::Strategy do
           env = make_env('/auth/test', 'QUERY_STRING' => 'origin', 'HTTP_REFERER' => 'http://example.com/origin')
           strategy.call(env)
           expect(env['rack.session']['omniauth.origin']).to eq('http://example.com/origin')
+        end
+
+        it 'does not store a referer whose scheme could execute as script' do
+          env = make_env('/auth/test', 'HTTP_REFERER' => 'javascript:alert(document.cookie)')
+          strategy.call(env)
+          expect(env['rack.session']).not_to have_key('omniauth.origin')
         end
       end
 
