@@ -185,13 +185,15 @@ jobs:
             *) echo "::error::Couldn't compare $BRANCH with this push: $compared" && exit 1 ;;
           esac
 
-  # Duel's badge, for the README: green (perf guarded) or red (perf
-  # regressed), as the last push to the default branch that Duel compared
-  # left it. It's red where the Duel job failed or found a regression,
-  # even one that passed (with c.fail_on = :pull_requests in .duel.rb). A
-  # push with nothing to compare leaves it as it was, and so does a run
-  # for an older push than the badge's. This job writes the badge, alone,
-  # to a branch of its own, which the README shows:
+  # Duel's badge, for the README: green (perf guarded), red (perf
+  # regressed) or grey (not measured), as the last push to the default
+  # branch that Duel compared left it. It's red where Duel failed the push
+  # or found a regression, even one that passed (with
+  # c.fail_on = :pull_requests in .duel.rb), and grey where the Duel job
+  # failed before Duel could judge the push (its runner ran out of memory,
+  # say). A push with nothing to compare leaves it as it was, and so does
+  # a run for an older push than the badge's. This job writes the badge,
+  # alone, to a branch of its own, which the README shows:
   #
   #   [![Duel](https://raw.githubusercontent.com/omniauth/omniauth/duel/badge/badge.svg)](https://github.com/sferik/duel-ruby)
   #
@@ -237,10 +239,13 @@ jobs:
           last=$(gh api "repos/$GITHUB_REPOSITORY/commits/$BRANCH" --jq .commit.message 2>/dev/null | sed -n 's/^Duel.s badge, for \([0-9a-f]*\)$/\1/p') || true
           if [ -n "$last" ] && [ "$(gh api "repos/$GITHUB_REPOSITORY/compare/$GITHUB_SHA...$last" --jq .status 2>/dev/null)" = ahead ]; then exit 0; fi
           # (Its image, written here rather than fetched from anywhere: green,
-          # or red where the Duel job failed or found a regression.)
+          # red where Duel failed the push or found a regression, or grey
+          # where the Duel job failed before Duel said either.)
           state="perf guarded" width=133 top="#34D058" bottom="#28A745" right="76.939C78.629 0 80 1.343 80"
-          if [ "$RESULT" = failure ] || [ "$STATUS" = failed ]; then
+          if [ "$STATUS" = failed ]; then
             state="perf regressed" width=142 top="#EA4A5A" bottom="#D73A49" right="85.939C87.629 0 89 1.343 89"
+          elif [ "$RESULT" = failure ] && [ "$STATUS" != passed ]; then
+            state="not measured" width=138 top="#959DA5" bottom="#6A737D" right="81.939C83.629 0 85 1.343 85"
           fi
           cat > "$RUNNER_TEMP/badge.svg" <<SVG
           <svg xmlns="http://www.w3.org/2000/svg" width="$width" height="20">
