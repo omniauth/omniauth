@@ -20,8 +20,8 @@ Duel.configure do |c|
   # c.fail_on = :every_run
 
   # A pull request with this label passes with a regression, which the
-  # report says the label accepted (after adding the label, run the
-  # workflow again).
+  # report says the label accepted. Adding the label, or taking it off,
+  # runs the workflow again.
   c.accept_label = 'duel: accept'
 
   # A push is compared with the last commit Duel passed, which a branch

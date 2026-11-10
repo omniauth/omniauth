@@ -9,12 +9,24 @@ name: Perf comment
 # the pull request's code, and of what the Duel job kept (where that code
 # ran), it trusts only what that job could have said: the pull request's
 # number, if it names the pull request the run compared, and the comment
-# and the status, if they're ones Duel says. (The workflow must be on the
-# default branch before it runs at all.)
+# and the status, if they're ones Duel says. A fork's report, which the
+# fork's code wrote, is shown as text.
+#
+# And when the label that accepts a regression (c.accept_label in
+# .duel.rb) is added to a pull request, or taken off, it runs the Duel
+# job again, which reads the labels as it runs: a run that failed, once
+# the label's added, or one that passed, once it's taken off.
+#
+# (The workflow must be on the default branch before it runs at all.)
 on:
   workflow_run:
     workflows: ["Perf"]
     types: [completed]
+  # (This repository's own workflow, as for the comment, with a token
+  # that can run a workflow again: it checks nothing out, and runs none
+  # of the pull request's code.)
+  pull_request_target:
+    types: [labeled, unlabeled]
 
 permissions: {}
 
@@ -47,13 +59,59 @@ jobs:
           COMMENT=$(said comment 'post|change')
           STATUS=$(said status 'passed|failed|neutral')
           [ -n "$PR" ] && [ -n "$COMMENT" ] && [ -n "$STATUS" ] || exit 0
-          [ "$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR" --jq .head.sha)" = "$HEAD_SHA" ] || exit 0
+          # (The pull request's head commit, and the repository it's from.)
+          head=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR" --jq '"\(.head.sha) \(.head.repo.full_name)"')
+          [ "${head%% *}" = "$HEAD_SHA" ] || exit 0
+          # The report, as Markdown for a branch of this repository (whose
+          # author can push here anyway), but for a fork's, as text: its run
+          # ran the fork's code, which could have written anything in it. In
+          # a code block, fenced with more backticks than any run of them in
+          # the report, it can't mention anyone, link anywhere or show an
+          # image. It's cut short where a comment couldn't hold it, and loses
+          # any NUL bytes, which GitHub wouldn't take, and grep reads it as
+          # text whatever's in it, so it finds every run of backticks.
+          report() {
+            if [ "${head#* }" = "$GITHUB_REPOSITORY" ]; then cat "$RUNNER_TEMP/report/duel.md" && return; fi
+            text="$RUNNER_TEMP/report.txt"
+            LC_ALL=C tr -d '\000' < "$RUNNER_TEMP/report/duel.md" | head -c 60000 > "$text"
+            fence=$(LC_ALL=C grep -ao '``*' "$text" | awk '{ if (length > n) n = length } END { n = (n < 3) ? 3 : n + 1; while (n-- > 0) printf "`" }')
+            printf 'From a fork, so shown as text:\n\n%s\n' "$fence"
+            cat "$text"
+            printf '\n%s\n' "$fence"
+          }
           marker="<!-- duel"
           # The first line of the last comment Duel posted here: its marker,
           # with its status (none in Duel 0.1.0's, which counts as another).
           last=$(gh api --paginate "repos/$GITHUB_REPOSITORY/issues/$PR/comments" \
             --jq ".[] | select(.user.login == \"github-actions[bot]\") | .body | split(\"\n\")[0] | rtrimstr(\"\r\") | select(startswith(\"$marker status=\") or . == \"$marker -->\")" | tail -n 1)
           if [ "$COMMENT" = post ] || { [ -n "$last" ] && [ "$last" != "$marker status=$STATUS -->" ]; }; then
-            { echo "$marker status=$STATUS -->"; cat "$RUNNER_TEMP/report/duel.md"; } > "$RUNNER_TEMP/comment.md"
+            { echo "$marker status=$STATUS -->"; report; } > "$RUNNER_TEMP/comment.md"
             gh api --method POST "repos/$GITHUB_REPOSITORY/issues/$PR/comments" -F body=@"$RUNNER_TEMP/comment.md" > /dev/null
           fi
+
+  again:
+    name: Run Duel again
+    if: >-
+      github.event_name == 'pull_request_target' && github.event.label.name == 'duel: accept'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write # to run the Perf workflow's jobs again
+    steps:
+      - name: Run Duel again
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          ACTION: ${{ github.event.action }}
+        run: |
+          # The newest Perf run of the pull request's head commit, once it's
+          # done (one that's running may have read the labels already).
+          id=$(gh run list --workflow "Perf" --event pull_request --commit "$HEAD_SHA" --limit 1 \
+            --json databaseId --jq '.[0].databaseId // empty')
+          [ -n "$id" ] || exit 0
+          gh run watch "$id" --interval 30 > /dev/null || true
+          conclusion=$(gh run view "$id" --json conclusion --jq .conclusion)
+          case "$ACTION:$conclusion" in
+            labeled:failure) gh run rerun "$id" --failed ;;
+            unlabeled:success) gh run rerun "$id" ;;
+          esac
