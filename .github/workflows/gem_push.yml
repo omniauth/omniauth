@@ -8,7 +8,8 @@
 # Run locally, that task only tags and pushes (see the Rakefile). This
 # workflow runs it again to build and push the gem.
 #
-# The gem is pushed with a signed attestation of where it was built.
+# The gem is pushed with a signed attestation of where it was built. Once
+# it is on RubyGems.org, a second job publishes the GitHub release.
 name: Push Gem
 
 on:
@@ -52,3 +53,32 @@ jobs:
     # git pushes and only builds and pushes the gem.
     - name: Release
       uses: rubygems/release-gem@7f9650160c1a4e7989fdc9855807bdbd421d8b6b # v1.4.1
+  # Publishes a GitHub release for the tag, with the version's section of
+  # CHANGELOG.md as its notes. It's a separate job so the gem push above
+  # never runs with a token that can write to the repository.
+  github-release:
+    needs: push
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # create the release
+    steps:
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        persist-credentials: false
+    - name: Extract the release notes from CHANGELOG.md
+      run: |
+        ruby -e '
+          version = ENV.fetch("GITHUB_REF_NAME").delete_prefix("v")
+          changelog = File.read("CHANGELOG.md")
+          notes = changelog[/^## \[#{Regexp.escape(version)}\][^\n]*\n(.*?)(?=^## \[)/m, 1]
+          abort "CHANGELOG.md has no section for #{version}" unless notes
+          # Relative links would break on the releases page.
+          notes = notes.strip.gsub("](README.md", "](https://github.com/#{ENV.fetch("GITHUB_REPOSITORY")}/blob/v#{version}/README.md")
+          compare = changelog[/^\[#{Regexp.escape(version)}\]: (\S+)$/, 1]
+          notes += "\n\n**Full Changelog**: #{compare}" if compare
+          puts notes
+        ' > "$RUNNER_TEMP/notes.md"
+    - name: Create the GitHub release
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: gh release create "$GITHUB_REF_NAME" --verify-tag --title "$GITHUB_REF_NAME" --notes-file "$RUNNER_TEMP/notes.md"
