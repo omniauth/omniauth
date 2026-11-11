@@ -672,6 +672,12 @@ describe OmniAuth::Strategy do
         expect(iframe_redirect_body("a\xff'")).to include("'a\u{fffd}\\u0027'")
       end
 
+      it 'replaces an invalid byte in a binary string instead of failing the request' do
+        body = iframe_redirect_body("https://x.test/?q=\xC3\xA9\xFF".b)
+
+        expect(body).to include("top.location.href = 'https://x.test/?q=")
+      end
+
       it 'transcodes a non-UTF-8 URI instead of corrupting its bytes' do
         expect(iframe_redirect_body((+"caf\xe9").force_encoding('ISO-8859-1'))).to include("'café'")
       end
@@ -753,6 +759,34 @@ describe OmniAuth::Strategy do
 
     it 'does not raise on an invalid UTF-8 byte sequence' do
       expect(allowed?((+"a\xff").force_encoding('UTF-8'))).to be(true)
+    end
+  end
+
+  describe '#safe_origin?' do
+    def safe?(uri)
+      ExampleStrategy.new(app).send(:safe_origin?, uri)
+    end
+
+    it 'allows a relative path, http, and https' do
+      expect(safe?('/foo/bar')).to be(true)
+      expect(safe?('http://abc.com')).to be(true)
+      expect(safe?('https://abc.com')).to be(true)
+    end
+
+    it 'allows a non-web deep-link scheme used by mobile sign-in' do
+      expect(safe?('myapp://oauth/done')).to be(true)
+    end
+
+    it 'rejects javascript, data, and vbscript schemes, case-insensitively' do
+      expect(safe?('javascript:alert(1)')).to be(false)
+      expect(safe?('JavaScript:alert(1)')).to be(false)
+      expect(safe?('data:text/html,<script>alert(1)</script>')).to be(false)
+      expect(safe?('vbscript:msgbox(1)')).to be(false)
+    end
+
+    it 'rejects a dangerous scheme hidden behind whitespace or split by control characters' do
+      expect(safe?(' javascript:alert(1)')).to be(false)
+      expect(safe?("ja\nva\rscript:alert(1)")).to be(false)
     end
   end
 
@@ -874,6 +908,18 @@ describe OmniAuth::Strategy do
         it 'does not store an origin param whose scheme could execute as script' do
           expect(strategy).to receive(:fail!).with('Request Phase', kind_of(StandardError))
           strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'origin=javascript:alert(document.cookie)'))
+          expect(strategy.last_env['rack.session']).not_to have_key('omniauth.origin')
+        end
+
+        it 'stores an origin param with a non-web deep-link scheme' do
+          expect(strategy).to receive(:fail!).with('Request Phase', kind_of(StandardError))
+          strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'origin=myapp://oauth/done'))
+          expect(strategy.last_env['rack.session']['omniauth.origin']).to eq('myapp://oauth/done')
+        end
+
+        it 'ignores the referer when a present origin param is rejected' do
+          expect(strategy).to receive(:fail!).with('Request Phase', kind_of(StandardError))
+          strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'origin=javascript:alert(1)', 'HTTP_REFERER' => 'http://example.com/origin'))
           expect(strategy.last_env['rack.session']).not_to have_key('omniauth.origin')
         end
 
