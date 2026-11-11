@@ -753,6 +753,50 @@ describe OmniAuth::Strategy do
         expect(body.to_enum(:each).to_a.join).to eq('Redirecting to http://abc.com/?a=&lt;b&gt;...')
       end
     end
+
+    context 'when the URI is in an encoding that is not ASCII-compatible' do
+      it 'transcodes it for the inline :iframe script' do
+        _, _, body = ExampleStrategy.new(app, :iframe => true).redirect("https://abc.com/café'".encode('UTF-16LE'))
+
+        expect(body.to_enum(:each).to_a.join).to include("top.location.href = 'https://abc.com/café\\u0027'")
+      end
+
+      it 'transcodes it for the 302 body and Location header' do
+        status, headers, body = ExampleStrategy.new(app).redirect('https://abc.com/<b>'.encode('UTF-16'))
+
+        expect(status).to eq(302)
+        expect(headers['Location']).to eq('https://abc.com/<b>')
+        expect(body.to_enum(:each).to_a.join).to eq('Redirecting to https://abc.com/&lt;b&gt;...')
+      end
+
+      it 'transcodes a String subclass too' do
+        uri = Class.new(String).new('https://abc.com'.encode('UTF-32BE'))
+        _, headers, = ExampleStrategy.new(app).redirect(uri)
+
+        expect(headers['Location']).to eq('https://abc.com')
+      end
+
+      it 'replaces an invalid sequence, such as a lone surrogate, instead of failing the request' do
+        uri = (+"h\x00/\x00\x00\xD8").force_encoding('UTF-16LE')
+        _, headers, = ExampleStrategy.new(app).redirect(uri)
+
+        expect(headers['Location']).to eq("h/\u{fffd}")
+      end
+
+      it 'replaces a character with no UTF-8 mapping instead of failing the request' do
+        uri = (+"/\e$B\x22\x2F\e(B").force_encoding('ISO-2022-JP')
+        _, headers, = ExampleStrategy.new(app).redirect(uri)
+
+        expect(headers['Location']).to eq("/\u{fffd}")
+      end
+
+      it 'leaves the bytes of a binary URI in the Location header alone' do
+        uri = 'https://abc.com/café'.b
+        _, headers, = ExampleStrategy.new(app).redirect(uri)
+
+        expect(headers['Location']).to be(uri)
+      end
+    end
   end
 
   describe '#allowed_redirect_uri?' do

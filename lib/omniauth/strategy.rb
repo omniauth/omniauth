@@ -286,6 +286,7 @@ module OmniAuth
     end
 
     def redirect(uri)
+      uri = ascii_compatible_uri(uri)
       r = Rack::Response.new
       r['content-type'] = 'text/html'
 
@@ -397,6 +398,15 @@ module OmniAuth
 
       referer = referer.scrub unless referer.valid_encoding?
       referer if !referer.end_with?(request_path) && safe_origin?(referer)
+    end
+
+    # A URI in an encoding that isn't ASCII-compatible, such as UTF-16, can't
+    # be matched against the scheme checks or written into the UTF-8 response,
+    # so it's transcoded to UTF-8 first. Anything else is returned as-is.
+    def ascii_compatible_uri(uri)
+      return uri unless uri.is_a?(String) && !uri.encoding.ascii_compatible?
+
+      uri.encode(Encoding::UTF_8, :invalid => :replace, :undef => :replace)
     end
 
     # Re-raises errors from the downstream app; reports anything else

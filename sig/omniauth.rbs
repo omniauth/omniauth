@@ -588,6 +588,8 @@ module OmniAuth
 
     def referer_origin: () -> String?
 
+    def ascii_compatible_uri: [T < Object] (T uri) -> (T | String)
+
     def handle_phase_error: (StandardError error) -> rack_response
 
     def run_hook: (Symbol name) -> void
