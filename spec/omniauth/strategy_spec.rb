@@ -762,6 +762,30 @@ describe OmniAuth::Strategy do
     end
   end
 
+  describe '#normalize_redirect_uri' do
+    def normalize(uri)
+      ExampleStrategy.new(app).send(:normalize_redirect_uri, uri)
+    end
+
+    it 'returns a clean, valid URI as the same object, without copying it' do
+      uri = +'https://abc.com/callback?state=xyz'
+
+      expect(normalize(uri)).to be(uri)
+    end
+
+    it 'strips tabs, newlines, and leading control bytes and spaces' do
+      expect(normalize(" \x01ja\tva\r\nscript:alert(1)")).to eq('javascript:alert(1)')
+    end
+
+    it 'scrubs an invalid byte sequence instead of raising' do
+      expect(normalize((+"a\xff").force_encoding('UTF-8'))).to eq("a\u{fffd}")
+    end
+
+    it 'reads a URI through to_s without requiring a String' do
+      expect(normalize(double(:to_s => 'https://abc.com'))).to eq('https://abc.com')
+    end
+  end
+
   describe '#safe_origin?' do
     def safe?(uri)
       ExampleStrategy.new(app).send(:safe_origin?, uri)
