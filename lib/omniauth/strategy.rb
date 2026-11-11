@@ -1,3 +1,4 @@
+require 'cgi/escape'
 require 'omniauth/key_store'
 require 'omniauth/strategy/class_methods'
 require 'omniauth/strategy/fetchers'
@@ -292,7 +293,7 @@ module OmniAuth
       if options[:iframe] && allowed_redirect_uri?(uri)
         r.write("<script type='text/javascript' charset='utf-8'>top.location.href = '#{escape_javascript(uri)}';</script>")
       else
-        r.write("Redirecting to #{Rack::Utils.escape_html(uri)}...")
+        r.write("Redirecting to #{CGI.escapeHTML(uri)}...")
         r.redirect(uri)
       end
 
@@ -326,12 +327,6 @@ module OmniAuth
     JAVASCRIPT_UNSAFE = /[\x00-\x1f"&'<>\\\u2028\u2029]/.freeze
     private_constant :JAVASCRIPT_UNSAFE
 
-    # Schemes a browser runs as script when it follows the URL. Escaping can't
-    # neutralize one (none of its characters are unsafe), so such a URI must
-    # never reach the inline :iframe script or be persisted as an origin.
-    DANGEROUS_REDIRECT_SCHEMES = %w[javascript vbscript data].freeze
-    private_constant :DANGEROUS_REDIRECT_SCHEMES
-
     # Rewrites each unsafe character as a \uXXXX escape, which the browser
     # decodes back to that character inside the string literal. Bytes that are
     # already valid UTF-8 are kept as-is; any other encoding is transcoded so a
@@ -346,21 +341,42 @@ module OmniAuth
       utf8.gsub(JAVASCRIPT_UNSAFE) { |char| format('\\u%04x', char.ord) }
     end
 
-    # The scheme a browser would read off the URL, lower-cased, or nil when the
-    # URL is relative or protocol-relative. Tab/newline/CR are dropped anywhere
-    # and leading control bytes and spaces trimmed first, mirroring how browsers
-    # parse a scheme, so a split or padded scheme can't slip past the checks.
-    def redirect_uri_scheme(uri)
-      normalized = uri.to_s.scrub.gsub(/[\t\r\n]/, '').sub(/\A[\x00-\x20]+/, '')
-      normalized[/\A([a-z][a-z0-9+.-]*):/i, 1]&.downcase
+    # Tab/newline/CR anywhere, or a leading control byte or space, which a
+    # browser strips before it reads the scheme.
+    NEEDS_NORMALIZING = /[\t\r\n]|\A[\x00-\x20]/.freeze
+    private_constant :NEEDS_NORMALIZING
+
+    # Schemes a browser runs as script when it follows the URL. Escaping can't
+    # neutralize one (none of its characters are unsafe), so such a URI must
+    # never reach the inline :iframe script or be persisted as an origin.
+    DANGEROUS_SCHEME = /\A(?:javascript|vbscript|data):/i.freeze
+    private_constant :DANGEROUS_SCHEME
+
+    ANY_SCHEME = /\A[a-z][a-z0-9+.-]*:/i.freeze
+    private_constant :ANY_SCHEME
+
+    WEB_SCHEME = /\Ahttps?:/i.freeze
+    private_constant :WEB_SCHEME
+
+    # The URI as a browser reads its scheme: tab/newline/CR dropped anywhere
+    # and leading control bytes and spaces trimmed, so a split or padded scheme
+    # can't slip past the checks. A URI with none of those is returned as-is,
+    # so the common case allocates nothing. Invalid bytes are scrubbed first,
+    # since matching a regexp against them raises ArgumentError.
+    def normalize_redirect_uri(uri)
+      uri = uri.to_s
+      uri = uri.scrub unless uri.valid_encoding?
+      return uri unless uri.match?(NEEDS_NORMALIZING)
+
+      uri.gsub(/[\t\r\n]/, '').sub(/\A[\x00-\x20]+/, '')
     end
 
     # Safe to write into the inline :iframe script: a relative/protocol-relative
     # path or an http(s) URL. A javascript:/data:/vbscript: URI is excluded here
     # because escaping leaves it able to run in the application's origin.
     def allowed_redirect_uri?(uri)
-      scheme = redirect_uri_scheme(uri)
-      scheme.nil? || %w[http https].include?(scheme)
+      uri = normalize_redirect_uri(uri)
+      !uri.match?(ANY_SCHEME) || uri.match?(WEB_SCHEME)
     end
 
     # Safe to persist as an origin: anything but a scheme that runs as script.
@@ -368,7 +384,7 @@ module OmniAuth
     # which mobile sign-in relies on, while still refusing a URI that a later
     # redirect to omniauth.origin could execute.
     def safe_origin?(uri)
-      !DANGEROUS_REDIRECT_SCHEMES.include?(redirect_uri_scheme(uri))
+      !normalize_redirect_uri(uri).match?(DANGEROUS_SCHEME)
     end
 
     # Re-raises errors from the downstream app; reports anything else

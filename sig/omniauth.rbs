@@ -570,11 +570,17 @@ module OmniAuth
 
     JAVASCRIPT_UNSAFE: Regexp
 
-    DANGEROUS_REDIRECT_SCHEMES: Array[String]
+    NEEDS_NORMALIZING: Regexp
+
+    DANGEROUS_SCHEME: Regexp
+
+    ANY_SCHEME: Regexp
+
+    WEB_SCHEME: Regexp
 
     def escape_javascript: (String value) -> String
 
-    def redirect_uri_scheme: (String uri) -> String?
+    def normalize_redirect_uri: (String uri) -> String
 
     def allowed_redirect_uri?: (String uri) -> bool
 
