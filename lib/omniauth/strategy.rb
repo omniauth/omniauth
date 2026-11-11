@@ -208,11 +208,13 @@ module OmniAuth
     # referer) so the callback phase can send them back there.
     def store_origin
       origin = request.params[options.origin_param]
-      referer = env['HTTP_REFERER']
-      if origin && allowed_redirect_uri?(origin)
-        session['omniauth.origin'] = origin
-      elsif referer && !referer.match?(/#{request_path}$/) && allowed_redirect_uri?(referer)
-        session['omniauth.origin'] = referer
+      if origin
+        # A present origin param is what the app asked for, so never silently
+        # fall back to the referer when it's rejected; just store nothing.
+        session['omniauth.origin'] = origin if safe_origin?(origin)
+      else
+        referer = env['HTTP_REFERER']
+        session['omniauth.origin'] = referer if referer && !referer.match?(/#{request_path}$/) && safe_origin?(referer)
       end
     end
 
@@ -324,6 +326,12 @@ module OmniAuth
     JAVASCRIPT_UNSAFE = /[\x00-\x1f"&'<>\\\u2028\u2029]/.freeze
     private_constant :JAVASCRIPT_UNSAFE
 
+    # Schemes a browser runs as script when it follows the URL. Escaping can't
+    # neutralize one (none of its characters are unsafe), so such a URI must
+    # never reach the inline :iframe script or be persisted as an origin.
+    DANGEROUS_REDIRECT_SCHEMES = %w[javascript vbscript data].freeze
+    private_constant :DANGEROUS_REDIRECT_SCHEMES
+
     # Rewrites each unsafe character as a \uXXXX escape, which the browser
     # decodes back to that character inside the string literal. Bytes that are
     # already valid UTF-8 are kept as-is; any other encoding is transcoded so a
@@ -331,20 +339,36 @@ module OmniAuth
     def escape_javascript(value)
       string = value.to_s
       utf8 = string.dup.force_encoding(Encoding::UTF_8)
-      utf8 = string.encode(Encoding::UTF_8, :invalid => :replace) unless utf8.valid_encoding?
+      # Rack hands query strings and the like back as ASCII-8BIT, whose high
+      # bytes have no UTF-8 mapping, so :undef must replace them too or the
+      # transcode raises Encoding::UndefinedConversionError.
+      utf8 = string.encode(Encoding::UTF_8, :invalid => :replace, :undef => :replace) unless utf8.valid_encoding?
       utf8.gsub(JAVASCRIPT_UNSAFE) { |char| format('\\u%04x', char.ord) }
     end
 
-    # A redirect target is only safe to write into the inline script when it
-    # has no scheme (a relative or protocol-relative path) or an http(s) one.
-    # Escaping cannot neutralize a javascript:/data:/vbscript: URI, since none
-    # of its characters are unsafe, so it would still run in the app's origin.
-    def allowed_redirect_uri?(uri)
-      # Browsers drop tab/newline/CR anywhere and trim leading control bytes
-      # and spaces before reading the scheme, so mirror that before matching.
+    # The scheme a browser would read off the URL, lower-cased, or nil when the
+    # URL is relative or protocol-relative. Tab/newline/CR are dropped anywhere
+    # and leading control bytes and spaces trimmed first, mirroring how browsers
+    # parse a scheme, so a split or padded scheme can't slip past the checks.
+    def redirect_uri_scheme(uri)
       normalized = uri.to_s.scrub.gsub(/[\t\r\n]/, '').sub(/\A[\x00-\x20]+/, '')
-      scheme = normalized[/\A([a-z][a-z0-9+.-]*):/i, 1]
-      scheme.nil? || %w[http https].include?(scheme.downcase)
+      normalized[/\A([a-z][a-z0-9+.-]*):/i, 1]&.downcase
+    end
+
+    # Safe to write into the inline :iframe script: a relative/protocol-relative
+    # path or an http(s) URL. A javascript:/data:/vbscript: URI is excluded here
+    # because escaping leaves it able to run in the application's origin.
+    def allowed_redirect_uri?(uri)
+      scheme = redirect_uri_scheme(uri)
+      scheme.nil? || %w[http https].include?(scheme)
+    end
+
+    # Safe to persist as an origin: anything but a scheme that runs as script.
+    # Unlike the iframe check this keeps non-web deep links such as myapp://,
+    # which mobile sign-in relies on, while still refusing a URI that a later
+    # redirect to omniauth.origin could execute.
+    def safe_origin?(uri)
+      !DANGEROUS_REDIRECT_SCHEMES.include?(redirect_uri_scheme(uri))
     end
 
     # Re-raises errors from the downstream app; reports anything else
