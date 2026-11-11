@@ -211,11 +211,12 @@ module OmniAuth
       origin = request.params[options.origin_param]
       if origin
         # A present origin param is what the app asked for, so never silently
-        # fall back to the referer when it's rejected; just store nothing.
-        session['omniauth.origin'] = origin if safe_origin?(origin)
-      else
-        referer = env['HTTP_REFERER']
-        session['omniauth.origin'] = referer if referer && !referer.match?(/#{request_path}$/) && safe_origin?(referer)
+        # fall back to the referer when it's rejected; just store nothing. It
+        # must be a String: an array (origin[]=...) would pass the scheme check
+        # through its to_s and still land in the session.
+        session['omniauth.origin'] = origin if origin.is_a?(String) && safe_origin?(origin)
+      elsif (referer = referer_origin)
+        session['omniauth.origin'] = referer
       end
     end
 
@@ -293,7 +294,7 @@ module OmniAuth
       if options[:iframe] && allowed_redirect_uri?(uri)
         r.write("<script type='text/javascript' charset='utf-8'>top.location.href = '#{escape_javascript(uri)}';</script>")
       else
-        r.write("Redirecting to #{CGI.escapeHTML(uri)}...")
+        r.write("Redirecting to #{CGI.escapeHTML(uri.to_s)}...")
         r.redirect(uri)
       end
 
@@ -328,17 +329,17 @@ module OmniAuth
     private_constant :JAVASCRIPT_UNSAFE
 
     # Rewrites each unsafe character as a \uXXXX escape, which the browser
-    # decodes back to that character inside the string literal. Bytes that are
-    # already valid UTF-8 are kept as-is; any other encoding is transcoded so a
-    # non-UTF-8 charset isn't corrupted into a different redirect target.
+    # decodes back to that character inside the string literal. Binary strings
+    # (which Rack hands back for query strings and the like) are read as UTF-8
+    # so multibyte characters survive, any other encoding is transcoded so a
+    # non-UTF-8 charset isn't misread, and only invalid bytes are replaced.
+    # A valid UTF-8 string goes straight through without being copied.
     def escape_javascript(value)
       string = value.to_s
-      utf8 = string.dup.force_encoding(Encoding::UTF_8)
-      # Rack hands query strings and the like back as ASCII-8BIT, whose high
-      # bytes have no UTF-8 mapping, so :undef must replace them too or the
-      # transcode raises Encoding::UndefinedConversionError.
-      utf8 = string.encode(Encoding::UTF_8, :invalid => :replace, :undef => :replace) unless utf8.valid_encoding?
-      utf8.gsub(JAVASCRIPT_UNSAFE) { |char| format('\\u%04x', char.ord) }
+      string = string.dup.force_encoding(Encoding::UTF_8) if string.encoding.equal?(Encoding::BINARY)
+      string = string.encode(Encoding::UTF_8, :invalid => :replace, :undef => :replace) unless string.encoding.equal?(Encoding::UTF_8)
+      string = string.scrub unless string.valid_encoding?
+      string.gsub(JAVASCRIPT_UNSAFE) { |char| format('\\u%04x', char.ord) }
     end
 
     # Tab/newline/CR anywhere, or a leading control byte or space, which a
@@ -385,6 +386,17 @@ module OmniAuth
     # redirect to omniauth.origin could execute.
     def safe_origin?(uri)
       !normalize_redirect_uri(uri).match?(DANGEROUS_SCHEME)
+    end
+
+    # The referer to fall back on as the origin, unless it is the request path
+    # itself or has a scheme that runs as script. It's scrubbed before any
+    # matching, which would otherwise raise on invalid bytes.
+    def referer_origin
+      referer = env['HTTP_REFERER']
+      return unless referer
+
+      referer = referer.scrub unless referer.valid_encoding?
+      referer if !referer.end_with?(request_path) && safe_origin?(referer)
     end
 
     # Re-raises errors from the downstream app; reports anything else

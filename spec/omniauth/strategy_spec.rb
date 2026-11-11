@@ -672,10 +672,35 @@ describe OmniAuth::Strategy do
         expect(iframe_redirect_body("a\xff'")).to include("'a\u{fffd}\\u0027'")
       end
 
-      it 'replaces an invalid byte in a binary string instead of failing the request' do
+      it 'keeps valid multibyte characters in a binary string and replaces only the invalid byte' do
         body = iframe_redirect_body("https://x.test/?q=\xC3\xA9\xFF".b)
 
-        expect(body).to include("top.location.href = 'https://x.test/?q=")
+        expect(body).to include("top.location.href = 'https://x.test/?q=\u00e9\u{fffd}';")
+      end
+
+      it 'does not relabel the caller\'s binary string' do
+        uri = "https://x.test/?q=\xC3\xA9".b
+        iframe_redirect_body(uri)
+
+        expect(uri.encoding).to eq(Encoding::BINARY)
+      end
+
+      it 'replaces a byte that is undefined in the URI\'s encoding instead of failing the request' do
+        body = iframe_redirect_body((+"https://x.test/?q=\x80\x81").force_encoding('Windows-1252'))
+
+        expect(body).to include("top.location.href = 'https://x.test/?q=\u20ac\u{fffd}';")
+      end
+
+      it 'replaces a byte sequence that is invalid in the URI\'s encoding instead of failing the request' do
+        body = iframe_redirect_body((+"https://x.test/?q=\x82\xA0\x81").force_encoding('Shift_JIS'))
+
+        expect(body).to include("top.location.href = 'https://x.test/?q=\u3042\u{fffd}';")
+      end
+
+      it 'transcodes a Latin-1 URI by its declared encoding even when its bytes are valid UTF-8' do
+        body = iframe_redirect_body((+"https://x.test/?q=\xC3\xA9").force_encoding('ISO-8859-1'))
+
+        expect(body).to include("top.location.href = 'https://x.test/?q=\u00c3\u00a9';")
       end
 
       it 'transcodes a non-UTF-8 URI instead of corrupting its bytes' do
@@ -686,6 +711,13 @@ describe OmniAuth::Strategy do
         body = ExampleStrategy.new(app, :iframe => true).redirect(URI('http://abc.com')).last.to_enum(:each).to_a.join
 
         expect(body).to include("top.location.href = 'http://abc.com'")
+      end
+
+      it 'escapes a valid UTF-8 string without copying or re-encoding it first' do
+        uri = +"x'"
+        %i[dup encode scrub].each { |method| expect(uri).not_to receive(method) }
+
+        expect(ExampleStrategy.new(app).send(:escape_javascript, uri)).to eq('x\\u0027')
       end
 
       it 'escapes a value that is only coercible through to_s' do
@@ -713,6 +745,12 @@ describe OmniAuth::Strategy do
 
         expect(rendered).not_to include('<script>')
         expect(rendered).to include('&lt;script&gt;')
+      end
+
+      it 'HTML-escapes a value that is only coercible through to_s' do
+        _, _, body = ExampleStrategy.new(app).redirect(double(:to_s => 'http://abc.com/?a=<b>'))
+
+        expect(body.to_enum(:each).to_a.join).to eq('Redirecting to http://abc.com/?a=&lt;b&gt;...')
       end
     end
   end
@@ -944,6 +982,19 @@ describe OmniAuth::Strategy do
         it 'ignores the referer when a present origin param is rejected' do
           expect(strategy).to receive(:fail!).with('Request Phase', kind_of(StandardError))
           strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'origin=javascript:alert(1)', 'HTTP_REFERER' => 'http://example.com/origin'))
+          expect(strategy.last_env['rack.session']).not_to have_key('omniauth.origin')
+        end
+
+        it 'stores an origin param that is a String subclass' do
+          origin = Class.new(String).new('/foo')
+          expect(strategy).to receive(:fail!).with('Request Phase', kind_of(StandardError))
+          strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'origin=/foo', 'rack.request.query_string' => 'origin=/foo', 'rack.request.query_hash' => {'origin' => origin}))
+          expect(strategy.last_env['rack.session']['omniauth.origin']).to be(origin)
+        end
+
+        it 'does not store an array-valued origin param' do
+          expect(strategy).to receive(:fail!).with('Request Phase', kind_of(StandardError))
+          strategy.call(make_env('/auth/test', 'QUERY_STRING' => 'origin[]=javascript:alert(1)'))
           expect(strategy.last_env['rack.session']).not_to have_key('omniauth.origin')
         end
 
@@ -1438,6 +1489,32 @@ describe OmniAuth::Strategy do
           env = make_env('/auth/test', 'HTTP_REFERER' => 'javascript:alert(document.cookie)')
           strategy.call(env)
           expect(env['rack.session']).not_to have_key('omniauth.origin')
+        end
+
+        it 'stores the referer unchanged when it is valid' do
+          referer = +'http://example.com/origin'
+          env = make_env('/auth/test', 'HTTP_REFERER' => referer)
+          strategy.call(env)
+          expect(env['rack.session']['omniauth.origin']).to be(referer)
+        end
+
+        it 'scrubs a referer with invalid bytes instead of raising' do
+          env = make_env('/auth/test', 'HTTP_REFERER' => (+"http://example.com/\xff").force_encoding('UTF-8'))
+          strategy.call(env)
+          expect(env['rack.session']['omniauth.origin']).to eq("http://example.com/\u{fffd}")
+        end
+
+        it 'treats the request path literally rather than as a regexp' do
+          @options = {:request_path => '/auth/te.t'}
+          env = make_env('/auth/te.t', 'HTTP_REFERER' => 'http://example.com/auth/test')
+          strategy.call(env)
+          expect(env['rack.session']['omniauth.origin']).to eq('http://example.com/auth/test')
+        end
+
+        it 'only skips a referer that ends with the request path' do
+          env = make_env('/auth/test', 'HTTP_REFERER' => "http://example.com/auth/test\n/origin")
+          strategy.call(env)
+          expect(env['rack.session']['omniauth.origin']).to eq("http://example.com/auth/test\n/origin")
         end
       end
 
