@@ -578,13 +578,15 @@ module OmniAuth
 
     WEB_SCHEME: Regexp
 
-    def escape_javascript: (String value) -> String
+    def escape_javascript: (_ToS value) -> String
 
-    def normalize_redirect_uri: (String uri) -> String
+    def normalize_redirect_uri: (_ToS uri) -> String
 
-    def allowed_redirect_uri?: (String uri) -> bool
+    def allowed_redirect_uri?: (_ToS uri) -> bool
 
-    def safe_origin?: (String uri) -> bool
+    def safe_origin?: (_ToS uri) -> bool
+
+    def referer_origin: () -> String?
 
     def handle_phase_error: (StandardError error) -> rack_response
 
