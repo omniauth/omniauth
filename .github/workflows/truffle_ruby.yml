@@ -19,7 +19,12 @@ jobs:
       matrix:
         # TruffleRuby doesn't support Windows.
         os: [ubuntu, macos]
-        ruby: [truffleruby, truffleruby-head]
+        # The latest release, 40.0, calls a String's own #dup inside a regexp
+        # match, which trips the specs that check escape_javascript doesn't
+        # copy its argument. truffleruby-head has the fix
+        # (https://github.com/truffleruby/truffleruby/commit/7505177e7), so add
+        # truffleruby back here once a release ships with it.
+        ruby: [truffleruby-head]
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
