@@ -459,11 +459,16 @@ module OmniAuth
     # A strategy opts in by calling remember_sign_in in its request phase
     # and overriding callback_sign_in_key.
     module SignIns : _Core
+      @remembered_sign_in: Hash[String, untyped]?
+
       MAX_REMEMBERED_SIGN_INS: Integer
 
-      # Remembers the current request phase's origin and params under key,
-      # which the provider sends back to the callback.
-      def remember_sign_in: (String key) -> void
+      MAX_REMEMBERED_PARAMS_BYTESIZE: Integer
+
+      # Remembers the current request phase's sign-in under key, which the
+      # provider sends back to the callback: the strategy's own data, plus
+      # the origin and params under "origin" and "params".
+      def remember_sign_in: (String key, ?Hash[String, untyped] data) -> void
 
       # The key the callback sends back, or nil for a strategy that doesn't
       # remember sign-ins.
@@ -471,11 +476,19 @@ module OmniAuth
 
       private
 
+      # The sign-in remembered under the callback's key, removed from the
+      # session, or nil if none is.
+      def remembered_sign_in: () -> Hash[String, untyped]?
+
       # The "origin" and "params" for this callback, removed from the
       # session.
       def recall_sign_in: () -> Hash[String, untyped]
 
       def remembered_sign_ins: () -> Hash[String, Hash[String, untyped]]
+
+      def remembered_origin_and_params: () -> Hash[String, untyped]
+
+      def params_small_enough?: (Hash[String, untyped] params) -> bool
     end
 
     # Runs the request and callback phases against OmniAuth.config.mock_auth

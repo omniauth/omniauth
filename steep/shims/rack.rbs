@@ -1,0 +1,8 @@
+# Corrections to the rack types from gem_rbs_collection, which declare
+# build_nested_query as taking only nil. For Steep only; not shipped with
+# the gem.
+module Rack
+  module Utils
+    def self.build_nested_query: (untyped value, ?String? prefix) -> String
+  end
+end

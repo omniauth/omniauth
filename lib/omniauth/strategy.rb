@@ -227,9 +227,9 @@ module OmniAuth
       return invalid_host! unless allowed_host?
 
       sign_in = recall_sign_in
-      origin = sign_in.fetch('origin')
+      origin = sign_in['origin']
       env['omniauth.origin'] = (origin unless origin.eql?(''))
-      env['omniauth.params'] = sign_in.fetch('params') || {}
+      env['omniauth.params'] = sign_in['params'] || {}
       run_hook(:before_callback_phase)
       callback_phase
     end

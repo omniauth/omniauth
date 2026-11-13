@@ -8,20 +8,34 @@ module OmniAuth
     # A strategy opts in when its provider sends a value from the request
     # phase back to the callback, such as OAuth 2.0's state. Its request
     # phase calls remember_sign_in with that value, and it overrides
-    # callback_sign_in_key to return the value from the callback.
+    # callback_sign_in_key to return the value from the callback. It can
+    # store its own values for the callback in the same sign-in, such as
+    # OAuth 2.0's PKCE verifier, and read them back with
+    # remembered_sign_in.
+    #
+    # The sign-ins live in the session, which is often a 4 KB cookie, so
+    # each one stores only what isn't empty.
     module SignIns
       # How many sign-ins are remembered. Remembering another forgets the
       # oldest.
-      MAX_REMEMBERED_SIGN_INS = 5
+      MAX_REMEMBERED_SIGN_INS = 3
 
-      # Remembers the origin and params stored for the current request phase
-      # under key, which the provider sends back to the callback.
-      def remember_sign_in(key)
+      # The largest params, measured as a query string, that a sign-in
+      # remembers. The params come from the request, so they can be any
+      # size, and a few large ones would overflow a cookie session.
+      MAX_REMEMBERED_PARAMS_BYTESIZE = 512
+
+      # Remembers the current request phase's sign-in under key, which the
+      # provider sends back to the callback: the strategy's own data, plus
+      # the origin and params OmniAuth stored, under "origin" and "params",
+      # so data shouldn't use those keys.
+      def remember_sign_in(key, data = {})
         return if key.empty?
 
+        sign_in = data.merge(remembered_origin_and_params)
         sign_ins = remembered_sign_ins
         sign_ins.delete(key)
-        sign_ins[key] = {'origin' => session['omniauth.origin'], 'params' => session['omniauth.params']}
+        sign_ins[key] = sign_in
         session['omniauth.sign_ins'] = sign_ins.to_a.last(MAX_REMEMBERED_SIGN_INS).to_h
       end
 
@@ -31,19 +45,28 @@ module OmniAuth
 
     protected
 
-      # The origin and params for this callback, removed from the session:
-      # the ones remembered under its key, or else omniauth.origin and
-      # omniauth.params, which hold the latest sign-in's.
-      def recall_sign_in
-        fallback = {'origin' => session.delete('omniauth.origin'), 'params' => session.delete('omniauth.params')}
+      # The sign-in remembered under the callback's key, removed from the
+      # session, or nil if none is. It's the same for the whole callback,
+      # so the strategy can read its own data after OmniAuth takes the
+      # origin and params.
+      def remembered_sign_in
+        return @remembered_sign_in if instance_variable_defined?(:@remembered_sign_in)
+
         key = callback_sign_in_key
         sign_ins = remembered_sign_ins
         remembered = sign_ins.keys.detect { |stored| Rack::Utils.secure_compare(stored, key) } if key.instance_of?(String)
         sign_in = sign_ins.delete(remembered)
-        return fallback unless sign_in
+        session['omniauth.sign_ins'] = sign_ins if sign_in
+        @remembered_sign_in = sign_in
+      end
 
-        session['omniauth.sign_ins'] = sign_ins
-        sign_in
+      # The origin and params for this callback, removed from the session:
+      # the ones remembered under its key, or else omniauth.origin and
+      # omniauth.params, which hold the latest sign-in's. Either may be
+      # missing.
+      def recall_sign_in
+        fallback = {'origin' => session.delete('omniauth.origin'), 'params' => session.delete('omniauth.params')}
+        remembered_sign_in || fallback
       end
 
       # A copy of the remembered sign-ins, which are changed by assigning the
@@ -51,6 +74,26 @@ module OmniAuth
       def remembered_sign_ins
         sign_ins = session['omniauth.sign_ins']
         sign_ins.is_a?(Hash) ? sign_ins.dup : {}
+      end
+
+    private
+
+      # The origin and params stored for the current request phase, leaving
+      # out an empty origin, empty params, and params too large to keep.
+      def remembered_origin_and_params
+        origin = session['omniauth.origin']
+        params = session['omniauth.params']
+        sign_in = {} #: Hash[String, untyped]
+        sign_in['origin'] = origin unless origin.nil? || origin.empty?
+        sign_in['params'] = params if params && !params.empty? && params_small_enough?(params)
+        sign_in
+      end
+
+      def params_small_enough?(params)
+        bytesize = Rack::Utils.build_nested_query(params).bytesize
+        small_enough = bytesize <= MAX_REMEMBERED_PARAMS_BYTESIZE
+        log :warn, "Not remembering #{bytesize} bytes of params for this sign-in, more than #{MAX_REMEMBERED_PARAMS_BYTESIZE}. The callback gets empty omniauth.params." unless small_enough
+        small_enough
       end
     end
   end

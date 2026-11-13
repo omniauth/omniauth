@@ -379,11 +379,40 @@ def callback_sign_in_key
 end
 ```
 
-OmniAuth then stores the origin and params of the latest 5 sign-ins under
+OmniAuth then stores the origin and params of the latest 3 sign-ins under
 their keys in `session['omniauth.sign_ins']`, and gives each callback its
 own. It still sets `omniauth.origin` and `omniauth.params` in the session
 for the latest sign-in, and falls back to them when a callback's key isn't
 remembered.
+
+The session is often a 4 KB cookie, so each sign-in stores only what it
+needs: no origin when there isn't one, no params when they're empty, and
+no params larger than 512 bytes as a query string. A callback whose
+params were too large to keep gets empty `omniauth.params`, and OmniAuth
+logs a warning.
+
+A strategy that needs its own values in the callback, such as an OAuth 2.0
+PKCE verifier, can store them in the same sign-in instead of under another
+session key, so the key isn't stored twice. It passes them to
+`remember_sign_in`, and the callback reads them from `remembered_sign_in`,
+which is the sign-in stored for the callback's key, or `nil`:
+
+```ruby
+def request_phase
+  state = SecureRandom.hex(24)
+  remember_sign_in(state, 'verifier' => verifier)
+  redirect authorize_url(state)
+end
+
+def callback_phase
+  return fail!(:csrf_detected) unless remembered_sign_in
+
+  exchange_code(remembered_sign_in['verifier'])
+end
+```
+
+The keys `origin` and `params` are OmniAuth's, so a strategy shouldn't
+use them.
 
 ## Resources
 The [OmniAuth Wiki](https://github.com/omniauth/omniauth/wiki) has

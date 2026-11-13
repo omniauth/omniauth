@@ -22,6 +22,20 @@ class SignInStrategy
   end
 end
 
+# A strategy that stores its own data in each sign-in, the way an OAuth 2.0
+# strategy stores its PKCE verifier, and reads it back in the callback.
+class SignInDataStrategy < SignInStrategy
+  def request_phase
+    key = request.params.fetch('key')
+    remember_sign_in(key, 'verifier' => "verifier-#{key}")
+    redirect "https://provider.example/?key=#{key}"
+  end
+
+  def callback_phase
+    [200, {}, [JSON.generate([remembered_sign_in, remembered_sign_in.equal?(remembered_sign_in), env['omniauth.origin']])]]
+  end
+end
+
 # The top-level describe is OmniAuth::Strategy rather than
 # OmniAuth::Strategy::SignIns so mutant keeps selecting every
 # OmniAuth::Strategy example for the SignIns subjects.
@@ -61,10 +75,11 @@ describe OmniAuth::Strategy, 'sign-ins' do
   end
 
   it "remembers the latest #{OmniAuth::Strategy::SignIns::MAX_REMEMBERED_SIGN_INS}, forgetting the oldest" do
-    keys = %w[a b c d e f]
+    expect(OmniAuth::Strategy::SignIns::MAX_REMEMBERED_SIGN_INS).to eq(3)
+    keys = %w[a b c d]
     keys.each { |key| start(key) }
     expect(session['omniauth.sign_ins'].keys).to eq(keys.drop(1))
-    expect(finish('a')).to eq(['/f', {'key' => 'f', 'origin' => '/f'}])
+    expect(finish('a')).to eq(['/d', {'key' => 'd', 'origin' => '/d'}])
     expect(finish('b')).to eq(['/b', {'key' => 'b', 'origin' => '/b'}])
   end
 
@@ -89,6 +104,15 @@ describe OmniAuth::Strategy, 'sign-ins' do
     expect(session['omniauth.sign_ins'].keys).to eq(%w[a])
   end
 
+  it "doesn't write sign-ins to the session for a callback whose key isn't remembered" do
+    session['omniauth.sign_ins'] = {'a' => {}}.freeze
+    finish('z')
+    expect(session['omniauth.sign_ins']).to be_frozen
+    session.delete('omniauth.sign_ins')
+    finish('z')
+    expect(session).not_to have_key('omniauth.sign_ins')
+  end
+
   it "doesn't remember an empty key" do
     start('')
     expect(session).not_to have_key('omniauth.sign_ins')
@@ -96,7 +120,7 @@ describe OmniAuth::Strategy, 'sign-ins' do
 
   it 'remembers a sign-in without an origin' do
     strategy.call(Rack::MockRequest.env_for('http://app.example/auth/test?key=a', :method => 'POST', 'rack.session' => session))
-    expect(session['omniauth.sign_ins']).to eq('a' => {'origin' => nil, 'params' => {'key' => 'a'}})
+    expect(session['omniauth.sign_ins']).to eq('a' => {'params' => {'key' => 'a'}})
     expect(finish('a')).to eq([nil, {'key' => 'a'}])
   end
 
@@ -104,12 +128,57 @@ describe OmniAuth::Strategy, 'sign-ins' do
     env = Rack::MockRequest.env_for('http://app.example/', 'rack.session' => session)
     strategy.instance_variable_set(:@env, env)
     strategy.remember_sign_in('a')
-    expect(session['omniauth.sign_ins']).to eq('a' => {'origin' => nil, 'params' => nil})
+    expect(session['omniauth.sign_ins']).to eq('a' => {})
   end
 
-  it 'gives a nil origin for a remembered empty origin' do
+  it 'leaves out an empty origin, giving the callback a nil origin' do
     start('a', '')
+    expect(session['omniauth.sign_ins']['a']).not_to have_key('origin')
     expect(finish('a').first).to be_nil
+  end
+
+  it 'leaves out empty params, giving the callback empty params' do
+    env = Rack::MockRequest.env_for('http://app.example/', 'rack.session' => session)
+    strategy.instance_variable_set(:@env, env)
+    session['omniauth.origin'] = '/a'
+    session['omniauth.params'] = {}
+    strategy.remember_sign_in('a')
+    expect(session['omniauth.sign_ins']).to eq('a' => {'origin' => '/a'})
+    expect(finish('a')).to eq(['/a', {}])
+  end
+
+  it "leaves out params larger than #{OmniAuth::Strategy::SignIns::MAX_REMEMBERED_PARAMS_BYTESIZE} bytes, with a warning" do
+    max = OmniAuth::Strategy::SignIns::MAX_REMEMBERED_PARAMS_BYTESIZE
+    expect(max).to eq(512)
+    allow(OmniAuth.logger).to receive(:warn)
+    request = lambda do |key, size|
+      env = Rack::MockRequest.env_for("http://app.example/auth/test?key=#{key}&origin=/#{key}&x=#{'x' * size}", :method => 'POST', 'rack.session' => session)
+      strategy.call(env)
+    end
+    # key=a&origin=%2Fa&x= is 20 bytes, so this fills the limit exactly.
+    request.call('a', max - 20)
+    expect(session['omniauth.sign_ins']['a'].fetch('params').keys).to eq(%w[key origin x])
+    request.call('b', max - 19)
+    expect(session['omniauth.sign_ins']['b']).to eq('origin' => '/b')
+    expect(OmniAuth.logger).to have_received(:warn).with(/Not remembering/).once
+    expect(OmniAuth.logger).to have_received(:warn).with("(test) Not remembering #{max + 1} bytes of params for this sign-in, more than #{max}. The callback gets empty omniauth.params.")
+    expect(finish('b')).to eq(['/b', {}])
+  end
+
+  it "stores the strategy's own data in the sign-in, for the callback to read" do
+    strategy = SignInDataStrategy.new(app)
+    env = ->(path) { Rack::MockRequest.env_for("http://app.example/auth/test#{path}", :method => 'POST', 'rack.session' => session) }
+    strategy.call(env.call('?key=a&origin=/a'))
+    strategy.call(env.call('?key=b&origin=/b'))
+    expect(session['omniauth.sign_ins']).to eq(
+      'a' => {'verifier' => 'verifier-a', 'origin' => '/a', 'params' => {'key' => 'a', 'origin' => '/a'}},
+      'b' => {'verifier' => 'verifier-b', 'origin' => '/b', 'params' => {'key' => 'b', 'origin' => '/b'}}
+    )
+    body = strategy.call(env.call('/callback?key=a'))[2].join
+    expect(JSON.parse(body)).to eq([{'verifier' => 'verifier-a', 'origin' => '/a', 'params' => {'key' => 'a', 'origin' => '/a'}}, true, '/a'])
+    expect(session['omniauth.sign_ins'].keys).to eq(%w[b])
+    expect(JSON.parse(strategy.call(env.call('/callback?key=z'))[2].join)).to eq([nil, true, nil])
+    expect(session['omniauth.sign_ins'].keys).to eq(%w[b])
   end
 
   it 'replaces remembered sign-ins that are not a hash' do

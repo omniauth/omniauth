@@ -13,6 +13,12 @@ versioned together, so those entries cover all of them.
 
 ## [Unreleased]
 
+### Added
+- A strategy can store its own values for the callback in the sign-in it remembers, such as an OAuth 2.0 PKCE verifier, by passing them to `remember_sign_in(key, data)`, and read them back in the callback from `remembered_sign_in`, which is `nil` when no sign-in is remembered for the callback's key. This lets omniauth-oauth2 keep one entry per sign-in instead of a second map that stores each state again. See [the README](README.md#several-sign-ins-at-once). ([omniauth-oauth2#195](https://github.com/omniauth/omniauth-oauth2/issues/195))
+
+### Changed
+- `session['omniauth.sign_ins']` keeps the latest 3 sign-ins instead of 5, and each one stores less: no origin when there isn't one, and no params when they're empty or larger than 512 bytes as a query string, in which case OmniAuth logs a warning and the callback gets empty `omniauth.params`. With 5 sign-ins, each with a referer and params, a few abandoned sign-ins could overflow Rails' 4 KB cookie session and make the next one fail with `ActionDispatch::Cookies::CookieOverflow`. ([omniauth-oauth2#195](https://github.com/omniauth/omniauth-oauth2/issues/195#issuecomment-6850392670))
+
 ### Fixed
 - `Strategy#redirect` no longer raises `Encoding::CompatibilityError` for a URI in an encoding that isn't ASCII-compatible, such as UTF-16 or UTF-32. The URI is transcoded to UTF-8 first, with invalid or unmappable characters replaced, so both the `:iframe` script and the 302 work.
 
