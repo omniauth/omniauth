@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="133" height="20">
+  <title>Duel - perf guarded</title>
+  <defs>
+    <linearGradient id="duel-fill" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop stop-color="#444D56" offset="0%"></stop>
+      <stop stop-color="#24292E" offset="100%"></stop>
+    </linearGradient>
+    <linearGradient id="state-fill" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop stop-color="#34D058" offset="0%"></stop>
+      <stop stop-color="#28A745" offset="100%"></stop>
+    </linearGradient>
+  </defs>
+  <g fill="none" fill-rule="evenodd">
+    <g font-family="'DejaVu Sans',Verdana,Geneva,sans-serif" font-size="11">
+      <path d="M0,3 C0,1.3431 1.3552,0 3.02702703,0 L53,0 L53,20 L3.02702703,20 C1.3552,20 0,18.6569 0,17 L0,3 Z" fill="url(#duel-fill)" fill-rule="nonzero"></path>
+      <text fill="#010101" fill-opacity=".3">
+        <tspan x="22.1981982" y="15" aria-hidden="true">Duel</tspan>
+      </text>
+      <text fill="#FFFFFF">
+        <tspan x="22.1981982" y="14">Duel</tspan>
+      </text>
+    </g>
+    <g transform="translate(53)" font-family="'DejaVu Sans',Verdana,Geneva,sans-serif" font-size="11">
+      <path d="M0 0h76.939C78.629 0 80 1.343 80 3v14c0 1.657-1.37 3-3.061 3H0V0z" fill="url(#state-fill)" fill-rule="nonzero"></path>
+      <text fill="#010101" fill-opacity=".3" aria-hidden="true">
+        <tspan x="4" y="15">perf guarded</tspan>
+      </text>
+      <text fill="#FFFFFF">
+        <tspan x="4" y="14">perf guarded</tspan>
+      </text>
+    </g>
+    <g fill="#959DA5">
+      <path d="M4.6 3.6L6.9 4.5L14.3 11.9L12.9 13.3L5.5 5.9Z M17.4 3.6L15.1 4.5L7.7 11.9L9.1 13.3L16.5 5.9Z"></path>
+      <circle cx="16.6" cy="15.6" r="1.1"></circle>
+      <circle cx="5.4" cy="15.6" r="1.1"></circle>
+    </g>
+    <g stroke="#959DA5" stroke-linecap="round">
+      <path d="M12.1 14.5L15.5 11.1 M9.9 14.5L6.5 11.1" stroke-width="1.6"></path>
+      <path d="M13.8 12.8L16 15 M8.2 12.8L6 15" stroke-width="1.8"></path>
+    </g>
+  </g>
+</svg>
