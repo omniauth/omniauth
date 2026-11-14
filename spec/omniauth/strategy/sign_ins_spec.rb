@@ -79,7 +79,7 @@ describe OmniAuth::Strategy, 'sign-ins' do
     keys = %w[a b c d]
     keys.each { |key| start(key) }
     expect(session['omniauth.sign_ins'].keys).to eq(keys.drop(1))
-    expect(finish('a')).to eq(['/d', {'key' => 'd', 'origin' => '/d'}])
+    expect(finish('a')).to eq([nil, {'key' => 'd', 'origin' => '/d'}])
     expect(finish('b')).to eq(['/b', {'key' => 'b', 'origin' => '/b'}])
   end
 
@@ -91,10 +91,49 @@ describe OmniAuth::Strategy, 'sign-ins' do
     expect(finish('a').first).to eq('/again')
   end
 
-  it 'falls back to omniauth.origin and omniauth.params for a key it never remembered' do
+  it 'falls back to omniauth.params, and no origin, for a key it never remembered' do
     start('a')
-    expect(finish('z')).to eq(['/a', {'key' => 'a', 'origin' => '/a'}])
+    expect(finish('z')).to eq([nil, {'key' => 'a', 'origin' => '/a'}])
     expect(session['omniauth.sign_ins'].keys).to eq(%w[a])
+  end
+
+  it "moves the origin into the sign-in, so an abandoned sign-in's origin doesn't reach the next one" do
+    start('a', '/a')
+    expect(session).not_to have_key('omniauth.origin')
+    strategy.call(Rack::MockRequest.env_for('http://app.example/auth/test?key=b', :method => 'POST', 'rack.session' => session))
+    expect(session['omniauth.sign_ins']['b']).not_to have_key('origin')
+    expect(finish('b')).to eq([nil, {'key' => 'b'}])
+    expect(finish('a').first).to eq('/a')
+  end
+
+  it 'keeps an origin the app stored before the request phase, for a sign-in without one of its own' do
+    session['omniauth.origin'] = '/from-app'
+    strategy.call(Rack::MockRequest.env_for('http://app.example/auth/test?key=a', :method => 'POST', 'rack.session' => session))
+    expect(finish('a').first).to eq('/from-app')
+  end
+
+  it 'moves the origin with a frozen key, so it allocates no string' do
+    deleted = []
+    session = Class.new(Hash) do
+      define_method(:delete) do |key|
+        deleted << key
+        super(key)
+      end
+    end.new
+    session['omniauth.origin'] = '/a'
+    strategy.instance_variable_set(:@env, Rack::MockRequest.env_for('http://app.example/', 'rack.session' => session))
+    strategy.remember_sign_in('a')
+    expect(deleted).to eq(['omniauth.origin'])
+    expect(deleted.first).to be_frozen
+  end
+
+  it 'gives the origin to the first sign-in remembered in a request phase' do
+    env = Rack::MockRequest.env_for('http://app.example/', 'rack.session' => session)
+    strategy.instance_variable_set(:@env, env)
+    session['omniauth.origin'] = '/a'
+    strategy.remember_sign_in('a')
+    strategy.remember_sign_in('b')
+    expect(session['omniauth.sign_ins']).to eq('a' => {'origin' => '/a'}, 'b' => {})
   end
 
   it 'falls back when the callback has no key, or one that is not a string' do

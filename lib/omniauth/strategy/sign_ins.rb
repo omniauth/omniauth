@@ -25,6 +25,11 @@ module OmniAuth
       # size, and a few large ones would overflow a cookie session.
       MAX_REMEMBERED_PARAMS_BYTESIZE = 512
 
+      # The session key of the request phase's origin, frozen so moving it
+      # doesn't make a new string in every request phase: unlike
+      # session[...], delete has no fast path for a string literal.
+      ORIGIN_KEY = 'omniauth.origin'.freeze
+
       # Remembers the current request phase's sign-in under key, which the
       # provider sends back to the callback: the strategy's own data, plus
       # the origin and params OmniAuth stored, under "origin" and "params",
@@ -82,8 +87,13 @@ module OmniAuth
       # Adds the origin and params stored for the current request phase to
       # sign_in, leaving out an empty origin, empty params, and params too
       # large to keep.
+      #
+      # The origin moves out of omniauth.origin into the sign-in. Otherwise,
+      # if this sign-in were abandoned, the next one would get its origin
+      # whenever it has no origin param or referer of its own. So a second
+      # sign-in remembered in the same request phase gets no origin.
       def add_origin_and_params(sign_in)
-        origin = session['omniauth.origin']
+        origin = session.delete(ORIGIN_KEY)
         params = session['omniauth.params']
         sign_in['origin'] = origin unless origin.nil? || origin.empty?
         sign_in['params'] = params if params && !params.empty? && params_small_enough?(params)

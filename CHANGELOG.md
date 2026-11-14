@@ -13,6 +13,9 @@ versioned together, so those entries cover all of them.
 
 ## [Unreleased]
 
+### Fixed
+- A sign-in with no origin param or referer of its own no longer gets the origin of an earlier sign-in that was abandoned, for a strategy that remembers sign-ins, such as omniauth-oauth2's. `remember_sign_in` now moves the origin from `session['omniauth.origin']` into the sign-in instead of copying it, which also stops the cookie session from storing it twice. An origin the app stores in `session['omniauth.origin']` before the request phase still goes to that sign-in. A callback whose key isn't remembered now gets no origin, instead of the latest sign-in's. Strategies that don't remember sign-ins keep a single `omniauth.origin`, as before.
+
 ## [2.4.0] - 2026-11-14
 
 ### Added

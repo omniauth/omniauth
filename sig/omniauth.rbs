@@ -465,6 +465,8 @@ module OmniAuth
 
       MAX_REMEMBERED_PARAMS_BYTESIZE: Integer
 
+      ORIGIN_KEY: String
+
       # Remembers the current request phase's sign-in under key, which the
       # provider sends back to the callback: the strategy's own data, plus
       # the origin and params under "origin" and "params".

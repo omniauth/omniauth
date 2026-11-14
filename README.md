@@ -381,9 +381,10 @@ end
 
 OmniAuth then stores the origin and params of the latest 3 sign-ins under
 their keys in `session['omniauth.sign_ins']`, and gives each callback its
-own. It still sets `omniauth.origin` and `omniauth.params` in the session
-for the latest sign-in, and falls back to them when a callback's key isn't
-remembered.
+own. The origin moves from `omniauth.origin` into the sign-in, so an
+abandoned sign-in's origin never reaches the next one. `omniauth.params`
+still holds the latest sign-in's params, and a callback whose key isn't
+remembered gets those, and no origin.
 
 The session is often a 4 KB cookie, so each sign-in stores only what it
 needs: no origin when there isn't one, no params when they're empty, and
