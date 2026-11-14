@@ -16,7 +16,7 @@
 [coveralls]: https://coveralls.io/r/omniauth/omniauth
 
 This is the documentation for the in-development branch of OmniAuth.
-You can find the documentation for the latest stable release [here](https://github.com/omniauth/omniauth/tree/v2.3.1)
+You can find the documentation for the latest stable release [here](https://github.com/omniauth/omniauth/tree/v2.4.0)
 
 ## An Introduction
 OmniAuth is a library that standardizes multi-provider authentication for

@@ -13,6 +13,8 @@ versioned together, so those entries cover all of them.
 
 ## [Unreleased]
 
+## [2.4.0] - 2026-11-14
+
 ### Added
 - A strategy can store its own values for the callback in the sign-in it remembers, such as an OAuth 2.0 PKCE verifier, by passing them to `remember_sign_in(key, data)`, and read them back in the callback from `remembered_sign_in`, which is `nil` when no sign-in is remembered for the callback's key. This lets omniauth-oauth2 keep one entry per sign-in instead of a second map that stores each state again. See [the README](README.md#several-sign-ins-at-once). ([omniauth-oauth2#195](https://github.com/omniauth/omniauth-oauth2/issues/195))
 
@@ -688,7 +690,8 @@ versioned together, so those entries cover all of them.
 ### Added
 - Initial release, made up of `oa-core` (`OmniAuth::Builder` and a Password strategy), `oa-oauth` (OAuth and OAuth 2.0 with Twitter, LinkedIn, Facebook and GitHub) and `oa-openid` (OpenID).
 
-[Unreleased]: https://github.com/omniauth/omniauth/compare/v2.3.1...HEAD
+[Unreleased]: https://github.com/omniauth/omniauth/compare/v2.4.0...HEAD
+[2.4.0]: https://github.com/omniauth/omniauth/compare/v2.3.1...v2.4.0
 [2.3.1]: https://github.com/omniauth/omniauth/compare/v2.3.0...v2.3.1
 [2.3.0]: https://github.com/omniauth/omniauth/compare/v2.2.0...v2.3.0
 [2.2.0]: https://github.com/omniauth/omniauth/compare/v2.1.4...v2.2.0
