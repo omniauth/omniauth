@@ -387,9 +387,9 @@ remembered.
 
 The session is often a 4 KB cookie, so each sign-in stores only what it
 needs: no origin when there isn't one, no params when they're empty, and
-no params larger than 512 bytes as a query string. A callback whose
-params were too large to keep gets empty `omniauth.params`, and OmniAuth
-logs a warning.
+no params with more than 512 bytes in their keys and values. A callback
+whose params were too large to keep gets empty `omniauth.params`, and
+OmniAuth logs a warning.
 
 A strategy that needs its own values in the callback, such as an OAuth 2.0
 PKCE verifier, can store them in the same sign-in instead of under another

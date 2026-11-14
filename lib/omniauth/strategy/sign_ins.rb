@@ -20,8 +20,8 @@ module OmniAuth
       # oldest.
       MAX_REMEMBERED_SIGN_INS = 3
 
-      # The largest params, measured as a query string, that a sign-in
-      # remembers. The params come from the request, so they can be any
+      # The largest params, counting the bytes of their keys and values, that
+      # a sign-in remembers. The params come from the request, so they can be any
       # size, and a few large ones would overflow a cookie session.
       MAX_REMEMBERED_PARAMS_BYTESIZE = 512
 
@@ -29,10 +29,11 @@ module OmniAuth
       # provider sends back to the callback: the strategy's own data, plus
       # the origin and params OmniAuth stored, under "origin" and "params",
       # so data shouldn't use those keys.
-      def remember_sign_in(key, data = {})
+      def remember_sign_in(key, data = nil)
         return if key.empty?
 
-        sign_in = data.merge(remembered_origin_and_params)
+        sign_in = data ? data.dup : {} #: Hash[String, untyped]
+        add_origin_and_params(sign_in)
         sign_ins = remembered_sign_ins
         sign_ins.delete(key)
         sign_ins[key] = sign_in
@@ -78,22 +79,39 @@ module OmniAuth
 
     private
 
-      # The origin and params stored for the current request phase, leaving
-      # out an empty origin, empty params, and params too large to keep.
-      def remembered_origin_and_params
+      # Adds the origin and params stored for the current request phase to
+      # sign_in, leaving out an empty origin, empty params, and params too
+      # large to keep.
+      def add_origin_and_params(sign_in)
         origin = session['omniauth.origin']
         params = session['omniauth.params']
-        sign_in = {} #: Hash[String, untyped]
         sign_in['origin'] = origin unless origin.nil? || origin.empty?
         sign_in['params'] = params if params && !params.empty? && params_small_enough?(params)
-        sign_in
       end
 
       def params_small_enough?(params)
-        bytesize = Rack::Utils.build_nested_query(params).bytesize
+        bytesize = params_bytesize(params)
         small_enough = bytesize <= MAX_REMEMBERED_PARAMS_BYTESIZE
         log :warn, "Not remembering #{bytesize} bytes of params for this sign-in, more than #{MAX_REMEMBERED_PARAMS_BYTESIZE}. The callback gets empty omniauth.params." unless small_enough
         small_enough
+      end
+
+      # The bytes in the keys and values of params, nested hashes and arrays
+      # included. It's counted without building a string, since every
+      # request phase with params counts them.
+      def params_bytesize(value)
+        case value
+        when Hash
+          total = 0
+          value.each_pair { |key, nested| total += key.to_s.bytesize + params_bytesize(nested) }
+          total
+        when Array
+          total = 0
+          value.each { |nested| total += params_bytesize(nested) }
+          total
+        else
+          value.to_s.bytesize
+        end
       end
     end
   end

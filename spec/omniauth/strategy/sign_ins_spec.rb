@@ -155,14 +155,41 @@ describe OmniAuth::Strategy, 'sign-ins' do
       env = Rack::MockRequest.env_for("http://app.example/auth/test?key=#{key}&origin=/#{key}&x=#{'x' * size}", :method => 'POST', 'rack.session' => session)
       strategy.call(env)
     end
-    # key=a&origin=%2Fa&x= is 20 bytes, so this fills the limit exactly.
-    request.call('a', max - 20)
+    # The keys and the values of key and origin are 13 bytes, so this fills
+    # the limit exactly.
+    request.call('a', max - 13)
     expect(session['omniauth.sign_ins']['a'].fetch('params').keys).to eq(%w[key origin x])
-    request.call('b', max - 19)
+    request.call('b', max - 12)
     expect(session['omniauth.sign_ins']['b']).to eq('origin' => '/b')
     expect(OmniAuth.logger).to have_received(:warn).with(/Not remembering/).once
     expect(OmniAuth.logger).to have_received(:warn).with("(test) Not remembering #{max + 1} bytes of params for this sign-in, more than #{max}. The callback gets empty omniauth.params.")
     expect(finish('b')).to eq(['/b', {}])
+  end
+
+  it 'counts the bytes of nested params, in hashes and arrays' do
+    max = OmniAuth::Strategy::SignIns::MAX_REMEMBERED_PARAMS_BYTESIZE
+    allow(OmniAuth.logger).to receive(:warn)
+    env = Rack::MockRequest.env_for('http://app.example/', 'rack.session' => session)
+    strategy.instance_variable_set(:@env, env)
+    # a, xx, b, c, d, and eee are 9 bytes besides the long value, and nil
+    # counts as none.
+    nested = ->(size) { {'a' => ['xx', {'b' => 'x' * size}], 'c' => nil, :d => 'eee'} }
+    session['omniauth.params'] = nested.call(max - 9)
+    strategy.remember_sign_in('a')
+    expect(session['omniauth.sign_ins']['a']).to have_key('params')
+    session['omniauth.params'] = nested.call(max - 8)
+    strategy.remember_sign_in('b')
+    expect(session['omniauth.sign_ins']['b']).to eq({})
+    expect(OmniAuth.logger).to have_received(:warn).with(/Not remembering #{max + 1} bytes/).once
+  end
+
+  it "doesn't change the data the strategy passes" do
+    env = Rack::MockRequest.env_for('http://app.example/', 'rack.session' => session)
+    strategy.instance_variable_set(:@env, env)
+    session['omniauth.origin'] = '/a'
+    data = {'verifier' => 'v'}.freeze
+    strategy.remember_sign_in('a', data)
+    expect(session['omniauth.sign_ins']).to eq('a' => {'verifier' => 'v', 'origin' => '/a'})
   end
 
   it "stores the strategy's own data in the sign-in, for the callback to read" do
