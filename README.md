@@ -89,7 +89,7 @@ environment of a request to `/auth/:provider/callback`. This hash
 contains as much information about the user as OmniAuth was able to
 glean from the utilized strategy. You should set up an endpoint in your
 application that matches to the callback URL and then performs whatever
-steps are necessary for your application. 
+steps are necessary for your application.
 
 The `omniauth.auth` key in the environment hash provides an
 Authentication Hash which will contain information about the just
@@ -287,7 +287,7 @@ POST /auth/twitter/?return_to=[URL]
 ```ruby
 provider :twitter, ENV['KEY'], ENV['SECRET'], origin_param: false
 POST /auth/twitter
-# This means the origin should be handled by your own application. 
+# This means the origin should be handled by your own application.
 # Note that `omniauth.origin` will always be blank.
 ```
 
@@ -391,6 +391,16 @@ needs: no origin when there isn't one, no params when they're empty, and
 no params with more than 512 bytes in their keys and values. A callback
 whose params were too large to keep gets empty `omniauth.params`, and
 OmniAuth logs a warning.
+
+The above two values 3 sign-ins & 512 bytes can be modified through those
+configs. If your application is using cookie store as session storage,
+design those values carefully, so that your session cookie doesn't exceed
+4KB.
+
+```ruby
+OmniAuth.config.max_remembered_sign_ins # default 3
+OmniAuth.config.max_remembered_params_bytesize # default 512
+```
 
 A strategy that needs its own values in the callback, such as an OAuth 2.0
 PKCE verifier, can store them in the same sign-in instead of under another
