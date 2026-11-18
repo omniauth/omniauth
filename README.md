@@ -392,14 +392,17 @@ no params with more than 512 bytes in their keys and values. A callback
 whose params were too large to keep gets empty `omniauth.params`, and
 OmniAuth logs a warning.
 
-The above two values 3 sign-ins & 512 bytes can be modified through those
-configs. If your application is using cookie store as session storage,
-design those values carefully, so that your session cookie doesn't exceed
-4KB.
+`OmniAuth.config.max_remembered_sign_ins` and
+`OmniAuth.config.max_remembered_params_bytesize` change these limits. If
+your app keeps its session in a cookie, raising them can push it past
+4 KB and make sign-ins fail, so raise them only if your session store has
+room.
 
 ```ruby
-OmniAuth.config.max_remembered_sign_ins # default 3
-OmniAuth.config.max_remembered_params_bytesize # default 512
+OmniAuth.configure do |config|
+  config.max_remembered_sign_ins = 5
+  config.max_remembered_params_bytesize = 1024
+end
 ```
 
 A strategy that needs its own values in the callback, such as an OAuth 2.0
