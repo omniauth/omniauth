@@ -240,6 +240,12 @@ describe OmniAuth::Configuration do
       expect { OmniAuth.config.max_remembered_params_bytesize = -1 }.to raise_error(ArgumentError, 'max_remembered_params_bytesize must be an Integer of at least 0')
     end
 
+    it 'raises an error if set to something other than an Integer' do
+      [nil, 1.5, '5'].each do |value|
+        expect { OmniAuth.config.max_remembered_params_bytesize = value }.to raise_error(ArgumentError, 'max_remembered_params_bytesize must be an Integer of at least 0')
+      end
+    end
+
     it 'accepts values greater than or equal to 0' do
       OmniAuth.config.max_remembered_params_bytesize = 0
       expect(OmniAuth.config.max_remembered_params_bytesize).to eq(0)
