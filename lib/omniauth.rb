@@ -142,7 +142,7 @@ module OmniAuth
     end
 
     def max_remembered_params_bytesize=(value)
-      raise ArgumentError.new('max_remembered_params_bytesize must be an Integer of at least 0') unless value.is_a?(Integer) && value >= 0
+      raise ArgumentError.new('max_remembered_params_bytesize must be an Integer of at least 0') unless value.instance_of?(Integer) && value >= 0
 
       @max_remembered_params_bytesize = value
     end
