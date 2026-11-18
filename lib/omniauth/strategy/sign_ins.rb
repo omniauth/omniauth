@@ -16,15 +16,6 @@ module OmniAuth
     # The sign-ins live in the session, which is often a 4 KB cookie, so
     # each one stores only what isn't empty.
     module SignIns
-      # How many sign-ins are remembered. Remembering another forgets the
-      # oldest.
-      MAX_REMEMBERED_SIGN_INS = 3
-
-      # The largest params, counting the bytes of their keys and values, that
-      # a sign-in remembers. The params come from the request, so they can be any
-      # size, and a few large ones would overflow a cookie session.
-      MAX_REMEMBERED_PARAMS_BYTESIZE = 512
-
       # The session key of the request phase's origin, frozen so moving it
       # doesn't make a new string in every request phase: unlike
       # session[...], delete has no fast path for a string literal.
@@ -42,7 +33,7 @@ module OmniAuth
         sign_ins = remembered_sign_ins
         sign_ins.delete(key)
         sign_ins[key] = sign_in
-        session['omniauth.sign_ins'] = sign_ins.to_a.last(MAX_REMEMBERED_SIGN_INS).to_h
+        session['omniauth.sign_ins'] = sign_ins.to_a.last(OmniAuth.config.max_remembered_sign_ins).to_h
       end
 
       # The key the callback sends back, which a strategy that calls
@@ -101,8 +92,8 @@ module OmniAuth
 
       def params_small_enough?(params)
         bytesize = params_bytesize(params)
-        small_enough = bytesize <= MAX_REMEMBERED_PARAMS_BYTESIZE
-        log :warn, "Not remembering #{bytesize} bytes of params for this sign-in, more than #{MAX_REMEMBERED_PARAMS_BYTESIZE}. The callback gets empty omniauth.params." unless small_enough
+        small_enough = bytesize <= OmniAuth.config.max_remembered_params_bytesize
+        log :warn, "Not remembering #{bytesize} bytes of params for this sign-in, more than #{OmniAuth.config.max_remembered_params_bytesize}. The callback gets empty omniauth.params." unless small_enough
         small_enough
       end
 

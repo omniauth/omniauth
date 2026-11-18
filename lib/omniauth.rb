@@ -47,7 +47,16 @@ module OmniAuth
         :allowed_request_methods => %i[post],
         :mock_auth => {:default => AuthHash.new('provider' => 'default', 'uid' => '1234', 'info' => {'name' => 'Example User'})},
         :silence_get_warning => false,
-        :allowed_hosts => nil
+        :allowed_hosts => nil,
+
+        # How many sign-ins are remembered. Remembering another forgets the
+        # oldest.
+        :max_remembered_sign_ins => 3,
+
+        # The largest params, counting the bytes of their keys and values, that
+        # a sign-in remembers. The params come from the request, so they can be any
+        # size, and a few large ones would overflow a cookie session.
+        :max_remembered_params_bytesize => 512
       }
     end
 
@@ -136,7 +145,8 @@ module OmniAuth
     attr_writer :on_failure, :before_callback_phase, :before_options_phase, :before_request_phase, :after_request_phase, :request_validation_phase
     attr_accessor :failure_raise_out_environments, :path_prefix, :allowed_request_methods, :form_css,
                   :test_mode, :mock_auth, :full_host, :camelizations, :logger, :silence_get_warning,
-                  :allowed_hosts
+                  :allowed_hosts,
+                  :max_remembered_sign_ins, :max_remembered_params_bytesize
   end
 
   def self.config

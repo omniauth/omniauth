@@ -74,8 +74,8 @@ describe OmniAuth::Strategy, 'sign-ins' do
     expect(session['omniauth.sign_ins']).to eq({})
   end
 
-  it "remembers the latest #{OmniAuth::Strategy::SignIns::MAX_REMEMBERED_SIGN_INS}, forgetting the oldest" do
-    expect(OmniAuth::Strategy::SignIns::MAX_REMEMBERED_SIGN_INS).to eq(3)
+  it "remembers the latest #{OmniAuth.config.max_remembered_sign_ins}, forgetting the oldest" do
+    expect(OmniAuth.config.max_remembered_sign_ins).to eq(3)
     keys = %w[a b c d]
     keys.each { |key| start(key) }
     expect(session['omniauth.sign_ins'].keys).to eq(keys.drop(1))
@@ -186,8 +186,8 @@ describe OmniAuth::Strategy, 'sign-ins' do
     expect(finish('a')).to eq(['/a', {}])
   end
 
-  it "leaves out params larger than #{OmniAuth::Strategy::SignIns::MAX_REMEMBERED_PARAMS_BYTESIZE} bytes, with a warning" do
-    max = OmniAuth::Strategy::SignIns::MAX_REMEMBERED_PARAMS_BYTESIZE
+  it "leaves out params larger than #{OmniAuth.config.max_remembered_params_bytesize} bytes, with a warning" do
+    max = OmniAuth.config.max_remembered_params_bytesize
     expect(max).to eq(512)
     allow(OmniAuth.logger).to receive(:warn)
     request = lambda do |key, size|
@@ -206,7 +206,7 @@ describe OmniAuth::Strategy, 'sign-ins' do
   end
 
   it 'counts the bytes of nested params, in hashes and arrays' do
-    max = OmniAuth::Strategy::SignIns::MAX_REMEMBERED_PARAMS_BYTESIZE
+    max = OmniAuth.config.max_remembered_params_bytesize
     allow(OmniAuth.logger).to receive(:warn)
     env = Rack::MockRequest.env_for('http://app.example/', 'rack.session' => session)
     strategy.instance_variable_set(:@env, env)

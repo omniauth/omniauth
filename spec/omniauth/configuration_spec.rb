@@ -28,7 +28,9 @@ describe OmniAuth::Configuration do
         :test_mode => false,
         :allowed_request_methods => [:post],
         :mock_auth => {:default => {'provider' => 'default', 'uid' => '1234', 'info' => {'name' => 'Example User'}}},
-        :silence_get_warning => false
+        :silence_get_warning => false,
+        :max_remembered_sign_ins => 3,
+        :max_remembered_params_bytesize => 512
       )
       expect(defaults[:mock_auth][:default]).to be_an_instance_of(OmniAuth::AuthHash)
       expect(defaults[:logger]).to be_an_instance_of(Logger)

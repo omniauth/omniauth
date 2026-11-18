@@ -92,6 +92,8 @@ module OmniAuth
     attr_accessor logger: Logger
     attr_accessor silence_get_warning: bool
     attr_accessor allowed_hosts: Array[String | Regexp]?
+    attr_accessor max_remembered_sign_ins: Integer
+    attr_accessor max_remembered_params_bytesize: Integer
   end
 
   module Utils
@@ -460,10 +462,6 @@ module OmniAuth
     # and overriding callback_sign_in_key.
     module SignIns : _Core
       @remembered_sign_in: Hash[String, untyped]?
-
-      MAX_REMEMBERED_SIGN_INS: Integer
-
-      MAX_REMEMBERED_PARAMS_BYTESIZE: Integer
 
       ORIGIN_KEY: String
 
