@@ -136,7 +136,7 @@ module OmniAuth
     end
 
     def max_remembered_sign_ins=(value)
-      raise ArgumentError.new('max_remembered_sign_ins must be an Integer of at least 1') unless value.is_a?(Integer) && value >= 1
+      raise ArgumentError.new('max_remembered_sign_ins must be an Integer of at least 1') unless value.instance_of?(Integer) && value >= 1
 
       @max_remembered_sign_ins = value
     end
