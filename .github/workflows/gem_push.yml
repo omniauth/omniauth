@@ -53,6 +53,12 @@ jobs:
     # git pushes and only builds and pushes the gem.
     - name: Release
       uses: rubygems/release-gem@7f9650160c1a4e7989fdc9855807bdbd421d8b6b # v1.4.1
+      with:
+        # The wait step runs `gem exec rubygems-await`, which installs the
+        # latest Bundler, and rubygems-await 0.5.4 breaks on Bundler 4.1.0
+        # (NoMethodError on Gem::CompactIndexClient::Cache#dependencies).
+        # The push itself fails loudly, so skip the wait.
+        await-release: false
   # Publishes a GitHub release for the tag, with the version's section of
   # CHANGELOG.md as its notes. It's a separate job so the gem push above
   # never runs with a token that can write to the repository.
