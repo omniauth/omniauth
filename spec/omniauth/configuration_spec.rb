@@ -28,7 +28,9 @@ describe OmniAuth::Configuration do
         :test_mode => false,
         :allowed_request_methods => [:post],
         :mock_auth => {:default => {'provider' => 'default', 'uid' => '1234', 'info' => {'name' => 'Example User'}}},
-        :silence_get_warning => false
+        :silence_get_warning => false,
+        :max_remembered_sign_ins => 3,
+        :max_remembered_params_bytesize => 512
       )
       expect(defaults[:mock_auth][:default]).to be_an_instance_of(OmniAuth::AuthHash)
       expect(defaults[:logger]).to be_an_instance_of(Logger)
@@ -199,6 +201,52 @@ describe OmniAuth::Configuration do
       info[:name] = 'Joe'
       mock = OmniAuth.config.add_mock(:facebook, :uid => '5', :info => info, :extra => {:raw => 'data'})
       expect(mock).to eq('provider' => 'facebook', 'uid' => '5', 'info' => {'name' => 'Joe'}, 'extra' => {'raw' => 'data'})
+    end
+  end
+
+  describe '#max_remembered_sign_ins' do
+    around do |example|
+      original_value = OmniAuth.config.max_remembered_sign_ins
+      example.run
+      OmniAuth.config.max_remembered_sign_ins = original_value
+    end
+
+    it 'raises an error if set to less than 1' do
+      expect { OmniAuth.config.max_remembered_sign_ins = 0 }.to raise_error(ArgumentError, 'max_remembered_sign_ins must be an Integer of at least 1')
+    end
+
+    it 'raises an error if set to something other than an Integer' do
+      [nil, 2.5, '5'].each do |value|
+        expect { OmniAuth.config.max_remembered_sign_ins = value }.to raise_error(ArgumentError, 'max_remembered_sign_ins must be an Integer of at least 1')
+      end
+    end
+
+    it 'accepts values greater than or equal to 1' do
+      OmniAuth.config.max_remembered_sign_ins = 1
+      expect(OmniAuth.config.max_remembered_sign_ins).to eq(1)
+    end
+  end
+
+  describe '#max_remembered_params_bytesize' do
+    around do |example|
+      original_value = OmniAuth.config.max_remembered_params_bytesize
+      example.run
+      OmniAuth.config.max_remembered_params_bytesize = original_value
+    end
+
+    it 'raises an error if set to less than 0' do
+      expect { OmniAuth.config.max_remembered_params_bytesize = -1 }.to raise_error(ArgumentError, 'max_remembered_params_bytesize must be an Integer of at least 0')
+    end
+
+    it 'raises an error if set to something other than an Integer' do
+      [nil, 1.5, '5'].each do |value|
+        expect { OmniAuth.config.max_remembered_params_bytesize = value }.to raise_error(ArgumentError, 'max_remembered_params_bytesize must be an Integer of at least 0')
+      end
+    end
+
+    it 'accepts values greater than or equal to 0' do
+      OmniAuth.config.max_remembered_params_bytesize = 0
+      expect(OmniAuth.config.max_remembered_params_bytesize).to eq(0)
     end
   end
 

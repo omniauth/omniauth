@@ -74,6 +74,13 @@ module OmniAuth
 
     def add_camelization: (String | Symbol name, String | Symbol camelized) -> String
 
+    def max_remembered_sign_ins=: (Integer) -> Integer
+
+    def max_remembered_params_bytesize=: (Integer) -> Integer
+
+    attr_reader max_remembered_sign_ins: Integer
+    attr_reader max_remembered_params_bytesize: Integer
+
     attr_writer on_failure: _EnvCallable
     attr_writer before_callback_phase: hook
     attr_writer before_options_phase: hook

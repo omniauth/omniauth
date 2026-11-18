@@ -47,7 +47,9 @@ module OmniAuth
         :allowed_request_methods => %i[post],
         :mock_auth => {:default => AuthHash.new('provider' => 'default', 'uid' => '1234', 'info' => {'name' => 'Example User'})},
         :silence_get_warning => false,
-        :allowed_hosts => nil
+        :allowed_hosts => nil,
+        :max_remembered_sign_ins => Strategy::SignIns::MAX_REMEMBERED_SIGN_INS,
+        :max_remembered_params_bytesize => Strategy::SignIns::MAX_REMEMBERED_PARAMS_BYTESIZE
       }
     end
 
@@ -133,6 +135,19 @@ module OmniAuth
       camelizations[name.to_s] = camelized.to_s
     end
 
+    def max_remembered_sign_ins=(value)
+      raise ArgumentError.new('max_remembered_sign_ins must be an Integer of at least 1') unless value.instance_of?(Integer) && value >= 1
+
+      @max_remembered_sign_ins = value
+    end
+
+    def max_remembered_params_bytesize=(value)
+      raise ArgumentError.new('max_remembered_params_bytesize must be an Integer of at least 0') unless value.instance_of?(Integer) && value >= 0
+
+      @max_remembered_params_bytesize = value
+    end
+
+    attr_reader :max_remembered_sign_ins, :max_remembered_params_bytesize
     attr_writer :on_failure, :before_callback_phase, :before_options_phase, :before_request_phase, :after_request_phase, :request_validation_phase
     attr_accessor :failure_raise_out_environments, :path_prefix, :allowed_request_methods, :form_css,
                   :test_mode, :mock_auth, :full_host, :camelizations, :logger, :silence_get_warning,

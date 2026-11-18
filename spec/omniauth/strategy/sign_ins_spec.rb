@@ -83,6 +83,24 @@ describe OmniAuth::Strategy, 'sign-ins' do
     expect(finish('b')).to eq(['/b', {'key' => 'b', 'origin' => '/b'}])
   end
 
+  context 'when OmniAuth.config.max_remembered_sign_ins is set' do
+    around do |example|
+      original_max = OmniAuth.config.max_remembered_sign_ins
+      OmniAuth.config.max_remembered_sign_ins = 1
+      example.run
+      OmniAuth.config.max_remembered_sign_ins = original_max
+    end
+
+    it 'forgets the oldest sign-in when the max is exceeded' do
+      expect(OmniAuth.config.max_remembered_sign_ins).to eq(1)
+      keys = %w[a b]
+      keys.each { |key| start(key) }
+      expect(session['omniauth.sign_ins'].keys).to eq(keys.drop(1))
+      expect(finish('a')).to eq([nil, {'key' => 'b', 'origin' => '/b'}])
+      expect(finish('b')).to eq(['/b', {'key' => 'b', 'origin' => '/b'}])
+    end
+  end
+
   it 'moves a reused key to the newest place, with its new origin' do
     start('a')
     start('b')
@@ -220,6 +238,31 @@ describe OmniAuth::Strategy, 'sign-ins' do
     strategy.remember_sign_in('b')
     expect(session['omniauth.sign_ins']['b']).to eq({})
     expect(OmniAuth.logger).to have_received(:warn).with(/Not remembering #{max + 1} bytes/).once
+  end
+
+  context 'when OmniAuth.config.max_remembered_params_bytesize is set' do
+    around do |example|
+      original_max = OmniAuth.config.max_remembered_params_bytesize
+      OmniAuth.config.max_remembered_params_bytesize = 256
+      example.run
+      OmniAuth.config.max_remembered_params_bytesize = original_max
+    end
+
+    it 'uses the configured max bytesize' do
+      max = OmniAuth.config.max_remembered_params_bytesize
+      allow(OmniAuth.logger).to receive(:warn)
+      request = lambda do |key, size|
+        env = Rack::MockRequest.env_for("http://app.example/auth/test?key=#{key}&origin=/#{key}&x=#{'x' * size}", :method => 'POST', 'rack.session' => session)
+        strategy.call(env)
+      end
+      request.call('a', max - 13)
+      expect(session['omniauth.sign_ins']['a'].fetch('params').keys).to eq(%w[key origin x])
+      request.call('b', max - 12)
+      expect(session['omniauth.sign_ins']['b']).to eq('origin' => '/b')
+      expect(OmniAuth.logger).to have_received(:warn).with(/Not remembering/).once
+      expect(OmniAuth.logger).to have_received(:warn).with("(test) Not remembering #{max + 1} bytes of params for this sign-in, more than #{max}. The callback gets empty omniauth.params.")
+      expect(finish('b')).to eq(['/b', {}])
+    end
   end
 
   it "doesn't change the data the strategy passes" do

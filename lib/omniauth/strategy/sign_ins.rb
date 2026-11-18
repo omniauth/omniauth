@@ -42,7 +42,7 @@ module OmniAuth
         sign_ins = remembered_sign_ins
         sign_ins.delete(key)
         sign_ins[key] = sign_in
-        session['omniauth.sign_ins'] = sign_ins.to_a.last(MAX_REMEMBERED_SIGN_INS).to_h
+        session['omniauth.sign_ins'] = sign_ins.to_a.last(OmniAuth.config.max_remembered_sign_ins).to_h
       end
 
       # The key the callback sends back, which a strategy that calls
@@ -100,9 +100,10 @@ module OmniAuth
       end
 
       def params_small_enough?(params)
+        max = OmniAuth.config.max_remembered_params_bytesize
         bytesize = params_bytesize(params)
-        small_enough = bytesize <= MAX_REMEMBERED_PARAMS_BYTESIZE
-        log :warn, "Not remembering #{bytesize} bytes of params for this sign-in, more than #{MAX_REMEMBERED_PARAMS_BYTESIZE}. The callback gets empty omniauth.params." unless small_enough
+        small_enough = bytesize <= max
+        log :warn, "Not remembering #{bytesize} bytes of params for this sign-in, more than #{max}. The callback gets empty omniauth.params." unless small_enough
         small_enough
       end
 
