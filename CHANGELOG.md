@@ -13,6 +13,8 @@ versioned together, so those entries cover all of them.
 
 ## [Unreleased]
 
+## [2.4.2] - 2026-11-18
+
 ### Added
 - `OmniAuth.config.max_remembered_sign_ins` and `OmniAuth.config.max_remembered_params_bytesize` set how many sign-ins `session['omniauth.sign_ins']` keeps and how many bytes of params each one remembers. They default to 3 and 512, as before. ([#1184](https://github.com/omniauth/omniauth/issues/1184))
 
@@ -698,7 +700,8 @@ versioned together, so those entries cover all of them.
 ### Added
 - Initial release, made up of `oa-core` (`OmniAuth::Builder` and a Password strategy), `oa-oauth` (OAuth and OAuth 2.0 with Twitter, LinkedIn, Facebook and GitHub) and `oa-openid` (OpenID).
 
-[Unreleased]: https://github.com/omniauth/omniauth/compare/v2.4.1...HEAD
+[Unreleased]: https://github.com/omniauth/omniauth/compare/v2.4.2...HEAD
+[2.4.2]: https://github.com/omniauth/omniauth/compare/v2.4.1...v2.4.2
 [2.4.1]: https://github.com/omniauth/omniauth/compare/v2.4.0...v2.4.1
 [2.4.0]: https://github.com/omniauth/omniauth/compare/v2.3.1...v2.4.0
 [2.3.1]: https://github.com/omniauth/omniauth/compare/v2.3.0...v2.3.1
