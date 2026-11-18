@@ -219,6 +219,12 @@ describe OmniAuth::Configuration do
       expect { OmniAuth.config.max_remembered_sign_ins = 0 }.to raise_error(ArgumentError, 'max_remembered_sign_ins must be an Integer of at least 1')
     end
 
+    it 'raises an error if set to something other than an Integer' do
+      [nil, 2.5, '5'].each do |value|
+        expect { OmniAuth.config.max_remembered_sign_ins = value }.to raise_error(ArgumentError, 'max_remembered_sign_ins must be an Integer of at least 1')
+      end
+    end
+
     it 'accepts values greater than or equal to 1' do
       OmniAuth.config.max_remembered_sign_ins = 1
       expect(OmniAuth.config.max_remembered_sign_ins).to eq(1)
