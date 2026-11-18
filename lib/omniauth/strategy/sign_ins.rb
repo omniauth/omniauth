@@ -100,9 +100,10 @@ module OmniAuth
       end
 
       def params_small_enough?(params)
+        max = OmniAuth.config.max_remembered_params_bytesize
         bytesize = params_bytesize(params)
-        small_enough = bytesize <= OmniAuth.config.max_remembered_params_bytesize
-        log :warn, "Not remembering #{bytesize} bytes of params for this sign-in, more than #{OmniAuth.config.max_remembered_params_bytesize}. The callback gets empty omniauth.params." unless small_enough
+        small_enough = bytesize <= max
+        log :warn, "Not remembering #{bytesize} bytes of params for this sign-in, more than #{max}. The callback gets empty omniauth.params." unless small_enough
         small_enough
       end
 

@@ -136,13 +136,13 @@ module OmniAuth
     end
 
     def max_remembered_sign_ins=(value)
-      raise ArgumentError.new('max_remembered_sign_ins must be greater than or equal to 1') if value < 1
+      raise ArgumentError.new('max_remembered_sign_ins must be an Integer of at least 1') unless value.is_a?(Integer) && value >= 1
 
       @max_remembered_sign_ins = value
     end
 
     def max_remembered_params_bytesize=(value)
-      raise ArgumentError.new('max_remembered_params_bytesize must be greater than or equal to 0') if value.negative?
+      raise ArgumentError.new('max_remembered_params_bytesize must be an Integer of at least 0') unless value.is_a?(Integer) && value >= 0
 
       @max_remembered_params_bytesize = value
     end

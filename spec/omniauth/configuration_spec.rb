@@ -212,12 +212,12 @@ describe OmniAuth::Configuration do
     end
 
     it 'raises an error if set to less than 1' do
-      expect { OmniAuth.config.max_remembered_sign_ins = 0 }.to raise_error(ArgumentError)
+      expect { OmniAuth.config.max_remembered_sign_ins = 0 }.to raise_error(ArgumentError, 'max_remembered_sign_ins must be an Integer of at least 1')
     end
 
     it 'accepts values greater than or equal to 1' do
-      OmniAuth.config.max_remembered_sign_ins = 5
-      expect(OmniAuth.config.max_remembered_sign_ins).to eq(5)
+      OmniAuth.config.max_remembered_sign_ins = 1
+      expect(OmniAuth.config.max_remembered_sign_ins).to eq(1)
     end
   end
 
@@ -229,12 +229,12 @@ describe OmniAuth::Configuration do
     end
 
     it 'raises an error if set to less than 0' do
-      expect { OmniAuth.config.max_remembered_params_bytesize = -1 }.to raise_error(ArgumentError)
+      expect { OmniAuth.config.max_remembered_params_bytesize = -1 }.to raise_error(ArgumentError, 'max_remembered_params_bytesize must be an Integer of at least 0')
     end
 
     it 'accepts values greater than or equal to 0' do
-      OmniAuth.config.max_remembered_params_bytesize = 1024
-      expect(OmniAuth.config.max_remembered_params_bytesize).to eq(1024)
+      OmniAuth.config.max_remembered_params_bytesize = 0
+      expect(OmniAuth.config.max_remembered_params_bytesize).to eq(0)
     end
   end
 

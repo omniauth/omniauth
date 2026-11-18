@@ -29,7 +29,7 @@ duel 'request: redirect, with five sign-ins kept' do |n|
   once do
     @strategy = DuelHelper::Provider.new(DuelHelper::APP)
     @env = DuelHelper.env_for('/auth/provider', :method => 'POST', :params => {'authenticity_token' => @token})
-    @full = @session.merge('omniauth.sign_ins' => DuelHelper.sign_ins(OmniAuth.config.max_remembered_sign_ins))
+    @full = @session.merge('omniauth.sign_ins' => DuelHelper.sign_ins(OmniAuth::Strategy::SignIns::MAX_REMEMBERED_SIGN_INS))
   end
   envs = untimed { DuelHelper.fresh_envs(@env, @full, n) }
   DuelHelper.call_each(@strategy, envs, 302)

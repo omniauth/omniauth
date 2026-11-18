@@ -30,7 +30,7 @@ duel 'callback: a provider, with five sign-ins kept' do |n|
   once do
     @strategy = DuelHelper::Provider.new(DuelHelper::APP)
     @env = DuelHelper.env_for('/auth/provider/callback?uid=42&code=4a5f8e&state=state5')
-    @session = {'omniauth.sign_ins' => DuelHelper.sign_ins(OmniAuth.config.max_remembered_sign_ins)}
+    @session = {'omniauth.sign_ins' => DuelHelper.sign_ins(OmniAuth::Strategy::SignIns::MAX_REMEMBERED_SIGN_INS)}
   end
   envs = untimed { DuelHelper.fresh_envs(@env, @session, n) }
   DuelHelper.call_each(@strategy, envs, 200)
