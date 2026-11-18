@@ -55,6 +55,9 @@ Metrics/BlockLength:
 Metrics/BlockNesting:
   Max: 2
 
+Metrics/ClassLength:
+  Max: 120
+
 Metrics/MethodLength:
   CountComments: false
   Max: 15
