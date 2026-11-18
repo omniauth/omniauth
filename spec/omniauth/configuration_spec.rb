@@ -204,6 +204,40 @@ describe OmniAuth::Configuration do
     end
   end
 
+  describe '#max_remembered_sign_ins' do
+    around do |example|
+      original_value = OmniAuth.config.max_remembered_sign_ins
+      example.run
+      OmniAuth.config.max_remembered_sign_ins = original_value
+    end
+
+    it 'raises an error if set to less than 1' do
+      expect { OmniAuth.config.max_remembered_sign_ins = 0 }.to raise_error(ArgumentError)
+    end
+
+    it 'accepts values greater than or equal to 1' do
+      OmniAuth.config.max_remembered_sign_ins = 5
+      expect(OmniAuth.config.max_remembered_sign_ins).to eq(5)
+    end
+  end
+
+  describe '#max_remembered_params_bytesize' do
+    around do |example|
+      original_value = OmniAuth.config.max_remembered_params_bytesize
+      example.run
+      OmniAuth.config.max_remembered_params_bytesize = original_value
+    end
+
+    it 'raises an error if set to less than 0' do
+      expect { OmniAuth.config.max_remembered_params_bytesize = -1 }.to raise_error(ArgumentError)
+    end
+
+    it 'accepts values greater than or equal to 0' do
+      OmniAuth.config.max_remembered_params_bytesize = 1024
+      expect(OmniAuth.config.max_remembered_params_bytesize).to eq(1024)
+    end
+  end
+
   describe '#add_camelization' do
     it 'stores the camelization with string keys and values' do
       expect(OmniAuth.config.add_camelization(:oauth, :OAuth)).to eq('OAuth')
