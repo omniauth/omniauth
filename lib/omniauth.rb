@@ -48,15 +48,8 @@ module OmniAuth
         :mock_auth => {:default => AuthHash.new('provider' => 'default', 'uid' => '1234', 'info' => {'name' => 'Example User'})},
         :silence_get_warning => false,
         :allowed_hosts => nil,
-
-        # How many sign-ins are remembered. Remembering another forgets the
-        # oldest.
-        :max_remembered_sign_ins => 3,
-
-        # The largest params, counting the bytes of their keys and values, that
-        # a sign-in remembers. The params come from the request, so they can be any
-        # size, and a few large ones would overflow a cookie session.
-        :max_remembered_params_bytesize => 512
+        :max_remembered_sign_ins => Strategy::SignIns::MAX_REMEMBERED_SIGN_INS,
+        :max_remembered_params_bytesize => Strategy::SignIns::MAX_REMEMBERED_PARAMS_BYTESIZE
       }
     end
 

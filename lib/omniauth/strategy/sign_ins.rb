@@ -16,6 +16,15 @@ module OmniAuth
     # The sign-ins live in the session, which is often a 4 KB cookie, so
     # each one stores only what isn't empty.
     module SignIns
+      # How many sign-ins are remembered. Remembering another forgets the
+      # oldest.
+      MAX_REMEMBERED_SIGN_INS = 3
+
+      # The largest params, counting the bytes of their keys and values, that
+      # a sign-in remembers. The params come from the request, so they can be any
+      # size, and a few large ones would overflow a cookie session.
+      MAX_REMEMBERED_PARAMS_BYTESIZE = 512
+
       # The session key of the request phase's origin, frozen so moving it
       # doesn't make a new string in every request phase: unlike
       # session[...], delete has no fast path for a string literal.

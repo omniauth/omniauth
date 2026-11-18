@@ -463,6 +463,10 @@ module OmniAuth
     module SignIns : _Core
       @remembered_sign_in: Hash[String, untyped]?
 
+      MAX_REMEMBERED_SIGN_INS: Integer
+
+      MAX_REMEMBERED_PARAMS_BYTESIZE: Integer
+
       ORIGIN_KEY: String
 
       # Remembers the current request phase's sign-in under key, which the
