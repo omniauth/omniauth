@@ -13,8 +13,8 @@ versioned together, so those entries cover all of them.
 
 ## [Unreleased]
 
-### Changed
-- make `MAX_REMEMBERED_SIGN_INS` & `MAX_REMEMBERED_PARAMS_BYTESIZE` configurable [#1185](https://github.com/omniauth/omniauth/pull/1185)
+### Added
+- `OmniAuth.config.max_remembered_sign_ins` and `OmniAuth.config.max_remembered_params_bytesize` set how many sign-ins `session['omniauth.sign_ins']` keeps and how many bytes of params each one remembers. They default to 3 and 512, as before. ([#1184](https://github.com/omniauth/omniauth/issues/1184))
 
 ## [2.4.1] - 2026-11-14
 
