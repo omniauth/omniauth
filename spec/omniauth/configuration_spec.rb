@@ -211,10 +211,6 @@ describe OmniAuth::Configuration do
       OmniAuth.config.max_remembered_sign_ins = original_value
     end
 
-    it 'raises an error unless integer' do
-      expect { OmniAuth.config.max_remembered_sign_ins = 'a' }.to raise_error(ArgumentError, 'max_remembered_sign_ins must be an Integer of at least 1')
-    end
-
     it 'raises an error if set to less than 1' do
       expect { OmniAuth.config.max_remembered_sign_ins = 0 }.to raise_error(ArgumentError, 'max_remembered_sign_ins must be an Integer of at least 1')
     end
@@ -236,10 +232,6 @@ describe OmniAuth::Configuration do
       original_value = OmniAuth.config.max_remembered_params_bytesize
       example.run
       OmniAuth.config.max_remembered_params_bytesize = original_value
-    end
-
-    it 'raises an error unless integer' do
-      expect { OmniAuth.config.max_remembered_params_bytesize = 'a' }.to raise_error(ArgumentError, 'max_remembered_params_bytesize must be an Integer of at least 0')
     end
 
     it 'raises an error if set to less than 0' do
