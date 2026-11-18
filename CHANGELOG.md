@@ -13,6 +13,9 @@ versioned together, so those entries cover all of them.
 
 ## [Unreleased]
 
+### Changed
+- make `MAX_REMEMBERED_SIGN_INS` & `MAX_REMEMBERED_PARAMS_BYTESIZE` configurable [#1185](https://github.com/omniauth/omniauth/pull/1185)
+
 ## [2.4.1] - 2026-11-14
 
 ### Fixed
