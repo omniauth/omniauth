@@ -4,8 +4,8 @@
 #
 # Duel follows conventions, so set only what differs: benchmarks are in
 # duel/**/*_duel.rb, each version's lib/ is first on the load path, a
-# change is compared when it touches lib/ or ext/, and releases are
-# tagged v*.
+# change is compared when it touches lib/ or ext/ (or the benchmarks, or
+# this file), and releases are tagged v*.
 Duel.configure do |c|
   # The library each version's workers require (from the gemspec, unless
   # this says otherwise).
@@ -19,10 +19,9 @@ Duel.configure do |c|
   # run warns and passes, and a pushed commit gets the comment instead).
   # c.fail_on = :every_run
 
-  # A pull request with this label passes with a regression, which the
-  # report says the label accepted. Adding the label, or taking it off,
-  # runs the workflow again.
-  c.accept_label = 'duel: accept'
+  # A label that accepts a regression in a pull request, for a change
+  # that's slower on purpose (nil for none).
+  # c.accept_label = 'duel: accept'
 
   # A push is compared with the last commit Duel passed, which a branch
   # marks (duel/passed/master for master), not the commit before it, so
