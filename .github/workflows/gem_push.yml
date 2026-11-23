@@ -52,7 +52,7 @@ jobs:
     # Runs rake release. The tag already exists, so it skips tagging and
     # git pushes and only builds and pushes the gem.
     - name: Release
-      uses: rubygems/release-gem@7f9650160c1a4e7989fdc9855807bdbd421d8b6b # v1.4.1
+      uses: rubygems/release-gem@5c53f5308233b7c0f47411f0471b3faae6fa57b2 # v1.4.2
       with:
         # The wait step runs `gem exec rubygems-await`, which installs the
         # latest Bundler, and rubygems-await 0.5.4 breaks on Bundler 4.1.0
