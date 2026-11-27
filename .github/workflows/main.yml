@@ -41,7 +41,7 @@ jobs:
     - id: ruby
       name: Set up Ruby
       continue-on-error: ${{ matrix.ruby == 'head' || matrix.ruby == 'debug' }}
-      uses: ruby/setup-ruby@f9c4492e86def3e644ab32a0ef185eda5b0c20d0 # v1.342.0
+      uses: ruby/setup-ruby@be3c7df29b3349ec6bcfc6b4792f1cf9f5237d18 # v1.343.0
       with:
         ruby-version: ${{ matrix.ruby }}
         bundler-cache: true
@@ -67,7 +67,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Ruby
-      uses: ruby/setup-ruby@f9c4492e86def3e644ab32a0ef185eda5b0c20d0 # v1.342.0
+      uses: ruby/setup-ruby@be3c7df29b3349ec6bcfc6b4792f1cf9f5237d18 # v1.343.0
       with:
         ruby-version: ${{ matrix.ruby }}
         bundler-cache: true
@@ -80,7 +80,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Ruby
-      uses: ruby/setup-ruby@f9c4492e86def3e644ab32a0ef185eda5b0c20d0 # v1.342.0
+      uses: ruby/setup-ruby@be3c7df29b3349ec6bcfc6b4792f1cf9f5237d18 # v1.343.0
       with:
         ruby-version: '4.0'
         bundler-cache: true
@@ -99,7 +99,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Ruby
-      uses: ruby/setup-ruby@f9c4492e86def3e644ab32a0ef185eda5b0c20d0 # v1.342.0
+      uses: ruby/setup-ruby@be3c7df29b3349ec6bcfc6b4792f1cf9f5237d18 # v1.343.0
       with:
         ruby-version: ${{ matrix.ruby }}
         bundler-cache: true
@@ -112,7 +112,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Ruby
-      uses: ruby/setup-ruby@f9c4492e86def3e644ab32a0ef185eda5b0c20d0 # v1.342.0
+      uses: ruby/setup-ruby@be3c7df29b3349ec6bcfc6b4792f1cf9f5237d18 # v1.343.0
       with:
         ruby-version: '4.0'
         bundler-cache: true
@@ -125,7 +125,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Ruby
-      uses: ruby/setup-ruby@f9c4492e86def3e644ab32a0ef185eda5b0c20d0 # v1.342.0
+      uses: ruby/setup-ruby@be3c7df29b3349ec6bcfc6b4792f1cf9f5237d18 # v1.343.0
       with:
         ruby-version: 2.6
         bundler-cache: true
@@ -140,7 +140,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Ruby
-      uses: ruby/setup-ruby@f9c4492e86def3e644ab32a0ef185eda5b0c20d0 # v1.342.0
+      uses: ruby/setup-ruby@be3c7df29b3349ec6bcfc6b4792f1cf9f5237d18 # v1.343.0
       with:
         ruby-version: '4.0'
         bundler-cache: true
